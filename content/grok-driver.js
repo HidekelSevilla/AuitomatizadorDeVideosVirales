@@ -189,12 +189,33 @@
   // ANIMATE_FIRE: clic en "Hacer video" (clic SINTETICO basta, no requiere CDP/debugger). Grok NAVEGA a
   // un /post/<videoId> nuevo y genera EN SITIO -> este content script muere con la navegacion, por eso
   // NO esperamos el video aqui (lo recoge ANIMATE_COLLECT tras re-inyectar el SW en el /post nuevo).
-  async function animateFire() {
+  async function animateFire({ prompt } = {}) {
     const hs0 = detectHardStop(); if (hs0) return hs0;
     const btn = await waitFor(() => makeVideoButton(), { timeout: 20000 });
     await rsleep(800, 2000);   // pausa humana antes de animar
     btn.click();
-    await sleep(1500);          // deja que dispare/navegue antes de devolver
+    // "Hacer video" abre el compositor de movimiento (editable + "Crear video") y arranca un default.
+    // Con prompt: lo escribimos y confirmamos con "Crear video" -> genera con el movimiento DIRIGIDO de
+    // la escena (gasta 1 extra vs el default; creditos de Grok son diarios). Sin compositor -> default.
+    if (prompt) {
+      try {
+        const ed = await waitFor(() => [...document.querySelectorAll("[contenteditable]")].find((e) => visible(e)), { timeout: 8000 });
+        ed.focus();
+        for (let i = 0, typed = 0; i < prompt.length;) {
+          const n = 2 + Math.floor(Math.random() * 4);
+          const chunk = prompt.slice(i, i + n);
+          document.execCommand("insertText", false, chunk);
+          i += chunk.length; typed += chunk.length;
+          await rsleep(40, 140);
+          if (typed % 40 < n) await rsleep(200, 500);
+        }
+        await rsleep(800, 1800);   // pausa de "revision"
+        const crear = [...document.querySelectorAll("button,[role=button]")]
+          .find((b) => visible(b) && (b.getAttribute("aria-label") === "Crear video" || /^crear video$/i.test(norm(b.innerText))));
+        if (crear) crear.click();
+      } catch (_e) { /* sin compositor de prompt: queda el movimiento por defecto que ya disparo "Hacer video" */ }
+    }
+    await sleep(600);   // breve: que la respuesta salga ANTES de que la pagina navegue
     return { ok: true, data: { fired: true } };
   }
 

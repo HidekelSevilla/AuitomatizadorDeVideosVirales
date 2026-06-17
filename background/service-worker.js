@@ -913,8 +913,16 @@ async function runGrokAnimation(scene) {
   await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.ANIMATING); emitState();
   log(LOG_LEVEL.INFO, `Animando ${scene.id} en Grok ("Hacer video")...`);
 
-  // FIRE: clic "Hacer video" -> Grok navega al /post del video y genera en sitio.
-  await sendActOrFail(tab.id, ACT.ANIMATE_FIRE, { prompt: scene.animationPrompt });
+  // FIRE: clic "Hacer video" (+ prompt + "Crear video") -> Grok navega al /post del video y genera.
+  // La navegacion puede matar el content script ANTES de responder: eso NO es fallo (el disparo ocurrio),
+  // seguimos a recolectar. Los errores REALES (no encuentro "Hacer video", etc.) si se relanzan.
+  try {
+    await sendActOrFail(tab.id, ACT.ANIMATE_FIRE, { prompt: scene.animationPrompt });
+  } catch (e) {
+    const msg = e?.message ?? String(e);
+    if (/no respondio|message port|closed|sin respuesta/i.test(msg)) log(LOG_LEVEL.WARN, `${scene.id}: fire sin respuesta (navegacion); continuo a recolectar.`);
+    else throw e;
+  }
 
   // La pestana navego: re-inyectamos en el /post nuevo y recolectamos el <video> terminado (sin debugger).
   await delay(4000);
