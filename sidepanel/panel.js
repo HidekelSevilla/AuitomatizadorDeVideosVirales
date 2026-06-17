@@ -223,6 +223,13 @@ function renderHero(state) {
     el.statusTitle.textContent = 'Listo';
     el.statusSub.textContent = `${done}/${scenes.length} hechas`;
   }
+
+  // Metricas de produccion acumuladas (throughput): generaciones, errores, tiempo en cooldown.
+  const m = state.metrics || {};
+  if (m.generations) {
+    const cd = m.cooldownMs ? `, ${Math.round(m.cooldownMs / 60000)}m cooldown` : '';
+    el.statusSub.textContent += ` · ${m.generations} gen, ${m.errors || 0} err${cd}`;
+  }
 }
 
 // Marca la escena activa (foco visual). Se reaplica tras cada renderScenes (replaceChildren la borra).

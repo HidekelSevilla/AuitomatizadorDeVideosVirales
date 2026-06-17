@@ -49,6 +49,7 @@ async function loadState() {
   // Migracion: campos nuevos de queue/pacing sin pisar lo guardado.
   state.queue = { running: false, paused: false, currentIndex: 0, phase: "images", errorSceneId: null, heartbeatAt: 0, ...(state.queue || {}) };
   state.pacing = { windowStart: 0, windowCount: 0, sessionGen: 0, cooldownUntil: 0, cooldownStep: 0, ...(state.pacing || {}) };
+  state.metrics = { generations: 0, errors: 0, cooldownMs: 0, since: Date.now(), ...(state.metrics || {}) };
   // Rehidrata el ring de logs (clave separada) para que el historial sobreviva al sueno del SW.
   try { const lr = await chrome.storage.local.get(LOG_RING_KEY); if (Array.isArray(lr[LOG_RING_KEY])) logRing = lr[LOG_RING_KEY]; } catch (_e) { /* noop */ }
   // Defensa: si la cola quedo marcada running por un crash, no la creamos viva sola;
@@ -511,6 +512,7 @@ async function onRateLimit(message) {
   const waitMs = base * Math.pow(3, step);              // 5 / 15 / 45 min
   state.pacing.cooldownStep = step + 1;
   state.pacing.cooldownUntil = Date.now() + waitMs;
+  if (state.metrics) state.metrics.cooldownMs = (state.metrics.cooldownMs || 0) + waitMs;
   state.queue.paused = true;
   state.queue.running = false;
   await saveState();
@@ -542,6 +544,7 @@ async function pauseForError(message, sceneId = null) {
   state.queue.paused = true;
   state.queue.running = false;
   state.queue.errorSceneId = sceneId;
+  if (sceneId && state.metrics) state.metrics.errors = (state.metrics.errors || 0) + 1;
   await saveState();
   detachDebuggers();
   log(LOG_LEVEL.WARN, `PAUSA por fallo: ${message}. Revisa y dale Reanudar / Saltar / Reintentar.`);
@@ -620,6 +623,7 @@ async function applyPacingAfterScene() {
   if (!p.windowStart || now - p.windowStart > 3600000) { p.windowStart = now; p.windowCount = 0; }
   p.windowCount += 1;
   p.sessionGen += 1;
+  if (state.metrics) { state.metrics.generations = (state.metrics.generations || 0) + 1; if (!state.metrics.since) state.metrics.since = now; }
 
   let waitMs;
   if ((c.longBreakEvery ?? 0) > 0 && p.sessionGen % c.longBreakEvery === 0) {
