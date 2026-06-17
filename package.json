@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "name": "flow-scene-automator",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Dev tooling solo (tests/lint). Chrome ignora este archivo al cargar la extension.",
+  "scripts": {
+    "dev": "node dev/reload-server.mjs",
+    "test": "node tests/dryrun.test.mjs && node tests/schema_v2.test.mjs"
+  }
+}

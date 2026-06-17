@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flow Automator — rediseño (mockup)</title>
+<style>
+  :root{
+    --bg:#0c0e13; --panel:#0f1218; --card:#161922; --elev:#1b1f2a;
+    --border:rgba(255,255,255,.07); --border-2:rgba(255,255,255,.12);
+    --text:#e8eaf1; --muted:#8a93a6; --faint:#5b6477;
+    --accent:#5b7cfa; --accent-weak:rgba(91,124,250,.14);
+    --grok:#e2895c; --grok-weak:rgba(226,137,92,.16);
+    --flow:#4f8cff; --flow-weak:rgba(79,140,255,.16);
+    --ok:#2fb37e; --ok-weak:rgba(47,179,126,.14);
+    --warn:#f5a623; --warn-weak:rgba(245,166,35,.14);
+    --danger:#e5484d; --danger-weak:rgba(229,72,77,.14);
+    --r:10px; --r-sm:7px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#07080b;color:var(--text);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    display:flex;justify-content:center;padding:24px 0;gap:24px;flex-wrap:wrap;align-items:flex-start}
+  .device{width:392px;background:var(--panel);border:1px solid var(--border);
+    border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+  .scroll{padding:12px;max-height:880px;overflow-y:auto}
+  .scroll::-webkit-scrollbar{width:8px}.scroll::-webkit-scrollbar-thumb{background:#222733;border-radius:8px}
+  h1{font-size:15px;margin:0;font-weight:600;letter-spacing:.01em}
+  .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin-bottom:10px}
+  .row{display:flex;align-items:center;gap:8px}
+  .between{justify-content:space-between}
+  .muted{color:var(--muted);font-size:12px}
+  .faint{color:var(--faint);font-size:11px}
+  svg{display:block}
+  /* top bar */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--bg)}
+  .brand{display:flex;align-items:center;gap:8px}
+  .logo{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#5b7cfa,#8b5bfa);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff}
+  .chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;border:1px solid transparent}
+  .chip-grok{color:var(--grok);background:var(--grok-weak);border-color:rgba(226,137,92,.4)}
+  .chip-flow{color:var(--flow);background:var(--flow-weak);border-color:rgba(79,140,255,.4)}
+  .dot{width:6px;height:6px;border-radius:50%}
+  .icon-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:var(--card);color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .icon-btn:hover{border-color:var(--border-2);color:var(--text)}
+  /* status hero */
+  .hero{padding:12px;border-radius:var(--r);margin-bottom:10px;border:1px solid;display:flex;flex-direction:column;gap:8px}
+  .hero-running{background:var(--warn-weak);border-color:rgba(245,166,35,.35)}
+  .hero-title{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600}
+  .spin{width:14px;height:14px;border-radius:50%;border:2px solid rgba(245,166,35,.3);border-top-color:var(--warn);animation:s 1s linear infinite}
+  @keyframes s{to{transform:rotate(360deg)}}
+  .pbar{height:6px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+  .pfill{height:100%;background:var(--warn);border-radius:999px}
+  /* primary CTA + phase tracker */
+  .cta{width:100%;padding:12px;border:none;border-radius:var(--r);background:var(--accent);color:#fff;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 0 0 1px rgba(91,124,250,.5),0 8px 24px -8px rgba(91,124,250,.6)}
+  .cta:hover{background:#6c89ff}
+  .tracker{display:flex;align-items:center;gap:6px;margin-top:10px}
+  .phase{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10.5px;color:var(--muted)}
+  .pnum{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:1.5px solid var(--border-2);color:var(--muted)}
+  .phase.done .pnum{background:var(--ok);border-color:var(--ok);color:#06140d}
+  .phase.done{color:var(--ok)}
+  .phase.active .pnum{background:var(--warn);border-color:var(--warn);color:#1a1205}
+  .phase.active{color:var(--warn)}
+  .pline{height:1.5px;flex:1;background:var(--border-2)}
+  .link{background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;padding:6px 0;display:flex;align-items:center;gap:4px}
+  /* generic inputs */
+  select,input{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);color:var(--text);padding:7px 8px;font-size:12.5px;width:100%}
+  .field{display:flex;flex-direction:column;gap:4px}
+  .field label{font-size:11px;color:var(--muted)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .estimate{display:flex;justify-content:space-between;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:8px 10px;margin-top:8px}
+  .estimate .v{font-weight:700}
+  .tag{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 6px;border-radius:999px;border:1px solid}
+  .tag-free{color:var(--ok);border-color:var(--ok)}
+  .tag-cost{color:var(--warn);border-color:var(--warn)}
+  /* toggle switch */
+  .sw{position:relative;width:34px;height:20px;border-radius:999px;background:#2a2f3a;flex-shrink:0;transition:.15s}
+  .sw.on{background:var(--accent)}
+  .sw::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.15s}
+  .sw.on::after{left:16px}
+  /* queue list */
+  .qitem{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:var(--r-sm);background:var(--bg);border:1px solid var(--border);margin-top:6px;font-size:12px}
+  .qitem .name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* scenes */
+  .scene{display:flex;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:8px;margin-top:8px}
+  .scene.active{border-color:rgba(245,166,35,.5);box-shadow:0 0 0 1px rgba(245,166,35,.2)}
+  .thumb{width:54px;height:72px;border-radius:var(--r-sm);background:linear-gradient(135deg,#232733,#171a22);border:1px solid var(--border);flex-shrink:0;object-fit:cover;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:9px;text-align:center}
+  .sbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+  .badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid;width:fit-content}
+  .b-done{color:var(--ok);border-color:var(--ok);background:var(--ok-weak)}
+  .b-run{color:var(--warn);border-color:var(--warn);background:var(--warn-weak)}
+  .b-err{color:var(--danger);border-color:var(--danger);background:var(--danger-weak)}
+  .b-pend{color:var(--muted);border-color:var(--border-2)}
+  .sact{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
+  .mini{font-size:10.5px;padding:3px 8px;border-radius:999px;border:1px solid var(--border-2);background:var(--bg);color:var(--text);cursor:pointer}
+  .mini:hover{border-color:var(--accent);color:var(--accent)}
+  .errtext{color:var(--danger);font-size:10.5px}
+  /* contextual controls */
+  .controls{display:flex;gap:6px;margin-top:8px}
+  .controls button{flex:1;padding:8px;border-radius:var(--r-sm);border:1px solid var(--border-2);background:var(--bg);color:var(--text);font-size:12px;cursor:pointer}
+  .btn-stop{color:var(--danger);border-color:rgba(229,72,77,.4)!important}
+  /* log */
+  .logwrap{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden}
+  .logbar{display:flex;align-items:center;gap:6px;padding:6px 8px;border-bottom:1px solid var(--border)}
+  .fpill{font-size:10px;padding:2px 8px;border-radius:999px;border:1px solid var(--border-2);color:var(--muted);cursor:pointer}
+  .fpill.on{color:var(--text);border-color:var(--accent);background:var(--accent-weak)}
+  .log{height:120px;overflow-y:auto;padding:8px;font-family:ui-monospace,Consolas,monospace;font-size:10.5px;line-height:1.6}
+  .l-info{color:var(--text)}.l-warn{color:var(--warn)}.l-err{color:var(--danger)}.l-time{color:var(--faint)}
+  .sectionhead{display:flex;align-items:center;justify-content:space-between;margin:14px 2px 6px}
+  .note{font-size:10px;color:var(--faint);text-align:center;margin:10px 0 2px}
+</style>
+</head>
+<body>
+
+<!-- ============ ESTADO: CORRIENDO (Grok) ============ -->
+<div class="device">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">F</div>
+      <div>
+        <h1>Flow Automator</h1>
+        <div class="faint">Tacos conquistan el mundo · 3 escenas</div>
+      </div>
+    </div>
+    <div class="row" style="gap:6px">
+      <span class="chip chip-grok"><span class="dot" style="background:var(--grok)"></span>Grok</span>
+      <button class="icon-btn" aria-label="Configuración">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="scroll">
+    <!-- Status hero -->
+    <div class="hero hero-running">
+      <div class="between row">
+        <div class="hero-title"><span class="spin"></span> Generando imagen — scene_02</div>
+        <span class="muted" style="font-weight:700">1 / 3</span>
+      </div>
+      <div class="pbar"><div class="pfill" style="width:38%"></div></div>
+      <div class="faint">Subiendo 2 referencias a Grok · reintento 1/4</div>
+    </div>
+
+    <!-- Phase tracker (manual mode collapsed) -->
+    <div class="card">
+      <div class="tracker">
+        <div class="phase done"><div class="pnum">✓</div>Imágenes</div>
+        <div class="pline" style="background:var(--ok)"></div>
+        <div class="phase active"><div class="pnum">2</div>Animar</div>
+        <div class="pline"></div>
+        <div class="phase"><div class="pnum">3</div>Voz</div>
+      </div>
+      <button class="link" style="margin:8px auto 0">Modo manual / opciones ▾</button>
+    </div>
+
+    <!-- Contextual controls -->
+    <div class="controls">
+      <button>⏸ Pausar</button>
+      <button class="btn-stop">■ Detener</button>
+    </div>
+
+    <!-- Scenes -->
+    <div class="sectionhead"><span class="lbl">Escenas</span><span class="faint">1 lista · 1 en curso · 1 error</span></div>
+
+    <div class="scene">
+      <div class="thumb"><img src="https://placehold.co/54x72/1a3a2a/2fb37e?text=01" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+      <div class="sbody">
+        <div class="between row"><strong style="font-size:12.5px">scene_01</strong><span class="badge b-done">✓ Listo</span></div>
+        <div class="faint">imagen + clip + voz</div>
+        <div class="sact"><button class="mini">Ver clip</button><button class="mini">Reanimar</button></div>
+      </div>
+    </div>
+
+    <div class="scene active">
+      <div class="thumb">subiendo<br>refs…</div>
+      <div class="sbody">
+        <div class="between row"><strong style="font-size:12.5px">scene_02</strong><span class="badge b-run"><span class="spin" style="width:9px;height:9px;border-width:1.5px"></span>Generando</span></div>
+        <div class="faint">2 referencias (Huesito + scene_01)</div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="thumb" style="color:var(--danger)">!</div>
+      <div class="sbody">
+        <div class="between row"><strong style="font-size:12.5px">scene_03</strong><span class="badge b-pend">Pendiente</span></div>
+        <div class="errtext">en cola</div>
+        <div class="sact"><button class="mini">Regenerar img</button></div>
+      </div>
+    </div>
+
+    <!-- Log -->
+    <div class="sectionhead"><span class="lbl">Registro</span></div>
+    <div class="logwrap">
+      <div class="logbar">
+        <span class="fpill on">Todo</span><span class="fpill">Warn</span><span class="fpill">Error</span>
+        <span style="flex:1"></span>
+        <button class="fpill">Copiar</button>
+      </div>
+      <div class="log">
+        <div><span class="l-time">[7:29:43] </span><span class="l-info">FASE 1: generar imágenes</span></div>
+        <div><span class="l-time">[7:29:55] </span><span class="l-info">Imagen Grok lista (scene_01)</span></div>
+        <div><span class="l-time">[7:29:55] </span><span class="l-info">scene_02: 2 referencias subidas</span></div>
+        <div><span class="l-time">[7:30:02] </span><span class="l-warn">scene_02 reintento 1/4: composer fresco…</span></div>
+      </div>
+    </div>
+    <div class="note">Estado 1 — corriendo (Grok)</div>
+  </div>
+</div>
+
+<!-- ============ ESTADO: INICIO (vacío) + cola auto ============ -->
+<div class="device">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">F</div>
+      <div><h1>Flow Automator</h1><div class="faint">Sin proyecto</div></div>
+    </div>
+    <div class="row" style="gap:6px">
+      <span class="chip chip-flow"><span class="dot" style="background:var(--flow)"></span>Flow</span>
+      <button class="icon-btn" aria-label="Configuración"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+    </div>
+  </div>
+
+  <div class="scroll">
+    <!-- Empty dropzone -->
+    <div class="card" style="border-style:dashed;border-color:var(--border-2);text-align:center;padding:26px 12px">
+      <div style="font-size:26px;color:var(--accent);margin-bottom:6px">⬇</div>
+      <div style="font-size:13px;font-weight:600">Arrastra tu JSON aquí</div>
+      <div class="faint" style="margin-top:3px">o haz clic para elegirlo · el proveedor se lee del JSON</div>
+    </div>
+
+    <button class="cta" disabled style="opacity:.45;box-shadow:none;background:#2a2f3a">▶ Hacer todo</button>
+    <div class="faint" style="text-align:center;margin-top:6px">Carga un proyecto para empezar</div>
+
+    <!-- Auto-queue surfaced -->
+    <div class="card" style="margin-top:14px">
+      <div class="between row">
+        <div><div style="font-weight:600;font-size:13px">Cola automática</div><div class="faint" style="margin-top:2px">Procesa la carpeta queue/ sola</div></div>
+        <div class="sw on"></div>
+      </div>
+      <div class="qitem"><span class="dot" style="background:var(--grok)"></span><span class="name">tacos_mundo_grok_test.json</span><span class="chip chip-grok" style="font-size:9px;padding:1px 6px">grok</span></div>
+      <div class="qitem"><span class="dot" style="background:var(--flow)"></span><span class="name">elotes_grecia_huesito_v2.json</span><span class="chip chip-flow" style="font-size:9px;padding:1px 6px">flow</span></div>
+      <div class="qitem" style="opacity:.6"><span class="dot" style="background:var(--ok)"></span><span class="name">aztecas_europa.json</span><span class="faint">hecho ✓</span></div>
+    </div>
+
+    <div class="card" style="text-align:center;border-style:dashed">
+      <div class="muted" style="font-size:12px">Las escenas aparecerán aquí con su miniatura</div>
+    </div>
+    <div class="note">Estado 2 — inicio + cola (mezcla Flow/Grok)</div>
+  </div>
+</div>
+
+<!-- ============ ESTADO: BLOQUEADO / opciones abiertas ============ -->
+<div class="device">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">F</div>
+      <div><h1>Flow Automator</h1><div class="faint">Tacos · antigua Grecia · 6 escenas</div></div>
+    </div>
+    <div class="row" style="gap:6px">
+      <span class="chip chip-flow"><span class="dot" style="background:var(--flow)"></span>Flow</span>
+      <button class="icon-btn" aria-label="Configuración"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+    </div>
+  </div>
+
+  <div class="scroll">
+    <!-- Hard stop banner -->
+    <div class="hero" style="background:var(--danger-weak);border-color:rgba(229,72,77,.45)">
+      <div class="hero-title" style="color:var(--danger)">⛔ En pausa — actividad inusual</div>
+      <div class="faint">scene_04 falló tras 4 intentos. Reintenta en Flow y reanuda.</div>
+      <div class="row" style="gap:6px;margin-top:2px">
+        <button class="mini" style="border-color:var(--danger);color:var(--danger)">Reanudar</button>
+        <button class="mini">Saltar escena</button>
+      </div>
+    </div>
+
+    <!-- Manual mode EXPANDED -->
+    <div class="card">
+      <div class="between row" style="margin-bottom:10px"><span class="lbl">Modo manual</span><button class="link" style="padding:0">ocultar ▴</button></div>
+      <div class="row" style="gap:8px;margin-bottom:8px">
+        <button class="mini" style="flex:1;padding:8px">1 · Imágenes <span class="tag tag-free" style="margin-left:4px">gratis</span></button>
+        <button class="mini" style="flex:1;padding:8px;border-color:var(--warn);color:var(--warn)">2 · Animar <span class="tag tag-cost" style="margin-left:4px">pts</span></button>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Modelo de video</label><select><option>Omni Flash · audio · 4s</option></select></div>
+        <div class="field"><label>Duración</label><select><option>4s</option></select></div>
+      </div>
+      <div class="estimate"><span class="muted">3 escenas · 1 variación</span><span class="v" style="color:var(--warn)">~21 pts · ~12s</span></div>
+    </div>
+
+    <!-- Voice readiness -->
+    <div class="card">
+      <div class="between row">
+        <div><div style="font-weight:600;font-size:13px">Voz · Fish Audio</div><div class="faint" style="margin-top:2px">Preset "esqueletos" · API key ✓</div></div>
+        <button class="mini">Generar voz</button>
+      </div>
+    </div>
+
+    <div class="sectionhead"><span class="lbl">Escenas</span><span class="faint">3 listas · 1 error</span></div>
+    <div class="scene">
+      <div class="thumb"><img src="https://placehold.co/54x72/2a2438/8b5bfa?text=03" style="width:100%;height:100%;object-fit:cover" alt=""></div>
+      <div class="sbody">
+        <div class="between row"><strong style="font-size:12.5px">scene_03</strong><span class="badge b-done">✓ Listo</span></div>
+        <div class="sact"><button class="mini">Ver clip</button><button class="mini">Re-descargar</button><button class="mini">Reanimar</button></div>
+      </div>
+    </div>
+    <div class="scene" style="border-color:rgba(229,72,77,.4)">
+      <div class="thumb" style="color:var(--danger);border-color:rgba(229,72,77,.4)">⚠</div>
+      <div class="sbody">
+        <div class="between row"><strong style="font-size:12.5px">scene_04</strong><span class="badge b-err">✕ Error</span></div>
+        <div class="errtext">posible infracción — reintenta en Flow</div>
+        <div class="sact"><button class="mini">Reanimar</button><button class="mini">Regenerar img</button></div>
+      </div>
+    </div>
+    <div class="note">Estado 3 — bloqueado + opciones abiertas</div>
+  </div>
+</div>
+
+</body>
+</html>

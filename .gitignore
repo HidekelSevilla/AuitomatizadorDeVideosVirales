@@ -1,0 +1,31 @@
+# --- SECRETO: nunca versionar (contiene la API key de Fish) ---
+secrets.local.json
+
+# Dependencias
+node_modules/
+**/node_modules/
+
+# Medios generados / salidas (pesados, reproducibles)
+remotion-editor/public/
+remotion-editor/out/
+remotion-editor/done/
+remotion-editor/queue/*.lock
+out/
+
+# Binarios de herramientas de IA (pesados; se instalan aparte)
+remotion-editor/tools/realesrgan/*.exe
+remotion-editor/tools/realesrgan/*.bin
+remotion-editor/tools/realesrgan/*.param
+remotion-editor/tools/**/models/
+
+# Temporales / trabajo
+remotion-editor/tools/work/
+**/*.tmp
+failed-tiles-*.json
+
+# Sistema / editor
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/

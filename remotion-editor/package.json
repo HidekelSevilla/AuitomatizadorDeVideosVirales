@@ -1,0 +1,34 @@
+{
+  "name": "remotion-editor",
+  "version": "1.0.0",
+  "description": "Editor automatico de videos con Remotion (separado de la extension Flow)",
+  "private": true,
+  "scripts": {
+    "dev": "remotion studio",
+    "studio": "remotion studio",
+    "render": "remotion render",
+    "still": "remotion still",
+    "upgrade": "remotion upgrade",
+    "smoke": "remotion render SmokeTest out/smoke-test.mp4",
+    "align": "node align/whisper-align.mjs",
+    "inject": "node align/inject-words.mjs",
+    "enhance": "node tools/enhance-clips.mjs"
+  },
+  "dependencies": {
+    "@remotion/captions": "^4.0.477",
+    "@remotion/cli": "4.0.477",
+    "@remotion/google-fonts": "^4.0.477",
+    "@remotion/install-whisper-cpp": "^4.0.477",
+    "@remotion/media-utils": "^4.0.477",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.477",
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
+    "@remotion/bundler": "4.0.477",
+    "@remotion/renderer": "4.0.477",
+    "@types/react": "19.2.0",
+    "typescript": "5.7.3"
+  }
+}

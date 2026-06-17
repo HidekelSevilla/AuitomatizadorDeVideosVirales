@@ -1,0 +1,40 @@
+{
+  "project": {
+    "title": "Test minimo (2 escenas)",
+    "aspect_ratio": "9:16",
+    "fps": 24
+  },
+  "character_bible": {
+    "name": "Mia",
+    "reference_asset": "assets/character_ref.png",
+    "description": "Mujer joven, sudadera amarilla, pelo rizado, gesto alegre."
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "image": {
+        "prompt": "Mia sentada en un cafe junto a la ventana, taza en la mano, luz suave de la manana, plano vertical.",
+        "ingredients": ["character_ref"],
+        "model": "nano_banana"
+      },
+      "animation": {
+        "prompt": "Mia levanta la taza y bebe un sorbo mientras mira por la ventana.",
+        "model": "veo_3_1_fast"
+      },
+      "continuity_from": null
+    },
+    {
+      "id": "scene_02",
+      "image": {
+        "prompt": "Mia deja la taza y sonrie a alguien fuera de cuadro, mismo cafe, misma luz.",
+        "ingredients": ["character_ref", "prev_frame"],
+        "model": "nano_banana"
+      },
+      "animation": {
+        "prompt": "Mia gira la cabeza y saluda con la mano.",
+        "model": "veo_3_1_fast"
+      },
+      "continuity_from": "scene_01"
+    }
+  ]
+}

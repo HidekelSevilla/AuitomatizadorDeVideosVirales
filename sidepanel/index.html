@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flow Scene Automator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Banner de parada dura (captcha / sin creditos). Oculto por defecto. -->
+  <div id="hardStopBanner" class="banner banner-danger hidden" role="alert">
+    <button id="hardStopClose" class="banner-close" title="Cerrar" aria-label="Cerrar">×</button>
+    <strong>Parada requerida</strong>
+    <span id="hardStopMsg"></span>
+    <small>La extension no resuelve esto: actua manualmente en la pestana de Flow.</small>
+  </div>
+
+  <!-- Banner de modo simulacion (dry-run). Visible solo cuando dry-run esta activo. -->
+  <div id="dryRunBanner" class="banner banner-warn hidden" role="status">
+    <strong>Modo simulacion (dry-run)</strong>
+    <small>No toca Flow ni gasta puntos. Desactivalo en Configuracion para correr de verdad.</small>
+  </div>
+
+  <!-- Banner de recuperacion: pausa blanda por fallo de una escena (Reanudar / Saltar / Reintentar). -->
+  <div id="errorBanner" class="banner banner-danger hidden" role="alert">
+    <strong>En pausa por un fallo</strong>
+    <span id="errorBannerMsg"></span>
+    <div class="banner-actions">
+      <button id="btnErrResume" class="btn small">Reanudar</button>
+      <button id="btnErrSkip" class="btn small">Saltar escena</button>
+      <button id="btnErrRetryAll" class="btn small">Reintentar errores</button>
+    </div>
+  </div>
+
+  <!-- Hero de estado en vivo: que pasa AHORA (fase + escena + estado). Imprescindible con el ritmo lento. -->
+  <div id="statusHero" class="status-hero hidden" role="status">
+    <span id="statusDot" class="status-dot"></span>
+    <div class="status-text">
+      <span id="statusTitle" class="status-title">Listo</span>
+      <span id="statusSub" class="status-sub muted"></span>
+    </div>
+  </div>
+
+  <!-- Confirmacion in-app (reemplaza window.confirm, que se ve mal en un side panel). -->
+  <div id="confirmOverlay" class="confirm-overlay hidden" role="dialog" aria-modal="true">
+    <div class="confirm-box">
+      <p id="confirmMsg" class="confirm-msg"></p>
+      <div class="confirm-actions">
+        <button id="confirmNo" class="btn small">Cancelar</button>
+        <button id="confirmYes" class="btn small primary">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <header class="app-header">
+    <div class="app-title">
+      <h1>Flow Automator</h1>
+      <span id="projectTitle" class="muted">Sin proyecto</span>
+    </div>
+    <span id="providerChip" class="provider-chip" title="Proveedor activo (lo define el JSON)">Flow</span>
+    <button id="btnClearAll" class="btn danger small" title="Borrar todo el estado de la extension">Limpiar</button>
+  </header>
+
+  <!-- Carga de entradas -->
+  <section class="card">
+    <h2>Entradas</h2>
+
+    <div id="dropzone" class="dropzone">
+      <span class="dropzone-text">Arrastra el JSON o la imagen del personaje</span>
+      <span class="dropzone-sub">o usa los selectores de abajo</span>
+    </div>
+
+    <div class="field">
+      <label for="jsonInput">JSON del esqueleto</label>
+      <input type="file" id="jsonInput" accept="application/json,.json" />
+      <span id="jsonStatus" class="muted">Sin JSON cargado</span>
+    </div>
+
+    <div class="field">
+      <label for="charInput">Imagen de personaje</label>
+      <input type="file" id="charInput" accept="image/*" />
+      <div class="char-preview">
+        <img id="charThumb" class="char-thumb placeholder" alt="" />
+        <span id="charName" class="muted">Sin imagen</span>
+      </div>
+      <p class="hint-note">Subela una vez a <strong>Caracteres</strong> en Flow para que guarde la identidad; la extension la adjunta a cada escena.</p>
+    </div>
+  </section>
+
+  <!-- Flujo de 2 fases -->
+  <section class="card flow">
+    <h2>Flujo</h2>
+
+    <!-- Autopiloto: encadena todo (proyecto+personajes en Flow -> imagenes -> animacion -> voz). -->
+    <button id="btnRunAll" class="btn primary block" title="Encadena imagenes + animacion + voz de un tiron">▶ Hacer todo (auto)</button>
+    <p class="step-desc">Genera imagenes, anima y crea la voz en una sola corrida. Cuesta puntos (anima) y creditos Fish.</p>
+
+    <!-- Paso 1 -->
+    <div class="step" id="step1">
+      <div class="step-rail"><span class="step-num">1</span></div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-title">Generar imagenes</span>
+          <span class="tag tag-free">gratis</span>
+        </div>
+        <p class="step-desc">Crea la imagen de cada escena con el personaje. No gasta puntos.</p>
+        <button id="btnImages" class="btn primary block">Generar imagenes</button>
+      </div>
+    </div>
+
+    <!-- Tracker de fases en vivo (Imagenes -> Animar -> Voz) -->
+    <div class="phase-tracker" id="phaseTracker">
+      <div class="phase-step" data-phase="images"><div class="phase-num">1</div>Imagenes</div>
+      <div class="phase-line"></div>
+      <div class="phase-step" data-phase="animation"><div class="phase-num">2</div>Animar</div>
+      <div class="phase-line"></div>
+      <div class="phase-step" data-phase="voice"><div class="phase-num">3</div>Voz</div>
+    </div>
+
+    <!-- Paso 2 -->
+    <div class="step" id="step2">
+      <div class="step-rail"><span class="step-num">2</span></div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-title">Animar escenas</span>
+          <span class="tag tag-cost">cuesta puntos</span>
+        </div>
+        <p class="step-desc">Anima cada imagen (no el personaje) con el prompt de su escena.</p>
+
+        <div class="grid">
+          <div class="field">
+            <label for="modelSelect">Modelo de video</label>
+            <select id="modelSelect"></select>
+          </div>
+          <div class="field">
+            <label for="durationSelect">Duracion</label>
+            <select id="durationSelect"></select>
+          </div>
+          <div class="field">
+            <label for="providerSelect">Proveedor</label>
+            <select id="providerSelect">
+              <option value="flow">Google Flow</option>
+              <option value="grok">Grok Imagine</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="estimate" id="costEstimate">
+          <span class="estimate-row"><span>Escenas a animar</span><strong id="estScenes" class="tabular">0</strong></span>
+          <span class="estimate-row"><span>Costo estimado</span><strong id="estCost" class="tabular">— pts</strong></span>
+          <span class="estimate-row"><span>Duracion total</span><strong id="estDuration" class="tabular">~0 s</strong></span>
+        </div>
+
+        <button id="btnAnimate" class="btn block btn-animate">Animar todo</button>
+      </div>
+    </div>
+
+    <!-- Paso 3: voz (Fish Audio). Independiente de Flow. -->
+    <div class="step" id="step3">
+      <div class="step-rail"><span class="step-num">3</span></div>
+      <div class="step-body">
+        <div class="step-head">
+          <span class="step-title">Generar voz (Fish Audio)</span>
+          <span class="tag tag-cost">usa creditos Fish</span>
+        </div>
+        <p class="step-desc">1 mp3 por escena (+ hook) con tu voz de Fish. Configura tu API key y la voz en Configuracion.</p>
+        <div class="audio-actions">
+          <button id="btnAudioTest" class="btn small">Probar 1 audio</button>
+          <button id="btnAudioAll" class="btn block">Generar todos los audios</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controles de cola -->
+    <div class="queue-controls">
+      <button id="btnPause" class="btn small">Pausar</button>
+      <button id="btnResume" class="btn small">Reanudar</button>
+      <button id="btnStop" class="btn danger small">Detener</button>
+      <button id="btnReset" class="btn small">Reiniciar escenas</button>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+      <span id="progressLabel" class="muted tabular">0 / 0</span>
+    </div>
+  </section>
+
+  <!-- Cola automatica: saca JSON de remotion-editor/queue y los hace solos. -->
+  <section class="card">
+    <div class="queue-head">
+      <h2>Cola automatica</h2>
+      <label class="toggle toggle-inline">
+        <input type="checkbox" id="toggleAutoQueue" />
+        <span class="sw-label">Activa</span>
+      </label>
+    </div>
+    <p class="step-desc">Toma cada JSON de <code>remotion-editor/queue/</code> y corre todo (imagenes → animar → voz). Usa el proveedor que declara cada JSON.</p>
+    <ul id="queueList" class="queue-list"></ul>
+    <button id="btnQueueRefresh" class="btn small">Actualizar lista</button>
+  </section>
+
+  <!-- Lista de escenas -->
+  <section class="card">
+    <h2>Escenas</h2>
+    <ul id="sceneList" class="scene-list"></ul>
+  </section>
+
+  <!-- Configuracion avanzada (colapsable) -->
+  <details class="card config-details">
+    <summary>Configuracion avanzada</summary>
+    <div class="toggles">
+      <label class="toggle">
+        <input type="checkbox" id="toggleDryRun" />
+        <span>Dry-run (simular sin tocar Flow)</span>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="toggleInspector" />
+        <span>Inspector de DOM</span>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="toggleParallel" />
+        <span>Animar en paralelo (todas a la vez) <em class="risk">riesgoso</em></span>
+      </label>
+    </div>
+    <div class="grid">
+      <div class="field">
+        <label for="cfgResolution">Resolucion</label>
+        <select id="cfgResolution">
+          <option value="720p">720p</option>
+          <option value="1080p">1080p</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="cfgConcurrency">Concurrencia</label>
+        <input type="number" id="cfgConcurrency" min="1" max="2" step="1" />
+      </div>
+      <div class="field">
+        <label for="cfgDelayMin">Delay min (ms)</label>
+        <input type="number" id="cfgDelayMin" min="0" step="100" />
+      </div>
+      <div class="field">
+        <label for="cfgDelayMax">Delay max (ms)</label>
+        <input type="number" id="cfgDelayMax" min="0" step="100" />
+      </div>
+      <div class="field">
+        <label for="cfgMaxRetries">Max reintentos</label>
+        <input type="number" id="cfgMaxRetries" min="0" step="1" />
+      </div>
+      <div class="field">
+        <label for="cfgGenerationCount">Variaciones</label>
+        <input type="number" id="cfgGenerationCount" min="1" max="4" step="1" value="1" />
+      </div>
+    </div>
+
+    <h3 class="cfg-subhead">Ritmo · anti-deteccion</h3>
+    <label class="toggle">
+      <input type="checkbox" id="toggleHumanTyping" />
+      <span>Tipeo humano (escribe el prompt por fragmentos)</span>
+    </label>
+    <div class="grid">
+      <div class="field">
+        <label for="cfgInterMin">Entre escenas min (ms)</label>
+        <input type="number" id="cfgInterMin" min="0" step="1000" />
+      </div>
+      <div class="field">
+        <label for="cfgInterMax">Entre escenas max (ms)</label>
+        <input type="number" id="cfgInterMax" min="0" step="1000" />
+      </div>
+      <div class="field">
+        <label for="cfgMaxPerHour">Max generaciones/hora</label>
+        <input type="number" id="cfgMaxPerHour" min="0" step="1" />
+      </div>
+      <div class="field">
+        <label for="cfgLongBreakEvery">Descanso cada N escenas</label>
+        <input type="number" id="cfgLongBreakEvery" min="0" step="1" />
+      </div>
+    </div>
+
+    <h3 class="cfg-subhead">Voz · Fish Audio</h3>
+    <div class="field">
+      <label for="fishApiKey">API key de Fish</label>
+      <input type="password" id="fishApiKey" placeholder="pega tu API key de fish.audio" autocomplete="off" />
+      <p class="hint-note">Se guarda local en tu navegador. La extension llama a la API de Fish directamente.</p>
+    </div>
+    <div class="grid">
+      <div class="field">
+        <label for="fishVoiceId">Voz (reference_id)</label>
+        <input type="text" id="fishVoiceId" placeholder="vacio = usa la voz del preset" autocomplete="off" />
+        <span id="voiceHint" class="muted"></span>
+      </div>
+      <div class="field">
+        <label for="fishModel">Modelo TTS</label>
+        <select id="fishModel">
+          <option value="s1">s1</option>
+          <option value="s2-pro">s2-pro</option>
+        </select>
+      </div>
+    </div>
+  </details>
+
+  <!-- Log en vivo (colapsable, abierto por defecto) -->
+  <details class="card log-details" open>
+    <summary>Log</summary>
+    <div class="log-toolbar">
+      <button class="log-filter on" data-filter="all">Todo</button>
+      <button class="log-filter" data-filter="warn">Warn</button>
+      <button class="log-filter" data-filter="error">Error</button>
+      <span class="log-spacer"></span>
+      <button id="btnLogCopy" class="log-filter">Copiar</button>
+    </div>
+    <div id="log" class="log filter-all"></div>
+  </details>
+
+  <script type="module" src="panel.js"></script>
+</body>
+</html>

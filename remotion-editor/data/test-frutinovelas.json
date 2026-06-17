@@ -1,0 +1,63 @@
+{
+  "project": {
+    "title": "Demo frutinovelas",
+    "slug": "test",
+    "preset": "frutinovelas",
+    "aspect_ratio": "9:16",
+    "fps": 24
+  },
+  "audio": {
+    "music_file": "music/tenso.mp3",
+    "music_volume": 0.18,
+    "clip_volume": 0.2,
+    "transition_sfx": "whoosh.mp3",
+    "transition_sfx_volume": 0.6
+  },
+  "hook": {
+    "duration_s": 4,
+    "voiceover": "Que pasaria si solo tomaras bebidas energeticas siempre?",
+    "montage_sources": [
+      { "scene_id": "scene_02", "clip_in_s": 0.8, "clip_out_s": 1.5 },
+      { "scene_id": "scene_04", "clip_in_s": 1.0, "clip_out_s": 1.8 },
+      { "scene_id": "scene_05", "clip_in_s": 0.5, "clip_out_s": 1.2 },
+      { "scene_id": "scene_06", "clip_in_s": 1.0, "clip_out_s": 1.7 }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "time_label": "Hora 1",
+      "captions": { "text": "Energia fria y explosiva", "highlight_words": ["explosiva"] }
+    },
+    {
+      "id": "scene_02",
+      "time_label": "Hora 3",
+      "captions": { "text": "Tu cerebro cree que encontro combustible infinito", "highlight_words": ["combustible infinito"] }
+    },
+    {
+      "id": "scene_03",
+      "time_label": "Dia 1",
+      "captions": { "text": "Ahora quieres otra lata", "highlight_words": ["otra lata"] }
+    },
+    {
+      "id": "scene_04",
+      "time_label": "Dia 3",
+      "captions": { "text": "Ya no es energia, es ansiedad", "highlight_words": ["ansiedad"] }
+    },
+    {
+      "id": "scene_05",
+      "time_label": "Semana 1",
+      "captions": { "text": "Agotado y sobreestimulado", "highlight_words": ["agotado", "sobreestimulado"] }
+    },
+    {
+      "id": "scene_06",
+      "time_label": "Mes 1",
+      "captions": { "text": "Dormir ya no repara igual", "highlight_words": ["dormir", "repara"] }
+    }
+  ],
+  "capcut_export": {
+    "clip_order": ["scene_01", "scene_02", "scene_03", "scene_04", "scene_05", "scene_06"],
+    "label_card_duration_s": 0.6,
+    "caption_style": { "size": 96 }
+  }
+}

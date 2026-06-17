@@ -1,0 +1,279 @@
+{
+  "project": {
+    "title": "Que pasaria si solo tomaras bebidas energeticas siempre",
+    "aspect_ratio": "9:16",
+    "fps": 24,
+    "default_clip_duration_s": 4,
+    "language": "es-MX",
+    "target_scene_count": 6,
+    "estimated_total_duration_s": 28
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "flow",
+      "input_field": "scenes[].visual.image_prompt"
+    },
+    "animation": {
+      "tool": "flow_or_video_generator",
+      "input_field": "scenes[].visual.animation_prompt",
+      "duration_per_clip_s": 4
+    },
+    "tts": {
+      "tool": "fish_audio",
+      "input_mode": "copy_scene_voiceovers_in_order",
+      "input_field": "scenes[].voiceover.text",
+      "must_include_time_labels": true
+    },
+    "editing": {
+      "tool": "capcut",
+      "clip_order_field": "capcut_export.clip_order",
+      "captions_field": "scenes[].captions",
+      "edit_notes_field": "scenes[].edit_notes"
+    }
+  },
+  "style_guide": {
+    "visual_style": "3D cartoon cinematografico viral, vertical 9:16, tono dramatico pero no terrorifico, acabado pulido, alto contraste, expresiones exageradas, sin texto en imagen",
+    "continuity_rule": "Mantener consistencia de personajes y estilo. El entorno puede cambiar si la historia lo justifica. Si el cambio de escena es menor, usar la escena anterior como referencia visual fuerte.",
+    "prompt_quality_rule": "Cada prompt debe incluir sujeto, accion, entorno, composicion, iluminacion, emocion y continuidad narrativa."
+  },
+  "characters": {
+    "huesito": {
+      "display_name": "Huesito",
+      "reference_asset": "assets/characters/huesito_ref.png",
+      "default_role": "primary",
+      "description": "Esqueleto antropomorfo simpatico y expresivo, ojos grandes tipo cartoon, huesos blancos limpios, cuerpo delgado, gestos dramaticos, tono viral y apto para todo publico."
+    }
+  },
+  "environments": {
+    "kitchen_night": {
+      "display_name": "Cocina nocturna",
+      "description": "Cocina moderna pequena, mesa central, refrigerador al fondo, luces frias mezcladas con reflejos neon, ambiente ideal para escenas de bebidas energeticas."
+    },
+    "mental_energy_space": {
+      "display_name": "Espacio mental de energia",
+      "description": "Fondo abstracto con rayos, burbujas, colores neon y sensacion de sobreestimulacion. Se usa solo para representar lo que ocurre dentro del cuerpo o la mente."
+    }
+  },
+  "hook": {
+    "type": "montage_from_generated_clips",
+    "duration_s": 4,
+    "voiceover": "¿Qué pasaría si solo tomaras bebidas energéticas siempre?",
+    "montage_sources": [
+      { "scene_id": "scene_02", "clip_in_s": 0.8, "clip_out_s": 1.5 },
+      { "scene_id": "scene_04", "clip_in_s": 1.0, "clip_out_s": 1.8 },
+      { "scene_id": "scene_05", "clip_in_s": 0.5, "clip_out_s": 1.2 },
+      { "scene_id": "scene_06", "clip_in_s": 1.0, "clip_out_s": 1.7 }
+    ],
+    "edit_notes": "Crear hook con cortes rapidos de escenas ya generadas. No generar imagen nueva para el hook. Usar subtitulo grande con la pregunta."
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "time_label": "Hora 1",
+      "location_id": "kitchen_night",
+      "change_level": "initial",
+      "timeline": { "clip_duration_s": 4, "main_start_s": 0, "main_end_s": 4 },
+      "cast": [
+        { "character_id": "huesito", "role": "primary", "emotion": "excited", "outfit_variant": "default" }
+      ],
+      "references": {
+        "characters": [
+          { "character_id": "huesito", "priority": 1, "use_for": ["identity", "face", "body_shape", "style"] }
+        ],
+        "scenes": []
+      },
+      "voiceover": {
+        "text": "Hora uno. Al principio se siente perfecto: energia fria, dulce y explosiva.",
+        "tts_notes": "Leer con energia y curiosidad."
+      },
+      "visual": {
+        "image_prompt": "Primer plano cinematografico de Huesito abriendo una lata helada de bebida energetica sobre una mesa de cocina nocturna, gotas de condensacion sobre el metal, reflejos neon azules y amarillos, ojos enormes de emocion, sonrisa exagerada, composicion dinamica, ambiente atractivo y peligroso a la vez, estilo 3D cartoon cinematografico viral, vertical 9:16, sin texto en imagen.",
+        "animation_prompt": "Push in suave hacia la lata mientras Huesito la abre y bebe con emocion exagerada; burbujas brillantes suben alrededor de la lata."
+      },
+      "captions": {
+        "text": "Hora 1: energia fria y explosiva",
+        "highlight_words": ["Hora 1", "energia", "explosiva"]
+      },
+      "edit_notes": "Agregar sonido de lata abriendose. Zoom leve en la palabra 'explosiva'."
+    },
+    {
+      "id": "scene_02",
+      "time_label": "Hora 3",
+      "location_id": "kitchen_night",
+      "change_level": "minor",
+      "timeline": { "clip_duration_s": 4, "main_start_s": 4, "main_end_s": 8 },
+      "cast": [
+        { "character_id": "huesito", "role": "primary", "emotion": "hyperactive", "outfit_variant": "default" }
+      ],
+      "references": {
+        "characters": [
+          { "character_id": "huesito", "priority": 1, "use_for": ["identity", "face", "body_shape", "style"] }
+        ],
+        "scenes": [
+          { "scene_id": "scene_01", "priority": 2, "use_for": ["environment", "lighting", "prop_layout"], "strength": "strong", "frame_scope": "full" }
+        ]
+      },
+      "voiceover": {
+        "text": "Hora tres. Tu cerebro cree que encontro combustible infinito.",
+        "tts_notes": "Sonar sorprendido, como revelacion."
+      },
+      "visual": {
+        "image_prompt": "Plano medio de Huesito en la cocina nocturna, ahora mas activo y electrico, varias latas abiertas sobre la mesa, ojos muy abiertos, sonrisa nerviosa, dedos tamborileando, pequenas chispas cartoon alrededor de su cabeza, iluminacion neon mas intensa, sensacion de hiperestimulacion, estilo 3D cartoon cinematografico viral, vertical 9:16, continuidad visual con la escena anterior, sin texto.",
+        "animation_prompt": "Dolly out ligero mientras Huesito se mueve demasiado rapido, tamborilea los dedos y mira de un lado a otro con energia excesiva."
+      },
+      "captions": {
+        "text": "Tu cerebro cree que encontro combustible infinito",
+        "highlight_words": ["cerebro", "combustible infinito"]
+      },
+      "edit_notes": "Agregar efecto electrico suave. Cortes rapidos al ritmo de la musica."
+    },
+    {
+      "id": "scene_03",
+      "time_label": "Día 1",
+      "location_id": "kitchen_night",
+      "change_level": "minor",
+      "timeline": { "clip_duration_s": 4, "main_start_s": 8, "main_end_s": 12 },
+      "cast": [
+        { "character_id": "huesito", "role": "primary", "emotion": "tired_but_craving", "outfit_variant": "default" }
+      ],
+      "references": {
+        "characters": [
+          { "character_id": "huesito", "priority": 1, "use_for": ["identity", "face", "body_shape", "style"] }
+        ],
+        "scenes": [
+          { "scene_id": "scene_02", "priority": 2, "use_for": ["environment", "lighting", "prop_layout"], "strength": "strong", "frame_scope": "full" }
+        ]
+      },
+      "voiceover": {
+        "text": "Día uno. El subidon cae, pero ahora quieres otra lata.",
+        "tts_notes": "Bajar energia al final."
+      },
+      "visual": {
+        "image_prompt": "Huesito sentado en la misma cocina nocturna, rodeado de mas latas vacias, una lata nueva en primer plano como tentacion, expresion cansada pero ansiosa, hombros caidos, luz mas fria, sombras largas sobre la mesa, ambiente de bajon despues de la euforia, estilo 3D cartoon cinematografico pulido, vertical 9:16, continuidad natural con la escena anterior, sin texto.",
+        "animation_prompt": "Camara lenta acercandose a la lata nueva mientras Huesito la mira con cansancio y dependencia."
+      },
+      "captions": {
+        "text": "Día 1: quieres otra lata",
+        "highlight_words": ["Día 1", "otra lata"]
+      },
+      "edit_notes": "Pausa breve antes de 'otra lata'. Subtitulo grande en 'otra lata'."
+    },
+    {
+      "id": "scene_04",
+      "time_label": "Día 3",
+      "location_id": "kitchen_night",
+      "change_level": "moderate",
+      "timeline": { "clip_duration_s": 4, "main_start_s": 12, "main_end_s": 16 },
+      "cast": [
+        { "character_id": "huesito", "role": "primary", "emotion": "anxious", "outfit_variant": "default" }
+      ],
+      "references": {
+        "characters": [
+          { "character_id": "huesito", "priority": 1, "use_for": ["identity", "face", "body_shape", "style"] }
+        ],
+        "scenes": [
+          { "scene_id": "scene_03", "priority": 2, "use_for": ["environment", "lighting", "prop_layout"], "strength": "medium", "frame_scope": "full" }
+        ]
+      },
+      "voiceover": {
+        "text": "Día tres. Ya no es energia: es ansiedad con sabor dulce.",
+        "tts_notes": "Tono mas oscuro y serio."
+      },
+      "visual": {
+        "image_prompt": "Plano medio corto de Huesito de pie junto a la mesa, sujetandose el pecho con una mano osea, mandibula tensa, pequenas gotas de sudor cartoon sobre el craneo, latas vacias apiladas en el fondo, luz azul fria invadiendo la cocina, atmosfera de ansiedad y sobreestimulacion, estilo 3D cartoon cinematografico viral, vertical 9:16, sin texto.",
+        "animation_prompt": "Ligera vibracion de camara mientras Huesito tiembla, respira rapido y un pulso visual suave aparece en el pecho."
+      },
+      "captions": {
+        "text": "Día 3: ansiedad con sabor dulce",
+        "highlight_words": ["Día 3", "ansiedad"]
+      },
+      "edit_notes": "Meter latido de corazon. Shake digital muy leve."
+    },
+    {
+      "id": "scene_05",
+      "time_label": "Semana 1",
+      "location_id": "mental_energy_space",
+      "change_level": "major",
+      "timeline": { "clip_duration_s": 4, "main_start_s": 16, "main_end_s": 20 },
+      "cast": [
+        { "character_id": "huesito", "role": "primary", "emotion": "overstimulated", "outfit_variant": "default" }
+      ],
+      "references": {
+        "characters": [
+          { "character_id": "huesito", "priority": 1, "use_for": ["identity", "face", "body_shape", "style"] }
+        ],
+        "scenes": [
+          { "scene_id": "scene_04", "priority": 2, "use_for": ["character_pose", "emotional_continuity"], "strength": "light", "frame_scope": "subject_only" }
+        ]
+      },
+      "voiceover": {
+        "text": "Semana uno. No estas despierto: estas agotado y sobreestimulado.",
+        "tts_notes": "Marcar contraste entre despierto y agotado."
+      },
+      "visual": {
+        "image_prompt": "Huesito flotando en un espacio mental abstracto de energia, rodeado de rayos neon, burbujas de cafeina, latas girando y una bateria cartoon casi vacia, expresion agotada con ojos abiertos de mas, composicion surrealista pero clara, colores electricos, estilo 3D cartoon cinematografico viral, vertical 9:16, sin texto.",
+        "animation_prompt": "Camara orbitando lentamente mientras las latas y rayos giran alrededor de Huesito, mostrando caos mental y agotamiento."
+      },
+      "captions": {
+        "text": "Semana 1: agotado y sobreestimulado",
+        "highlight_words": ["Semana 1", "agotado", "sobreestimulado"]
+      },
+      "edit_notes": "Usar glitch suave y sonido electrico. Esta escena cambia de lugar por razon narrativa: representa la mente."
+    },
+    {
+      "id": "scene_06",
+      "time_label": "Mes 1",
+      "location_id": "kitchen_night",
+      "change_level": "major_return",
+      "timeline": { "clip_duration_s": 4, "main_start_s": 20, "main_end_s": 24 },
+      "cast": [
+        { "character_id": "huesito", "role": "primary", "emotion": "weak", "outfit_variant": "default" }
+      ],
+      "references": {
+        "characters": [
+          { "character_id": "huesito", "priority": 1, "use_for": ["identity", "face", "body_shape", "style"] }
+        ],
+        "scenes": [
+          { "scene_id": "scene_04", "priority": 2, "use_for": ["environment", "prop_layout", "lighting"], "strength": "medium", "frame_scope": "full" }
+        ]
+      },
+      "voiceover": {
+        "text": "Mes uno. Tu energia natural baja, y dormir ya no repara igual.",
+        "tts_notes": "Cerrar con tono serio."
+      },
+      "visual": {
+        "image_prompt": "Regreso a la cocina nocturna, ahora mas desordenada y fria, mesa cubierta de latas vacias, Huesito encorvado junto a una silla, una mano en el pecho y otra apoyada en la mesa, expresion debil y cansada, luz dura desde arriba, ambiente de factura acumulada, estilo 3D cartoon cinematografico viral, vertical 9:16, continuidad con la cocina anterior, sin texto.",
+        "animation_prompt": "Push in lento hacia Huesito mientras intenta ponerse de pie con dificultad y las latas vacias tiemblan ligeramente sobre la mesa."
+      },
+      "captions": {
+        "text": "Mes 1: dormir ya no repara igual",
+        "highlight_words": ["Mes 1", "dormir", "repara"]
+      },
+      "edit_notes": "Bajar musica. Dejar una micro pausa al final antes del cierre."
+    }
+  ],
+  "tts_export": {
+    "join_with": "\n",
+    "full_script": [
+      "Hora uno. Al principio se siente perfecto: energia fria, dulce y explosiva.",
+      "Hora tres. Tu cerebro cree que encontro combustible infinito.",
+      "Día uno. El subidon cae, pero ahora quieres otra lata.",
+      "Día tres. Ya no es energia: es ansiedad con sabor dulce.",
+      "Semana uno. No estas despierto: estas agotado y sobreestimulado.",
+      "Mes uno. Tu energia natural baja, y dormir ya no repara igual."
+    ]
+  },
+  "capcut_export": {
+    "main_timeline_starts_after_hook": true,
+    "hook_duration_s": 4,
+    "clip_order": ["scene_01", "scene_02", "scene_03", "scene_04", "scene_05", "scene_06"],
+    "caption_style": {
+      "font": "Montserrat ExtraBold",
+      "size": 72,
+      "position": "center_lower",
+      "style": "subtitulos grandes con palabras clave resaltadas"
+    },
+    "music_notes": "Musica tensa, moderna y viral, volumen bajo debajo de la voz.",
+    "sfx_notes": "Usar lata abriendose, whooshes, latidos suaves, glitch ligero y golpes de impacto en cambios de tiempo."
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "Flow Scene Automator",
+  "version": "0.1.0",
+  "description": "Automatiza Google Flow para generar clips escena por escena desde un JSON (imagen Nano Banana + animacion Veo + descarga + ultimo frame).",
+  "permissions": [
+    "scripting",
+    "downloads",
+    "storage",
+    "sidePanel",
+    "activeTab",
+    "offscreen",
+    "debugger",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://labs.google/*",
+    "https://grok.com/*",
+    "https://assets.grok.com/*",
+    "https://api.fish.audio/*",
+    "http://localhost:35729/*"
+  ],
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "side_panel": {
+    "default_path": "sidepanel/index.html"
+  },
+  "action": {
+    "default_title": "Flow Scene Automator (abrir panel)"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://labs.google/*"],
+      "js": ["content/selectors.config.js", "content/flow-driver.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["offscreen/frame-extractor.html"],
+      "matches": ["https://labs.google/*"]
+    }
+  ]
+}

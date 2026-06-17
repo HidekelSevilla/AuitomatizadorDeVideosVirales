@@ -1,0 +1,97 @@
+{
+  "schema_version": "qpasaria_pipeline_v2_example",
+  "project": {
+    "title": "PRUEBA GROK - Tacos conquistan el mundo (3 escenas)",
+    "preset": "esqueletos",
+    "slug": "tacos_mundo_grok_test",
+    "language": "es-MX",
+    "aspect_ratio": "9:16",
+    "fps": 24,
+    "default_clip_duration_s": 4,
+    "tone": "POV, epico, comico, absurdo, orgullo gastronomico, viral, cinematografico, MUY expresivo y dinamico"
+  },
+  "pipeline": {
+    "image_generation": { "tool": "grok", "input_field": "scenes[].visual.image_prompt" },
+    "animation": { "tool": "grok", "input_field": "scenes[].visual.animation_prompt", "duration_per_clip_s": 4 },
+    "tts": { "tool": "fish_audio", "input_field": "scenes[].voiceover.text" },
+    "editing": { "tool": "capcut", "clip_order_field": "capcut_export.clip_order" }
+  },
+  "characters": {
+    "huesito": {
+      "display_name": "Huesito",
+      "reference_asset": "assets/characters/huesito_ref.png",
+      "default_role": "primary",
+      "description": "Esqueleto antropomorfo alto y esbelto, semi-realista y cinematografico. Hueso color marfil envejecido con textura natural. Craneo y dientes creibles, PERO con grandes ojos redondos cafe muy expresivos y vivos. MUY expresivo, carismatico, comico y epico como un general del sabor. Semi-realista (no Pixar, no caricatura)."
+    }
+  },
+  "hook": {
+    "type": "montage_from_generated_clips",
+    "duration_s": 4,
+    "voiceover": "¿Qué pasaría si los tacos conquistaran el mundo entero?",
+    "caption": "La conquista del taco",
+    "montage_sources": [
+      { "scene_id": "scene_01", "clip_in_s": 0.8, "clip_out_s": 1.5 },
+      { "scene_id": "scene_02", "clip_in_s": 0.9, "clip_out_s": 1.6 },
+      { "scene_id": "scene_03", "clip_in_s": 0.6, "clip_out_s": 1.4 }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "time_label": "El plan",
+      "location_id": "cocina_cuartel_general",
+      "change_level": "initial",
+      "timeline": { "clip_duration_s": 4, "main_start_s": 0, "main_end_s": 4 },
+      "cast": [ { "character_id": "huesito", "role": "primary", "emotion": "confident", "outfit_variant": "general_taquero" } ],
+      "references": { "characters": [ { "character_id": "huesito", "priority": 1, "use_for": ["identity","face","eyes","body_shape","style"] } ], "scenes": [] },
+      "voiceover": { "text": "El plan. En tu cocina-cuartel general trazas la conquista del mundo entero… con un ejército de taqueros.", "tts_notes": "POV en segunda persona, tono epico-comico de general carismatico, ritmo agil." },
+      "visual": {
+        "image_prompt": "Plano contrapicado epico-comico de Huesito, esqueleto semi-realista de hueso marfil texturizado con grandes ojos cafe MUY expresivos en sonrisa confiada de general, con mandil de taquero, banda militar de chiles y gorra de general con un trompo en miniatura, de pie frente a un enorme mapa mundial sobre una mesa de cocina industrial, senalando con un cuchillo de taquero. Detras, un ejercito de taqueros humanos fotorrealistas con mandiles y carritos en formacion. Vapor, luz dramatica de cuartel. Lente 24mm contrapicado, 8K, render hiperrealista para los taqueros, Huesito muy expresivo unico personaje semi-estilizado. Vertical 9:16, sin texto.",
+        "animation_prompt": "Contrapicado que se acerca a Huesito senalando el mapa mundial con el cuchillo mientras el ejercito de taqueros aguarda en formacion. Huesito MUY expresivo: ojos confiados, sonrisa de general, gesto de mando comico. Mantener a Huesito como esqueleto semi-realista de hueso marfil texturizado, alto y esbelto. Taqueros realistas. Movimiento de camara epico y dinamico."
+      },
+      "captions": { "text": "Un ejército de taqueros", "highlight_words": ["ejército"] },
+      "edit_notes": "Escena grande: cartel 'El plan'."
+    },
+    {
+      "id": "scene_02",
+      "location_id": "plaza_mexico",
+      "change_level": "minor",
+      "timeline": { "clip_duration_s": 4, "main_start_s": 4, "main_end_s": 8 },
+      "cast": [ { "character_id": "huesito", "role": "primary", "emotion": "amused", "outfit_variant": "general_taquero" } ],
+      "references": { "characters": [ { "character_id": "huesito", "priority": 1, "use_for": ["identity","face","eyes","body_shape","style"] } ], "scenes": [ { "scene_id": "scene_01", "priority": 2, "use_for": ["style","character_consistency"], "strength": "medium" } ] },
+      "voiceover": { "text": "Lanzas el primer puesto y la fila le da la vuelta a la manzana en minutos.", "tts_notes": "Tono comico-epico, ritmo agil." },
+      "visual": {
+        "image_prompt": "Una plaza de Mexico llena de gente humana fotorrealista formando una fila enorme que da la vuelta a la manzana hacia el primer puesto de tacos, trompos al pastor girando y humeando. Huesito, esqueleto semi-realista de hueso marfil texturizado con grandes ojos cafe MUY expresivos divertidos y gran sonrisa, con su look de general taquero, atendiendo con energia y guinando un ojo a la camara. Luz dorada de tarde, ambiente festivo. Lente 28mm, 8K, render hiperrealista para la multitud, Huesito muy expresivo unico personaje semi-estilizado. Vertical 9:16, sin texto.",
+        "animation_prompt": "Drone que revela la fila gigante dando la vuelta a la manzana hacia el puesto de Huesito atendiendo con energia. Huesito MUY expresivo: ojos divertidos, gran sonrisa, guino comico. Mantener a Huesito como esqueleto semi-realista de hueso marfil texturizado, alto y esbelto. Multitud realista festiva. Movimiento de camara aereo y dinamico."
+      },
+      "captions": { "text": "La fila da la vuelta", "highlight_words": ["fila"] }
+    },
+    {
+      "id": "scene_03",
+      "time_label": "América",
+      "location_id": "mapa_america",
+      "change_level": "major",
+      "timeline": { "clip_duration_s": 4, "main_start_s": 8, "main_end_s": 12 },
+      "cast": [ { "character_id": "huesito", "role": "primary", "emotion": "triumphant", "outfit_variant": "general_taquero" } ],
+      "references": { "characters": [ { "character_id": "huesito", "priority": 1, "use_for": ["identity","face","eyes","body_shape","style"] } ], "scenes": [ { "scene_id": "scene_02", "priority": 2, "use_for": ["style","character_consistency"], "strength": "medium" } ] },
+      "voiceover": { "text": "América. En semanas, todo el continente cae rendido ante el taco, de Canadá hasta Argentina.", "tts_notes": "Tono epico de montaje, ritmo medio, sensacion de conquista." },
+      "visual": {
+        "image_prompt": "Plano de un mapa mundial gigante y luminoso tipo sala de guerra donde el continente americano completo se va pintando de color taco (rojo-verde) con pequenos iconos de trompos al pastor encendiendose de Canada a Argentina. Huesito, esqueleto semi-realista de hueso marfil texturizado con grandes ojos cafe MUY expresivos triunfantes y mandibula en gran sonrisa, con look de general taquero, senalando el mapa con orgullo mientras se ilumina. Luz dramatica azul de sala de guerra contrastando con el brillo calido del mapa. Lente 35mm, 8K, render hiperrealista, Huesito muy expresivo unico personaje semi-estilizado. Vertical 9:16, sin texto.",
+        "animation_prompt": "Camara que recorre el mapa mientras America se pinta de color taco con iconos de trompos encendiendose, y Huesito senala triunfante. Huesito MUY expresivo: ojos triunfantes, gran sonrisa, gesto de victoria. Mantener a Huesito como esqueleto semi-realista de hueso marfil texturizado, alto y esbelto. Mapa animado luminoso. Movimiento de camara dinamico sobre el mapa."
+      },
+      "captions": { "text": "Todo el continente cae", "highlight_words": ["continente"] },
+      "edit_notes": "Escena grande: cartel 'América'."
+    }
+  ],
+  "capcut_export": {
+    "main_timeline_starts_after_hook": true,
+    "hook_duration_s": 4,
+    "clip_duration_s": 4,
+    "clip_order": [ "scene_01", "scene_02", "scene_03" ],
+    "title_cards": [
+      { "scene_id": "scene_01", "text": "El plan" },
+      { "scene_id": "scene_03", "text": "América" }
+    ],
+    "caption_style": { "font": "Montserrat ExtraBold", "size": 72, "position": "center_lower" }
+  }
+}

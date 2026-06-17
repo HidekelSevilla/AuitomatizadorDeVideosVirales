@@ -1,0 +1,111 @@
+{
+  "project": {
+    "title": "Que pasaria si... (mock)",
+    "aspect_ratio": "9:16",
+    "fps": 24
+  },
+  "character_bible": {
+    "name": "Leo",
+    "reference_asset": "assets/character_ref.png",
+    "description": "Hombre joven, chaqueta roja, pelo oscuro despeinado, mirada curiosa."
+  },
+  "hook": {
+    "_comment": "IGNORADO por la extension. Lo arma una etapa posterior con FFmpeg.",
+    "text": "Que pasaria si manana desaparece internet?",
+    "duration_s": 2.5
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "image": {
+        "prompt": "Leo de pie en una calle de ciudad al amanecer, mirando su telefono con expresion confundida, luz dorada, estilo cinematografico vertical.",
+        "ingredients": ["character_ref"],
+        "model": "nano_banana"
+      },
+      "animation": {
+        "prompt": "Camara empuja lentamente hacia Leo mientras baja el telefono y mira al horizonte.",
+        "model": "veo_3_1_fast"
+      },
+      "continuity_from": null
+    },
+    {
+      "id": "scene_02",
+      "image": {
+        "prompt": "Leo camina por la misma calle, ahora las pantallas y carteles digitales estan apagados y la gente confundida alrededor.",
+        "ingredients": ["character_ref", "prev_frame"],
+        "model": "nano_banana"
+      },
+      "animation": {
+        "prompt": "Travelling lateral siguiendo a Leo mientras avanza entre la multitud detenida.",
+        "model": "veo_3_1_fast"
+      },
+      "continuity_from": "scene_01"
+    },
+    {
+      "id": "scene_03",
+      "image": {
+        "prompt": "Leo se detiene frente a un cajero automatico oscuro y sin energia, reflejo de la ciudad apagada en el vidrio.",
+        "ingredients": ["character_ref", "prev_frame"],
+        "model": "nano_banana"
+      },
+      "animation": {
+        "prompt": "Plano fijo, Leo toca la pantalla muerta del cajero y retira la mano lentamente.",
+        "model": "veo_3_1_fast"
+      },
+      "continuity_from": "scene_02"
+    },
+    {
+      "id": "scene_04",
+      "image": {
+        "prompt": "Leo mira al cielo donde no hay aviones ni drones, nubes grises, sensacion de silencio total.",
+        "ingredients": ["character_ref", "prev_frame"],
+        "model": "nano_banana"
+      },
+      "animation": {
+        "prompt": "Tilt up desde el rostro de Leo hacia el cielo vacio.",
+        "model": "veo_3_1_fast"
+      },
+      "continuity_from": "scene_03"
+    },
+    {
+      "id": "scene_05",
+      "image": {
+        "prompt": "Leo entra a una plaza donde la gente empieza a hablar entre si y a usar mapas de papel, ambiente calido y humano.",
+        "ingredients": ["character_ref", "prev_frame"],
+        "model": "nano_banana"
+      },
+      "animation": {
+        "prompt": "Camara orbita suavemente alrededor de Leo mientras sonrie al ver a la gente reconectando.",
+        "model": "veo_3_1_fast"
+      },
+      "continuity_from": "scene_04"
+    },
+    {
+      "id": "scene_06",
+      "image": {
+        "prompt": "Primer plano de Leo al atardecer, expresion serena, la ciudad detras con luces de velas en las ventanas.",
+        "ingredients": ["character_ref", "prev_frame"],
+        "model": "nano_banana"
+      },
+      "animation": {
+        "prompt": "Push in final lento al rostro de Leo que mira a camara antes de fundir a negro.",
+        "model": "veo_3_1_fast"
+      },
+      "continuity_from": "scene_05"
+    }
+  ],
+  "narration": {
+    "_comment": "IGNORADO por la extension. Lo genera ElevenLabs en otra etapa.",
+    "voice": "es_male_warm",
+    "lines": ["Que pasaria si manana desaparece internet?", "Al principio, el caos."]
+  },
+  "caption_style": {
+    "_comment": "IGNORADO por la extension.",
+    "font": "Montserrat",
+    "size": 72
+  },
+  "assembly": {
+    "_comment": "IGNORADO por la extension. FFmpeg en otra etapa.",
+    "order": ["hook", "scene_01", "scene_02", "scene_03", "scene_04", "scene_05", "scene_06"]
+  }
+}
