@@ -118,6 +118,16 @@ const server = http.createServer((req, res) => {
       }
       fs.mkdirSync(path.dirname(dest), { recursive: true });
       fs.copyFileSync(from, dest);
+      // Integridad: si el archivo movido es sospechosamente pequeno (truncado/corrupto), lo descartamos
+      // y NO borramos el origen (queda en Descargas para reintentar) -> savedOk=false aguas arriba.
+      if (!fileOk(dest)) {
+        const sz = (() => { try { return fs.statSync(dest).size; } catch { return 0; } })();
+        try { fs.rmSync(dest, { force: true }); } catch { /* noop */ }
+        res.writeHead(422, { "content-type": "text/plain" });
+        res.end("archivo demasiado pequeno (posible corrupto/incompleto)");
+        log(`RECHAZADO move (${sz}B < minimo): ${path.relative(ROOT, dest)} (origen conservado)`);
+        return;
+      }
       try { fs.unlinkSync(from); } catch { /* si Chrome aun lo tiene tomado, no es critico: queda copia en Descargas */ }
       res.writeHead(200, { "content-type": "application/json" });
       res.end(JSON.stringify({ ok: true, path: path.relative(ROOT, dest) }));
@@ -249,6 +259,20 @@ const PUBLIC_SLUGS = path.join(ROOT, "remotion-editor", "public");
 // el trabajo en vez de quedar invisible para siempre. Holgado para no relistar uno legitimamente lento.
 const LOCK_STALE_MS = 15 * 60 * 1000;
 
+// Tamano minimo plausible por tipo: atrapa descargas truncadas / archivos de 0 bytes sin ffprobe.
+// Critico: `savedOk` y `mediaComplete` deben significar "archivo usable", no solo "existe" — si no,
+// el render usa un clip roto y `cleanupFlowAfterDownload` borra la fuente cara confiando en un 0-byte.
+function minBytesFor(p) {
+  const ext = path.extname(p).toLowerCase();
+  if (ext === ".mp4") return 50 * 1024;   // clip de video
+  if (ext === ".mp3") return 2 * 1024;     // voz
+  if ([".jpg", ".jpeg", ".png", ".webp"].includes(ext)) return 4 * 1024;
+  return 1;
+}
+function fileOk(p) {
+  try { return fs.statSync(p).size >= minBytesFor(p); } catch { return false; }
+}
+
 function mediaComplete(p) {
   const slug = p.project?.slug || slugify(p.project?.title);
   const base = path.join(PUBLIC_SLUGS, slug);
@@ -259,7 +283,7 @@ function mediaComplete(p) {
     need.push(path.join(base, "voice", `${id}.mp3`));
   }
   if (p.hook) need.push(path.join(base, "voice", "hook.mp3"));
-  return [...new Set(need)].every((f) => fs.existsSync(f));
+  return [...new Set(need)].every(fileOk);   // existe Y tamano plausible (no 0-byte/truncado)
 }
 
 // Resuelve un nombre de trabajo a la ruta de su JSON (suelto o <carpeta>/project.json).
@@ -317,7 +341,7 @@ server.on("upgrade", (req, socket) => {
   socket.on("error", () => { clients.delete(socket); });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, "127.0.0.1", () => {   // solo loopback: nada de exposicion a la LAN
   log(`escuchando en ws://localhost:${PORT}  (raiz: ${ROOT})`);
   log("edita archivos de la extension y se recargara sola. Ctrl+C para parar.");
 });

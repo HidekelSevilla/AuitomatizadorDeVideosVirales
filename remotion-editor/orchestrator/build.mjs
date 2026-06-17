@@ -28,6 +28,15 @@ const explicit = args.find((a) => !a.startsWith("--"));
 
 const rel = (p) => path.relative(ROOT, p).split(path.sep).join("/");
 
+// Integridad: "existe Y tamano plausible" (atrapa 0-byte/truncados antes de renderizar con basura).
+function fileOk(p) {
+  try {
+    const ext = path.extname(p).toLowerCase();
+    const min = ext === ".mp4" ? 50 * 1024 : ext === ".mp3" ? 2 * 1024 : [".jpg", ".jpeg", ".png", ".webp"].includes(ext) ? 4 * 1024 : 1;
+    return fs.statSync(p).size >= min;
+  } catch { return false; }
+}
+
 function ensureDirs() {
   for (const d of [QUEUE, DONE, OUT]) fs.mkdirSync(d, { recursive: true });
 }
@@ -66,7 +75,7 @@ function inspect(job) {
   if (p.audio?.transition_sfx) need.push(path.join(PUBLIC, "sfx", p.audio.transition_sfx));
   for (const s of p.scenes || []) for (const c of s.sfx || []) need.push(path.join(PUBLIC, "sfx", c.file));
 
-  const missing = [...new Set(need)].filter((f) => !fs.existsSync(f));
+  const missing = [...new Set(need)].filter((f) => !fileOk(f));
   return { slug, missing };
 }
 
@@ -104,6 +113,24 @@ function render(job, slug) {
   const cmd = `npx remotion render ViralVideo "out/${slug}.mp4" --props="${rel(job.jsonPath)}" --concurrency=6`;
   console.log("  > " + cmd);
   return spawnSync(cmd, { cwd: ROOT, stdio: "inherit", shell: true }).status === 0;
+}
+
+// Normaliza el loudness del mp4 final a -14 LUFS (estandar de feed: el video suena consistente vs
+// el resto, ni bajo ni saturado). Solo re-codifica audio (-c:v copy = rapido). Degrada con gracia.
+function normalizeLoudness(slug) {
+  const src = path.join(OUT, `${slug}.mp4`);
+  if (!fs.existsSync(src)) return;
+  const tmp = path.join(OUT, `${slug}.norm.mp4`);
+  const cmd = `ffmpeg -y -i "${src}" -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:v copy "${tmp}"`;
+  const r = spawnSync(cmd, { cwd: ROOT, stdio: "inherit", shell: true });
+  if (r.status === 0 && fs.existsSync(tmp) && fs.statSync(tmp).size > 1024) {
+    fs.rmSync(src, { force: true });
+    fs.renameSync(tmp, src);
+    console.log("  audio normalizado a -14 LUFS");
+  } else {
+    try { fs.rmSync(tmp, { force: true }); } catch { /* noop */ }
+    console.log("  (loudnorm omitido: ffmpeg fallo o no disponible)");
+  }
 }
 
 function moveDone(job) {
@@ -150,6 +177,7 @@ function processOnce() {
     enhanceIfNeeded(job, info.slug);
     injectWords(job);
     if (render(job, info.slug)) {
+      normalizeLoudness(info.slug);
       console.log(`OK ${job.name}: out/${info.slug}.mp4`);
       moveDone(job);
     } else {

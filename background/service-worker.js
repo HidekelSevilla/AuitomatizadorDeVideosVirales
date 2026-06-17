@@ -268,6 +268,9 @@ async function onLoadJson(message) {
     for (const err of result.errors) log(LOG_LEVEL.ERROR, `JSON invalido: ${err}`);
     return;
   }
+  // Avisos no fatales (ej. referencia a un personaje/escena que no existe): se surfacean ANTES de
+  // gastar puntos, no se tiran a la basura. El dato ya lo calcula parseProject.
+  for (const w of result.warnings || []) log(LOG_LEVEL.WARN, `Aviso del JSON: ${w}`);
   // Preserva el characterRef ya cargado (el JSON nuevo no lo trae).
   const prevRef = state.project?.characterRef ?? null;
   state.project = { ...result.project, characterRef: prevRef };

@@ -23,7 +23,7 @@ const { fontFamily } = loadFont("normal", { weights: ["800", "900"], subsets: ["
 const CLIP_VOL = 0.1; // audio propio del clip animado (bajo)
 const VOICE_RATE = 0.92; // voz un poco mas lenta (1 = normal)
 const HOOK_SFX = "click.mp3"; // click en cada corte del hook
-const HOOK_SFX_VOL = 1.8; // este click viene bajo, se sube
+const HOOK_SFX_VOL = 1.0; // click del corte (no distorsionar el primer segundo, el mas critico)
 const SCENE_SFX = "flash.mp3"; // flash al aparecer el cartel de cada escena (DIA 1...)
 const SCENE_SFX_VOL = 1.25;
 const CARD_SEC = 0.8;
@@ -189,9 +189,25 @@ const Karaoke: React.FC<{
     [hot]
   );
 
+  const timed = list.length > 0 && list[0].start >= 0;
+
+  // Agrupa en FRASES (ventana karaoke de 3-5 palabras, estandar de retencion vs 1 palabra suelta):
+  // por gap temporal >0.4s entre palabras (si hay timestamps) o por cuenta fija (fallback uniforme).
+  const chunks = useMemo<WordTs[][]>(() => {
+    const out: WordTs[][] = [];
+    let cur: WordTs[] = [];
+    for (let i = 0; i < list.length; i++) {
+      cur.push(list[i]);
+      const next = list[i + 1];
+      const gap = timed && next ? next.start - list[i].end : 0;
+      if (!next || cur.length >= 4 || (timed && gap > 0.4)) { out.push(cur); cur = []; }
+    }
+    return out;
+  }, [list, timed]);
+
   if (list.length === 0) return null;
 
-  const timed = list[0].start >= 0;
+  // Palabra activa global (misma logica de sync que antes).
   let idx: number;
   let wordStartFrame: number;
   if (timed) {
@@ -205,34 +221,49 @@ const Karaoke: React.FC<{
     wordStartFrame = idx * per;
   }
 
-  const w = cleanWord(list[idx].word);
-  const isHot = hotSet.has(norm(w));
-  const pop = spring({
-    frame: frame - wordStartFrame,
-    fps,
-    config: { damping: 14, stiffness: 200, mass: 0.4 },
-  });
-  const scale = 0.6 + 0.4 * pop;
+  // Localiza el chunk activo y el offset de la palabra activa dentro de el.
+  let acc = 0, chunkIdx = 0, wordInChunk = 0;
+  for (let c = 0; c < chunks.length; c++) {
+    if (idx < acc + chunks[c].length) { chunkIdx = c; wordInChunk = idx - acc; break; }
+    acc += chunks[c].length;
+  }
+  const phrase = chunks[chunkIdx] ?? [];
+  const pop = spring({ frame: frame - wordStartFrame, fps, config: { damping: 14, stiffness: 200, mass: 0.4 } });
 
   return (
     <AbsoluteFill style={{ justifyContent: "flex-end", alignItems: "center", paddingBottom: bottom }}>
       <div
         style={{
-          transform: `scale(${scale})`,
-          fontFamily,
-          fontWeight: 900,
-          fontSize: size,
-          letterSpacing: -1,
-          textTransform: "uppercase",
-          color: isHot ? preset.captionHotBg : preset.captionBase,
-          WebkitTextStroke: `${Math.round(size * 0.075)}px #000`,
-          paintOrder: "stroke fill",
-          textShadow: "0 12px 26px rgba(0,0,0,.8), 0 3px 8px rgba(0,0,0,.95)",
-          textAlign: "center",
-          padding: "0 40px",
+          display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "flex-end",
+          gap: `${Math.round(size * 0.1)}px ${Math.round(size * 0.16)}px`,
+          maxWidth: "90%", padding: "0 32px",
         }}
       >
-        {w}
+        {phrase.map((pw, i) => {
+          const active = i === wordInChunk;
+          const word = cleanWord(pw.word);
+          const isHot = hotSet.has(norm(word));
+          const scale = active ? 0.74 + 0.26 * pop : 0.64;
+          return (
+            <span
+              key={i}
+              style={{
+                display: "inline-block",
+                transform: `scale(${scale})`,
+                transformOrigin: "center bottom",
+                fontFamily, fontWeight: 900, fontSize: size, letterSpacing: -1, lineHeight: 1.02,
+                textTransform: "uppercase",
+                color: isHot ? preset.captionHotBg : preset.captionBase,
+                opacity: active ? 1 : 0.58,
+                WebkitTextStroke: `${Math.round(size * 0.075)}px #000`,
+                paintOrder: "stroke fill",
+                textShadow: "0 12px 26px rgba(0,0,0,.8), 0 3px 8px rgba(0,0,0,.95)",
+              }}
+            >
+              {word}
+            </span>
+          );
+        })}
       </div>
     </AbsoluteFill>
   );
