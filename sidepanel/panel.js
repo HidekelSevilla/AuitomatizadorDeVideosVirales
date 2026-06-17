@@ -834,6 +834,14 @@ async function init() {
   wireRuntime();
   const state = await send(msg(CMD.GET_STATE));
   render(state);
+  // Replica el historial persistido (logs que ocurrieron con el panel cerrado).
+  try {
+    const history = await send(msg(CMD.GET_LOG));
+    if (Array.isArray(history) && history.length) {
+      el.log.replaceChildren();
+      for (const e of history) appendLog(e.level, e.ts, e.message);
+    }
+  } catch (_e) { /* sin historial */ }
 }
 
 init();

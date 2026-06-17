@@ -49,6 +49,8 @@ async function loadState() {
   // Migracion: campos nuevos de queue/pacing sin pisar lo guardado.
   state.queue = { running: false, paused: false, currentIndex: 0, phase: "images", errorSceneId: null, heartbeatAt: 0, ...(state.queue || {}) };
   state.pacing = { windowStart: 0, windowCount: 0, sessionGen: 0, cooldownUntil: 0, cooldownStep: 0, ...(state.pacing || {}) };
+  // Rehidrata el ring de logs (clave separada) para que el historial sobreviva al sueno del SW.
+  try { const lr = await chrome.storage.local.get(LOG_RING_KEY); if (Array.isArray(lr[LOG_RING_KEY])) logRing = lr[LOG_RING_KEY]; } catch (_e) { /* noop */ }
   // Defensa: si la cola quedo marcada running por un crash, no la creamos viva sola;
   // el panel debe re-emitir START. Pero conservamos el flag para diagnostico.
   return state;
@@ -101,8 +103,26 @@ function emitState() {
   emit(EVT.STATE_UPDATE, { state });
 }
 
+// Ring-buffer de logs persistido en clave PROPIA (no en AppState, que se reescribe decenas de veces).
+// emit() es best-effort: si el panel esta cerrado (corridas desatendidas) el log se perdia. Ahora
+// queda en disco y el panel lo rehidrata al abrir. Capacidad acotada.
+const LOG_RING_KEY = "flow_log_ring_v1";
+const LOG_RING_MAX = 400;
+let logRing = [];
+let logSaveTimer = null;
+function scheduleLogSave() {
+  if (logSaveTimer) return;
+  logSaveTimer = setTimeout(() => {
+    logSaveTimer = null;
+    chrome.storage.local.set({ [LOG_RING_KEY]: logRing }).catch(() => {});
+  }, 2000);
+}
 function log(level, message) {
-  emit(EVT.LOG, { level, ts: Date.now(), message });
+  const entry = { level, ts: Date.now(), message };
+  emit(EVT.LOG, entry);
+  logRing.push(entry);
+  if (logRing.length > LOG_RING_MAX) logRing.splice(0, logRing.length - LOG_RING_MAX);
+  scheduleLogSave();
 }
 
 function emitSceneStatus(sceneId, status, error) {
@@ -185,6 +205,12 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   // GET_STATE necesita respuesta sincrona -> retornamos true y respondemos async.
   if (type === CMD.GET_STATE) {
     ensureState().then(() => sendResponse(state));
+    return true;
+  }
+
+  // GET_LOG: el panel pide el historial de logs persistido (lo replica al abrir).
+  if (type === CMD.GET_LOG) {
+    ensureState().then(() => sendResponse(logRing));
     return true;
   }
 
@@ -447,8 +473,9 @@ async function onResetScenes() {
 async function onClearAll() {
   detachDebuggers();
   lastFrames.clear();
+  logRing = [];
   state = makeInitialState();
-  await chrome.storage.local.remove(STORAGE_KEY);
+  await chrome.storage.local.remove([STORAGE_KEY, LOG_RING_KEY]);
   await saveState();
   log(LOG_LEVEL.INFO, "Estado de la extension borrado por completo (estado inicial).");
   emitState();
@@ -692,6 +719,17 @@ async function runQueue() {
   loopRunning = false;
 }
 
+// Clasifica un error para decidir si reintentar tiene sentido:
+//   'environment' -> no hay pestana/dev-server/debugger: reintentar 3x con backoff es inutil.
+//   'selector'    -> DOM/boton no encontrado = bug determinista: reintentar no lo arregla.
+//   'generation'  -> la IA fallo / rate puntual / timing: SI vale reintentar.
+function classifyError(reason) {
+  const r = (reason || "").toLowerCase();
+  if (/no hay pestana|dev-server|debugger|no se pudo adjuntar|pestana de (flow|grok)/i.test(r)) return "environment";
+  if (/no encuentro|no existe el|selector|el editor|boton|button|contenteditable|chip de ajustes|menu de esta/i.test(r)) return "selector";
+  return "generation";
+}
+
 // Ejecuta una escena reintentando hasta config.maxRetries con backoff.
 async function processSceneWithRetries(scene, prevSceneId, refName, phase) {
   const maxRetries = state.config.maxRetries ?? DEFAULT_CONFIG.maxRetries;
@@ -721,6 +759,18 @@ async function processSceneWithRetries(scene, prevSceneId, refName, phase) {
       // Parada dura: no se reintenta, se aborta la cola.
       if (e?.hardStop) {
         await onHardStop(e.hardStop, reason);
+        return;
+      }
+
+      // Fallo NO-reintentable (entorno o selector): reintentar 3x con backoff solo gasta tiempo (y para
+      // ANIMATE, riesgo de re-disparo). Falla rapido -> ERROR + pausa, sin quemar maxRetries.
+      const kind = classifyError(reason);
+      if (kind !== "generation") {
+        scene.status = SCENE_STATUS.ERROR; scene.error = reason; scene.attempts = maxRetries + 1;
+        await saveState();
+        emitSceneStatus(scene.id, SCENE_STATUS.ERROR, reason); emitState();
+        log(LOG_LEVEL.ERROR, `Escena ${scene.id}: fallo no-reintentable (${kind}): ${reason}`);
+        if (state.config.pauseOnFailure ?? DEFAULT_CONFIG.pauseOnFailure) await pauseForError(`escena ${scene.id} (${kind}): ${reason}`, scene.id);
         return;
       }
 
