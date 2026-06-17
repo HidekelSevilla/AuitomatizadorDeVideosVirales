@@ -180,42 +180,42 @@
     return { ok: true, data: { imageUrl: found.url, postUrl } };
   }
 
-  // El boton "Hacer video" sobre el POST de una imagen (asi anima Grok; NO es "modo Video + Enviar").
-  function makeVideoButton() {
-    return [...document.querySelectorAll("button,[role=button]")]
-      .find((b) => visible(b) && (b.getAttribute("aria-label") === "Hacer video" || /^hacer video$/i.test(norm(b.innerText))));
+  // Toggle a modo VIDEO del composer: texto "Video" (composer /imagine) o aria-label "Video" (icono
+  // camara del post de la imagen). Animar por aqui = UNA sola generacion dirigida (no el doble que
+  // generaba "Hacer video" + "Crear video").
+  function videoToggle() {
+    return [...document.querySelectorAll("button,[role=button],[role=menuitemradio],[role=tab]")]
+      .find((b) => visible(b) && (norm(b.innerText) === "Video" || b.getAttribute("aria-label") === "Video"));
   }
 
-  // ANIMATE_FIRE: clic en "Hacer video" (clic SINTETICO basta, no requiere CDP/debugger). Grok NAVEGA a
-  // un /post/<videoId> nuevo y genera EN SITIO -> este content script muere con la navegacion, por eso
-  // NO esperamos el video aqui (lo recoge ANIMATE_COLLECT tras re-inyectar el SW en el /post nuevo).
+  // ANIMATE_FIRE: pone el composer en modo Video -> escribe el prompt -> "Enviar" (TRUSTED via CDP, como
+  // generar imagen; el clic sintetico de Enviar es flaky). Grok navega al /post del video y genera en
+  // sitio; el video lo recoge ANIMATE_COLLECT tras re-inyectar. El SW adjunta el debugger SOLO para este
+  // clic y lo suelta antes de la espera larga (evita el congelamiento).
   async function animateFire({ prompt } = {}) {
     const hs0 = detectHardStop(); if (hs0) return hs0;
-    const btn = await waitFor(() => makeVideoButton(), { timeout: 20000 });
-    await rsleep(800, 2000);   // pausa humana antes de animar
-    btn.click();
-    // "Hacer video" abre el compositor de movimiento (editable + "Crear video") y arranca un default.
-    // Con prompt: lo escribimos y confirmamos con "Crear video" -> genera con el movimiento DIRIGIDO de
-    // la escena (gasta 1 extra vs el default; creditos de Grok son diarios). Sin compositor -> default.
+    const vt = await waitFor(() => videoToggle(), { timeout: 20000 });
+    await rsleep(500, 1200);
+    vt.click();                       // -> modo Video (aparecen 480p/720p, 6s/10s)
+    await sleep(900);
+    const ed = await waitFor(() => promptEditable(), { timeout: 8000 });
     if (prompt) {
-      try {
-        const ed = await waitFor(() => [...document.querySelectorAll("[contenteditable]")].find((e) => visible(e)), { timeout: 8000 });
-        ed.focus();
-        for (let i = 0, typed = 0; i < prompt.length;) {
-          const n = 2 + Math.floor(Math.random() * 4);
-          const chunk = prompt.slice(i, i + n);
-          document.execCommand("insertText", false, chunk);
-          i += chunk.length; typed += chunk.length;
-          await rsleep(40, 140);
-          if (typed % 40 < n) await rsleep(200, 500);
-        }
-        await rsleep(800, 1800);   // pausa de "revision"
-        const crear = [...document.querySelectorAll("button,[role=button]")]
-          .find((b) => visible(b) && (b.getAttribute("aria-label") === "Crear video" || /^crear video$/i.test(norm(b.innerText))));
-        if (crear) crear.click();
-      } catch (_e) { /* sin compositor de prompt: queda el movimiento por defecto que ya disparo "Hacer video" */ }
+      ed.focus();
+      try { const sel = window.getSelection(); sel.selectAllChildren(ed); document.execCommand("delete"); } catch (_e) {}
+      for (let i = 0, typed = 0; i < prompt.length;) {
+        const n = 2 + Math.floor(Math.random() * 4);
+        const chunk = prompt.slice(i, i + n);
+        document.execCommand("insertText", false, chunk);
+        i += chunk.length; typed += chunk.length;
+        await rsleep(40, 140);
+        if (typed % 40 < n) await rsleep(200, 500);
+      }
     }
-    await sleep(600);   // breve: que la respuesta salga ANTES de que la pagina navegue
+    await rsleep(900, 2000);          // pausa humana de "revision"
+    const send = sendButton();
+    if (!send) throw new Error('no encuentro "Enviar" del composer de video de Grok');
+    await trustedClickEl(send);       // trusted: el Enviar sintetico a veces no registra
+    await sleep(700);                 // breve: que la respuesta salga antes de que navegue
     return { ok: true, data: { fired: true } };
   }
 
