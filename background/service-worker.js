@@ -16,6 +16,7 @@ import {
 } from "../lib/messaging.js";
 
 import { parseProject } from "../lib/json-loader.js";
+import { createOrchestrator } from "../lib/orchestrator.js";
 import { planScene, nextSceneIndex, nextSceneIndexByStatus } from "../lib/queue.js";
 
 // Auto-reload de desarrollo: inerte en produccion (Web Store inyecta `update_url`
@@ -588,219 +589,48 @@ async function onStartPhase(phase) {
   launchLoop();
 }
 
-// Lanza el bucle si no hay otro corriendo en este worker.
+// Wiring del orquestador (lib/orchestrator.js): le inyectamos el estado vivo, los emisores chrome.*,
+// los runners (con el dispatch dry/grok/real resuelto aqui) y los efectos. El bucle/retry/ritmo viven
+// alla (puros y testeables sin chrome.*); aqui solo conectamos las dependencias reales del SW.
+const orchestrator = createOrchestrator({
+  getState: () => state,
+  saveState,
+  emitState,
+  emitProgress,
+  emitSceneStatus,
+  log,
+  runners: {
+    image: (scene, prevSceneId, refName) =>
+      state.config.dryRun ? runDryRunImage(scene, prevSceneId, refName)
+        : state.config.provider === "grok" ? runGrokImage(scene)
+          : runRealImage(scene, prevSceneId, refName),
+    animation: (scene) =>
+      state.config.dryRun ? runDryRunAnimation(scene)
+        : state.config.provider === "grok" ? runGrokAnimation(scene)
+          : runRealAnimation(scene),
+    parallelAnimation: () => runParallelAnimation(),
+  },
+  effects: {
+    onHardStop: (reason, message) => onHardStop(reason, message),
+    pauseForError: (message, sceneId) => pauseForError(message, sceneId),
+    detachDebuggers: () => detachDebuggers(),
+    reportFailuresAtEnd: () => reportFailuresAtEnd(),
+    heartbeatJobLock: () => heartbeatJobLock(),
+  },
+  loop: { isRunning: () => loopRunning, setRunning: (b) => { loopRunning = b; } },
+  now: () => Date.now(),
+  sleep: (ms) => delay(ms),
+});
+
+// Lanza el bucle si no hay otro corriendo en este worker. El guard loopRunning vive aqui porque lo
+// comparten pollQueue/resumeIfInterrupted; el orquestador lo lee/escribe via deps.loop.
 function launchLoop() {
   if (loopRunning) return;
-  runQueue().catch((e) => {
+  orchestrator.runQueue().catch((e) => {
     console.error("runQueue error:", e);
     log(LOG_LEVEL.ERROR, `Bucle abortado: ${e?.message ?? e}`);
     loopRunning = false;
   });
-}
-
-// Espera larga PERO interrumpible: relee el state cada 1s para respetar pausa/stop y actualiza el
-// heartbeat (asi pollQueue sabe que el loop sigue vivo aunque el SW se duerma entre escenas).
-async function interruptibleDelay(totalMs) {
-  let waited = 0, sinceSave = 0;
-  while (waited < totalMs) {
-    await ensureState();
-    if (!state.queue.running || state.queue.paused) return false;
-    const step = Math.min(2000, totalMs - waited);   // chequea pausa cada ~2s
-    await delay(step);
-    waited += step; sinceSave += step;
-    if (sinceSave >= 15000) { state.queue.heartbeatAt = Date.now(); await saveState(); heartbeatJobLock(); sinceSave = 0; }  // latido cada ~15s
-  }
-  state.queue.heartbeatAt = Date.now(); await saveState();
-  return true;
-}
-
-// Ritmo humano sostenido entre escenas (anti-deteccion). Inter-escena con jitter, warmup mas lento,
-// descanso largo cada N, y tope por hora. Contadores en state.pacing (persisten; el SW MV3 se duerme).
-async function applyPacingAfterScene() {
-  const c = state.config;
-  const p = state.pacing = state.pacing || { windowStart: 0, windowCount: 0, sessionGen: 0, cooldownUntil: 0, cooldownStep: 0 };
-  const now = Date.now();
-  if (!p.windowStart || now - p.windowStart > 3600000) { p.windowStart = now; p.windowCount = 0; }
-  p.windowCount += 1;
-  p.sessionGen += 1;
-  if (state.metrics) { state.metrics.generations = (state.metrics.generations || 0) + 1; if (!state.metrics.since) state.metrics.since = now; }
-
-  let waitMs;
-  if ((c.longBreakEvery ?? 0) > 0 && p.sessionGen % c.longBreakEvery === 0) {
-    waitMs = jitterDelay(c.longBreakMinMs, c.longBreakMaxMs, p.sessionGen);
-    log(LOG_LEVEL.INFO, `Descanso anti-deteccion: ${Math.round(waitMs / 1000)}s (tras ${p.sessionGen} generaciones).`);
-  } else {
-    waitMs = jitterDelay(c.interSceneDelayMinMs, c.interSceneDelayMaxMs, p.sessionGen);
-    if (p.sessionGen <= (c.warmupCount ?? 0)) waitMs = Math.round(waitMs * 1.5); // arranque suave
-  }
-  if ((c.maxGenerationsPerHour ?? 0) > 0 && p.windowCount >= c.maxGenerationsPerHour) {
-    const restMs = Math.max(0, 3600000 - (now - p.windowStart));
-    if (restMs > waitMs) { log(LOG_LEVEL.WARN, `Tope ${c.maxGenerationsPerHour}/hora: pauso ${Math.round(restMs / 60000)} min.`); waitMs = restMs; }
-    p.windowStart = now + restMs; p.windowCount = 0;
-  }
-  await saveState();
-  log(LOG_LEVEL.DEBUG, `Ritmo: espero ${Math.round(waitMs / 1000)}s antes de la siguiente escena.`);
-  await interruptibleDelay(waitMs);
-}
-
-// Bucle principal. Relee el state en cada iteracion (no confia en timers vivos).
-// concurrency se respeta como 1 por ahora: procesa una escena a la vez en orden.
-async function runQueue() {
-  loopRunning = true;
-  log(LOG_LEVEL.INFO, "Bucle de cola iniciado.");
-
-  while (true) {
-    await ensureState();
-    state.queue.heartbeatAt = Date.now();   // latido: pollQueue distingue loop vivo de "running" huerfano
-    heartbeatJobLock();                      // mantiene fresco el lock del job (no se relista por rancio)
-
-    // Respeta pausa/stop releyendo la verdad persistida.
-    if (!state.queue.running || state.queue.paused) {
-      log(LOG_LEVEL.INFO, "Bucle detenido (paused/stop).");
-      break;
-    }
-
-    // Selecciona la siguiente escena segun la FASE:
-    //   images    -> escenas PENDING (genera imagen)
-    //   animation -> escenas IMAGE_DONE (anima)
-    const phase = state.queue.phase || "images";
-
-    // ANIMACION PARALELA: las escenas NO dependen entre si -> disparamos todas y recogemos en una
-    // sola pasada (mucho mas rapido). Tras esto no quedan IMAGE_DONE y la fase termina.
-    if (phase === "animation" && !state.config.dryRun && (state.config.parallelAnimation ?? false) && state.config.provider !== "grok") {
-      await runParallelAnimation();
-      await ensureState();
-      if (!state.queue.running || state.queue.paused) break; // pausa/stop -> salir; resume re-entra
-      state.queue.running = false;
-      await saveState();
-      detachDebuggers();
-      reportFailuresAtEnd();
-      log(LOG_LEVEL.INFO, "Fase 'animation' (paralela) finalizada.");
-      emitState();
-      emitProgress();
-      break;
-    }
-
-    const target = phase === "animation" ? SCENE_STATUS.IMAGE_DONE : SCENE_STATUS.PENDING;
-    const idx = nextSceneIndexByStatus(state.scenes, 0, target);
-    if (idx === -1) {
-      state.queue.running = false;
-      await saveState();
-      detachDebuggers();
-      reportFailuresAtEnd();
-      log(LOG_LEVEL.INFO, `Fase '${phase}' finalizada: no quedan escenas en estado '${target}'.`);
-      emitState();
-      emitProgress();
-      break;
-    }
-
-    state.queue.currentIndex = idx;
-    await saveState();
-    emitProgress();
-
-    const scene = state.scenes[idx];
-    const prevSceneId = idx > 0 ? state.scenes[idx - 1].id : null;
-    const refName = state.project?.characterRef?.name ?? null;
-
-    // Procesa la escena (dry-run o real) con reintentos+backoff, segun la fase.
-    await processSceneWithRetries(scene, prevSceneId, refName, phase);
-
-    // Si una parada dura ocurrio durante el proceso, salimos.
-    await ensureState();
-    if (state.queue.paused || !state.queue.running) {
-      log(LOG_LEVEL.INFO, "Bucle detenido tras procesar escena.");
-      break;
-    }
-
-    // RITMO HUMANO: si queda otra escena por hacer, espera (anti-deteccion). Sin espera al final.
-    const phaseNow = state.queue.phase || "images";
-    const targetNow = phaseNow === "animation" ? SCENE_STATUS.IMAGE_DONE : SCENE_STATUS.PENDING;
-    if (!state.config.dryRun && nextSceneIndexByStatus(state.scenes, 0, targetNow) !== -1) {
-      await applyPacingAfterScene();
-    }
-  }
-
-  loopRunning = false;
-}
-
-// Clasifica un error para decidir si reintentar tiene sentido:
-//   'environment' -> no hay pestana/dev-server/debugger: reintentar 3x con backoff es inutil.
-//   'selector'    -> DOM/boton no encontrado = bug determinista: reintentar no lo arregla.
-//   'generation'  -> la IA fallo / rate puntual / timing: SI vale reintentar.
-function classifyError(reason) {
-  const r = (reason || "").toLowerCase();
-  if (/no hay pestana|dev-server|debugger|no se pudo adjuntar|pestana de (flow|grok)/i.test(r)) return "environment";
-  if (/no encuentro|no existe el|selector|el editor|boton|button|contenteditable|chip de ajustes|menu de esta/i.test(r)) return "selector";
-  return "generation";
-}
-
-// Ejecuta una escena reintentando hasta config.maxRetries con backoff.
-async function processSceneWithRetries(scene, prevSceneId, refName, phase) {
-  const maxRetries = state.config.maxRetries ?? DEFAULT_CONFIG.maxRetries;
-
-  while (scene.attempts <= maxRetries) {
-    // Re-chequea pausa antes de cada intento.
-    await ensureState();
-    if (state.queue.paused || !state.queue.running) return;
-
-    scene.attempts += 1;
-    try {
-      if (state.config.dryRun) {
-        if (phase === "animation") await runDryRunAnimation(scene);
-        else await runDryRunImage(scene, prevSceneId, refName);
-      } else if (state.config.provider === "grok") {
-        if (phase === "animation") await runGrokAnimation(scene);
-        else await runGrokImage(scene);
-      } else {
-        if (phase === "animation") await runRealAnimation(scene);
-        else await runRealImage(scene, prevSceneId, refName);
-      }
-      // Exito: la escena queda DONE dentro del runner.
-      return;
-    } catch (e) {
-      const reason = e?.message ?? String(e);
-
-      // Parada dura: no se reintenta, se aborta la cola.
-      if (e?.hardStop) {
-        await onHardStop(e.hardStop, reason);
-        return;
-      }
-
-      // Fallo NO-reintentable (entorno o selector): reintentar 3x con backoff solo gasta tiempo (y para
-      // ANIMATE, riesgo de re-disparo). Falla rapido -> ERROR + pausa, sin quemar maxRetries.
-      const kind = classifyError(reason);
-      if (kind !== "generation") {
-        scene.status = SCENE_STATUS.ERROR; scene.error = reason; scene.attempts = maxRetries + 1;
-        await saveState();
-        emitSceneStatus(scene.id, SCENE_STATUS.ERROR, reason); emitState();
-        log(LOG_LEVEL.ERROR, `Escena ${scene.id}: fallo no-reintentable (${kind}): ${reason}`);
-        if (state.config.pauseOnFailure ?? DEFAULT_CONFIG.pauseOnFailure) await pauseForError(`escena ${scene.id} (${kind}): ${reason}`, scene.id);
-        return;
-      }
-
-      scene.error = reason;
-      await saveState();
-      log(LOG_LEVEL.WARN, `Escena ${scene.id} intento ${scene.attempts}/${maxRetries + 1} fallo: ${reason}`);
-
-      if (scene.attempts > maxRetries) {
-        // Agotados los reintentos -> ERROR.
-        scene.status = SCENE_STATUS.ERROR;
-        await saveState();
-        emitSceneStatus(scene.id, SCENE_STATUS.ERROR, reason);
-        emitState();
-        log(LOG_LEVEL.ERROR, `Escena ${scene.id} marcada ERROR tras agotar reintentos.`);
-        // PAUSA-EN-FALLO: no seguir generando ni jalar mas trabajos; el usuario revisa Flow y reanuda.
-        if (state.config.pauseOnFailure ?? DEFAULT_CONFIG.pauseOnFailure) await pauseForError(`escena ${scene.id} fallo: ${reason}`, scene.id);
-        return;
-      }
-
-      // Backoff exponencial con jitter antes del siguiente intento.
-      const base = jitterDelay(state.config.delayMinMs, state.config.delayMaxMs, scene.attempts);
-      const backoff = base * Math.pow(2, scene.attempts - 1);
-      log(LOG_LEVEL.INFO, `Backoff ${backoff}ms antes de reintentar ${scene.id}.`);
-      await delay(backoff);
-    }
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -1690,7 +1520,7 @@ async function runPhaseToEnd(phase) {
   state.queue.running = true;
   await saveState();
   emitState();
-  await runQueue();            // vuelve cuando la fase termina o se pausa (parada dura)
+  await orchestrator.runQueue();  // vuelve cuando la fase termina o se pausa (parada dura)
   await ensureState();
   return !state.queue.paused;  // paused = parada dura (captcha / sin creditos)
 }

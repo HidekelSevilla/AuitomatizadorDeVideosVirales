@@ -6,6 +6,6 @@
   "description": "Dev tooling solo (tests/lint). Chrome ignora este archivo al cargar la extension.",
   "scripts": {
     "dev": "node dev/reload-server.mjs",
-    "test": "node tests/dryrun.test.mjs && node tests/schema_v2.test.mjs"
+    "test": "node tests/dryrun.test.mjs && node tests/schema_v2.test.mjs && node tests/scene_transition.test.mjs && node tests/orchestrator.test.mjs"
   }
 }
