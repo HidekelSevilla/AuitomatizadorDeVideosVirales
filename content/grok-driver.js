@@ -172,7 +172,12 @@
       return fresh ? { url: fresh.src } : null;
     }, { timeout: 180000 });
     if (found.type) return found; // parada dura
-    return { ok: true, data: { imageUrl: found.url } };
+    // Captura la URL del POST de esta imagen (Grok navega a /imagine/post/<id> al generar). Es la pagina
+    // donde luego esta el boton "Hacer video"; guardarla evita derivarla mal de la URL del asset.
+    let postUrl = null;
+    try { postUrl = await waitFor(() => /\/imagine\/post\/[^/]+/.test(location.href) ? location.href : null, { timeout: 8000 }); }
+    catch (_e) { /* no navego a /post: el SW derivara del genId como fallback */ }
+    return { ok: true, data: { imageUrl: found.url, postUrl } };
   }
 
   // El boton "Hacer video" sobre el POST de una imagen (asi anima Grok; NO es "modo Video + Enviar").

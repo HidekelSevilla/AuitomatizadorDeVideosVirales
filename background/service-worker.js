@@ -394,6 +394,7 @@ async function onRetryScene(message) {
   // mode "image" (o sin imagen/video que reutilizar): regenerar imagen desde cero.
   scene.status = SCENE_STATUS.PENDING;
   scene.imageUrl = null;
+  scene.grokPostUrl = null;
   scene.videoUrl = null;
   scene.clipFilename = null;
   scene.lastFrameFilename = null;
@@ -458,6 +459,7 @@ async function onResetScenes() {
     s.attempts = 0;
     s.error = null;
     s.imageUrl = null;
+    s.grokPostUrl = null;
     s.clipFilename = null;
     s.lastFrameFilename = null;
   }
@@ -879,6 +881,7 @@ async function runGrokImage(scene) {
   const imageUrl = img?.imageUrl;
   if (!imageUrl) throw new Error("Grok no devolvio URL de imagen");
   scene.imageUrl = imageUrl;
+  scene.grokPostUrl = img?.postUrl || null;   // URL real del post (para animar con "Hacer video" sin derivar mal)
   try {
     const slug = state.project?.slug || "proyecto";
     const saved = await downloadImageForRef(imageUrl, slug, scene.id);
@@ -895,10 +898,15 @@ async function runGrokImage(scene) {
 async function runGrokAnimation(scene) {
   const tab = await findFlowTab();
   if (!tab) throw new Error("No hay pestana de Grok abierta (grok.com/imagine). Abrela y reintenta.");
-  // El post de la imagen es el genId que trae scene.imageUrl (assets.grok.com/.../generated/<id>/image...).
-  const m = (scene.imageUrl || "").match(/generated\/([^/?]+)/);
-  if (!m) throw new Error("no puedo derivar el post de la imagen en Grok (¿se genero la imagen?)");
-  await navigateTab(tab.id, `https://grok.com/imagine/post/${m[1]}`);
+  // Post de la imagen: el URL REAL capturado al generar (scene.grokPostUrl). Fallback: derivar del genId
+  // del asset (no siempre coincide con el id del post -> por eso preferimos el capturado).
+  let postUrl = scene.grokPostUrl;
+  if (!postUrl) {
+    const m = (scene.imageUrl || "").match(/generated\/([^/?]+)/);
+    if (!m) throw new Error("no puedo ubicar el post de la imagen en Grok (regenera la imagen para capturarlo)");
+    postUrl = `https://grok.com/imagine/post/${m[1]}`;
+  }
+  await navigateTab(tab.id, postUrl);
   await ensureContentScript(tab.id);
 
   scene.status = SCENE_STATUS.ANIMATING;
