@@ -175,20 +175,33 @@
     return { ok: true, data: { imageUrl: found.url } };
   }
 
-  // ANIMATE: modo Video -> (la imagen base ya la subio el SW como referencia) -> prompt -> Enviar ->
-  // espera el <video> nuevo. Devuelve su URL para que el SW lo descargue (chrome.downloads + cookies).
-  async function animate({ prompt }) {
+  // El boton "Hacer video" sobre el POST de una imagen (asi anima Grok; NO es "modo Video + Enviar").
+  function makeVideoButton() {
+    return [...document.querySelectorAll("button,[role=button]")]
+      .find((b) => visible(b) && (b.getAttribute("aria-label") === "Hacer video" || /^hacer video$/i.test(norm(b.innerText))));
+  }
+
+  // ANIMATE_FIRE: clic en "Hacer video" (clic SINTETICO basta, no requiere CDP/debugger). Grok NAVEGA a
+  // un /post/<videoId> nuevo y genera EN SITIO -> este content script muere con la navegacion, por eso
+  // NO esperamos el video aqui (lo recoge ANIMATE_COLLECT tras re-inyectar el SW en el /post nuevo).
+  async function animateFire() {
     const hs0 = detectHardStop(); if (hs0) return hs0;
-    await waitFor(() => promptEditable() && sendButton(), { timeout: 20000 });
-    await setMode("Video");
-    await setPrompt(prompt);
-    const before = currentVideoNames();
-    await fire();
+    const btn = await waitFor(() => makeVideoButton(), { timeout: 20000 });
+    await rsleep(800, 2000);   // pausa humana antes de animar
+    btn.click();
+    await sleep(1500);          // deja que dispare/navegue antes de devolver
+    return { ok: true, data: { fired: true } };
+  }
+
+  // ANIMATE_COLLECT: el SW re-inyecta este script en el /post del video; esperamos el <video> TERMINADO
+  // (assets.grok.com/.../generated/<id>/generated_video.mp4, videoWidth>0 y duracion finita). La pagina
+  // ya no navega durante la generacion, asi que el content script sobrevive toda la espera.
+  async function animateCollect() {
+    const hs0 = detectHardStop(); if (hs0) return hs0;
     const found = await waitFor(() => {
       const hs = detectHardStop(); if (hs) return hs;
-      const v = resultVideos().find((x) => !before.has(vidName(x.currentSrc || x.src)) && x.videoWidth > 0 && isFinite(x.duration) && x.duration > 0);
-      if (v) return { url: v.currentSrc || v.src };
-      return null;
+      const v = resultVideos().find((x) => x.videoWidth > 0 && isFinite(x.duration) && x.duration > 0 && /generated_video\.mp4|\/generated\//.test(x.currentSrc || x.src));
+      return v ? { url: v.currentSrc || v.src } : null;
     }, { timeout: 360000 });
     if (found.type) return found;
     return { ok: true, data: { videoUrl: found.url } };
@@ -213,8 +226,8 @@
         if (type === ACT.PING) return { ok: true, data: { pong: true, driver: "grok", url: location.href } };
         if (type === ACT.INSPECT_DOM) return inspect();
         if (type === ACT.GENERATE_IMAGE) return await generateImage(message);
-        if (type === ACT.ANIMATE) return await animate(message);
-        if (type === ACT.ANIMATE_FIRE) return await animate(message); // Grok no separa fire/collect: anima y espera
+        if (type === ACT.ANIMATE || type === ACT.ANIMATE_FIRE) return await animateFire(message);
+        if (type === ACT.ANIMATE_COLLECT) return await animateCollect(message);
         if (type === ACT.CLEAR_REFS) return await clearRefs();
         if (type === ACT.VIDEO_SRCS) return { ok: true, data: { srcs: [...currentVideoNames()] } };
         return { ok: false, error: `accion no soportada en grok-driver: ${type}` };

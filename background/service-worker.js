@@ -889,25 +889,29 @@ async function runGrokImage(scene) {
   log(LOG_LEVEL.INFO, `Imagen Grok lista (${scene.id}).`);
 }
 
-// FASE 2 (Grok): sube la imagen de la escena como base (CDP) -> anima (modo Video) -> descarga clip.
+// FASE 2 (Grok): anima con el boton "Hacer video" SOBRE el post de la imagen (asi anima Grok; NO es
+// "modo Video"). Al disparar, Grok navega a un /post/<videoId> nuevo y genera en sitio -> re-inyectamos
+// y recolectamos el <video> ahi. Clic sintetico (sin debugger) -> sin congelamiento de la pestana.
 async function runGrokAnimation(scene) {
   const tab = await findFlowTab();
   if (!tab) throw new Error("No hay pestana de Grok abierta (grok.com/imagine). Abrela y reintenta.");
-  await ensureGrokCompositor(tab.id); // composer fresco para animar (Video + Enviar con la imagen como ref)
+  // El post de la imagen es el genId que trae scene.imageUrl (assets.grok.com/.../generated/<id>/image...).
+  const m = (scene.imageUrl || "").match(/generated\/([^/?]+)/);
+  if (!m) throw new Error("no puedo derivar el post de la imagen en Grok (¿se genero la imagen?)");
+  await navigateTab(tab.id, `https://grok.com/imagine/post/${m[1]}`);
   await ensureContentScript(tab.id);
-  await ensureDebugger(tab.id);
 
   scene.status = SCENE_STATUS.ANIMATING;
   await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.ANIMATING); emitState();
-  if (scene.imageFilePath) {
-    try { await sendActOrFail(tab.id, ACT.CLEAR_REFS, {}); } catch (_e) {}
-    try { await cdpSetFileInput(tab.id, [scene.imageFilePath]); }
-    catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no pude subir la imagen base (${e?.message ?? e}); Grok animara desde el prompt.`); }
-  } else {
-    log(LOG_LEVEL.WARN, `${scene.id}: sin imagen en disco; Grok animara solo desde el prompt.`);
-  }
-  log(LOG_LEVEL.INFO, `Animando ${scene.id} en Grok...`);
-  const vid = await sendActOrFail(tab.id, ACT.ANIMATE, { prompt: scene.animationPrompt });
+  log(LOG_LEVEL.INFO, `Animando ${scene.id} en Grok ("Hacer video")...`);
+
+  // FIRE: clic "Hacer video" -> Grok navega al /post del video y genera en sitio.
+  await sendActOrFail(tab.id, ACT.ANIMATE_FIRE, { prompt: scene.animationPrompt });
+
+  // La pestana navego: re-inyectamos en el /post nuevo y recolectamos el <video> terminado (sin debugger).
+  await delay(4000);
+  await ensureContentScript(tab.id);
+  const vid = await sendActOrFail(tab.id, ACT.ANIMATE_COLLECT, {});
   const videoUrl = vid?.videoUrl;
   if (!videoUrl) throw new Error("Grok no devolvio URL de video");
 
