@@ -575,7 +575,7 @@ async function interruptibleDelay(totalMs) {
     const step = Math.min(2000, totalMs - waited);   // chequea pausa cada ~2s
     await delay(step);
     waited += step; sinceSave += step;
-    if (sinceSave >= 15000) { state.queue.heartbeatAt = Date.now(); await saveState(); sinceSave = 0; }  // latido cada ~15s
+    if (sinceSave >= 15000) { state.queue.heartbeatAt = Date.now(); await saveState(); heartbeatJobLock(); sinceSave = 0; }  // latido cada ~15s
   }
   state.queue.heartbeatAt = Date.now(); await saveState();
   return true;
@@ -618,6 +618,7 @@ async function runQueue() {
   while (true) {
     await ensureState();
     state.queue.heartbeatAt = Date.now();   // latido: pollQueue distingue loop vivo de "running" huerfano
+    heartbeatJobLock();                      // mantiene fresco el lock del job (no se relista por rancio)
 
     // Respeta pausa/stop releyendo la verdad persistida.
     if (!state.queue.running || state.queue.paused) {
@@ -1778,8 +1779,20 @@ async function pollQueue() {
     .then((r) => r.json()).catch(() => null);
   if (!claimed?.ok) { log(LOG_LEVEL.DEBUG, `cola: "${job.name}" ya estaba tomado, salto.`); return; }
   log(LOG_LEVEL.INFO, `AUTOPILOTO: tomando "${job.name}" de la cola.`);
+  state.queue.jobName = job.name;   // para heartbeat del lock (SCALE-02) y diagnostico
+  await saveState();
   await onLoadJson({ json: job.json });
   await onRunAll();
+  state.queue.jobName = null;       // corrida terminada/pausada: deja de latir el lock
+  await saveState();
+}
+
+// Mantiene fresco el lock del trabajo en curso (dev-server lo relista si el lock se vuelve rancio).
+async function heartbeatJobLock() {
+  const name = state.queue?.jobName;
+  if (!name) return;
+  const base = state.config.queueUrl || DEFAULT_CONFIG.queueUrl;
+  try { await fetch(`${base}/heartbeat?name=${encodeURIComponent(name)}`, { method: "POST" }); } catch (_e) {}
 }
 
 // Alarma periodica (sobrevive al sueno del SW; min ~30s). Gateada por config.autoQueue.

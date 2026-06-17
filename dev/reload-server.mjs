@@ -12,6 +12,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { slugify } from "../shared/slug.mjs";   // FUENTE UNICA del slug (debe coincidir con la extension y el render)
 
 const PORT = Number(process.env.FLOW_DEV_PORT) || 35729;
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -168,6 +169,19 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // POST /queue/heartbeat?name=X : la extension "toca" el lock mientras procesa el trabajo (mantiene
+  // su mtime fresco). Asi un lock rancio (>LOCK_STALE_MS sin heartbeat) = corrida muerta -> se relista.
+  if (req.method === "POST" && u.pathname === "/queue/heartbeat") {
+    const name = u.searchParams.get("name") || "";
+    const jp = queueJsonPath(name);
+    res.writeHead(200, { "content-type": "application/json" });
+    if (!jp) { res.end(JSON.stringify({ ok: false })); return; }
+    const lock = jp + ".lock";
+    try { if (fs.existsSync(lock)) { const t = new Date(); fs.utimesSync(lock, t, t); } res.end(JSON.stringify({ ok: true })); }
+    catch { res.end(JSON.stringify({ ok: false })); }
+    return;
+  }
+
   // GET /charfile?path=<rel> : devuelve la ruta ABSOLUTA de una imagen de personaje (en assets/),
   // para que el SW la suba a Flow via CDP (DOM.setFileInputFiles necesita ruta absoluta del disco).
   if (req.method === "GET" && u.pathname === "/charfile") {
@@ -231,11 +245,9 @@ const server = http.createServer((req, res) => {
 
 const QUEUE_DIR = path.join(ROOT, "remotion-editor", "queue");
 const PUBLIC_SLUGS = path.join(ROOT, "remotion-editor", "public");
-
-function slugify(s) {
-  return String(s || "proyecto").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "") || "proyecto";
-}
+// Un lock sin heartbeat por mas de esto = corrida muerta (SW murio / onRunAll aborto) -> se relista
+// el trabajo en vez de quedar invisible para siempre. Holgado para no relistar uno legitimamente lento.
+const LOCK_STALE_MS = 15 * 60 * 1000;
 
 function mediaComplete(p) {
   const slug = p.project?.slug || slugify(p.project?.title);
@@ -271,7 +283,16 @@ function listQueue() {
       name = entry.name.replace(/\.json$/, ""); jsonPath = path.join(QUEUE_DIR, entry.name);
     }
     if (!jsonPath) continue;
-    if (fs.existsSync(jsonPath + ".lock")) continue;   // ya tomado por la extension -> no repetir
+    const lock = jsonPath + ".lock";
+    if (fs.existsSync(lock)) {
+      // Tomado por la extension -> no repetir... salvo que el lock este RANCIO (corrida muerta): relista.
+      try {
+        const age = Date.now() - fs.statSync(lock).mtimeMs;
+        if (age < LOCK_STALE_MS) continue;
+        fs.rmSync(lock, { force: true });
+        log(`cola: lock rancio de "${name}" (${Math.round(age / 60000)} min) -> relistado`);
+      } catch { continue; }
+    }
     try {
       const p = JSON.parse(fs.readFileSync(jsonPath, "utf8").replace(/^﻿/, ""));
       jobs.push({ name, slug: p.project?.slug || slugify(p.project?.title), json: p, mediaComplete: mediaComplete(p) });

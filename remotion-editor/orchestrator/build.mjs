@@ -12,6 +12,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
+import { slugify } from "../../shared/slug.mjs";   // FUENTE UNICA del slug (debe coincidir con la extension)
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -24,14 +25,6 @@ const args = process.argv.slice(2);
 const STATUS_ONLY = args.includes("--status");
 const WATCH = args.includes("--watch");
 const explicit = args.find((a) => !a.startsWith("--"));
-
-const slugify = (s) =>
-  s
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "");
 
 const rel = (p) => path.relative(ROOT, p).split(path.sep).join("/");
 

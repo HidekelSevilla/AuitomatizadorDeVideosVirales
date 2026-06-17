@@ -19,6 +19,7 @@ import {
   transcribe,
   toCaptions,
 } from "@remotion/install-whisper-cpp";
+import { slugify } from "../../shared/slug.mjs";   // FUENTE UNICA del slug
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -26,13 +27,6 @@ const WHISPER_DIR = path.join(ROOT, "whisper.cpp");
 const WHISPER_VERSION = "1.5.5"; // version con binario prebuilt para Windows
 const MODEL = "small"; // multilingue; sube a "medium" si la sync no queda fina
 
-const slugify = (s) =>
-  s
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "");
 
 const jsonArg = process.argv[2];
 if (!jsonArg) {

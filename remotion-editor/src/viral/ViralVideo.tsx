@@ -14,6 +14,8 @@ import { getAudioDurationInSeconds } from "@remotion/media-utils";
 import { loadFont } from "@remotion/google-fonts/Montserrat";
 import type { ViralProps, SceneData, WordTs, ComputedTimeline } from "./types";
 import { getPreset, type Preset } from "./presets";
+// @ts-expect-error  .mjs sin tipos: FUENTE UNICA del slug (debe coincidir con extension + dev-server)
+import { slugify } from "../../../shared/slug.mjs";
 
 const { fontFamily } = loadFont("normal", { weights: ["800", "900"], subsets: ["latin"] });
 
@@ -28,14 +30,6 @@ const CARD_SEC = 0.8;
 const CLIP_ZOOM = 1.14; // recorta el borde inferior (anclado arriba) para quitar la marca de Flow
 
 // ---------- helpers ----------
-
-const slugify = (s: string): string =>
-  s
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "");
 
 const dimsFromAspect = (aspect: string): [number, number] => {
   if (aspect === "16:9") return [1920, 1080];
