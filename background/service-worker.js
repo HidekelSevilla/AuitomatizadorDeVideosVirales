@@ -30,7 +30,8 @@ if (!("update_url" in chrome.runtime.getManifest())) {
 // ---------------------------------------------------------------------------
 
 let state = null;          // cache de AppState; se rehidrata bajo demanda
-let loopRunning = false;   // guarda anti-reentrada del bucle en este worker vivo
+let loopRunning = false;   // guarda anti-reentrada del bucle de ESCENAS en este worker vivo
+let autopilotBusy = false; // guarda anti-reentrada de la CORRIDA COMPLETA (onRunAll: ingredientes + fases)
 
 // ---------------------------------------------------------------------------
 // Persistencia
@@ -1929,6 +1930,13 @@ async function runIngredientsPhase() {
 }
 
 async function onRunAll() {
+  // Guard anti-reentrada de la CORRIDA COMPLETA. pollQueue se dispara por alarma; mientras esta corrida
+  // await-ea la fase de INGREDIENTES (donde loopRunning aun es false), una 2a alarma tomaba OTRO job y
+  // cargaba su JSON encima -> pisaba state.project y reventaba el ingrediente en curso ("message channel
+  // closed"). autopilotBusy cubre TODO onRunAll (ingredientes + fases), no solo el bucle de escenas.
+  if (autopilotBusy) { log(LOG_LEVEL.WARN, "AUTOPILOTO: ya hay una corrida activa; ignoro la reentrada."); return; }
+  autopilotBusy = true;
+  try {
   await applySecrets();
   await ensureState();
   if (!state.project || !state.scenes?.length) { log(LOG_LEVEL.WARN, "AUTOPILOTO: no hay proyecto cargado."); return; }
@@ -1980,6 +1988,7 @@ async function onRunAll() {
   }
 
   log(LOG_LEVEL.INFO, "AUTOPILOTO: medios listos en remotion-editor/public/. El orquestador (build.mjs --watch) renderiza el video.");
+  } finally { autopilotBusy = false; }
 }
 
 // ---------------------------------------------------------------------------
@@ -1992,6 +2001,7 @@ async function pollQueue() {
   await ensureState();
   if (!state.config.autoQueue) return;
   if (state.queue.paused) return;                    // pausa (manual o por fallo): NO jalar mas trabajos
+  if (autopilotBusy) return;                        // corrida completa en curso (incl. ingredientes): no tomar otro job
   if (loopRunning) return;                          // bucle vivo en este worker: no encimar
   // "running" persistido solo cuenta si el latido es reciente; si esta rancio, el bucle murio -> lo reseteamos.
   if (state.queue.running) {
