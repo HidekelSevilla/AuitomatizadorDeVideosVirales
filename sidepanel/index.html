@@ -253,10 +253,7 @@
     </div>
 
     <h3 class="cfg-subhead">Ritmo · anti-deteccion</h3>
-    <label class="toggle">
-      <input type="checkbox" id="toggleHumanTyping" />
-      <span>Tipeo humano (escribe el prompt por fragmentos)</span>
-    </label>
+    <p class="hint">Tipeo (siempre pega el prompt), tope/hora y descanso estan fijos por codigo.</p>
     <div class="grid">
       <div class="field">
         <label for="cfgInterMin">Entre escenas min (ms)</label>
@@ -265,14 +262,6 @@
       <div class="field">
         <label for="cfgInterMax">Entre escenas max (ms)</label>
         <input type="number" id="cfgInterMax" min="0" step="1000" />
-      </div>
-      <div class="field">
-        <label for="cfgMaxPerHour">Max generaciones/hora</label>
-        <input type="number" id="cfgMaxPerHour" min="0" step="1" />
-      </div>
-      <div class="field">
-        <label for="cfgLongBreakEvery">Descanso cada N escenas</label>
-        <input type="number" id="cfgLongBreakEvery" min="0" step="1" />
       </div>
     </div>
 

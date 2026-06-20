@@ -60,4 +60,67 @@ const s2refs = plan[1].steps.find((st) => st.action === "resolve_ingredients").d
 assert.ok(s2refs.includes("Huesito"), "dry-run scene_02 muestra el personaje Huesito");
 assert.ok(s2refs.includes("scene_01 (escena)"), "dry-run scene_02 muestra ref a scene_01");
 
-console.log("OK schema v2: prompts, personajes, refs de escena y metadatos cableados correctamente.");
+// ---------------------------------------------------------------------------
+// FLUJO DE INGREDIENTES (nuevo, opcional). Biblioteca ingredients[] + references.ingredients.
+// Aditivo: un JSON sin 'ingredients' se comporta igual (cubierto por el ejemplo de arriba: 0 warnings).
+// ---------------------------------------------------------------------------
+
+// (i1) ingredientes validos: se parsean a project.ingredients y references.ingredients -> scene.ingredientRefs.
+{
+  const r = parseProject({
+    project: { title: "Huesito P1" },
+    characters: { huesito: { display_name: "Huesito", reference_asset: "assets/characters/huesito_ref.png" } },
+    ingredients: [
+      { id: "huesito_green", type: "character_edited", base: "huesito", edit_prompt: "green hoodie", output_file: "assets/ingredients/huesito_green.png" },
+      { id: "alien", type: "entity", generation_prompt: "black alien", output_file: "assets/ingredients/alien.png" },
+      { id: "plate_reforma", type: "location_plate", generation_prompt: "reforma empty", output_file: "assets/ingredients/plate_reforma.png" },
+    ],
+    scenes: [{ id: "s1", visual: { image_prompt: "p", animation_prompt: "a" }, references: { characters: ["huesito_green"], ingredients: ["plate_reforma", "alien"], scenes: [] } }],
+  });
+  assert.equal(r.ok, true, `i1: ok. errores: ${JSON.stringify(r.errors)}`);
+  assert.equal(r.warnings.length, 0, `i1: sin warnings. ${JSON.stringify(r.warnings)}`);
+  assert.equal(r.project.ingredients.length, 3, "i1: 3 ingredientes en el proyecto");
+  const ce = r.project.ingredients.find((g) => g.id === "huesito_green");
+  assert.equal(ce.type, "character_edited"); assert.equal(ce.base, "huesito");
+  assert.equal(ce.prompt, "green hoodie", "i1: edit_prompt -> prompt");
+  assert.equal(ce.imageUrl, null); assert.equal(ce.imageFilePath, null, "i1: campos runtime arrancan null");
+  assert.deepEqual(r.scenes[0].ingredientRefs, ["plate_reforma", "alien"], "i1: ingredientRefs por escena");
+  // references.characters con un id de character_edited NO debe warnear (es valido, no es base).
+  assert.deepEqual(r.scenes[0].characterRefIds, ["huesito_green"], "i1: characterRefIds conserva el id editado");
+}
+
+// (i2) errores estructurales en ingredients -> ok:false (no rompe JSONs viejos, solo el bloque nuevo).
+{
+  const r = parseProject({
+    project: { title: "X" }, characters: { huesito: { display_name: "Huesito" } },
+    ingredients: [
+      { id: "bad1", type: "nope", output_file: "a.png" },
+      { id: "bad2", type: "entity" },
+      { id: "bad3", type: "character_edited", base: "noexiste", output_file: "c.png" },
+    ],
+    scenes: [{ id: "s1", visual: { image_prompt: "p", animation_prompt: "a" } }],
+  });
+  assert.equal(r.ok, false, "i2: ok:false por ingredientes invalidos");
+  assert.ok(r.errors.some((e) => /bad1.*type' invalido/.test(e)), "i2: type invalido");
+  assert.ok(r.errors.some((e) => /bad2.*output_file/.test(e)), "i2: falta output_file");
+  assert.ok(r.errors.some((e) => /bad2.*generation_prompt/.test(e)), "i2: entity sin generation_prompt");
+  assert.ok(r.errors.some((e) => /bad3.*base.*no esta/.test(e)), "i2: base inexistente");
+}
+
+// (i3) warnings (no fallan): colision de output_file, ref a ingrediente fantasma, references.scenes con ingredientes.
+{
+  const r = parseProject({
+    project: { title: "X" }, characters: { huesito: { display_name: "Huesito" } },
+    ingredients: [
+      { id: "alien", type: "entity", generation_prompt: "x", output_file: "dup.png" },
+      { id: "ship", type: "entity", generation_prompt: "y", output_file: "dup.png" },
+    ],
+    scenes: [{ id: "s1", visual: { image_prompt: "p", animation_prompt: "a" }, references: { ingredients: ["fantasma"], scenes: [{ scene_id: "s1" }] } }],
+  });
+  assert.equal(r.ok, true, "i3: ok:true (solo warnings)");
+  assert.ok(r.warnings.some((w) => /colisiona/.test(w)), "i3: colision de output_file");
+  assert.ok(r.warnings.some((w) => /fantasma.*no esta en 'ingredients'/.test(w)), "i3: ref a ingrediente inexistente");
+  assert.ok(r.warnings.some((w) => /references\.scenes junto al flujo de ingredientes/.test(w)), "i3: aviso references.scenes");
+}
+
+console.log("OK schema v2: prompts, personajes, refs de escena, metadatos y FLUJO DE INGREDIENTES cableados correctamente.");

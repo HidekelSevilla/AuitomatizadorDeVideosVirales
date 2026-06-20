@@ -1,0 +1,68 @@
+{
+  "project": {
+    "title": "Test ingredientes Huesito (2 escenas, Grok)",
+    "aspect_ratio": "9:16",
+    "fps": 24
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    }
+  },
+  "characters": {
+    "huesito": {
+      "display_name": "Huesito",
+      "reference_asset": "assets/characters/huesito_ref.jpg"
+    }
+  },
+  "ingredients": [
+    {
+      "id": "huesito_red",
+      "type": "character_edited",
+      "base": "huesito",
+      "edit_prompt": "Take the provided Huesito skeleton and dress it: add a red hooded sweatshirt and dark pants. Keep the EXACT skull, big round brown eyes and tall slim proportions. Plain neutral grey background, full body, centered, no scene, no text.",
+      "output_file": "assets/ingredients/huesito_red.png"
+    },
+    {
+      "id": "plate_park",
+      "type": "location_plate",
+      "generation_prompt": "Establishing plate of a quiet city park at golden hour, green grass, a few trees, a paved path and a wooden bench — EMPTY: no people, warm soft light, no text. Clean wide background plate. Photoreal, 9:16.",
+      "output_file": "assets/ingredients/plate_park.png"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_01",
+      "visual": {
+        "image_prompt": "Using the provided Huesito in his red hoodie, on the provided park plate: medium shot, Huesito sitting on the wooden bench looking calmly at the camera, golden hour light, vertical framing.",
+        "animation_prompt": "Huesito tilts his head slightly and the leaves sway gently in the breeze."
+      },
+      "references": {
+        "characters": [
+          "huesito_red"
+        ],
+        "ingredients": [
+          "plate_park"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "scene_02",
+      "visual": {
+        "image_prompt": "Using the provided Huesito in his red hoodie: close-up portrait, Huesito standing on the park path, looking up at the sky with a curious expression, golden hour, vertical framing.",
+        "animation_prompt": "Huesito slowly raises his head to look upward as the camera pushes in."
+      },
+      "references": {
+        "characters": [
+          "huesito_red"
+        ],
+        "ingredients": [],
+        "scenes": []
+      }
+    }
+  ]
+}

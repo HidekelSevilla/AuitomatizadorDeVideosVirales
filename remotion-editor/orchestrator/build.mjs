@@ -99,6 +99,25 @@ function enhanceIfNeeded(job, slug) {
   }
 }
 
+// Ajusta timeline.clip_duration_s de cada escena a la duracion REAL del clip (ffprobe). Grok genera
+// clips de ~6s aunque el JSON declare 4 -> sin esto el clip se sobre-ralentiza y se pierde el final.
+function syncClipDurations(job, slug) {
+  let p;
+  try { p = JSON.parse(fs.readFileSync(job.jsonPath, "utf8").replace(/^﻿/, "")); } catch { return; }
+  const base = path.join(PUBLIC, slug, "clips");
+  let changed = false;
+  for (const s of p.scenes || []) {
+    const clip = path.join(base, `${s.id}.mp4`);
+    if (!fs.existsSync(clip)) continue;
+    const r = spawnSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${clip}"`, { encoding: "utf8", shell: true });
+    const dur = Math.round(parseFloat((r.stdout || "").trim()) * 100) / 100;
+    if (!isFinite(dur) || dur <= 0) continue;
+    s.timeline = s.timeline || {};
+    if (s.timeline.clip_duration_s !== dur) { s.timeline.clip_duration_s = dur; changed = true; }
+  }
+  if (changed) fs.writeFileSync(job.jsonPath, JSON.stringify(p, null, 2), "utf8");
+}
+
 function injectWords(job) {
   // Mete los timestamps por palabra de Fish (sidecars <id>.words.json) al JSON, si los hay.
   spawnSync(`node align/inject-words.mjs "${rel(job.jsonPath)}"`, {
@@ -175,6 +194,7 @@ function processOnce() {
     }
     console.log(`>> ${job.name} (slug ${info.slug}): todo listo, procesando...`);
     enhanceIfNeeded(job, info.slug);
+    syncClipDurations(job, info.slug);
     injectWords(job);
     if (render(job, info.slug)) {
       normalizeLoudness(info.slug);

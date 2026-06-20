@@ -23,6 +23,8 @@ export interface SfxCue {
 export interface SceneData {
   id: string;
   time_label?: string;
+  intro_card?: string; // OPT-IN: cartel negro extra ANTES del contenido de la escena (excepciones a mano)
+  intro_card_voice?: string; // OPT: mp3 en public/<slug>/voice/ que NARRA el cartel intro (ej "parte2.mp3"); dura lo que la voz
   voiceover?: { text?: string; words?: WordTs[] };
   captions?: CaptionData;
   sfx?: SfxCue[];
@@ -73,6 +75,7 @@ export interface CapcutExport {
   clip_order?: string[];
   caption_style?: CaptionStyle;
   label_card_duration_s?: number; // duracion del cartel "DIA 1" antes de cada clip
+  title_cards?: { scene_id: string; text?: string }[]; // escenas que llevan cartel negro (intencion explicita del autor)
 }
 
 // Linea de tiempo calculada en runtime por calculateMetadata (no va en el JSON de entrada).
@@ -82,6 +85,7 @@ export interface SceneTiming {
   sceneFrames: number; // duracion total de la escena (la manda la voz)
   clipWindow: number; // frames del clip visible (sceneFrames - cardFrames)
   playbackRate: number; // velocidad del clip para llenar la voz (<1 = camara lenta)
+  introFrames: number; // cartel intro opcional (scene.intro_card) ANTES del contenido; 0 si no hay
 }
 
 export interface ComputedTimeline {

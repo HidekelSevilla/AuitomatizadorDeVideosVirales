@@ -6,6 +6,7 @@ import {
   Sequence,
   staticFile,
   spring,
+  interpolate,
   useCurrentFrame,
   useVideoConfig,
   type CalculateMetadataFunction,
@@ -20,14 +21,17 @@ import { slugify } from "../../../shared/slug.mjs";
 const { fontFamily } = loadFont("normal", { weights: ["800", "900"], subsets: ["latin"] });
 
 // defaults de la plantilla
-const CLIP_VOL = 0.1; // audio propio del clip animado (bajo)
-const VOICE_RATE = 0.92; // voz un poco mas lenta (1 = normal)
-const HOOK_SFX = "click.mp3"; // click en cada corte del hook
-const HOOK_SFX_VOL = 1.0; // click del corte (no distorsionar el primer segundo, el mas critico)
+const CLIP_VOL = 0; // audio propio del clip animado: SIEMPRE doblamos con voz+musica. Flow viene mudo, pero Grok genera el video CON sonido fuerte (-13 dB) que a 0.1 se colaba bajo la voz. El JSON puede subirlo con audio.clip_volume si se quiere ambiente.
+const VOICE_RATE = 1.05; // voz un pelin mas rapida que natural (1 = natural). Antes 0.92 se sentia lenta.
+const HOOK_SFX = "flash.mp3"; // flash en cada corte del hook (el usuario prefiere flash, no click)
+const HOOK_SFX_VOL = 1.0; // volumen del flash del corte
 const SCENE_SFX = "flash.mp3"; // flash al aparecer el cartel de cada escena (DIA 1...)
 const SCENE_SFX_VOL = 1.25;
 const CARD_SEC = 0.8;
 const CLIP_ZOOM = 1.14; // recorta el borde inferior (anclado arriba) para quitar la marca de Flow
+const HOOK_CUT_S = 0.8; // duracion objetivo de CADA flash del hook (rapido); se meten MAS flashes para llenar la voz, NO se estiran
+const DEFAULT_MUSIC = "music/efecto_de_fondo.mp3"; // musica de fondo COMPARTIDA (public/music/) por defecto en todos los videos
+const DEFAULT_MUSIC_VOL = 0.25; // bajado a 0.25 (a veces se escuchaba muy fuerte). Para silenciar un proyecto: audio.music_volume = 0
 
 // ---------- helpers ----------
 
@@ -45,10 +49,33 @@ const norm = (s: string): string =>
 
 const cleanWord = (w: string): string => w.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "") || w;
 
+// Quita marcadores de emocion/efecto de Fish ([nervous], [break], (excited)...) del TEXTO. Fish s2-pro
+// NO los pronuncia ni los devuelve en el alignment (verificado), asi que el karaoke normal ya sale limpio;
+// esto es la red de seguridad para el fallback sin timestamps (texto crudo) y para el hook.
+const stripTags = (s?: string): string =>
+  (s ?? "").replace(/\[[^\]]*\]|\([^)]*\)/g, " ").replace(/\s+/g, " ").trim();
+
 const NUMWORDS = new Set(
-  "uno dos tres cuatro cinco seis siete ocho nueve diez once doce trece catorce quince dieciseis diecisiete dieciocho diecinueve veinte treinta cuarenta cincuenta".split(" ")
+  ("uno una un dos tres cuatro cinco seis siete ocho nueve diez once doce trece catorce quince dieciseis diecisiete dieciocho diecinueve veinte veintiuno veintiun veintiuna veintidos veintitres veinticuatro veinticinco veintiseis veintisiete veintiocho veintinueve treinta cuarenta cincuenta sesenta setenta ochenta noventa cien ciento cientos doscientos trescientos cuatrocientos quinientos seiscientos setecientos ochocientos novecientos mil millon millones y primero primer segundo tercero cuarto quinto").split(" ")
 );
 const isNumberWord = (w: string): boolean => NUMWORDS.has(norm(w)) || /^\d+$/.test(norm(w));
+
+// Tokens normalizados de la etiqueta: "El gran viaje" -> ["el","gran","viaje"]; "Año 1521" -> ["ano","1521"].
+const labelTokens = (label?: string): string[] => (label ? label.split(/\s+/).map(norm).filter(Boolean) : []);
+
+// Cuantas palabras INICIALES de la narracion pertenecen a la etiqueta: coinciden token-a-token con la
+// etiqueta, mas (tras la unidad) palabras-numero ("Año MIL QUINIENTOS VEINTIUNO" cuando la etiqueta trae "1521").
+const labelLeadCount = (toks: string[], labelToks: string[]): number => {
+  let i = 0;
+  let li = 0;
+  while (i < toks.length) {
+    const w = norm(toks[i]);
+    if (li < labelToks.length && w === labelToks[li]) { i++; li++; continue; }
+    if (li > 0 && isNumberWord(toks[i])) { i++; continue; }
+    break;
+  }
+  return i;
+};
 
 // Fish manda el alignment ACUMULATIVO por chunk; al concatenar snapshots el .words.json sale con la
 // frase DUPLICADA (timestamps que reinician en 0). Nos quedamos con el ULTIMO snapshot completo:
@@ -74,23 +101,13 @@ const stripLabelWords = (
   label?: string
 ): { words?: WordTs[]; text?: string } => {
   if (!label) return { words, text };
-  const unit = norm(label.split(/\s+/)[0]);
+  const labelToks = labelTokens(label);
   if (words && words.length) {
-    let i = 0;
-    if (norm(words[0].word) === unit) {
-      i = 1;
-      while (i < words.length && isNumberWord(words[i].word)) i++;
-    }
-    const sliced = words.slice(i);
+    const sliced = words.slice(labelLeadCount(words.map((w) => w.word), labelToks));
     return { words: sliced, text: sliced.map((w) => w.word).join(" ") };
   }
   const toks = (text ?? "").trim().split(/\s+/).filter(Boolean);
-  let i = 0;
-  if (toks[0] && norm(toks[0]) === unit) {
-    i = 1;
-    while (i < toks.length && isNumberWord(toks[i])) i++;
-  }
-  return { words: undefined, text: toks.slice(i).join(" ") };
+  return { words: undefined, text: toks.slice(labelLeadCount(toks, labelToks)).join(" ") };
 };
 
 // ¿la VOZ narra el time_label? (la primera palabra hablada es la unidad: "Dia", "Minuto"...).
@@ -108,7 +125,7 @@ const labelNarrated = (
   const first =
     words && words.length
       ? norm(words[0].word)
-      : norm((text ?? "").trim().split(/\s+/)[0] ?? "");
+      : norm(stripTags(text ?? "").trim().split(/\s+/)[0] ?? ""); // ignora [nervous]/(...) inicial
   return first === unit;
 };
 
@@ -130,11 +147,26 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
   const scenes = [] as ComputedTimeline["scenes"];
   for (const id of order) {
     const sc = byId[id];
-    // cartel (pantalla negra) SOLO si la voz narra el time_label; las escenas internas no lo cortan.
-    const cardFrames =
-      baseCard > 0 && labelNarrated(sc?.voiceover?.words, sc?.voiceover?.text, sc?.time_label)
-        ? baseCard
-        : 0;
+    // cartel negro SOLO si la VOZ narra el time_label (flujo estandar; las escenas internas no lo cortan).
+    // Dura lo que TARDA esa narracion (y se le quita el label al subtitulo). La voz va a voiceRate.
+    const dwords = dedupeWords(sc?.voiceover?.words);
+    let cardFrames = 0;
+    if (baseCard > 0 && labelNarrated(dwords, sc?.voiceover?.text, sc?.time_label)) {
+      const n = labelLeadCount((dwords ?? []).map((w) => w.word), labelTokens(sc?.time_label));
+      const timedLabel = !!dwords && dwords.length > 0 && dwords[0].start >= 0 && n > 0;
+      cardFrames = timedLabel
+        ? Math.max(Math.round((dwords![Math.min(n, dwords!.length) - 1].end / voiceRate) * fps), baseCard)
+        : baseCard;
+    }
+    // cartel intro OPCIONAL (opt-in scene.intro_card) ANTES del contenido. Escenas sin intro_card ->
+    // introFrames 0 -> identico al flujo estandar. Si trae intro_card_voice, dura lo que esa voz (narrado).
+    let introFrames = sc?.intro_card ? baseCard : 0;
+    if (sc?.intro_card && sc?.intro_card_voice) {
+      try {
+        const introSec = await getAudioDurationInSeconds(staticFile(`${slug}/voice/${sc.intro_card_voice}`));
+        if (introSec > 0) introFrames = Math.round((introSec / voiceRate + 0.3) * fps);
+      } catch { /* sin voz: usa baseCard (silencioso) */ }
+    }
     let voiceSec = defClip;
     try {
       voiceSec = await getAudioDurationInSeconds(staticFile(`${slug}/voice/${id}.mp3`));
@@ -142,14 +174,23 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
       voiceSec = defClip;
     }
     const effVoice = Math.max(1, Math.round((voiceSec / voiceRate) * fps));
-    const sceneFrames = Math.max(effVoice, cardFrames + Math.round(0.4 * fps));
-    const clipWindow = sceneFrames - cardFrames;
+    const contentFrames = Math.max(effVoice, cardFrames + Math.round(0.4 * fps));
+    const sceneFrames = introFrames + contentFrames;
+    const clipWindow = contentFrames - cardFrames;
     const clipDur = byId[id]?.timeline?.clip_duration_s ?? defClip;
     const playbackRate = Math.max(0.5, Math.min(1, (clipDur * fps) / clipWindow));
-    scenes.push({ id, cardFrames, sceneFrames, clipWindow, playbackRate });
+    scenes.push({ id, cardFrames, sceneFrames, clipWindow, playbackRate, introFrames });
   }
 
-  const hookFrames = Math.round((props.hook?.duration_s ?? 0) * fps);
+  // El hook dura lo que TARDA su voz (a voiceRate) + cola corta -> nunca se corta la narracion del hook
+  // ni queda silencio largo. Fallback a hook.duration_s si no hay/lee la voz del hook.
+  let hookFrames = Math.round((props.hook?.duration_s ?? 0) * fps);
+  if (props.hook) {
+    try {
+      const hookVoiceSec = await getAudioDurationInSeconds(staticFile(`${slug}/voice/hook.mp3`));
+      if (hookVoiceSec > 0) hookFrames = Math.round((hookVoiceSec / voiceRate + 0.3) * fps);
+    } catch { /* sin voz de hook: usa duration_s */ }
+  }
   const totalFrames = hookFrames + scenes.reduce((a, s) => a + s.sceneFrames, 0);
 
   return {
@@ -177,11 +218,11 @@ const Karaoke: React.FC<{
   size?: number;
 }> = ({ text, words, windowFrames, voiceRate, preset, hot = [], bottom = 380, size = 132 }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width } = useVideoConfig();
 
   const list = useMemo(() => {
     if (words && words.length) return words;
-    const ws = (text ?? "").trim().split(/\s+/).filter(Boolean);
+    const ws = stripTags(text ?? "").trim().split(/\s+/).filter(Boolean);
     return ws.map((w) => ({ word: w, start: -1, end: -1 })) as WordTs[];
   }, [text, words]);
   const hotSet = useMemo(
@@ -191,20 +232,6 @@ const Karaoke: React.FC<{
 
   const timed = list.length > 0 && list[0].start >= 0;
 
-  // Agrupa en FRASES (ventana karaoke de 3-5 palabras, estandar de retencion vs 1 palabra suelta):
-  // por gap temporal >0.4s entre palabras (si hay timestamps) o por cuenta fija (fallback uniforme).
-  const chunks = useMemo<WordTs[][]>(() => {
-    const out: WordTs[][] = [];
-    let cur: WordTs[] = [];
-    for (let i = 0; i < list.length; i++) {
-      cur.push(list[i]);
-      const next = list[i + 1];
-      const gap = timed && next ? next.start - list[i].end : 0;
-      if (!next || cur.length >= 4 || (timed && gap > 0.4)) { out.push(cur); cur = []; }
-    }
-    return out;
-  }, [list, timed]);
-
   if (list.length === 0) return null;
 
   // Palabra activa global (misma logica de sync que antes).
@@ -213,7 +240,13 @@ const Karaoke: React.FC<{
   if (timed) {
     const audioT = (frame / fps) * voiceRate; // posicion real dentro del mp3 (esta ralentizado)
     idx = list.findIndex((w) => audioT >= w.start && audioT < w.end);
-    if (idx < 0) idx = audioT < list[0].start ? 0 : list.length - 1;
+    if (idx < 0) {
+      // En un HUECO entre palabras (pausa) o fuera de rango: mostrar la ULTIMA palabra que YA empezo.
+      // BUG anterior: saltaba a la palabra FINAL de la escena -> la resaltada (amarilla) aparecia ANTES
+      // de tiempo en cada pausa. Ahora se queda en la palabra mas reciente -> sincronizado.
+      idx = 0;
+      for (let i = 0; i < list.length; i++) { if (list[i].start <= audioT) idx = i; else break; }
+    }
     wordStartFrame = (list[idx].start / voiceRate) * fps;
   } else {
     const per = windowFrames / list.length;
@@ -221,50 +254,32 @@ const Karaoke: React.FC<{
     wordStartFrame = idx * per;
   }
 
-  // Localiza el chunk activo y el offset de la palabra activa dentro de el.
-  let acc = 0, chunkIdx = 0, wordInChunk = 0;
-  for (let c = 0; c < chunks.length; c++) {
-    if (idx < acc + chunks[c].length) { chunkIdx = c; wordInChunk = idx - acc; break; }
-    acc += chunks[c].length;
-  }
-  const phrase = chunks[chunkIdx] ?? [];
-  const pop = spring({ frame: frame - wordStartFrame, fps, config: { damping: 14, stiffness: 200, mass: 0.4 } });
+  // UNA sola palabra a la vez (la activa), con pop SUAVE al entrar (antes era muy brusco/rapido).
+  const pop = spring({ frame: frame - wordStartFrame, fps, config: { damping: 24, stiffness: 130, mass: 0.6 } });
+  const word = cleanWord(list[idx].word);
+  const isHot = hotSet.has(norm(word));
+  // Auto-encoge palabras largas para que NUNCA se salgan del cuadro (ej. "ACERCÁNDOSE"). ~0.8em/char en
+  // Montserrat 900 mayuscula + margen para el contorno y el pop. Las cortas se quedan en el tamano normal.
+  const fitSize = Math.max(48, Math.min(size, Math.floor((width * 0.78) / (word.length * 0.8))));
 
   return (
     <AbsoluteFill style={{ justifyContent: "flex-end", alignItems: "center", paddingBottom: bottom }}>
-      <div
+      <span
         style={{
-          display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "flex-end",
-          gap: `${Math.round(size * 0.1)}px ${Math.round(size * 0.16)}px`,
-          maxWidth: "90%", padding: "0 32px",
+          display: "inline-block",
+          transform: `scale(${0.9 + 0.1 * pop})`,
+          transformOrigin: "center bottom",
+          fontFamily, fontWeight: 900, fontSize: fitSize, letterSpacing: -1, lineHeight: 1.02,
+          textTransform: "uppercase", textAlign: "center", whiteSpace: "nowrap",
+          color: isHot ? preset.captionHotBg : preset.captionBase,
+          maxWidth: "92%", padding: "0 24px",
+          WebkitTextStroke: `${Math.round(fitSize * 0.09)}px #000`,
+          paintOrder: "stroke fill",
+          textShadow: "0 12px 26px rgba(0,0,0,.8), 0 3px 8px rgba(0,0,0,.95)",
         }}
       >
-        {phrase.map((pw, i) => {
-          const active = i === wordInChunk;
-          const word = cleanWord(pw.word);
-          const isHot = hotSet.has(norm(word));
-          const scale = active ? 0.74 + 0.26 * pop : 0.64;
-          return (
-            <span
-              key={i}
-              style={{
-                display: "inline-block",
-                transform: `scale(${scale})`,
-                transformOrigin: "center bottom",
-                fontFamily, fontWeight: 900, fontSize: size, letterSpacing: -1, lineHeight: 1.02,
-                textTransform: "uppercase",
-                color: isHot ? preset.captionHotBg : preset.captionBase,
-                opacity: active ? 1 : 0.58,
-                WebkitTextStroke: `${Math.round(size * 0.075)}px #000`,
-                paintOrder: "stroke fill",
-                textShadow: "0 12px 26px rgba(0,0,0,.8), 0 3px 8px rgba(0,0,0,.95)",
-              }}
-            >
-              {word}
-            </span>
-          );
-        })}
-      </div>
+        {word}
+      </span>
     </AbsoluteFill>
   );
 };
@@ -284,10 +299,14 @@ const LabelCard: React.FC<{ label?: string; preset: Preset }> = ({ label, preset
           transform: `scale(${0.8 + 0.2 * pop})`,
           fontFamily,
           fontWeight: 900,
-          fontSize: 150,
-          letterSpacing: 6,
+          fontSize: 140,
+          letterSpacing: 4,
+          lineHeight: 1.05,
           color: preset.labelCardColor,
           textTransform: "uppercase",
+          textAlign: "center",
+          maxWidth: "86%",
+          padding: "0 48px",
         }}
       >
         {label ?? ""}
@@ -296,13 +315,34 @@ const LabelCard: React.FC<{ label?: string; preset: Preset }> = ({ label, preset
   );
 };
 
-// ---------- hook: montage + click en cada corte + karaoke ----------
+// ---------- destello blanco rapido (sincronizado con el flash de cada corte del hook) ----------
+
+const FlashOverlay: React.FC = () => {
+  const frame = useCurrentFrame();
+  const op = interpolate(frame, [0, 5], [0.9, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  if (op <= 0) return null;
+  return <AbsoluteFill style={{ backgroundColor: "white", opacity: op }} />;
+};
+
+// ---------- hook: montage + flash en cada corte + karaoke ----------
 
 const Hook: React.FC<{ props: ViralProps; preset: Preset }> = ({ props, preset }) => {
   const t = props._timeline!;
   const slug = getSlug(props);
-  const sources = props.hook?.montage_sources ?? [];
-  const n = sources.length;
+  // Montage del hook: flashes CORTOS (~HOOK_CUT_S c/u); se meten TANTOS como haga falta para llenar la voz
+  // del hook -> NO se estiran los pedazos, se agregan mas escenas. Pool: primero las montage_sources
+  // curadas, luego el resto de escenas (clip_order) para variedad; si faltan, cicla.
+  const curated = props.hook?.montage_sources ?? [];
+  const order = props.capcut_export?.clip_order ?? props.scenes.map((s) => s.id);
+  const usedIds = new Set(curated.map((s) => s.scene_id));
+  const extra = order
+    .filter((id) => !usedIds.has(id))
+    .map((id, j) => ({ scene_id: id, clip_in_s: 0.8 + (j % 3) * 0.4 }));
+  const pool = [...curated, ...extra];
+  const pieceCount = pool.length
+    ? Math.max(2, Math.min(12, Math.round(t.hookFrames / t.fps / HOOK_CUT_S)))
+    : 0;
+  const pieces = Array.from({ length: pieceCount }, (_, i) => pool[i % pool.length]);
   const clipVol = props.audio?.clip_volume ?? CLIP_VOL;
   const voiceRate = props.audio?.voice_rate ?? VOICE_RATE;
   const hookSfx = props.audio?.hook_sfx ?? HOOK_SFX;
@@ -310,12 +350,12 @@ const Hook: React.FC<{ props: ViralProps; preset: Preset }> = ({ props, preset }
 
   return (
     <AbsoluteFill style={{ backgroundColor: "black" }}>
-      {n > 0 &&
+      {pieceCount > 0 &&
         (() => {
-          const per = Math.floor(t.hookFrames / n);
+          const per = Math.floor(t.hookFrames / pieceCount);
           let from = 0;
-          return sources.map((src, i) => {
-            const dur = i === n - 1 ? t.hookFrames - per * (n - 1) : per;
+          return pieces.map((src, i) => {
+            const dur = i === pieceCount - 1 ? t.hookFrames - per * (pieceCount - 1) : per;
             const seq = (
               <Sequence key={i} from={from} durationInFrames={dur}>
                 <AbsoluteFill style={{ transform: `scale(${CLIP_ZOOM})`, transformOrigin: "50% 0%" }}>
@@ -329,13 +369,14 @@ const Hook: React.FC<{ props: ViralProps; preset: Preset }> = ({ props, preset }
                 {i > 0 && hookSfx && (
                   <Audio src={staticFile(`sfx/${hookSfx}`)} volume={hookVol} />
                 )}
+                {i > 0 && <FlashOverlay />}
               </Sequence>
             );
             from += dur;
             return seq;
           });
         })()}
-      <Audio src={staticFile(`${slug}/voice/hook.mp3`)} />
+      <Audio src={staticFile(`${slug}/voice/hook.mp3`)} playbackRate={voiceRate} />
       <Karaoke
         text={props.hook?.voiceover}
         words={dedupeWords(props.hook?.words)}
@@ -363,56 +404,73 @@ const Scene: React.FC<{
   const voiceRate = props.audio?.voice_rate ?? VOICE_RATE;
   const sceneSfx = props.audio?.scene_sfx ?? SCENE_SFX;
   const sceneVol = props.audio?.scene_sfx_volume ?? SCENE_SFX_VOL;
-  const { cardFrames, sceneFrames, clipWindow, playbackRate } = timing;
+  const { cardFrames, sceneFrames, clipWindow, playbackRate, introFrames } = timing;
+  const contentFrames = sceneFrames - introFrames;
   const sub = stripLabelWords(
     dedupeWords(scene.voiceover?.words),
-    scene.voiceover?.text ?? scene.captions?.text,
+    stripTags(scene.voiceover?.text ?? scene.captions?.text),
     scene.time_label
   );
 
   return (
     <AbsoluteFill style={{ backgroundColor: "black" }}>
-      {/* voz: arranca con la escena (suena durante el cartel -> sincroniza "DIA 1") */}
-      <Audio src={staticFile(`${slug}/voice/${scene.id}.mp3`)} playbackRate={voiceRate} />
-      {/* flash al aparecer el cartel de la escena (DIA 1, SEMANA 1...): solo si hay cartel */}
-      {sceneSfx && cardFrames > 0 && <Audio src={staticFile(`sfx/${sceneSfx}`)} volume={sceneVol} />}
-      {/* sfx puntuales (at_s relativo al inicio de la escena) */}
-      {(scene.sfx ?? []).map((cue, i) => (
-        <Sequence key={i} from={Math.round((cue.at_s ?? 0) * fps)}>
-          <Audio src={staticFile(`sfx/${cue.file}`)} volume={cue.volume ?? 0.8} />
-        </Sequence>
-      ))}
-
-      {/* clip animado (despues del cartel), en camara lenta si la voz dura mas */}
-      <Sequence from={cardFrames} durationInFrames={clipWindow}>
-        <AbsoluteFill style={{ transform: `scale(${CLIP_ZOOM})`, transformOrigin: "50% 0%" }}>
-          <OffthreadVideo
-            src={staticFile(`${slug}/clips/${scene.id}.mp4`)}
-            playbackRate={playbackRate}
-            volume={clipVol}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        </AbsoluteFill>
-      </Sequence>
-
-      {/* karaoke sobre toda la escena (lo del cartel queda tapado por el cartel) */}
-      <Karaoke
-        text={sub.text}
-        words={sub.words}
-        windowFrames={sceneFrames}
-        voiceRate={voiceRate}
-        preset={preset}
-        hot={scene.captions?.highlight_words}
-        bottom={380}
-        size={128}
-      />
-
-      {/* cartel "DIA 1" encima, primeros frames */}
-      {cardFrames > 0 && (
-        <Sequence from={0} durationInFrames={cardFrames}>
-          <LabelCard label={scene.time_label} preset={preset} />
+      {/* cartel intro OPCIONAL (silencioso) ANTES del contenido, con flash. Solo si scene.intro_card. */}
+      {introFrames > 0 && (
+        <Sequence from={0} durationInFrames={introFrames}>
+          {sceneSfx && <Audio src={staticFile(`sfx/${sceneSfx}`)} volume={sceneVol} />}
+          {scene.intro_card_voice && (
+            <Audio src={staticFile(`${slug}/voice/${scene.intro_card_voice}`)} playbackRate={voiceRate} />
+          )}
+          <LabelCard label={scene.intro_card} preset={preset} />
         </Sequence>
       )}
+
+      {/* contenido de la escena, desplazado por el cartel intro (introFrames=0 => sin desplazar) */}
+      <Sequence from={introFrames} durationInFrames={contentFrames}>
+        <AbsoluteFill style={{ backgroundColor: "black" }}>
+          {/* voz: arranca con el contenido (suena durante el cartel narrado -> sincroniza "DIA 1") */}
+          <Audio src={staticFile(`${slug}/voice/${scene.id}.mp3`)} playbackRate={voiceRate} />
+          {/* flash al aparecer el cartel narrado de la escena */}
+          {sceneSfx && cardFrames > 0 && <Audio src={staticFile(`sfx/${sceneSfx}`)} volume={sceneVol} />}
+          {/* sfx puntuales (at_s relativo al inicio del contenido) */}
+          {(scene.sfx ?? []).map((cue, i) => (
+            <Sequence key={i} from={Math.round((cue.at_s ?? 0) * fps)}>
+              <Audio src={staticFile(`sfx/${cue.file}`)} volume={cue.volume ?? 0.8} />
+            </Sequence>
+          ))}
+
+          {/* clip animado (despues del cartel narrado), en camara lenta si la voz dura mas */}
+          <Sequence from={cardFrames} durationInFrames={clipWindow}>
+            <AbsoluteFill style={{ transform: `scale(${CLIP_ZOOM})`, transformOrigin: "50% 0%" }}>
+              <OffthreadVideo
+                src={staticFile(`${slug}/clips/${scene.id}.mp4`)}
+                playbackRate={playbackRate}
+                volume={clipVol}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            </AbsoluteFill>
+          </Sequence>
+
+          {/* karaoke sobre el contenido (lo del cartel narrado queda tapado por el cartel) */}
+          <Karaoke
+            text={sub.text}
+            words={sub.words}
+            windowFrames={contentFrames}
+            voiceRate={voiceRate}
+            preset={preset}
+            hot={scene.captions?.highlight_words}
+            bottom={380}
+            size={128}
+          />
+
+          {/* cartel narrado (DIA 1...) encima, primeros frames del contenido */}
+          {cardFrames > 0 && (
+            <Sequence from={0} durationInFrames={cardFrames}>
+              <LabelCard label={scene.time_label} preset={preset} />
+            </Sequence>
+          )}
+        </AbsoluteFill>
+      </Sequence>
     </AbsoluteFill>
   );
 };
@@ -437,12 +495,14 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: "black" }}>
-      {props.audio?.music_file && (
-        <Audio
-          src={staticFile(`${slug}/${props.audio.music_file}`)}
-          volume={props.audio.music_volume ?? 0.18}
-        />
-      )}
+      {(() => {
+        // Musica de fondo: la del proyecto si la trae; si no, la COMPARTIDA por defecto. Loop para cubrir
+        // todo el video. Volumen FIJO 0.25 siempre (el usuario lo quiere asi); music_volume=0 sigue silenciando.
+        const ownMusic = props.audio?.music_file;
+        const src = ownMusic ? staticFile(`${slug}/${ownMusic}`) : staticFile(DEFAULT_MUSIC);
+        const vol = props.audio?.music_volume === 0 ? 0 : DEFAULT_MUSIC_VOL;
+        return <Audio src={src} volume={vol} loop />;
+      })()}
 
       {t.hookFrames > 0 && (
         <Sequence from={0} durationInFrames={t.hookFrames}>

@@ -11,7 +11,7 @@
 import {
   CMD, EVT, ACT, RES,
   SCENE_STATUS, LOG_LEVEL,
-  STORAGE_KEY, DEFAULT_CONFIG, FISH_PRESETS,
+  STORAGE_KEY, DEFAULT_CONFIG, FISH_PRESETS, pickPresetVoiceId, DEFAULT_VOICE_ID,
   makeInitialState, msg, jitterDelay,
 } from "../lib/messaging.js";
 
@@ -47,8 +47,26 @@ async function loadState() {
   // es Omni; migramos ese valor concreto para que el default real sea Omni (el usuario puede
   // cambiarlo en la UI cuando quiera).
   if (state.config.videoModel === "Veo 3.1 - Fast") state.config.videoModel = DEFAULT_CONFIG.videoModel;
+  // HARDCODE (pedido del usuario 2026-06-18): estos valores NO se configuran desde el panel; se fuerzan
+  // SIEMPRE (pisan lo guardado) para que el comportamiento sea estable. tope/hora alto (50), descanso CORTO
+  // y POCO frecuente (~20-30s cada 25 generaciones), y el prompt siempre se PEGA (no se tipea). Si en el
+  // futuro quieres reabrir esto a config, quita estas lineas y vuelve a exponer los inputs en el panel.
+  state.config.maxGenerationsPerHour = 50;
+  state.config.longBreakEvery = 25;
+  state.config.longBreakMinMs = 20000;
+  state.config.longBreakMaxMs = 30000;
+  state.config.humanTyping = false;   // siempre pegar (los drivers ya pegan en fragmentos rapidos)
   // Migracion: campos nuevos de queue/pacing sin pisar lo guardado.
   state.queue = { running: false, paused: false, currentIndex: 0, phase: "images", errorSceneId: null, heartbeatAt: 0, ...(state.queue || {}) };
+  // Carriles: al (re)cargar el SW NINGUN carril corre todavia -> running forzado a false (evita carriles
+  // "vivos" fantasma tras morir el SW; el heartbeat previo se conserva solo como referencia).
+  {
+    const _pl = state.lanes || {};
+    state.lanes = {
+      images: { running: false, heartbeatAt: _pl.images?.heartbeatAt || 0 },
+      animation: { running: false, heartbeatAt: _pl.animation?.heartbeatAt || 0 },
+    };
+  }
   state.pacing = { windowStart: 0, windowCount: 0, sessionGen: 0, cooldownUntil: 0, cooldownStep: 0, ...(state.pacing || {}) };
   state.metrics = { generations: 0, errors: 0, cooldownMs: 0, since: Date.now(), ...(state.metrics || {}) };
   // Rehidrata el ring de logs (clave separada) para que el historial sobreviva al sueno del SW.
@@ -186,7 +204,10 @@ async function resumeIfInterrupted() {
   await saveState();
   log(LOG_LEVEL.INFO, "Reanudando corrida tras reinicio del service worker.");
   emitState();
-  launchLoop();
+  // Si la corrida era PARALELA (murio el SW durante la espera de Grok), reanuda en paralelo (idempotente
+  // por status, no re-gasta) en vez del bucle secuencial; si no, el bucle unico de siempre.
+  if (state.queue.mode === "parallel" && state.config.parallelPipeline) runPhasesParallel().catch((e) => log(LOG_LEVEL.ERROR, `Reanudacion paralela fallo: ${e?.message ?? e}`));
+  else launchLoop();
 }
 
 // ---------------------------------------------------------------------------
@@ -304,6 +325,10 @@ async function onLoadJson(message) {
   state.project = { ...result.project, characterRef: prevRef };
   state.scenes = result.scenes;
   state.queue = { running: false, paused: false, currentIndex: 0 };
+  // Reinicia el RITMO al cargar un JSON nuevo: cada video arranca "fresco". Antes solo se reseteaba queue,
+  // asi que un 2o video en la misma hora HEREDABA windowCount/sessionGen/cooldown del anterior y disparaba
+  // "Tope 50/hora: pausa 20 min" (o un descanso largo) de la nada. El tope/hora pasa a ser por-video.
+  state.pacing = { windowStart: 0, windowCount: 0, sessionGen: 0, cooldownUntil: 0, cooldownStep: 0 };
   // El JSON manda el proveedor (pipeline.image_generation.tool). Si lo declara, enruta a Flow o Grok;
   // si no, respeta el del panel. Asi la cola automatica mezcla JSON de Flow y Grok sin tocar nada.
   if (result.project.provider && result.project.provider !== state.config.provider) {
@@ -384,6 +409,7 @@ async function onRetryScene(message) {
     scene.clipFilename = null;
     scene.lastFrameFilename = null;
     scene.savedOk = false;
+    scene.grokFired = false; scene.grokVideoPostUrl = null; scene.grokAnimBefore = null;  // re-animar LIMPIO: permitir re-disparo en Grok
     await saveState();
     log(LOG_LEVEL.INFO, `Escena ${scene.id}: reintento animacion (mantengo la imagen).`);
     emitSceneStatus(scene.id, SCENE_STATUS.IMAGE_DONE);
@@ -399,6 +425,7 @@ async function onRetryScene(message) {
   scene.clipFilename = null;
   scene.lastFrameFilename = null;
   scene.savedOk = false;
+  scene.grokFired = false; scene.grokVideoPostUrl = null; scene.grokAnimBefore = null;  // todo de cero: permitir re-disparo en Grok
   await saveState();
   log(LOG_LEVEL.INFO, `Escena ${scene.id} reseteada a PENDING (regenera imagen).`);
   emitSceneStatus(scene.id, SCENE_STATUS.PENDING);
@@ -426,7 +453,7 @@ async function onRetryAllErrors() {
   let toAnimate = false;
   for (const s of errs) {
     s.attempts = 0; s.error = null;
-    if (s.imageUrl) { s.status = SCENE_STATUS.IMAGE_DONE; s.videoUrl = null; s.clipFilename = null; s.lastFrameFilename = null; s.savedOk = false; toAnimate = true; }
+    if (s.imageUrl) { s.status = SCENE_STATUS.IMAGE_DONE; s.videoUrl = null; s.clipFilename = null; s.lastFrameFilename = null; s.savedOk = false; s.grokFired = false; s.grokVideoPostUrl = null; s.grokAnimBefore = null; toAnimate = true; }
     else { s.status = SCENE_STATUS.PENDING; }
     emitSceneStatus(s.id, s.status);
   }
@@ -519,7 +546,7 @@ async function onRateLimit(message) {
   state.queue.paused = true;
   state.queue.running = false;
   await saveState();
-  detachDebuggers();
+  if (!state.config.parallelPipeline) detachDebuggers();   // en paralelo, cada carril suelta SU pestana en su finally (no tumbar al hermano a media CDP)
   const mins = Math.round(waitMs / 60000);
   log(LOG_LEVEL.WARN, `RATE-LIMIT: ${message} Enfriando ${mins} min y reanudo solo.`);
   emit(EVT.HARD_STOP, { reason: "rate_limit", message: `${message} Cooldown ${mins} min (reanuda solo).` });
@@ -538,7 +565,8 @@ async function resumeAfterCooldown() {
   await saveState();
   log(LOG_LEVEL.INFO, "Cooldown de rate-limit terminado: reanudando la cola.");
   emitState();
-  launchLoop();
+  if (state.queue.mode === "parallel" && state.config.parallelPipeline) runPhasesParallel().catch((e) => log(LOG_LEVEL.ERROR, `Reanudacion paralela fallo: ${e?.message ?? e}`));
+  else launchLoop();
 }
 
 // Pausa "blanda" por fallo recuperable-a-mano (no captcha/sin-creditos): deja la cola PAUSADA para que
@@ -549,7 +577,7 @@ async function pauseForError(message, sceneId = null) {
   state.queue.errorSceneId = sceneId;
   if (sceneId && state.metrics) state.metrics.errors = (state.metrics.errors || 0) + 1;
   await saveState();
-  detachDebuggers();
+  if (!state.config.parallelPipeline) detachDebuggers();   // en paralelo, cada carril suelta SU pestana (no tumbar al hermano)
   log(LOG_LEVEL.WARN, `PAUSA por fallo: ${message}. Revisa y dale Reanudar / Saltar / Reintentar.`);
   emit(EVT.PAUSED_BY_ERROR, { sceneId, error: message });
   emitState();
@@ -588,6 +616,11 @@ async function onStartPhase(phase) {
     ? "FASE 1 iniciada: generar todas las imagenes (Nano Banana)."
     : "FASE 2 iniciada: animar las imagenes listas (Veo).");
   emitState();
+  // FASE 0 (solo imagenes): genera los ingredientes del JSON antes de las escenas. No-op si no hay.
+  if (phase === "images") {
+    const ok = await runIngredientsPhase().catch((e) => { log(LOG_LEVEL.ERROR, `Ingredientes: ${e?.message ?? e}`); return false; });
+    if (!ok) { await ensureState(); emitState(); return; }   // parada dura / pausa: no arranca el bucle de escenas
+  }
   launchLoop();
 }
 
@@ -602,20 +635,29 @@ const orchestrator = createOrchestrator({
   emitSceneStatus,
   log,
   runners: {
-    image: (scene, prevSceneId, refName) =>
-      state.config.dryRun ? runDryRunImage(scene, prevSceneId, refName)
-        : state.config.provider === "grok" ? runGrokImage(scene)
-          : runRealImage(scene, prevSceneId, refName),
-    animation: (scene) =>
-      state.config.dryRun ? runDryRunAnimation(scene)
-        : state.config.provider === "grok" ? runGrokAnimation(scene)
-          : runRealAnimation(scene),
+    // Proveedor POR FASE: la imagen usa project.imageProvider y la animacion project.animationProvider
+    // (fallback al global state.config.provider). Si ambos son iguales (JSON de un solo proveedor) -> flujo
+    // actual identico. Si difieren (ej. imagen=flow, animacion=grok) -> desacople; el handoff lo resuelve
+    // runRealImage (guarda la imagen a disco) + runGrokAnimation (la sube). Ver [[grok-pause-resume-parallel]].
+    image: (scene, prevSceneId, refName) => {
+      const imgProv = state.project?.imageProvider || state.config.provider;
+      return state.config.dryRun ? runDryRunImage(scene, prevSceneId, refName)
+        : imgProv === "grok" ? runGrokImage(scene)
+          : runRealImage(scene, prevSceneId, refName);
+    },
+    animation: (scene) => {
+      const animProv = state.project?.animationProvider || state.config.provider;
+      return state.config.dryRun ? runDryRunAnimation(scene)
+        : animProv === "grok" ? runGrokAnimation(scene)
+          : runRealAnimation(scene);
+    },
     parallelAnimation: () => runParallelAnimation(),
   },
   effects: {
     onHardStop: (reason, message) => onHardStop(reason, message),
     pauseForError: (message, sceneId) => pauseForError(message, sceneId),
     detachDebuggers: () => detachDebuggers(),
+    detachProvider: (provider) => detachProvider(provider),   // pipeline paralelo: suelta solo SU pestana
     reportFailuresAtEnd: () => reportFailuresAtEnd(),
     heartbeatJobLock: () => heartbeatJobLock(),
   },
@@ -698,9 +740,9 @@ async function runDryRunAnimation(scene) {
 // prev_frame NO aplica aqui (el video no existe aun): solo character_ref.
 async function runRealImage(scene, prevSceneId, refName) {
   void prevSceneId; void refName;
-  const tab = await findFlowTab();
+  const tab = await findFlowTab("flow");
   if (!tab) throw new Error("No hay pestana de Flow abierta (labs.google). Abre Flow y reintenta.");
-  await ensureContentScript(tab.id);
+  await ensureContentScript(tab.id, "flow");
   // Pre-adjunta el depurador AHORA (no en el 1er click): asi la barra "depurando" ya esta presente
   // cuando el driver calcula las coordenadas del boton Generar -> click correcto al primer intento.
   await ensureDebugger(tab.id);
@@ -709,13 +751,33 @@ async function runRealImage(scene, prevSceneId, refName) {
   // crea cada Personaje una vez por proyecto (subir un archivo por script es imposible: seguridad).
   // Compat VIEJO: si la escena no trae characterRefs pero si el ingrediente character_ref, usar el
   // nombre global (character_bible.name).
-  let characterNames = Array.isArray(scene.characterRefs) ? scene.characterRefs.filter(Boolean) : [];
-  if (!characterNames.length && scene.imageIngredients?.includes("character_ref") && state.project?.characterName) {
-    characterNames = [state.project.characterName];
-  }
-  // ESCENAS PREVIAS (nuevo): resolver references.scenes[].sceneId -> la imageUrl ya generada de esa
-  // escena (las imagenes se generan EN ORDEN, asi que la referenciada ya existe). Se adjuntara en Flow.
+  // PERSONAJES: cada id de scene.characterRefIds es un personaje BASE (Personaje de Flow via "+") o un
+  // ingrediente character_edited (el base ya "vestido" -> se adjunta su TILE generado via ⋮, NO el base).
+  const ingOf = (id) => (state.project?.ingredients || []).find((g) => g.id === id) || null;
+  const characterNames = [];
   const sceneRefImageUrls = [];
+  const refIds = Array.isArray(scene.characterRefIds) ? scene.characterRefIds : [];
+  for (let i = 0; i < refIds.length; i++) {
+    const ing = ingOf(refIds[i]);
+    if (ing && ing.type === "character_edited") {
+      if (ing.imageUrl) sceneRefImageUrls.push(ing.imageUrl);
+      else log(LOG_LEVEL.WARN, `${scene.id}: character_edited '${refIds[i]}' sin imagen (¿corrio la fase de ingredientes?); se omite.`);
+    } else {
+      const dn = (scene.characterRefs || [])[i];
+      if (dn) characterNames.push(dn);   // display_name del Personaje base
+    }
+  }
+  // Compat VIEJO: sin refs nuevas pero con el ingrediente character_ref -> nombre global de personaje.
+  if (!characterNames.length && !sceneRefImageUrls.length && scene.imageIngredients?.includes("character_ref") && state.project?.characterName) {
+    characterNames.push(state.project.characterName);
+  }
+  // INGREDIENTES de escena (entity/location_plate): adjuntar su tile generado via ⋮ (igual que una escena previa).
+  for (const rid of (scene.ingredientRefs || [])) {
+    const ing = ingOf(rid);
+    if (ing?.imageUrl) sceneRefImageUrls.push(ing.imageUrl);
+    else log(LOG_LEVEL.WARN, `${scene.id}: ingrediente '${rid}' sin imagen generada; se omite.`);
+  }
+  // ESCENAS PREVIAS (legacy, desaconsejado con ingredientes): references.scenes[].sceneId -> imageUrl ya generada.
   for (const sr of (scene.sceneRefs || [])) {
     const ref = state.scenes.find((x) => x.id === sr.sceneId);
     if (ref?.imageUrl) sceneRefImageUrls.push(ref.imageUrl);
@@ -729,9 +791,21 @@ async function runRealImage(scene, prevSceneId, refName) {
   emitSceneStatus(scene.id, SCENE_STATUS.GENERATING_IMAGE);
   emitState();
   const img = await sendActOrFail(tab.id, ACT.GENERATE_IMAGE, {
-    prompt: scene.imagePrompt, characterNames, sceneRefImageUrls, aspectRatio, count,
+    prompt: scene.imagePrompt, characterNames, sceneRefImageUrls, aspectRatio, count, cfg: driverCfg(),
   });
   scene.imageUrl = img?.imageUrl ?? null;
+  // HANDOFF cross-proveedor (opt-in por JSON): si la animacion va en OTRO proveedor (animationProvider != "flow"),
+  // guarda la imagen de Flow a disco para poder subirla alla (igual que runGrokImage). Flow->Flow NO paga esta
+  // descarga -> flujo actual intacto. Falla con gracia: si no baja, imageFilePath queda null (no rompe nada).
+  const animProv = state.project?.animationProvider || state.config.provider;   // proveedor EFECTIVO (igual que el dispatch)
+  if (animProv !== "flow" && scene.imageUrl) {
+    try {
+      const slug = state.project?.slug || "proyecto";
+      const saved = await downloadImageForRef(scene.imageUrl, slug, scene.id);
+      scene.imageFilePath = saved.abspath || null;
+      log(LOG_LEVEL.INFO, `${scene.id}: imagen de Flow guardada a disco para handoff a ${animProv}.`);
+    } catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no pude guardar la imagen de Flow a disco para handoff (${e?.message ?? e}).`); }
+  }
   scene.status = SCENE_STATUS.IMAGE_DONE;
   scene.error = null;
   await saveState();
@@ -744,9 +818,18 @@ async function runRealImage(scene, prevSceneId, refName) {
 // FASE 2 (real): anima la imagen de la escena (Veo, ~20 puntos), descarga el clip y
 // extrae el ultimo frame. Pasa scene.imageUrl para que el driver ubique el tile correcto.
 async function runRealAnimation(scene) {
-  const tab = await findFlowTab();
+  const tab = await findFlowTab("flow");
   if (!tab) throw new Error("No hay pestana de Flow abierta (labs.google). Abre Flow y reintenta.");
-  await ensureContentScript(tab.id);
+
+  // HANDOFF NO SOPORTADO: Flow solo anima tiles de SU grilla, no imagenes subidas de otro proveedor.
+  // Si la imagen se genero en Grok, su URL/tile JAMAS aparece en Flow -> fallar CLARO y no-reintentable
+  // (classifyError mapea 'no soportado'/'handoff' a selector) para no quemar el intento ni re-disparar nada.
+  const imgProv = state.project?.imageProvider || state.config.provider;
+  if (imgProv !== "flow") {
+    throw new Error(`handoff imagen=${imgProv} -> animacion=flow no soportado (Flow solo anima imagenes generadas en Flow); pon animacion=${imgProv} o genera la imagen en flow`);
+  }
+
+  await ensureContentScript(tab.id, "flow");
   await ensureDebugger(tab.id);  // pre-adjunta para que el 1er click Generar caiga bien (barra ya presente)
 
   const count = state.config.generationCount ?? DEFAULT_CONFIG.generationCount;
@@ -755,25 +838,35 @@ async function runRealAnimation(scene) {
   const model = state.config.videoModel ?? DEFAULT_CONFIG.videoModel;
   const duration = state.config.videoDuration ?? DEFAULT_CONFIG.videoDuration;
 
-  // 1) ANIMATE
-  scene.status = SCENE_STATUS.ANIMATING;
-  await saveState();
-  emitSceneStatus(scene.id, SCENE_STATUS.ANIMATING);
-  emitState();
-  log(LOG_LEVEL.INFO, `Animando ${scene.id} con "${model}" (${duration})...`);
-  const vid = await sendActOrFail(tab.id, ACT.ANIMATE, {
-    prompt: scene.animationPrompt, model, duration, aspectRatio, count, imageUrl: scene.imageUrl,
-  });
-  const videoUrl = vid?.videoUrl;
-  if (!videoUrl) throw new Error("animacion sin URL de video");
-  if (vid?.cost) log(LOG_LEVEL.INFO, `${scene.id}: ${vid.cost}`);
-  await delay(jitterDelay(state.config.delayMinMs, state.config.delayMaxMs, scene.attempts));
+  // 1) ANIMATE — IDEMPOTENTE: separamos FIRE (paga) de COLLECT y persistimos scene.videoUrl tras mapear el
+  // video nuevo. Si un intento previo ya disparo+mapeo (scene.videoUrl presente), NO re-disparamos: saltamos
+  // a recoger/descargar. Asi un fallo de collect/descarga NO re-gasta puntos (antes ACT.ANIMATE acoplaba
+  // fire+collect y el reintento re-animaba: hasta 80 pts/escena).
+  if (!scene.videoUrl) {
+    scene.status = SCENE_STATUS.ANIMATING;
+    await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.ANIMATING); emitState();
+    log(LOG_LEVEL.INFO, `Animando ${scene.id} con "${model}" (${duration})...`);
+    let before = [];
+    try { before = (await sendActOrFail(tab.id, ACT.VIDEO_SRCS, {}))?.srcs || []; } catch (_e) {}
+    const res = await sendActOrFail(tab.id, ACT.ANIMATE_FIRE, {
+      prompt: scene.animationPrompt, model, duration, aspectRatio, count, imageUrl: scene.imageUrl, cfg: driverCfg(),
+    });
+    if (res?.cost) log(LOG_LEVEL.INFO, `${scene.id}: ${res.cost}`);
+    detachDebugger(tab.id);   // soltar ANTES de la espera larga del video (su retencion congelaba la pestana)
+    const mapped = await sendActOrFail(tab.id, ACT.MAP_NEW_VIDEOS, { before, total: 1 });
+    const src = (mapped?.srcs || [])[0];
+    if (!src) throw new Error("no aparecio el video nuevo tras animar (¿Flow lo encolo o bloqueo?)");
+    scene.videoUrl = src;     // PERSISTIR -> idempotencia: si lo de abajo falla, el reintento recoge sin re-disparar
+    await saveState();
+  } else {
+    log(LOG_LEVEL.INFO, `${scene.id}: ya animado en un intento previo; recojo sin re-disparar (no re-gasto).`);
+  }
 
-  // 2) DESCARGAR via chrome.downloads (usa cookies de sesion; no requiere host perms).
+  // 2) RECOGER (espera fin del video) + DESCARGAR via chrome.downloads (cookies de sesion; sin host perms).
   scene.status = SCENE_STATUS.DOWNLOADING;
-  await saveState();
-  emitSceneStatus(scene.id, SCENE_STATUS.DOWNLOADING);
-  emitState();
+  await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.DOWNLOADING); emitState();
+  const collected = await sendActOrFail(tab.id, ACT.ANIMATE_COLLECT, { videoUrl: scene.videoUrl });
+  const videoUrl = collected?.videoUrl || scene.videoUrl;
   scene.clipFilename = `${scene.id}.mp4`;
   {
     const clipSlug = state.project?.slug || "proyecto";
@@ -785,25 +878,7 @@ async function runRealAnimation(scene) {
   await saveState();
   await delay(jitterDelay(state.config.delayMinMs, state.config.delayMaxMs, scene.attempts));
 
-  // 3) EXTRAER ULTIMO FRAME (background fetch -> offscreen, evita taint CORS). Best-effort.
-  scene.status = SCENE_STATUS.EXTRACTING_FRAME;
-  await saveState();
-  emitSceneStatus(scene.id, SCENE_STATUS.EXTRACTING_FRAME);
-  emitState();
-  scene.lastFrameFilename = `${scene.id}_lastframe.png`;
-  try {
-    // Preferimos el frame capturado por el driver (canvas en la pagina, sin CORS). Fallback al
-    // fetch en background + offscreen por si el driver no lo pudo capturar.
-    const frameDataUrl = vid?.lastFrameDataUrl || await extractLastFrame(videoUrl, scene.id);
-    if (frameDataUrl) {
-      lastFrames.set(scene.id, frameDataUrl);
-      await downloadUrl(frameDataUrl, scene.lastFrameFilename);
-    }
-  } catch (e) {
-    log(LOG_LEVEL.WARN, `Extraccion de frame fallo (${scene.id}): ${e?.message ?? e}.`);
-  }
-
-  // 4) DONE
+  // 3) DONE (la extraccion de ultimo frame se quito: el flujo de ingredientes no la usa)
   scene.status = SCENE_STATUS.DONE;
   scene.error = null;
   await saveState();
@@ -843,25 +918,40 @@ async function downloadImageForRef(url, slug, id) {
 
 // FASE 1 (Grok): sube referencias (personaje + escenas previas) por CDP -> genera imagen (modo Imagen).
 async function runGrokImage(scene) {
-  const tab = await findFlowTab();
+  const tab = await findFlowTab("grok");
   if (!tab) throw new Error("No hay pestana de Grok abierta (grok.com/imagine). Abrela y reintenta.");
   await ensureGrokCompositor(tab.id); // vuelve al composer fresco (tras la escena previa quedo en /imagine/post/<id>)
-  await ensureContentScript(tab.id);
+  await ensureContentScript(tab.id, "grok");
   await ensureDebugger(tab.id);
 
-  // Referencias a subir: personaje(s) + imagenes de escenas previas (ya en disco).
+  // Referencias a subir por CDP: personaje(s) base O su character_edited (PNG en disco) + ingredientes + escenas previas.
   const refPaths = [];
   const chars = state.project?.characters || {};
-  for (const nm of (scene.characterRefs || [])) {
-    const entry = Object.values(chars).find((c) => c && c.display_name === nm);
-    if (entry?.reference_asset) {
-      try { const p = await resolveCharFile(entry.reference_asset); if (p) refPaths.push(p); }
-      catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no resolvi ref de personaje "${nm}": ${e?.message ?? e}`); }
+  const ingOf = (id) => (state.project?.ingredients || []).find((g) => g.id === id) || null;
+  const refIds = Array.isArray(scene.characterRefIds) ? scene.characterRefIds : [];
+  for (let i = 0; i < refIds.length; i++) {
+    const ing = ingOf(refIds[i]);
+    if (ing && ing.type === "character_edited") {
+      if (ing.imageFilePath) refPaths.push(ing.imageFilePath);   // el base ya "vestido", en disco
+      else log(LOG_LEVEL.WARN, `${scene.id}: character_edited '${refIds[i]}' sin imagen en disco (¿corrio la fase de ingredientes?); se omite.`);
+    } else {
+      const nm = (scene.characterRefs || [])[i];
+      const entry = Object.values(chars).find((c) => c && c.display_name === nm);
+      if (entry?.reference_asset) {
+        try { const p = await resolveCharFile(entry.reference_asset); if (p) refPaths.push(p); }
+        catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no resolvi ref de personaje "${nm}": ${e?.message ?? e}`); }
+      }
     }
   }
-  if (!refPaths.length) { // compat: sin characterRefs, usa el 1er personaje del mapa
+  if (!refPaths.length && !refIds.length) { // compat: sin refs declaradas, usa el 1er personaje del mapa
     const first = Object.values(chars)[0];
     if (first?.reference_asset) { try { const p = await resolveCharFile(first.reference_asset); if (p) refPaths.push(p); } catch (_e) {} }
+  }
+  // INGREDIENTES de escena (entity/location_plate): subir su PNG en disco.
+  for (const rid of (scene.ingredientRefs || [])) {
+    const ing = ingOf(rid);
+    if (ing?.imageFilePath) refPaths.push(ing.imageFilePath);
+    else log(LOG_LEVEL.WARN, `${scene.id}: ingrediente '${rid}' sin imagen en disco; se omite.`);
   }
   for (const sr of (scene.sceneRefs || [])) {
     const ref = state.scenes.find((x) => x.id === sr.sceneId);
@@ -877,9 +967,10 @@ async function runGrokImage(scene) {
     try { await cdpSetFileInput(tab.id, refPaths); log(LOG_LEVEL.INFO, `${scene.id}: ${refPaths.length} referencia(s) subidas a Grok.`); }
     catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no pude subir referencias (${e?.message ?? e}); genero sin ellas.`); }
   }
-  const img = await sendActOrFail(tab.id, ACT.GENERATE_IMAGE, { prompt: scene.imagePrompt });
+  const img = await sendActOrFail(tab.id, ACT.GENERATE_IMAGE, { prompt: scene.imagePrompt, cfg: driverCfg() });
   const imageUrl = img?.imageUrl;
   if (!imageUrl) throw new Error("Grok no devolvio URL de imagen");
+  if (img?.variantCount > 1) log(LOG_LEVEL.INFO, `${scene.id}: Grok genero ${img.variantCount} variaciones; uso la 1a (determinista).`);
   scene.imageUrl = imageUrl;
   scene.grokPostUrl = img?.postUrl || null;   // URL real del post (para animar con "Hacer video" sin derivar mal)
   try {
@@ -896,61 +987,101 @@ async function runGrokImage(scene) {
 // "modo Video"). Al disparar, Grok navega a un /post/<videoId> nuevo y genera en sitio -> re-inyectamos
 // y recolectamos el <video> ahi. Clic sintetico (sin debugger) -> sin congelamiento de la pestana.
 async function runGrokAnimation(scene) {
-  const tab = await findFlowTab();
+  const tab = await findFlowTab("grok");
   if (!tab) throw new Error("No hay pestana de Grok abierta (grok.com/imagine). Abrela y reintenta.");
-  // Post de la imagen: el URL REAL capturado al generar (scene.grokPostUrl). Fallback: derivar del genId
-  // del asset (no siempre coincide con el id del post -> por eso preferimos el capturado).
-  let postUrl = scene.grokPostUrl;
-  if (!postUrl) {
-    const m = (scene.imageUrl || "").match(/generated\/([^/?]+)/);
-    if (!m) throw new Error("no puedo ubicar el post de la imagen en Grok (regenera la imagen para capturarlo)");
-    postUrl = `https://grok.com/imagine/post/${m[1]}`;
+
+  // IDEMPOTENCIA (no re-gastar puntos): el FIRE (que paga) solo corre la 1a vez. scene.grokFired se marca
+  // tras un disparo exitoso; si un reintento entra con grokFired (o con scene.videoUrl ya recogido), NO
+  // re-disparamos: recogemos en el /post del video (scene.grokVideoPostUrl) o re-descargamos.
+  if (!scene.videoUrl && !scene.grokFired) {
+    // HANDOFF cross-proveedor: si la imagen NO se genero en Grok (imageProvider != "grok") no hay /post que
+    // abrir -> composer fresco + subir la imagen de disco por CDP (Grok SI anima imagenes subidas, spike OK).
+    const imgProv = state.project?.imageProvider || state.config.provider;   // proveedor EFECTIVO (igual que el dispatch)
+    const uploadedImage = imgProv !== "grok";
+    if (uploadedImage) {
+      if (!scene.imageFilePath && scene.imageUrl) {
+        // imageFilePath se perdio (p.ej. reinicio del SW): re-baja la imagen a disco antes de rendirse.
+        try { const slug = state.project?.slug || "proyecto"; const saved = await downloadImageForRef(scene.imageUrl, slug, scene.id); scene.imageFilePath = saved.abspath || null; } catch (_e) {}
+      }
+      if (!scene.imageFilePath) throw new Error("falta la imagen en disco para subir a Grok (handoff); regenera la imagen");
+      await ensureGrokCompositor(tab.id);          // composer fresco (sin /post)
+      await ensureContentScript(tab.id, "grok");
+      await ensureDebugger(tab.id);                // CDP para subir el archivo + el clic TRUSTED
+      try { await sendActOrFail(tab.id, ACT.CLEAR_REFS, {}); } catch (_e) {}
+      await cdpSetFileInput(tab.id, [scene.imageFilePath]);
+      log(LOG_LEVEL.INFO, `${scene.id}: imagen subida a Grok para animar (handoff desde ${imgProv}).`);
+    } else {
+      // camino actual (imagen generada en Grok): navegar al /post real capturado al generar (o derivarlo
+      // del genId del asset; preferimos el capturado porque no siempre coincide con el id del post).
+      let postUrl = scene.grokPostUrl;
+      if (!postUrl) {
+        const m = (scene.imageUrl || "").match(/generated\/([^/?]+)/);
+        if (!m) throw new Error("no puedo ubicar el post de la imagen en Grok (regenera la imagen para capturarlo)");
+        postUrl = `https://grok.com/imagine/post/${m[1]}`;
+      }
+      await navigateTab(tab.id, postUrl);
+      await ensureContentScript(tab.id, "grok");
+      await ensureDebugger(tab.id);   // solo para el clic TRUSTED; se suelta antes de la espera
+    }
+
+    scene.status = SCENE_STATUS.ANIMATING;
+    await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.ANIMATING); emitState();
+    log(LOG_LEVEL.INFO, `Animando ${scene.id} en Grok (modo Video + prompt)...`);
+
+    // Snapshot de los videos YA presentes y la URL actual ANTES de disparar: COLLECT recoge solo el NUEVO
+    // (no un video viejo del DOM) y solo persistimos el /post si la navegacion cambio de pagina.
+    let before = [];
+    try { before = (await sendActOrFail(tab.id, ACT.VIDEO_SRCS, {}))?.srcs || []; } catch (_e) {}
+    scene.grokAnimBefore = before;
+    let preUrl = ""; try { preUrl = (await chrome.tabs.get(tab.id))?.url || ""; } catch (_e) {}
+
+    // FIRE: composer a modo Video -> prompt -> Enviar (trusted). Grok navega al /post del video y genera.
+    // La navegacion puede matar el content script ANTES de responder: eso NO es fallo (el disparo ocurrio),
+    // seguimos a recolectar. Los errores REALES (no encuentro toggle/Enviar) si se relanzan.
+    try {
+      await sendActOrFail(tab.id, ACT.ANIMATE_FIRE, { prompt: scene.animationPrompt, cfg: driverCfg() });
+    } catch (e) {
+      const msg = e?.message ?? String(e);
+      if (/no respondio|message port|closed|sin respuesta/i.test(msg)) log(LOG_LEVEL.WARN, `${scene.id}: fire sin respuesta (navegacion); continuo a recolectar.`);
+      else { detachDebugger(tab.id); throw e; }
+    }
+
+    // Soltamos el debugger de ESTA pestana ANTES de la espera larga del video (su retencion congelaba la
+    // pestana). Por-pestana (no global) para no tumbar el debugger del otro carril en modo paralelo.
+    detachDebugger(tab.id);
+
+    // El disparo (que paga) ya ocurrio -> marcamos para que NINGUN reintento posterior re-dispare (no re-gasto),
+    // incluso si abajo no logramos capturar el /post del video.
+    scene.grokFired = true;
+    await saveState();
+
+    // Capturar el /post del VIDEO recien creado (solo si la navegacion cambio de pagina) -> idempotencia:
+    // si la recoleccion/descarga falla, el reintento recoge AHI sin re-disparar (sin re-gasto).
+    await delay(4000);
+    try { const t = await chrome.tabs.get(tab.id); const u = t?.url || ""; if (/\/imagine\/post\//.test(u) && u !== preUrl) { scene.grokVideoPostUrl = u; await saveState(); } } catch (_e) {}
+  } else {
+    log(LOG_LEVEL.INFO, `${scene.id}: ya disparado en Grok; recojo sin re-animar (no re-gasto).`);
+    if (!scene.videoUrl && scene.grokVideoPostUrl) await navigateTab(tab.id, scene.grokVideoPostUrl);
   }
-  await navigateTab(tab.id, postUrl);
-  await ensureContentScript(tab.id);
-  await ensureDebugger(tab.id);   // solo para el clic TRUSTED de "Enviar"; se suelta antes de la espera
 
-  scene.status = SCENE_STATUS.ANIMATING;
-  await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.ANIMATING); emitState();
-  log(LOG_LEVEL.INFO, `Animando ${scene.id} en Grok (modo Video + prompt)...`);
-
-  // FIRE: composer a modo Video -> prompt -> Enviar (trusted). Grok navega al /post del video y genera.
-  // La navegacion puede matar el content script ANTES de responder: eso NO es fallo (el disparo ocurrio),
-  // seguimos a recolectar. Los errores REALES (no encuentro toggle/Enviar) si se relanzan.
-  try {
-    await sendActOrFail(tab.id, ACT.ANIMATE_FIRE, { prompt: scene.animationPrompt });
-  } catch (e) {
-    const msg = e?.message ?? String(e);
-    if (/no respondio|message port|closed|sin respuesta/i.test(msg)) log(LOG_LEVEL.WARN, `${scene.id}: fire sin respuesta (navegacion); continuo a recolectar.`);
-    else { detachDebuggers(); throw e; }
+  // RECOGER el <video> NUEVO terminado (idempotente: si ya lo teniamos de un intento previo, no re-recogemos).
+  if (!scene.videoUrl) {
+    await ensureContentScript(tab.id, "grok");
+    const vid = await sendActOrFail(tab.id, ACT.ANIMATE_COLLECT, { before: scene.grokAnimBefore || [] });
+    const videoUrl = vid?.videoUrl;
+    if (!videoUrl) throw new Error("Grok no devolvio URL de video");
+    scene.videoUrl = videoUrl;
+    await saveState();
   }
-
-  // Soltamos el debugger ANTES de la espera larga del video (su retencion congelaba la pestana).
-  detachDebuggers();
-
-  // La pestana navego: re-inyectamos en el /post nuevo y recolectamos el <video> terminado (sin debugger).
-  await delay(4000);
-  await ensureContentScript(tab.id);
-  const vid = await sendActOrFail(tab.id, ACT.ANIMATE_COLLECT, {});
-  const videoUrl = vid?.videoUrl;
-  if (!videoUrl) throw new Error("Grok no devolvio URL de video");
 
   scene.status = SCENE_STATUS.DOWNLOADING;
   await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.DOWNLOADING); emitState();
   scene.clipFilename = `${scene.id}.mp4`;
   const slug = state.project?.slug || "proyecto";
-  const saved = await downloadClipToProject(videoUrl, slug, scene.id);
+  const saved = await downloadClipToProject(scene.videoUrl, slug, scene.id);
   scene.savedOk = saved.via === "server";
   log(LOG_LEVEL.INFO, `clip ${scene.id}.mp4 -> ${saved.path}`);
   if (saved.via === "downloads") log(LOG_LEVEL.WARN, `(quedo en Descargas; corre 'flowbot start' para que caiga en public/${slug}/clips/)`);
-
-  scene.status = SCENE_STATUS.EXTRACTING_FRAME;
-  await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.EXTRACTING_FRAME); emitState();
-  scene.lastFrameFilename = `${scene.id}_lastframe.png`;
-  try {
-    const frameDataUrl = await extractLastFrame(videoUrl, scene.id);
-    if (frameDataUrl) { lastFrames.set(scene.id, frameDataUrl); await downloadUrl(frameDataUrl, scene.lastFrameFilename); }
-  } catch (e) { log(LOG_LEVEL.WARN, `Frame fallo (${scene.id}): ${e?.message ?? e}.`); }
 
   scene.status = SCENE_STATUS.DONE; scene.error = null;
   await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.DONE); emitState(); emitProgress();
@@ -960,9 +1091,9 @@ async function runGrokAnimation(scene) {
 // mapea cada video a su escena POR ORDEN, y recoge (descarga + frame). Rapido SI Flow permite
 // generar varias a la vez. Idempotente: IMAGE_DONE -> disparar+mapear; ANIMATING con videoUrl -> recoger.
 async function runParallelAnimation() {
-  const tab = await findFlowTab();
+  const tab = await findFlowTab("flow");
   if (!tab) throw new Error("No hay pestana de Flow abierta (labs.google). Abre Flow y reintenta.");
-  await ensureContentScript(tab.id);
+  await ensureContentScript(tab.id, "flow");
   await ensureDebugger(tab.id);  // pre-adjunta para que el 1er click Generar caiga bien (barra ya presente)
 
   const model = state.config.videoModel ?? DEFAULT_CONFIG.videoModel;
@@ -985,7 +1116,7 @@ async function runParallelAnimation() {
       await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.ANIMATING); emitState();
       try {
         const res = await sendActOrFail(tab.id, ACT.ANIMATE_FIRE, {
-          prompt: scene.animationPrompt, model, duration, aspectRatio, count, imageUrl: scene.imageUrl,
+          prompt: scene.animationPrompt, model, duration, aspectRatio, count, imageUrl: scene.imageUrl, cfg: driverCfg(),
         });
         if (res?.cost) log(LOG_LEVEL.INFO, `${scene.id}: ${res.cost}`);
         log(LOG_LEVEL.INFO, `${scene.id}: animacion disparada.`);
@@ -1034,10 +1165,17 @@ async function runParallelAnimation() {
         if (lastDiag && newSrcs.length < fired.length) await saveFailedDiag(lastDiag);  // aun faltan -> deja el DOM capturado
       }
       catch (e) { if (e?.hardStop) { await onHardStop(e.hardStop, e?.message ?? String(e)); return; } }
-      const inFireOrder = newSrcs.slice().reverse();
-      fired.forEach((scene, i) => { scene.videoUrl = inFireOrder[i] || null; });
+      // Mapeo por ORDEN solo si aparecieron TODOS (correspondencia 1:1 disparo<->aparicion garantizada).
+      // Si faltan, el orden es AMBIGUO: un hueco interno cruzaria el clip de una escena a otra EN SILENCIO.
+      // Preferimos fallar fuerte (dejar sin videoUrl -> ERROR + reintento manual) a corromper el video.
+      if (newSrcs.length === fired.length) {
+        const inFireOrder = newSrcs.slice().reverse();
+        fired.forEach((scene, i) => { scene.videoUrl = inFireOrder[i] || null; });
+        log(LOG_LEVEL.INFO, `Mapeados ${newSrcs.length}/${fired.length} videos por orden.`);
+      } else {
+        log(LOG_LEVEL.WARN, `Flow entrego ${newSrcs.length}/${fired.length} videos: NO mapeo por orden (evito clips cruzados a escenas equivocadas). Esas escenas quedan para reintentar.`);
+      }
       await saveState();
-      log(LOG_LEVEL.INFO, `Mapeados ${newSrcs.length}/${fired.length} videos por orden.`);
     }
   }
 
@@ -1064,11 +1202,6 @@ async function runParallelAnimation() {
       const savedClip = await downloadClipToProject(videoUrl, clipSlug, scene.id);
       scene.savedOk = savedClip.via === "server";   // true solo si quedo en public/<slug>/clips/
       if (savedClip.via === "downloads") log(LOG_LEVEL.WARN, `clip ${scene.id} quedo en Descargas (dev-server no respondio): ${savedClip.path}`);
-      scene.lastFrameFilename = `${scene.id}_lastframe.png`;
-      try {
-        const frameDataUrl = res?.lastFrameDataUrl;
-        if (frameDataUrl) { lastFrames.set(scene.id, frameDataUrl); await downloadUrl(frameDataUrl, scene.lastFrameFilename); }
-      } catch (e) { log(LOG_LEVEL.WARN, `Frame fallo (${scene.id}): ${e?.message ?? e}.`); }
       scene.status = SCENE_STATUS.DONE; scene.error = null;
       await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.DONE); emitState(); emitProgress();
       log(LOG_LEVEL.INFO, `${scene.id}: video listo (${scene.clipFilename}).`);
@@ -1226,16 +1359,18 @@ async function onGenerateAudio(message) {
   const apiKey = (state.config.fishApiKey || "").trim();
   if (!apiKey) { log(LOG_LEVEL.ERROR, "Fish Audio: falta tu API key. Revisa secrets.local.json y que 'flowbot start' este corriendo."); return; }
 
-  // Voz: config.fishVoiceId (si la pegaste) GANA; si no, la del preset (project.preset); si no, default.
+  // Voz: config.fishVoiceId (si la pegaste) GANA; si no, la del preset (project.preset); si no, DEFAULT_VOICE_ID.
+  // NUNCA queda vacio: aunque el JSON olvide "preset", SIEMPRE usa la voz default (no la generica de Fish).
   const preset = state.project?.preset || "";
   const presetCfg = FISH_PRESETS[preset] || null;
-  const voiceId = (state.config.fishVoiceId || "").trim() || (presetCfg?.voiceId || "");
+  const cfgVoice = (state.config.fishVoiceId || "").trim();
+  const presetVoice = pickPresetVoiceId(presetCfg);
+  const voiceId = cfgVoice || presetVoice || DEFAULT_VOICE_ID;
   const model = state.config.fishModel || presetCfg?.model || DEFAULT_CONFIG.fishModel;
-  if (voiceId) {
-    const src = (state.config.fishVoiceId || "").trim() ? "config" : `preset "${preset}"`;
-    log(LOG_LEVEL.INFO, `Fish Audio: voz desde ${src}.`);
-  } else {
-    log(LOG_LEVEL.WARN, `Fish Audio: sin voz (ni config ni preset "${preset}") -> voz por defecto de Fish.`);
+  const src = cfgVoice ? "config" : (presetVoice ? `preset "${preset}"` : "DEFAULT (sin preset)");
+  log(LOG_LEVEL.INFO, `Fish Audio: voz desde ${src} (${voiceId}).`);
+  if (!presetVoice && !cfgVoice) {
+    log(LOG_LEVEL.WARN, `Fish Audio: el JSON no trae "preset" -> usando voz default ${DEFAULT_VOICE_ID}. Agrega "preset":"esqueletos" al JSON.`);
   }
 
   const slug = state.project?.slug || "proyecto";
@@ -1244,8 +1379,10 @@ async function onGenerateAudio(message) {
 
   // Lista de items {id, text}: hook (si aplica) + escenas con voiceover, en orden.
   const items = [];
-  const hookText = state.project?.hook?.voiceover;
-  if (includeHook && typeof hookText === "string" && hookText.trim()) items.push({ id: "hook", text: hookText.trim() });
+  // hook.voiceover acepta string ("...") U objeto ({ text: "..." }) igual que las escenas (scenes[].voiceover.text).
+  const hv = state.project?.hook?.voiceover;
+  const hookText = typeof hv === "string" ? hv : (hv && typeof hv.text === "string" ? hv.text : "");
+  if (includeHook && hookText.trim()) items.push({ id: "hook", text: hookText.trim() });
   const withVoice = (state.scenes || []).filter((s) => (s.voiceoverText || "").trim());
   for (const s of (limit ? withVoice.slice(0, limit) : withVoice)) items.push({ id: s.id, text: s.voiceoverText.trim() });
 
@@ -1403,8 +1540,8 @@ function navigateTab(tabId, url) {
 }
 
 // Busca la pestana del PROVEEDOR activo: Flow (labs.google) o Grok (grok.com). Prefiere la activa.
-async function findFlowTab() {
-  const pattern = state.config.provider === "grok" ? "https://grok.com/*" : "https://labs.google/*";
+async function findFlowTab(provider) {
+  const pattern = (provider || state.config.provider) === "grok" ? "https://grok.com/*" : "https://labs.google/*";
   try {
     const tabs = await chrome.tabs.query({ url: pattern });
     return tabs.find((t) => t.active) ?? tabs[0] ?? null;
@@ -1417,12 +1554,12 @@ async function findFlowTab() {
 // Garantiza que el content script (driver) este presente en la pestana. Si no responde
 // al PING, lo inyecta on-demand con chrome.scripting (evita depender de recargar la pestana
 // tras recargar la extension). El guard del PING evita doble-inyeccion (listeners duplicados).
-async function ensureContentScript(tabId) {
+async function ensureContentScript(tabId, provider) {
   try {
     const r = await sendToTab(tabId, msg(ACT.PING));
     if (r && r.ok) return;
   } catch (_e) { /* sin listener: inyectar */ }
-  const files = state.config.provider === "grok"
+  const files = (provider || state.config.provider) === "grok"
     ? ["content/grok-driver.js"]
     : ["content/selectors.config.js", "content/flow-driver.js"];
   await chrome.scripting.executeScript({ target: { tabId }, files });
@@ -1481,6 +1618,15 @@ function debuggerSend(tabId, method, params) {
 
 async function ensureDebugger(tabId) {
   if (attachedTabs.has(tabId)) return;
+  // GUARDA ANTI-CUELGUE: nunca mas de 2 sesiones CDP adjuntas a la vez (3 crasheaban el renderer; en el
+  // pipeline paralelo son 1 por proveedor = 2 max). Si ya hay 2 en OTRAS pestanas, esperamos a que se libere.
+  const t0 = Date.now();
+  while (attachedTabs.size >= 2 && !attachedTabs.has(tabId) && Date.now() - t0 < 60000) {
+    await delay(500);
+  }
+  // Limite DURO: NO adjuntar una 3a sesion (es lo que crashea el renderer). Lanzar -> classifyError lo trata
+  // como 'environment' (no reintentable) -> pausa controlada en vez de tumbar la pestana.
+  if (attachedTabs.size >= 2 && !attachedTabs.has(tabId)) throw new Error("no se pudo adjuntar el debugger: 2 sesiones CDP ya ocupadas (limite anti-cuelgue)");
   await debuggerAttach(tabId);
   attachedTabs.add(tabId);
   // Al adjuntar por 1a vez, Chrome muestra la barra "...esta depurando este navegador" que EMPUJA
@@ -1503,6 +1649,26 @@ function detachDebuggers() {
     chrome.debugger.detach({ tabId }, () => void chrome.runtime.lastError);
   }
   attachedTabs.clear();
+}
+
+// Detach de UNA sola pestana (para el pipeline paralelo: un carril NO debe soltar el debugger del otro).
+function detachDebugger(tabId) {
+  if (tabId == null) return;
+  chrome.debugger.detach({ tabId }, () => void chrome.runtime.lastError);
+  attachedTabs.delete(tabId);
+}
+
+// Suelta SOLO el debugger de la(s) pestana(s) de un proveedor (lo usa runLane al terminar su carril).
+// Itera attachedTabs y filtra por el HOST del proveedor (NO findFlowTab(.active), que podia devolver otra
+// pestana si el usuario cambio el foco durante la espera larga -> se soltaba el debugger equivocado y la
+// sesion CDP real quedaba fugada, taponando el limite de 2 sesiones). Si la URL no resuelve, NO la tocamos
+// (la limpia el detach global al final del paralelo) para no arriesgar la pestana del carril hermano.
+async function detachProvider(provider) {
+  const host = (provider || state.config.provider) === "grok" ? "grok.com" : "labs.google";
+  for (const tabId of [...attachedTabs]) {
+    let url = ""; try { url = (await chrome.tabs.get(tabId))?.url || ""; } catch (_e) {}
+    if (url && url.includes(host)) detachDebugger(tabId);
+  }
 }
 
 // Limpia si el usuario cierra DevTools / se despega el debugger.
@@ -1547,6 +1713,53 @@ async function runPhaseToEnd(phase) {
   await orchestrator.runQueue();  // vuelve cuando la fase termina o se pausa (parada dura)
   await ensureState();
   return !state.queue.paused;  // paused = parada dura (captcha / sin creditos)
+}
+
+// PIPELINE PARALELO (flag config.parallelPipeline): un carril genera imagenes en un proveedor y OTRO anima
+// en el otro A LA VEZ (carriles por fase, status disjuntos -> sin colision). Guardas: keepAlive (no muere
+// el SW en la espera de Grok), detach por pestana (cada carril suelta SOLO el suyo), semaforo CDP max 2.
+async function runPhasesParallel() {
+  await ensureState();
+  const imgProv = state.project?.imageProvider || state.config.provider;
+  const animProv = state.project?.animationProvider || state.config.provider;
+  // GUARDA: el paralelo SOLO tiene sentido con proveedores DISTINTOS (pestanas/sesiones CDP distintas).
+  // Mismo proveedor = misma pestana/cuenta -> 2 sesiones CDP a la misma pestana corrompen y cuelgan, y
+  // los carriles comparten el bucket de ritmo. Caemos a SECUENCIAL (comportamiento probado).
+  if (imgProv === animProv) {
+    log(LOG_LEVEL.WARN, `Pipeline paralelo necesita proveedores DISTINTOS (imagen y animacion son '${imgProv}'); corro SECUENCIAL.`);
+    return (await runPhaseToEnd("images")) && (await runPhaseToEnd("animation"));
+  }
+  // Reactiva ERROR SOLO en escenas sin imagen aun (re-gen de imagen = gratis); las que ya tienen imagen y
+  // fallaron al animar quedan en ERROR (no re-gasta video en silencio).
+  for (const s of state.scenes) {
+    if (s.status === SCENE_STATUS.ERROR && !s.skipped && !s.imageUrl) { s.status = SCENE_STATUS.PENDING; s.attempts = 0; s.error = null; }
+  }
+  state.queue.paused = false;
+  state.queue.running = true;
+  state.queue.mode = "parallel";   // marcador para que resumeIfInterrupted reanude en paralelo (no secuencial)
+  state.queue.heartbeatAt = Date.now();
+  loopRunning = true;   // ocupa el worker: pollQueue/launchLoop no encienden el bucle UNICO en paralelo
+  await saveState();
+  emitState();
+  try { chrome.alarms.create("keepAlive", { periodInMinutes: 0.4 }); } catch (_e) {}
+  log(LOG_LEVEL.INFO, `PIPELINE PARALELO: imagenes en ${imgProv} + animacion en ${animProv} a la vez.`);
+  // allSettled: si un carril rechaza, esperamos a que el OTRO termine de verdad (su try/finally garantiza
+  // running=false), en vez de dejarlo huerfano gastando mientras creemos que la corrida acabo.
+  const results = await Promise.allSettled([
+    orchestrator.runLane({ laneId: "images", phase: "images", provider: imgProv }),
+    orchestrator.runLane({ laneId: "animation", phase: "animation", provider: animProv }),
+  ]);
+  for (const r of results) if (r.status === "rejected") log(LOG_LEVEL.ERROR, `Carril fallo: ${r.reason?.message ?? r.reason}`);
+  loopRunning = false;
+  try { chrome.alarms.clear("keepAlive"); } catch (_e) {}
+  detachDebuggers();   // ambos carriles ya terminaron (allSettled) -> soltar todo
+  await ensureState();
+  state.queue.running = false;
+  state.queue.mode = null;
+  await saveState();
+  reportFailuresAtEnd();
+  emitState(); emitProgress();
+  return !state.queue.paused;
 }
 
 // Prepara Flow: proyecto nuevo + personajes del proyecto. Degrada con gracia si esos pasos aun
@@ -1618,7 +1831,103 @@ async function cdpSetFileInput(tabId, absPath) {
   await debuggerSend(tabId, "DOM.setFileInputFiles", { files, nodeId });
 }
 
+// Config de tipeo/pausa que se PASA a los drivers (los content scripts NO leen state.config). Asi la
+// configuracion avanzada (humanTyping ON/OFF, reviewPause) controla de verdad como tipean el prompt y
+// cuanto esperan antes de Enviar. Ausente en el payload -> el driver usa sus defaults (= comportamiento previo).
+function driverCfg() {
+  const c = state.config || {};
+  return {
+    humanTyping: c.humanTyping !== false,
+    reviewMinMs: c.reviewPauseMinMs ?? DEFAULT_CONFIG.reviewPauseMinMs,
+    reviewMaxMs: c.reviewPauseMaxMs ?? DEFAULT_CONFIG.reviewPauseMaxMs,
+  };
+}
+
 // Encadena TODO el flujo de un proyecto ya cargado: Flow listo -> imagenes -> animacion -> audio.
+// FASE INGREDIENTES (opcional, ANTES de imagenes): genera character_edited / entity / location_plate UNA
+// vez y guarda su imagen en state.project.ingredients[] (Flow: imageUrl = tile reutilizable via ⋮; Grok:
+// imageFilePath = PNG en disco reutilizable por CDP). Idempotente: salta los que ya tienen imagen (sobrevive
+// pausa/reinicio del SW). Las imagenes NO gastan puntos (solo la animacion) -> fase barata. JSON sin
+// 'ingredients' = no-op (flujo actual intacto). Devuelve false si hubo parada dura / pausa.
+async function runIngredientsPhase() {
+  await ensureState();
+  const ings = state.project?.ingredients || [];
+  if (!ings.length) return true;                       // sin ingredientes -> no-op
+  const provider = state.project?.imageProvider || state.config.provider;
+
+  if (state.config.dryRun) {
+    for (const ing of ings) log(LOG_LEVEL.INFO, `[dry-run] ingrediente ${ing.id} (${ing.type}) -> ${ing.outputFile}`);
+    return true;
+  }
+
+  // Idempotencia: ya generado = tiene imageUrl (Flow) o imageFilePath (Grok). Saga: la imagen persiste en
+  // state; entre videos distintos se re-genera (las imagenes son gratis) -> reuso en-disco entre Partes pendiente.
+  const hasImg = (g) => (provider === "grok" ? !!g.imageFilePath : !!g.imageUrl);
+  const pending = ings.filter((g) => !hasImg(g));
+  if (!pending.length) { log(LOG_LEVEL.INFO, `Ingredientes: ${ings.length} ya generados; no re-genero.`); return true; }
+  log(LOG_LEVEL.INFO, `FASE INGREDIENTES (${provider}): generando ${pending.length}/${ings.length}...`);
+
+  const tab = await findFlowTab(provider);
+  if (!tab) throw new Error(`No hay pestana de ${provider === "grok" ? "Grok" : "Flow"} abierta para generar ingredientes.`);
+  await ensureContentScript(tab.id, provider);
+  if (provider !== "grok") await ensureDebugger(tab.id);   // Flow: pre-adjunta una vez (Grok lo hace por item)
+
+  const aspectRatio = state.project?.aspectRatio ?? "9:16";
+  const count = state.config.generationCount ?? DEFAULT_CONFIG.generationCount;
+  const chars = state.project?.characters || {};
+  const slug = state.project?.slug || "proyecto";
+  // SIN ritmo artificial entre ingredientes: cada generacion de Grok YA tarda ~20s (espaciado natural), y
+  // meter encima el interSceneDelay+warmup hacia la fase eterna (~8 min para 10) y parecia congelada. El
+  // ritmo configurado SIGUE aplicando entre ESCENAS (produccion sostenida); aqui no hace falta. La red de
+  // seguridad reactiva (onRateLimit / "actividad inusual") cubre cualquier rafaga.
+  for (const ing of pending) {
+    await ensureState();
+    if (state.queue.paused) return false;
+    try {
+      if (provider === "grok") {
+        await ensureGrokCompositor(tab.id);              // composer fresco (la generacion previa dejo /post)
+        await ensureContentScript(tab.id, "grok");
+        await ensureDebugger(tab.id);
+        try { await sendActOrFail(tab.id, ACT.CLEAR_REFS, {}); } catch (_e) {}
+        // character_edited: subir el PNG base como referencia para "vestirlo" con edit_prompt.
+        if (ing.type === "character_edited" && ing.base) {
+          const entry = chars[ing.base];
+          if (entry?.reference_asset) {
+            const p = await resolveCharFile(entry.reference_asset);
+            await cdpSetFileInput(tab.id, [p]);
+            log(LOG_LEVEL.INFO, `Ingrediente ${ing.id}: base '${ing.base}' subido a Grok para vestirlo.`);
+          } else log(LOG_LEVEL.WARN, `Ingrediente ${ing.id}: base '${ing.base}' sin reference_asset; genero sin referencia.`);
+        }
+        const img = await sendActOrFail(tab.id, ACT.GENERATE_IMAGE, { prompt: ing.prompt, cfg: driverCfg() });
+        if (!img?.imageUrl) throw new Error("Grok no devolvio URL de imagen");
+        if (img?.variantCount > 1) log(LOG_LEVEL.INFO, `Ingrediente ${ing.id}: Grok genero ${img.variantCount} variaciones; uso la 1a (determinista).`);
+        ing.imageUrl = img.imageUrl;
+        const saved = await downloadImageForRef(img.imageUrl, slug, `ingredient_${ing.id}`);
+        ing.imageFilePath = saved.abspath || null;
+        detachDebugger(tab.id);
+      } else {
+        // Flow: character_edited usa el Personaje base como referencia "+"; entity/plate sin referencia.
+        const characterNames = (ing.type === "character_edited" && ing.base && chars[ing.base]?.display_name)
+          ? [chars[ing.base].display_name] : [];
+        const img = await sendActOrFail(tab.id, ACT.GENERATE_IMAGE, { prompt: ing.prompt, characterNames, sceneRefImageUrls: [], aspectRatio, count, cfg: driverCfg() });
+        if (!img?.imageUrl) throw new Error("Flow no devolvio URL de imagen");
+        ing.imageUrl = img.imageUrl;   // tile en la grilla de Flow (se adjunta luego en las escenas via ⋮)
+      }
+      await saveState();
+      log(LOG_LEVEL.INFO, `Ingrediente listo: ${ing.id} (${ing.type}).`);
+    } catch (e) {
+      detachDebugger(tab.id);
+      if (e?.hardStop) { await onHardStop(e.hardStop, e?.message); return false; }
+      log(LOG_LEVEL.ERROR, `Ingrediente ${ing.id} fallo: ${e?.message ?? e}`);
+      await pauseForError(`ingrediente ${ing.id}: ${e?.message ?? e}`, null);
+      return false;
+    }
+  }
+  if (provider !== "grok") detachDebugger(tab.id);
+  log(LOG_LEVEL.INFO, "FASE INGREDIENTES completa.");
+  return true;
+}
+
 async function onRunAll() {
   await applySecrets();
   await ensureState();
@@ -1628,24 +1937,37 @@ async function onRunAll() {
   try { await ensureFlowReady(); }
   catch (e) { log(LOG_LEVEL.ERROR, `AUTOPILOTO detenido: ${e?.message ?? e}`); return; }
 
-  log(LOG_LEVEL.INFO, "AUTOPILOTO: generando imagenes...");
-  if (!(await runPhaseToEnd("images"))) { log(LOG_LEVEL.ERROR, "AUTOPILOTO detenido en imagenes (parada dura)."); return; }
+  // FASE 0: ingredientes (si el JSON los trae). Antes de imagenes; no-op si no hay. Parada dura -> detener.
+  try { if (!(await runIngredientsPhase())) { log(LOG_LEVEL.ERROR, "AUTOPILOTO detenido en ingredientes."); return; } }
+  catch (e) { log(LOG_LEVEL.ERROR, `AUTOPILOTO detenido en ingredientes: ${e?.message ?? e}`); return; }
 
-  log(LOG_LEVEL.INFO, "AUTOPILOTO: animando...");
-  if (!(await runPhaseToEnd("animation"))) { log(LOG_LEVEL.ERROR, "AUTOPILOTO detenido en animacion (parada dura)."); return; }
+  if (state.config.parallelPipeline) {
+    // Carriles a la vez: imagenes en un proveedor + animacion en el otro.
+    if (!(await runPhasesParallel())) { log(LOG_LEVEL.ERROR, "AUTOPILOTO detenido (parada dura en pipeline paralelo)."); return; }
+  } else {
+    log(LOG_LEVEL.INFO, "AUTOPILOTO: generando imagenes...");
+    if (!(await runPhaseToEnd("images"))) { log(LOG_LEVEL.ERROR, "AUTOPILOTO detenido en imagenes (parada dura)."); return; }
+
+    log(LOG_LEVEL.INFO, "AUTOPILOTO: animando...");
+    if (!(await runPhaseToEnd("animation"))) { log(LOG_LEVEL.ERROR, "AUTOPILOTO detenido en animacion (parada dura)."); return; }
+  }
 
   log(LOG_LEVEL.INFO, "AUTOPILOTO: generando voz (Fish)...");
   await onGenerateAudio({ includeHook: true });
 
   // Limpieza de Flow: SOLO si TODOS los clips se descargaron al proyecto (savedOk). Salvaguarda:
   // si falta alguno, NO borra nada (se preservan los medios en Flow para no perder trabajo).
-  if (state.config.cleanupFlowAfterDownload && state.config.provider !== "grok") {
+  // La ANIMACION es la fase que deja medios pesados en Flow: gateamos por el proveedor de animacion
+  // POR FASE (no el global config.provider), igual que el dispatch. Asi imagen=flow/anim=grok NO borra
+  // imagenes de Flow por error, e imagen=grok/anim=flow SI limpia los videos que quedaron en Flow.
+  const cleanupAnimProv = state.project?.animationProvider || state.config.provider;
+  if (state.config.cleanupFlowAfterDownload && cleanupAnimProv !== "grok") {
     await ensureState();
     const total = state.scenes.length;
     const ok = state.scenes.filter((s) => s.savedOk).length;
     if (total > 0 && ok === total) {
       log(LOG_LEVEL.INFO, `AUTOPILOTO: ${ok}/${total} clips descargados; limpiando medios de Flow...`);
-      const tab = await findFlowTab();
+      const tab = await findFlowTab("flow");
       if (tab) {
         try {
           const r = await sendActOrFail(tab.id, ACT.CLEANUP_MEDIA, {});
@@ -1711,7 +2033,19 @@ chrome.alarms?.create?.("queuePoll", { periodInMinutes: 0.5 });
 chrome.alarms?.onAlarm?.addListener((a) => {
   if (a.name === "queuePoll") pollQueue().catch(() => {});
   else if (a.name === "rateLimitResume") resumeAfterCooldown().catch(() => {});
+  else if (a.name === "keepAlive") keepAliveTick().catch(() => {});
 });
+
+// Mantiene VIVO el SW durante el pipeline paralelo: la espera de ~6min de Grok sin eventos chrome.* puede
+// matar el worker MV3. La alarma (evento periodico) lo revive y de paso refresca state.queue.heartbeatAt
+// para que pollQueue no trate la corrida como rancia. Se auto-apaga cuando no queda ningun carril vivo.
+async function keepAliveTick() {
+  await ensureState();
+  const anyLane = state.lanes && (state.lanes.images?.running || state.lanes.animation?.running);
+  if (!anyLane) { try { chrome.alarms.clear("keepAlive"); } catch (_e) {} return; }
+  state.queue.heartbeatAt = Date.now();
+  await saveState();
+}
 
 // Arranque inicial: rehidrata cuando el modulo se evalua y reanuda si quedo una corrida a medias.
 loadState().then(() => { applySecrets(); resumeIfInterrupted(); });

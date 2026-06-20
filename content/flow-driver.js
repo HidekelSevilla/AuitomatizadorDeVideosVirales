@@ -181,7 +181,7 @@
   // Escribe en el editor Slate. CONFIRMADO: Slate IGNORA execCommand/mutaciones directas del
   // DOM; SOLO registra texto via eventos `beforeinput`. A veces no "pega" (foco/timing), asi que
   // verificamos y reintentamos. Devuelve true si el texto quedo escrito.
-  async function typeInSlate(el, text) {
+  async function typeInSlate(el, text, cfg) {
     for (let attempt = 0; attempt < 3; attempt++) {
       el.focus();
       placeCaretEnd(el);
@@ -191,16 +191,20 @@
         if (!cur || /^¿Qu/.test(cur)) break; // vacio o placeholder "¿Qué quieres crear?"
         el.dispatchEvent(new InputEvent("beforeinput", { inputType: "deleteContentBackward", bubbles: true, cancelable: true }));
       }
-      // TIPEO HUMANO: en fragmentos de 2-5 chars con jitter (no de golpe = firma de bot). Slate SOLO
-      // registra via beforeinput; un evento por fragmento simula pulsaciones. Pausa extra cada ~40 chars.
-      let typed = 0;
-      for (let i = 0; i < text.length;) {
-        const n = 2 + Math.floor(Math.random() * 4); // 2..5
-        const chunk = text.slice(i, i + n);
-        el.dispatchEvent(new InputEvent("beforeinput", { inputType: "insertText", data: chunk, bubbles: true, cancelable: true }));
-        i += chunk.length; typed += chunk.length;
-        await rsleep(40, 140);
-        if (typed % 40 < n) await rsleep(200, 500); // micro-pausa de "pensar"
+      // config.humanTyping OFF -> RAPIDO pero por FRAGMENTOS (Slate registra por EVENTO beforeinput; uno
+      // solo de todo el texto puede no habilitar Generar). ON (default) -> fragmentos de 2-5 chars con jitter.
+      if (cfg && cfg.humanTyping === false) {
+        for (let i = 0; i < text.length; i += 12) el.dispatchEvent(new InputEvent("beforeinput", { inputType: "insertText", data: text.slice(i, i + 12), bubbles: true, cancelable: true }));
+      } else {
+        let typed = 0;
+        for (let i = 0; i < text.length;) {
+          const n = 2 + Math.floor(Math.random() * 4); // 2..5
+          const chunk = text.slice(i, i + n);
+          el.dispatchEvent(new InputEvent("beforeinput", { inputType: "insertText", data: chunk, bubbles: true, cancelable: true }));
+          i += chunk.length; typed += chunk.length;
+          await rsleep(40, 140);
+          if (typed % 40 < n) await rsleep(200, 500); // micro-pausa de "pensar"
+        }
       }
       await sleep(300);
       if (norm(el.innerText).includes(text.slice(0, Math.min(12, text.length)))) return true; // exito
@@ -424,7 +428,7 @@
   }
 
   // ------------------------------------------------------------- acciones -----
-  async function generateImage({ prompt, characterNames, sceneRefImageUrls, useCharacterRef, characterName, aspectRatio, count }) {
+  async function generateImage({ prompt, characterNames, sceneRefImageUrls, useCharacterRef, characterName, aspectRatio, count, cfg }) {
     const s = SEL();
     const hs = detectHardStop(); if (hs) return hs;
 
@@ -436,7 +440,7 @@
     const input = resolve(s.promptInput);
     if (!input) throw new Error("no encuentro el editor de prompt (promptInput)");
     realClick(input);
-    const okType = await typeInSlate(input, prompt);
+    const okType = await typeInSlate(input, prompt, cfg);
     if (!okType) throw new Error("no pude escribir el prompt en el editor (Slate)");
     await sleep(300);
 
@@ -471,7 +475,7 @@
     const before = new Set(currentResultImgs().map((i) => i.src));
     const gen = resolve(s.generateButton);
     if (!gen) throw new Error("no encuentro el boton generar (generateButton)");
-    await rsleep(1200, 3500);   // pausa humana de "revisar" antes de generar (anti-deteccion)
+    await rsleep(cfg?.reviewMinMs ?? 1200, cfg?.reviewMaxMs ?? 3500);   // pausa de "revisar" antes de generar (config.reviewPause)
     await trustedClickEl(gen);
 
     // Espera el nuevo resultado o una parada dura.
@@ -608,7 +612,7 @@
   // termine de generarse. Asi el orquestador puede disparar todas las escenas (paralelo) y luego
   // recogerlas. ⋮ -> "Animar" (acotado a ESA imagen) -> modelo/duracion -> prompt -> generar ->
   // espera a que aparezca el NUEVO <video> (su URL) para mapearlo a esta escena.
-  async function animateFire({ prompt, aspectRatio, count, imageUrl, model, duration }) {
+  async function animateFire({ prompt, aspectRatio, count, imageUrl, model, duration, cfg }) {
     const s = SEL();
     const hs = detectHardStop(); if (hs) return hs;
 
@@ -637,14 +641,14 @@
     const input = resolve(s.promptInput);
     if (input) {
       realClick(input);
-      const okType = await typeInSlate(input, prompt);
+      const okType = await typeInSlate(input, prompt, cfg);
       if (!okType) throw new Error("no pude escribir el prompt de animacion (Slate)");
       await sleep(400);
     }
 
     const gen = resolve(s.generateButton);
     if (!gen) throw new Error("no encuentro el boton generar para animar");
-    await rsleep(1200, 3500);   // pausa humana de "revisar" antes de animar (anti-deteccion)
+    await rsleep(cfg?.reviewMinMs ?? 1200, cfg?.reviewMaxMs ?? 3500);   // pausa de "revisar" antes de animar (config.reviewPause)
     await trustedClickEl(gen);
 
     // FIRE-AND-FORGET: NO esperamos NADA (ni poster ni video). En la grilla el poster/video recien
@@ -774,11 +778,18 @@
   }
 
   // Secuencial (no-paralelo): dispara Y espera el mismo video. Usado si parallelAnimation=false.
+  // animateFire es fire-and-forget (ya NO devuelve videoUrl), asi que mapeamos el video nuevo por
+  // diferencia (snapshot antes -> dispara -> aparece 1 nuevo) igual que el flujo batch, y lo recogemos.
   async function animate(args) {
+    const before = videoMediaNames();
     const fired = await animateFire(args);
     if (fired.type) return fired;       // parada dura
     if (!fired.ok) return fired;        // error
-    const collected = await animateCollect({ videoUrl: fired.data.videoUrl });
+    const mapped = await mapNewVideos({ before, total: 1 });
+    if (mapped.type) return mapped;     // parada dura
+    const src = (mapped.data?.srcs || [])[0];
+    if (!src) return { ok: false, error: "no aparecio el video nuevo tras animar (¿Flow lo encolo o bloqueo?)" };
+    const collected = await animateCollect({ videoUrl: src });
     if (collected.type) return collected;
     if (!collected.ok) return collected;
     return { ok: true, data: { ...collected.data, cost: fired.data.cost } };

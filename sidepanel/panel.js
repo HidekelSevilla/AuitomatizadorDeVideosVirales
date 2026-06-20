@@ -1,6 +1,6 @@
 // sidepanel/panel.js
 // UI del side panel. ES module. Importa el contrato compartido; no redefine constantes.
-import { CMD, EVT, SCENE_STATUS, DEFAULT_CONFIG, VIDEO_MODELS, VIDEO_DURATIONS, FISH_PRESETS, send, msg } from '../lib/messaging.js';
+import { CMD, EVT, SCENE_STATUS, DEFAULT_CONFIG, VIDEO_MODELS, VIDEO_DURATIONS, FISH_PRESETS, DEFAULT_VOICE_ID, send, msg } from '../lib/messaging.js';
 
 // ---------------------------------------------------------------------------
 // Referencias al DOM
@@ -54,11 +54,8 @@ const el = {
   cfgDelayMax: $('cfgDelayMax'),
   cfgMaxRetries: $('cfgMaxRetries'),
   cfgGenerationCount: $('cfgGenerationCount'),
-  toggleHumanTyping: $('toggleHumanTyping'),
   cfgInterMin: $('cfgInterMin'),
   cfgInterMax: $('cfgInterMax'),
-  cfgMaxPerHour: $('cfgMaxPerHour'),
-  cfgLongBreakEvery: $('cfgLongBreakEvery'),
   queueList: $('queueList'),
   btnQueueRefresh: $('btnQueueRefresh'),
   btnLogCopy: $('btnLogCopy'),
@@ -150,11 +147,8 @@ function render(state) {
   el.cfgDelayMax.value = cfg.delayMaxMs;
   el.cfgMaxRetries.value = cfg.maxRetries;
   el.cfgGenerationCount.value = cfg.generationCount ?? DEFAULT_CONFIG.generationCount;
-  el.toggleHumanTyping.checked = cfg.humanTyping ?? DEFAULT_CONFIG.humanTyping;
   el.cfgInterMin.value = cfg.interSceneDelayMinMs ?? DEFAULT_CONFIG.interSceneDelayMinMs;
   el.cfgInterMax.value = cfg.interSceneDelayMaxMs ?? DEFAULT_CONFIG.interSceneDelayMaxMs;
-  el.cfgMaxPerHour.value = cfg.maxGenerationsPerHour ?? DEFAULT_CONFIG.maxGenerationsPerHour;
-  el.cfgLongBreakEvery.value = cfg.longBreakEvery ?? DEFAULT_CONFIG.longBreakEvery;
   el.modelSelect.value = cfg.videoModel ?? DEFAULT_CONFIG.videoModel;
   el.durationSelect.value = cfg.videoDuration ?? DEFAULT_CONFIG.videoDuration;
   el.providerSelect.value = cfg.provider ?? DEFAULT_CONFIG.provider;
@@ -361,8 +355,8 @@ function renderVoiceHint(state, cfg) {
   let txt;
   if (manual) txt = `Voz: la pegada aqui (${manual.slice(0, 10)}...).`;
   else if (presetVoice) txt = `Voz: preset "${preset}" (${presetVoice.slice(0, 10)}...). Modelo ${FISH_PRESETS[preset]?.model || cfg.fishModel}.`;
-  else if (preset) txt = `Preset "${preset}" sin voz definida -> voz default de Fish. Pega un reference_id arriba.`;
-  else txt = `Tu JSON no trae "preset" -> voz default de Fish. Pega un reference_id o agrega "preset":"esqueletos".`;
+  else if (preset) txt = `Preset "${preset}" sin voz -> usa voz DEFAULT (${DEFAULT_VOICE_ID.slice(0, 10)}...).`;
+  else txt = `Tu JSON no trae "preset" -> usa voz DEFAULT (${DEFAULT_VOICE_ID.slice(0, 10)}...). Para otra, pega un reference_id o agrega "preset":"esqueletos".`;
   el.voiceHint.textContent = txt;
 }
 
@@ -683,12 +677,9 @@ function wireInputs() {
     updateEstimate();
   });
 
-  // Palancas de ritmo / anti-deteccion.
-  el.toggleHumanTyping.addEventListener('change', (e) => send(msg(CMD.SET_CONFIG, { config: { humanTyping: e.target.checked } })));
+  // Palancas de ritmo / anti-deteccion. (Tipeo, tope/hora y descanso estan HARDCODEADOS en el SW: ya no se exponen.)
   el.cfgInterMin.addEventListener('change', (e) => send(msg(CMD.SET_CONFIG, { config: { interSceneDelayMinMs: clampInt(e.target.value, 0) } })));
   el.cfgInterMax.addEventListener('change', (e) => send(msg(CMD.SET_CONFIG, { config: { interSceneDelayMaxMs: clampInt(e.target.value, 0) } })));
-  el.cfgMaxPerHour.addEventListener('change', (e) => send(msg(CMD.SET_CONFIG, { config: { maxGenerationsPerHour: clampInt(e.target.value, 0) } })));
-  el.cfgLongBreakEvery.addEventListener('change', (e) => send(msg(CMD.SET_CONFIG, { config: { longBreakEvery: clampInt(e.target.value, 0) } })));
 
   // Cola automatica: refrescar lista a mano.
   el.btnQueueRefresh.addEventListener('click', () => refreshQueue(true));

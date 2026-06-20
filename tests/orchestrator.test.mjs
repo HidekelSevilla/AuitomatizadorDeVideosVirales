@@ -52,6 +52,8 @@ function harness(opts = {}) {
 assert.equal(classifyError("no hay pestana de Flow abierta"), "environment");
 assert.equal(classifyError("no encuentro el boton generar"), "selector");
 assert.equal(classifyError("timeout esperando el video"), "generation");
+// handoff de proveedores invalido = determinista -> NO reintentable (no re-disparar nada pagado).
+assert.equal(classifyError("handoff imagen=grok -> animacion=flow no soportado"), "selector");
 
 // (a) retry de generacion: falla 2 veces y al 3er intento OK -> 2 backoffs, sin pausa.
 {
@@ -122,4 +124,58 @@ assert.equal(classifyError("timeout esperando el video"), "generation");
   assert.equal(h.calls.sleep.length, 0, "g: no durmio");
 }
 
-console.log("OK: orchestrator - classifyError, retry, fail-fast, agotado, hardStop, ritmo, paralelo, pausa.");
+// (h) PIPELINE PARALELO: carril imagenes (flow) + carril animacion (grok) a la vez sobre 2 escenas.
+// Status DISJUNTOS (PENDING vs IMAGE_DONE) -> sin colision; el consumidor espera al productor; todo DONE.
+{
+  const h = harness({ scenes: [scene("s1"), scene("s2")] });
+  await Promise.all([
+    h.orch.runLane({ laneId: "images", phase: "images", provider: "flow" }),
+    h.orch.runLane({ laneId: "animation", phase: "animation", provider: "grok" }),
+  ]);
+  assert.equal(h.state.scenes.filter((s) => s.status === S.DONE).length, 2, "h: ambas escenas DONE");
+  assert.equal(h.calls.image, 2, "h: 2 imagenes generadas");
+  assert.equal(h.calls.animation, 2, "h: 2 animaciones");
+  assert.ok(h.state.pacing.byProvider && h.state.pacing.byProvider.flow, "h: bucket de ritmo por proveedor (flow)");
+  assert.equal(h.state.lanes.images.running, false, "h: carril imagenes termino");
+  assert.equal(h.state.lanes.animation.running, false, "h: carril animacion termino");
+}
+
+// (i) consumidor (animacion) sin productor vivo ni trabajo: termina, NO se cuelga (no hay busy-wait infinito).
+{
+  const sc = scene("s1"); sc.status = S.DONE;
+  const h = harness({ scenes: [sc] });
+  await h.orch.runLane({ laneId: "animation", phase: "animation", provider: "grok" });
+  assert.equal(h.calls.animation, 0, "i: nada que animar");
+  assert.equal(h.state.lanes.animation.running, false, "i: termino sin colgarse");
+}
+
+// (j) IDEMPOTENCIA anti-re-gasto: un runner que ya "disparo" (scene.videoUrl set) NO re-dispara al
+// reintentar tras un fallo POSTERIOR (collect/descarga). Modela el contrato de runRealAnimation/runGrokAnimation:
+// el FIRE (que paga) solo corre si no hay video previo; un fallo de recoleccion recoge sin re-gastar.
+{
+  let fires = 0, collectFails = 1;
+  const animation = async (s) => {
+    if (!s.videoUrl) { fires++; s.videoUrl = "vid://" + s.id; }              // FIRE paga: solo sin video previo
+    if (collectFails-- > 0) throw new Error("timeout esperando el video");   // collect falla 1 vez (post-fire)
+    s.status = S.DONE;
+  };
+  const sc = scene("s1"); sc.status = S.IMAGE_DONE;
+  const h = harness({ scenes: [sc], phase: "animation", animation });
+  await h.orch.processSceneWithRetries(sc, null, null, "animation");
+  assert.equal(fires, 1, "j: disparo UNA sola vez pese al reintento (no re-gasto de puntos)");
+  assert.equal(sc.status, S.DONE, "j: termino DONE al recoger en el reintento");
+}
+
+// (k) SALVAGUARDA anti-bucle: un runner que NO avanza la escena (no-op: la deja en el status OBJETIVO) no
+// debe re-elegirse para siempre. runQueue la marca ERROR y pausa (bug real: animacion girando sin avanzar).
+{
+  const sc = scene("s1"); sc.status = S.IMAGE_DONE;
+  const noop = async () => { /* no toca el status -> queda en IMAGE_DONE (target de animacion) */ };
+  const h = harness({ scenes: [sc], phase: "animation", animation: noop });
+  await h.orch.runQueue();
+  assert.equal(sc.status, S.ERROR, "k: escena no-op marcada ERROR (no se cuelga el bucle)");
+  assert.equal(h.calls.pauseForError.length, 1, "k: pauso por el no-op");
+  assert.equal(h.state.queue.running, false, "k: el bucle no quedo girando");
+}
+
+console.log("OK: orchestrator - classifyError, retry, fail-fast, agotado, hardStop, ritmo, paralelo, pausa, carriles, idempotencia, anti-bucle.");

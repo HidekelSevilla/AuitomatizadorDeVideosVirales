@@ -1,0 +1,44 @@
+{
+  "project": {
+    "title": "Test handoff Flow imagen -> Grok animacion (2 escenas)",
+    "aspect_ratio": "9:16",
+    "fps": 24
+  },
+  "pipeline": {
+    "image_generation": { "tool": "flow" },
+    "animation": { "tool": "grok" }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "image": {
+        "prompt": "Un gato naranja sentado en una ventana al atardecer, luz calida, plano vertical, fotorrealista.",
+        "ingredients": [],
+        "model": "nano_banana"
+      },
+      "animation": {
+        "prompt": "El gato mueve la cola y parpadea lentamente mientras mira por la ventana.",
+        "model": "veo_3_1_fast"
+      },
+      "continuity_from": null
+    },
+    {
+      "id": "scene_02",
+      "image": {
+        "prompt": "El mismo gato naranja ahora de pie sobre la ventana, estirandose, misma luz calida del atardecer, plano vertical.",
+        "ingredients": [],
+        "model": "nano_banana"
+      },
+      "references": {
+        "scenes": [
+          { "scene_id": "scene_01", "use_for": ["character", "composition"], "strength": "medium" }
+        ]
+      },
+      "animation": {
+        "prompt": "El gato termina de estirarse y da un paso hacia adelante mirando a la camara.",
+        "model": "veo_3_1_fast"
+      },
+      "continuity_from": "scene_01"
+    }
+  ]
+}

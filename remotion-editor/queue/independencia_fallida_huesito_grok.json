@@ -1,0 +1,531 @@
+{
+  "project": {
+    "title": "¿Qué pasaría si la Independencia hubiera fracasado?",
+    "preset": "esqueletos",
+    "slug": "independencia_fallida_huesito_grok",
+    "language": "es-MX",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "tone": "Contrafactual histórico dramático tipo documental '¿qué pasaría si…?'. La NARRACIÓN va en TERCERA persona (narrador histórico), NUNCA en segunda persona ('tú') ni primera plural ('nos/nuestro'), y NUNCA menciona al esqueleto. Se puede nombrar a Miguel Hidalgo y el Grito de Dolores (figura histórica, retrato respetuoso, escenario claramente hipotético). Final ABIERTO (sin pregunta y sin anunciar Parte 2).",
+    "render_notes": "Huesito VARÍA como tres personajes (todos character_edited sobre la misma base): huesito_cura (cura insurgente estilo Hidalgo, homenaje/calaca, NO retrato real), huesito_insurgente (combatiente con machete/fusil), huesito_colonial (súbdito del presente alterno). Coherencia: Huesito siempre VIVO — cráneo de hueso marfil limpio y pulido, grandes ojos café vivos y expresivos, NUNCA Pixar/clínico y NUNCA un zombi/no-muerto/yokai. image_prompt Y animation_prompt LARGOS y ULTRA-detallados que COMPLEMENTAN ('the provided…', cámara distinta por escena, KEY ACTION first 2s, 'keep… EXACTLY as provided'). SIN gore ni sangre (la derrota se muestra con humo, el estandarte que cae y la postura). Gente mexicana DIVERSA (morena, cabello negro). Salto de tiempo con carteles '1810' y '200 años después' dichos por la voz. Cierre ABIERTO con la semilla de una nueva rebelión organizándose en secreto.",
+    "series": "Huesito · ¿Qué pasaría si…? (autoconclusivo con FINAL ABIERTO; posible Parte 2 si tiene buen recibimiento — NO se anuncia en el video)"
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok",
+      "clip_style": "clips de ~6s"
+    },
+    "tts": {
+      "tool": "fish_audio",
+      "language": "es-MX",
+      "emotion_syntax": "S2=[brackets]"
+    },
+    "editing": {
+      "tool": "capcut"
+    }
+  },
+  "characters": {
+    "huesito": {
+      "reference_asset": "assets/characters/huesito_ref.png",
+      "description": "Esqueleto semi-realista, cráneo de hueso marfil envejecido y texturizado con poros y grietas finas, dientes creíbles, grandes ojos redondos color café muy vivos y expresivos, complexión alta y esbelta. Personaje base pre-existente: NO se genera, solo se usa como referencia."
+    }
+  },
+  "ingredients": [
+    {
+      "type": "character_edited",
+      "id": "huesito_cura",
+      "base": "huesito",
+      "edit_prompt": "Dress the provided base skeleton as a Mexican insurgent priest of 1810 in the style of Miguel Hidalgo (a respectful skeleton homage, not a realistic portrait). Outfit, described exactly: a long black cassock (sotana) of heavy worn wool buttoned down the front, a simple white clerical collar, a dark knee-length frock coat over it with tarnished buttons, a wide black low-crowned hat hanging at the back, a plain wooden rosary and a small brass crucifix at the chest; sturdy worn leather shoes; one bony hand raised as if calling out, the other gripping a thick rope tied to an old bronze church bell. Aged-wool, linen and brass textures, sober blacks and whites with warm candle-lit tones, no readable text, no logos. Plain neutral light-grey studio background, soft even three-point lighting, full body, front 3/4 view. Keep the EXACT clean polished ivory-bone skull with fine cracks, the very large round and EXPRESSIVE LIVING brown eyes, and the tall slim proportions of the provided base — a warm, fervent, living skeleton, NOT an undead, NOT a zombie, NOT a skeletal yokai, NOT decayed, grey or scary. No scene, no text.",
+      "output_file": "ingredients/huesito_cura.png"
+    },
+    {
+      "type": "character_edited",
+      "id": "huesito_insurgente",
+      "base": "huesito",
+      "edit_prompt": "Dress the provided base skeleton as a humble Mexican insurgent fighter of 1810. Outfit, described exactly: a loose off-white coarse cotton shirt (camisa de manta) with rolled sleeves, baggy beige cotton trousers tied with a woven sash, a faded red-and-brown striped wool poncho (jorongo) over one shoulder, a wide straw hat (sombrero) tipped back, worn leather huarache sandals, a leather cartridge pouch on a strap; one bony hand gripping a worn machete with a wooden handle, an old flintlock musket slung on the back. Coarse cotton, wool and leather textures, earthy off-whites, browns and faded reds, dusty and worn, no readable text, no logos. Plain neutral light-grey studio background, soft even three-point lighting, full body, front 3/4 view. Keep the EXACT clean polished ivory-bone skull with fine cracks, the very large round and EXPRESSIVE LIVING brown eyes, and the tall slim proportions of the provided base — a warm, fierce, living skeleton, NOT an undead, NOT a zombie, NOT a skeletal yokai, NOT decayed, grey or scary. No scene, no text.",
+      "output_file": "ingredients/huesito_insurgente.png"
+    },
+    {
+      "type": "character_edited",
+      "id": "huesito_colonial",
+      "base": "huesito",
+      "edit_prompt": "Dress the provided base skeleton as an ordinary colonial subject in a bleak alternate present where Mexico is still a Spanish colony — muted, timeless colonial-servant clothing. Outfit, described exactly: a plain coarse grey-brown linen tunic-shirt buttoned to the neck, a drab dark waistcoat, simple straight grey trousers, a worn long hooded cloak (capote) of undyed wool draped over the shoulders, plain worn leather shoes; muted, colorless, humble and faintly oppressed in feel; one bony hand clutching the edge of the cloak. Drab linen, wool and leather textures, washed-out greys and browns, joyless, no readable text, no logos. Plain neutral light-grey studio background, soft even three-point lighting, full body, front 3/4 view. Keep the EXACT clean polished ivory-bone skull with fine cracks, the very large round and EXPRESSIVE LIVING brown eyes (here quietly wistful), and the tall slim proportions of the provided base — a warm, living skeleton, NOT an undead, NOT a zombie, NOT a skeletal yokai, NOT decayed, grey-fleshed or scary. No scene, no text.",
+      "output_file": "ingredients/huesito_colonial.png"
+    },
+    {
+      "type": "entity",
+      "id": "pueblo_insurgente",
+      "generation_prompt": "A crowd of ordinary Mexican insurgents of 1810, adult men and women with brown skin and dark hair, photoreal. Described exactly: humble campesinos and townsfolk in coarse off-white cotton shirts (camisa de manta), baggy cotton trousers and woven sashes, faded striped wool ponchos and rebozos, wide straw hats and leather huarache sandals, some in simple long skirts and blouses; armed with worn machetes, wooden clubs, farm tools (pitchforks, scythes) and a few old flintlock muskets; fierce, hopeful, determined faces. Coarse cotton, wool and leather textures, earthy off-whites, browns and faded reds, dusty. Surging, marching stances. Plain neutral grey background, soft even lighting, full body group. Diverse working people, brown skin, dark hair, no logos, no readable text. Only adults.",
+      "output_file": "ingredients/pueblo_insurgente.png"
+    },
+    {
+      "type": "entity",
+      "id": "ejercito_realista",
+      "generation_prompt": "A group of three royalist Spanish colonial soldiers of 1810, adult men, photoreal. Described exactly: disciplined troops in well-kept military uniforms — white cross-belts over dark navy-blue regimental coats with red facings, cuffs and brass buttons, white breeches, tall black shako or tricorn hats, black leather boots and gaiters; each holding a long flintlock musket with a fixed bayonet, a sabre at the hip, a cartridge box on the belt. Crisp wool, brass and leather textures, deep navy, white and red, orderly and imposing. Firm, advancing military stances. Plain neutral grey background, soft even lighting, full body group. No real emblems or modern logos, no readable text. Only adult men.",
+      "output_file": "ingredients/ejercito_realista.png"
+    },
+    {
+      "type": "entity",
+      "id": "estandarte_insurgente",
+      "generation_prompt": "A single tall insurgent banner of the 1810 Mexican uprising, photoreal. Described exactly: a weathered rectangular cloth banner mounted on a worn wooden pole, bearing a venerated image of the Virgin of Guadalupe in faded warm colors (the historic standard of the insurgents) within a simple painted border; the cloth frayed and battle-worn, edges tattered. Aged painted-cloth and wood textures, warm faded reds, golds, greens and blues. Held upright. Plain neutral grey background, soft even lighting, full object. Respectful historic depiction, no modern logos, no readable text.",
+      "output_file": "ingredients/estandarte_insurgente.png"
+    },
+    {
+      "type": "entity",
+      "id": "bandera_colonial",
+      "generation_prompt": "A single large Spanish colonial royal flag for an alternate present, photoreal. Described exactly: a tall banner of the colonial Spanish crown — a white field bearing the red ragged Cross of Burgundy (crossed red saltire branches) and a crowned royal coat of arms in crimson and gold, mounted on a tall metal pole, heavy fabric rippling. Rich heavy fabric texture, deep reds, whites and golds, imperial and austere. Plain neutral grey background, soft even lighting, full object. Generic historic royal banner, no modern logos, no readable text.",
+      "output_file": "ingredients/bandera_colonial.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_dolores_1810",
+      "generation_prompt": "The small Mexican town of Dolores at dawn in 1810, empty of main characters. A modest colonial stone church with a bell tower and a single bronze bell, a dusty plaza with low whitewashed adobe houses, wooden doors and clay-tiled roofs, a few simple market stalls, soft golden dawn light breaking over distant hills, faint mist. Humble, historic, charged with the dawn of an uprising. Empty plaza staging area, no main characters, photorealistic, wide composition. No readable text, no modern elements, no logos.",
+      "output_file": "ingredients/plate_dolores_1810.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_campo",
+      "generation_prompt": "An open Mexican countryside battlefield road in 1810, empty of main characters. A wide dirt road cutting through dry golden fields and scrubland under a vast sky, low rolling hills, scattered agave and cactus, a few distant trees, dust hanging in the air, a moody dramatic daylight. Epic, raw, historic. Empty staging area, no main characters, photorealistic, wide cinematic composition. No readable text, no modern elements, no logos.",
+      "output_file": "ingredients/plate_campo.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_zocalo_colonial",
+      "generation_prompt": "The vast central plaza (Zocalo) of a great colonial Mexican city in a bleak alternate present where it is still a Spanish colony, empty of main characters. A huge stone plaza framed by an imposing baroque colonial palace and a great colonial cathedral, austere and grand, tall flagpoles in the foreground, an overcast desaturated grey sky, a cold oppressive imperial atmosphere with no festive decoration of any kind. Empty plaza staging area, no main characters, photorealistic, wide cinematic composition. No readable text, no modern brand logos.",
+      "output_file": "ingredients/plate_zocalo_colonial.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_calles_coloniales",
+      "generation_prompt": "The narrow streets of a great colonial Mexican city in a bleak alternate present still under Spanish colonial rule, empty of main characters. Drab cobblestone streets lined with austere baroque colonial stone buildings, barred windows, heavy wooden doors, faded royal banners hanging limp, no color or celebration anywhere, a cold desaturated grey overcast light, a joyless oppressive mood. Empty street staging area, no main characters, photorealistic, wide composition. No readable text, no modern brand logos.",
+      "output_file": "ingredients/plate_calles_coloniales.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_clandestino",
+      "generation_prompt": "The dim interior of a hidden back room in a colonial-era building at night, empty of main characters. A cramped candle-lit room with rough plastered walls, a worn wooden table scattered with papers and a single flickering candle, shuttered windows, shadows pooling in the corners, a faint hidden glimpse of green-white-red cloth tucked at the table's edge — a secret, conspiratorial, charged atmosphere. Empty room staging area, no main characters, photorealistic, wide composition. No readable text, no modern logos.",
+      "output_file": "ingredients/plate_clandestino.png"
+    }
+  ],
+  "hook": {
+    "voiceover": {
+      "text": "[curious] ¿Qué pasaría si la Independencia de México hubiera fracasado y el país nunca se hubiera liberado de la corona española?"
+    },
+    "captions": {
+      "text": "¿Y si la Independencia hubiera fallado?"
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "references": {
+        "characters": [
+          "huesito_cura"
+        ],
+        "ingredients": [
+          "plate_dolores_1810"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided insurgent priest (Huesito as Miguel Hidalgo) on the provided 1810 Dolores town plate: KEY camera = a rousing low hero shot at dawn, looking up at him on the church steps. The provided Huesito priest hauls on the rope of the old bronze bell with one hand and throws the other arm up to the sky, mouth open in a great rallying cry, the golden dawn breaking behind the bell tower, dust and light around him, the humble plaza waking below. Stirring, historic, goosebump energy. Huesito stays clearly himself and ALIVE: a clean polished ivory-bone skull with fine cracks, very large round and EXPRESSIVE LIVING brown eyes, tall slim proportions — a warm, expressive, living skeleton, NOT an undead, NOT a zombie, NOT a skeletal yokai, NOT decayed, grey or scary. Semi-realistic skeleton (NOT Pixar/cartoonish/clinical); the human crowds and soldiers are realistic diverse adults of the period (the Mexican people have brown skin and dark hair); only adults, no minors; NO gore and no blood (defeat shown only through smoke, a falling banner and posture, never injuries); historically evocative, banners period-appropriate, no modern brand logos; 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the priest yanks the bell rope and throws his arm up, crying out the Grito. SHOT: rousing low hero shot at dawn. ANIMATE: the bell swinging and ringing, his arm thrown up, robes and rope moving, dawn light flaring, dust drifting, the town stirring awake. Keep the provided assets EXACTLY as provided, and keep Huesito a clean LIVING ivory-bone skeleton with very large expressive brown eyes — NOT a zombie, undead or yokai; humans realistic; ~6s. No gore, no blood."
+      },
+      "voiceover": {
+        "text": "[determined] Año 1810: Miguel Hidalgo toca la campana y lanza el Grito de Dolores que enciende a todo un pueblo."
+      },
+      "captions": {
+        "text": "1810: Hidalgo da el Grito de Dolores."
+      },
+      "time_label": "1810"
+    },
+    {
+      "id": "scene_02",
+      "references": {
+        "characters": [
+          "huesito_insurgente"
+        ],
+        "ingredients": [
+          "plate_campo",
+          "pueblo_insurgente",
+          "estandarte_insurgente"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided insurgent fighter (Huesito), the provided insurgent crowd and the provided insurgent banner on the provided countryside plate: KEY camera = a sweeping wide shot of an uprising. The provided Huesito fighter raises his machete high at the head of the provided crowd of armed campesinos, the provided Guadalupe banner held aloft among them, everyone surging forward with raw hope across the golden fields. Epic, raw, hopeful momentum. Huesito stays clearly himself and ALIVE: a clean polished ivory-bone skull with fine cracks, very large round and EXPRESSIVE LIVING brown eyes, tall slim proportions — a warm, expressive, living skeleton, NOT an undead, NOT a zombie, NOT a skeletal yokai, NOT decayed, grey or scary. Semi-realistic skeleton (NOT Pixar/cartoonish/clinical); the human crowds and soldiers are realistic diverse adults of the period (the Mexican people have brown skin and dark hair); only adults, no minors; NO gore and no blood (defeat shown only through smoke, a falling banner and posture, never injuries); historically evocative, banners period-appropriate, no modern brand logos; 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito raises his machete and the armed crowd surges forward behind the banner. SHOT: sweeping wide shot. ANIMATE: the crowd surging and shouting, machetes and tools raised, the banner swaying high, dust kicking up under marching feet. Keep the provided assets EXACTLY as provided, and keep Huesito a clean LIVING ivory-bone skeleton with very large expressive brown eyes — NOT a zombie, undead or yokai; humans realistic; ~6s. No gore, no blood."
+      },
+      "voiceover": {
+        "text": "El pueblo se levanta en armas: campesinos con machetes, palos y viejos fusiles marchan por la libertad."
+      },
+      "captions": {
+        "text": "El pueblo se levanta en armas."
+      }
+    },
+    {
+      "id": "scene_03",
+      "references": {
+        "characters": [
+          "huesito_insurgente"
+        ],
+        "ingredients": [
+          "plate_campo",
+          "pueblo_insurgente",
+          "estandarte_insurgente"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided insurgent fighter (Huesito), the provided insurgent crowd and the provided insurgent banner on the provided countryside plate: KEY camera = a grand tracking shot moving alongside the column. The provided Huesito marches at the front as the provided insurgent column stretches far back down the dusty road, growing and growing, the provided banner rippling above them, faces full of faith and fire. Unstoppable, swelling, hopeful scale. Huesito stays clearly himself and ALIVE: a clean polished ivory-bone skull with fine cracks, very large round and EXPRESSIVE LIVING brown eyes, tall slim proportions — a warm, expressive, living skeleton, NOT an undead, NOT a zombie, NOT a skeletal yokai, NOT decayed, grey or scary. Semi-realistic skeleton (NOT Pixar/cartoonish/clinical); the human crowds and soldiers are realistic diverse adults of the period (the Mexican people have brown skin and dark hair); only adults, no minors; NO gore and no blood (defeat shown only through smoke, a falling banner and posture, never injuries); historically evocative, banners period-appropriate, no modern brand logos; 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the camera tracks alongside the swelling insurgent column marching behind the banner. SHOT: grand tracking shot. ANIMATE: the long column marching, the banner rippling, dust rising, determined faces, the scale stretching back. Keep the provided assets EXACTLY as provided, and keep Huesito a clean LIVING ivory-bone skeleton with very large expressive brown eyes — NOT a zombie, undead or yokai; humans realistic; ~6s. No gore, no blood."
+      },
+      "voiceover": {
+        "text": "La marcha insurgente crece y crece por los caminos, imparable, cargando su estandarte con fe y esperanza."
+      },
+      "captions": {
+        "text": "La marcha insurgente crece."
+      }
+    },
+    {
+      "id": "scene_04",
+      "references": {
+        "characters": [
+          "huesito_insurgente"
+        ],
+        "ingredients": [
+          "plate_campo",
+          "pueblo_insurgente",
+          "ejercito_realista"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided insurgent fighter (Huesito), the provided insurgent crowd and the provided royalist soldiers on the provided countryside plate: KEY camera = a tense wide shot of two forces colliding. Across the open field, the disciplined provided royalist soldiers form a firing line with leveled muskets and bayonets facing the provided Huesito and his ragtag crowd, the air thick with dust and dread the instant before the clash. Cold, ominous, charged tension. Huesito stays clearly himself and ALIVE: a clean polished ivory-bone skull with fine cracks, very large round and EXPRESSIVE LIVING brown eyes, tall slim proportions — a warm, expressive, living skeleton, NOT an undead, NOT a zombie, NOT a skeletal yokai, NOT decayed, grey or scary. Semi-realistic skeleton (NOT Pixar/cartoonish/clinical); the human crowds and soldiers are realistic diverse adults of the period (the Mexican people have brown skin and dark hair); only adults, no minors; NO gore and no blood (defeat shown only through smoke, a falling banner and posture, never injuries); historically evocative, banners period-appropriate, no modern brand logos; 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the royalist soldiers level their muskets in a line as the insurgents brace across the field. SHOT: tense wide shot of the standoff. ANIMATE: the soldiers leveling muskets, smoke from a volley, the insurgents bracing and surging, dust and tension, no blood. Keep the provided assets EXACTLY as provided, and keep Huesito a clean LIVING ivory-bone skeleton with very large expressive brown eyes — NOT a zombie, undead or yokai; humans realistic; ~6s. No gore, no blood."
+      },
+      "voiceover": {
+        "text": "[tense] Pero el ejército realista, mejor armado y entrenado, los enfrenta de golpe en campo abierto."
+      },
+      "captions": {
+        "text": "El ejército realista los enfrenta."
+      }
+    },
+    {
+      "id": "scene_05",
+      "references": {
+        "characters": [
+          "huesito_insurgente"
+        ],
+        "ingredients": [
+          "plate_campo",
+          "ejercito_realista",
+          "estandarte_insurgente"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided royalist soldiers, the provided insurgent fighter (Huesito) and the provided insurgent banner on the provided countryside plate: KEY camera = a sorrowful slow shot as the banner falls. Thick gun-smoke rolls across the field as the disciplined provided royalist soldiers overwhelm the scattering insurgents; the provided Guadalupe banner tips and falls toward the dust, the provided Huesito reaching for it in vain, the uprising broken. Tragic, smoky, hope extinguished — smoke and posture only, NO blood, NO injuries. Huesito stays clearly himself and ALIVE: a clean polished ivory-bone skull with fine cracks, very large round and EXPRESSIVE LIVING brown eyes, tall slim proportions — a warm, expressive, living skeleton, NOT an undead, NOT a zombie, NOT a skeletal yokai, NOT decayed, grey or scary. Semi-realistic skeleton (NOT Pixar/cartoonish/clinical); the human crowds and soldiers are realistic diverse adults of the period (the Mexican people have brown skin and dark hair); only adults, no minors; NO gore and no blood (defeat shown only through smoke, a falling banner and posture, never injuries); historically evocative, banners period-appropriate, no modern brand logos; 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the insurgent banner tips and falls through the gun-smoke as the soldiers advance. SHOT: sorrowful slow shot. ANIMATE: the banner toppling, smoke rolling across the field, insurgents falling back, Huesito reaching out, a slow tragic descent, no blood. Keep the provided assets EXACTLY as provided, and keep Huesito a clean LIVING ivory-bone skeleton with very large expressive brown eyes — NOT a zombie, undead or yokai; humans realistic; ~6s. No gore, no blood."
+      },
+      "voiceover": {
+        "text": "[sad] Y la rebelión es aplastada: el estandarte cae entre el humo, y la esperanza se apaga."
+      },
+      "captions": {
+        "text": "La rebelión es aplastada."
+      }
+    },
+    {
+      "id": "scene_06",
+      "references": {
+        "characters": [
+          "huesito_cura"
+        ],
+        "ingredients": [
+          "plate_campo",
+          "ejercito_realista"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided insurgent priest (Huesito as Hidalgo) and the provided royalist soldiers on the provided countryside plate: KEY camera = a somber mid shot of the captured leader. The provided Huesito priest stands captured and unbowed, hands bound, flanked by the stern provided royalist soldiers leading him away across the smoke-hazed field, his head still held high in defeat. Heavy, solemn, the dream dying — no gore, no blood. Huesito stays clearly himself and ALIVE: a clean polished ivory-bone skull with fine cracks, very large round and EXPRESSIVE LIVING brown eyes, tall slim proportions — a warm, expressive, living skeleton, NOT an undead, NOT a zombie, NOT a skeletal yokai, NOT decayed, grey or scary. Semi-realistic skeleton (NOT Pixar/cartoonish/clinical); the human crowds and soldiers are realistic diverse adults of the period (the Mexican people have brown skin and dark hair); only adults, no minors; NO gore and no blood (defeat shown only through smoke, a falling banner and posture, never injuries); historically evocative, banners period-appropriate, no modern brand logos; 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the bound priest is led away by royalist soldiers across the smoky field, head held high. SHOT: somber mid shot. ANIMATE: the slow grim march, the priest's defiant stillness, soldiers escorting, smoke drifting, a heavy mournful mood, no blood. Keep the provided assets EXACTLY as provided, and keep Huesito a clean LIVING ivory-bone skeleton with very large expressive brown eyes — NOT a zombie, undead or yokai; humans realistic; ~6s. No gore, no blood."
+      },
+      "voiceover": {
+        "text": "Hidalgo y sus líderes son capturados, y el sueño de un México libre muere antes de nacer."
+      },
+      "captions": {
+        "text": "Hidalgo es capturado. El sueño muere."
+      }
+    },
+    {
+      "id": "scene_07",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "plate_zocalo_colonial",
+          "bandera_colonial"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided colonial Spanish flag on the provided alternate-present colonial Zocalo plate: KEY camera = a slow, chilling reveal crane shot over the vast grey plaza. The great austere colonial palace and cathedral loom under an overcast sky, and the provided Spanish colonial flag rises and ripples on the tall central pole over the empty plaza — a present that never became Mexico. Cold, eerie, dystopian stillness. Semi-realistic skeleton (NOT Pixar/cartoonish/clinical); the human crowds and soldiers are realistic diverse adults of the period (the Mexican people have brown skin and dark hair); only adults, no minors; NO gore and no blood (defeat shown only through smoke, a falling banner and posture, never injuries); historically evocative, banners period-appropriate, no modern brand logos; 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the camera cranes over the grey plaza to reveal the Spanish colonial flag rippling on the central pole. SHOT: slow chilling reveal crane. ANIMATE: the flag unfurling and rippling, overcast light shifting, a few drab figures crossing far below, a cold lifeless calm. Keep the provided assets EXACTLY as provided; realistic period-appropriate adults; ~6s. No gore, no blood."
+      },
+      "voiceover": {
+        "text": "Doscientos años después, la historia es otra: México nunca nació, y todo sigue siendo la Nueva España."
+      },
+      "captions": {
+        "text": "200 años después: nunca hubo México."
+      },
+      "time_label": "200 años después"
+    },
+    {
+      "id": "scene_08",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "plate_zocalo_colonial",
+          "bandera_colonial"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided colonial Spanish flag on the provided alternate-present colonial Zocalo plate: KEY camera = a stark low-angle shot looking up at the flag. The provided Spanish colonial flag dominates the frame against the grey sky over the imperial palace, where a Mexican tricolor should have flown but never did, the austere joyless plaza below. Austere, oppressive, haunting. Semi-realistic skeleton (NOT Pixar/cartoonish/clinical); the human crowds and soldiers are realistic diverse adults of the period (the Mexican people have brown skin and dark hair); only adults, no minors; NO gore and no blood (defeat shown only through smoke, a falling banner and posture, never injuries); historically evocative, banners period-appropriate, no modern brand logos; 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): a stark low-angle holds on the colonial flag rippling where the tricolor should be. SHOT: stark low-angle. ANIMATE: the heavy flag rippling against the grey sky, drab figures passing below, a cold imperial stillness. Keep the provided assets EXACTLY as provided; realistic period-appropriate adults; ~6s. No gore, no blood."
+      },
+      "voiceover": {
+        "text": "En el corazón del Zócalo ya no ondea el tricolor, sino la bandera colonial de la corona española."
+      },
+      "captions": {
+        "text": "En el Zócalo, la bandera colonial."
+      }
+    },
+    {
+      "id": "scene_09",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "plate_zocalo_colonial",
+          "bandera_colonial"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided colonial Spanish flag on the provided alternate-present colonial Zocalo plate: KEY camera = a grand cold shot toward the palace balcony. On a balcony of the imposing colonial palace, a richly dressed Spanish viceroy in colonial finery surveys the plaza while drab humble subjects below queue to lay tribute — coins and sacks of grain — before armored guards, the provided colonial flag overhead. Imperial, hierarchical, oppressive. Semi-realistic skeleton (NOT Pixar/cartoonish/clinical); the human crowds and soldiers are realistic diverse adults of the period (the Mexican people have brown skin and dark hair); only adults, no minors; NO gore and no blood (defeat shown only through smoke, a falling banner and posture, never injuries); historically evocative, banners period-appropriate, no modern brand logos; 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the viceroy looks down from the palace balcony as humble subjects lay tribute below. SHOT: grand cold shot toward the balcony. ANIMATE: the viceroy surveying, subjects bowing and placing tribute, guards standing watch, the flag rippling, a heavy hierarchy. Keep the provided assets EXACTLY as provided; realistic period-appropriate adults; ~6s. No gore, no blood."
+      },
+      "voiceover": {
+        "text": "La gente todavía paga tributo a una corona lejana, y un virrey gobierna desde el viejo palacio."
+      },
+      "captions": {
+        "text": "Tributo a la corona. Manda un virrey."
+      }
+    },
+    {
+      "id": "scene_10",
+      "references": {
+        "characters": [
+          "huesito_colonial"
+        ],
+        "ingredients": [
+          "plate_calles_coloniales"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided colonial subject (Huesito) on the provided alternate-present colonial streets plate: KEY camera = a quiet, melancholic mid shot among the crowd. The provided Huesito subject moves among drab, downcast colonial subjects shuffling through the grey cobblestone streets, all heads slightly bowed, no pride or color anywhere, just obedience under the colonial order. Bleak, melancholic, lifeless. Huesito stays clearly himself and ALIVE: a clean polished ivory-bone skull with fine cracks, very large round and EXPRESSIVE LIVING brown eyes, tall slim proportions — a warm, expressive, living skeleton, NOT an undead, NOT a zombie, NOT a skeletal yokai, NOT decayed, grey or scary. Semi-realistic skeleton (NOT Pixar/cartoonish/clinical); the human crowds and soldiers are realistic diverse adults of the period (the Mexican people have brown skin and dark hair); only adults, no minors; NO gore and no blood (defeat shown only through smoke, a falling banner and posture, never injuries); historically evocative, banners period-appropriate, no modern brand logos; 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito walks among bowed, drab colonial subjects through the grey street. SHOT: quiet melancholic mid shot. ANIMATE: the subjects shuffling past, heads bowed, faded banners hanging limp, a cold grey stillness, Huesito's wistful gaze. Keep the provided assets EXACTLY as provided, and keep Huesito a clean LIVING ivory-bone skeleton with very large expressive brown eyes — NOT a zombie, undead or yokai; humans realistic; ~6s. No gore, no blood."
+      },
+      "voiceover": {
+        "text": "Aquí no existen los mexicanos: solo súbditos de la colonia, y el orgullo de una nación nunca nació."
+      },
+      "captions": {
+        "text": "No hay mexicanos, solo súbditos."
+      }
+    },
+    {
+      "id": "scene_11",
+      "references": {
+        "characters": [
+          "huesito_colonial"
+        ],
+        "ingredients": [
+          "plate_calles_coloniales"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided colonial subject (Huesito) on the provided alternate-present colonial streets plate: KEY camera = a still, lonely wide shot of an empty street. The provided Huesito subject stands alone in a silent grey colonial street on what should be a festive night of independence, but there is no tricolor, no fireworks, no celebration — only stillness and shuttered windows. Empty, mournful, haunting absence. Huesito stays clearly himself and ALIVE: a clean polished ivory-bone skull with fine cracks, very large round and EXPRESSIVE LIVING brown eyes, tall slim proportions — a warm, expressive, living skeleton, NOT an undead, NOT a zombie, NOT a skeletal yokai, NOT decayed, grey or scary. Semi-realistic skeleton (NOT Pixar/cartoonish/clinical); the human crowds and soldiers are realistic diverse adults of the period (the Mexican people have brown skin and dark hair); only adults, no minors; NO gore and no blood (defeat shown only through smoke, a falling banner and posture, never injuries); historically evocative, banners period-appropriate, no modern brand logos; 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito stands alone in a silent empty street where a celebration should be. SHOT: still lonely wide shot. ANIMATE: a faint cold wind stirring dust and a limp banner, shutters closed, an aching emptiness, Huesito utterly still. Keep the provided assets EXACTLY as provided, and keep Huesito a clean LIVING ivory-bone skeleton with very large expressive brown eyes — NOT a zombie, undead or yokai; humans realistic; ~6s. No gore, no blood."
+      },
+      "voiceover": {
+        "text": "Las fiestas, el Grito, el tricolor… nada de eso existe; un quince de septiembre cualquiera, en silencio."
+      },
+      "captions": {
+        "text": "El 15 de septiembre, en silencio."
+      }
+    },
+    {
+      "id": "scene_12",
+      "references": {
+        "characters": [
+          "huesito_colonial"
+        ],
+        "ingredients": [
+          "plate_calles_coloniales"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided colonial subject (Huesito) on the provided alternate-present colonial streets plate: KEY camera = a reflective slow push-in. The provided Huesito subject pauses before an austere wall plastered with old royal colonial proclamations in archaic script, the world around him stripped of its Mexican identity — different customs, different order, all trace of the nation erased. Somber, contemplative, hollow. Huesito stays clearly himself and ALIVE: a clean polished ivory-bone skull with fine cracks, very large round and EXPRESSIVE LIVING brown eyes, tall slim proportions — a warm, expressive, living skeleton, NOT an undead, NOT a zombie, NOT a skeletal yokai, NOT decayed, grey or scary. Semi-realistic skeleton (NOT Pixar/cartoonish/clinical); the human crowds and soldiers are realistic diverse adults of the period (the Mexican people have brown skin and dark hair); only adults, no minors; NO gore and no blood (defeat shown only through smoke, a falling banner and posture, never injuries); historically evocative, banners period-appropriate, no modern brand logos; 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito pauses before a wall of old royal colonial proclamations. SHOT: reflective slow push-in. ANIMATE: papers fluttering faintly on the wall, grey light, Huesito's quiet wistful study of them, a hollow stillness. Keep the provided assets EXACTLY as provided, and keep Huesito a clean LIVING ivory-bone skeleton with very large expressive brown eyes — NOT a zombie, undead or yokai; humans realistic; ~6s. No gore, no blood."
+      },
+      "voiceover": {
+        "text": "Hasta el idioma y las costumbres son otros; la identidad de todo un pueblo simplemente se borró."
+      },
+      "captions": {
+        "text": "La identidad se borró."
+      }
+    },
+    {
+      "id": "scene_13",
+      "references": {
+        "characters": [
+          "huesito_colonial"
+        ],
+        "ingredients": [
+          "plate_calles_coloniales"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided colonial subject (Huesito) on the provided alternate-present colonial streets plate: KEY camera = a slow tracking shot following him from behind. The provided Huesito subject walks alone down a long grey colonial street, cloak drawn around him, dwarfed by the austere imperial architecture, carrying the weight of a life under a history that never set it free. Lonely, weighty, cinematic. Huesito stays clearly himself and ALIVE: a clean polished ivory-bone skull with fine cracks, very large round and EXPRESSIVE LIVING brown eyes, tall slim proportions — a warm, expressive, living skeleton, NOT an undead, NOT a zombie, NOT a skeletal yokai, NOT decayed, grey or scary. Semi-realistic skeleton (NOT Pixar/cartoonish/clinical); the human crowds and soldiers are realistic diverse adults of the period (the Mexican people have brown skin and dark hair); only adults, no minors; NO gore and no blood (defeat shown only through smoke, a falling banner and posture, never injuries); historically evocative, banners period-appropriate, no modern brand logos; 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito walks away down the long grey colonial street, cloak drawn. SHOT: slow tracking shot from behind. ANIMATE: his solitary walk, cloak stirring, cold light, the imposing buildings looming, a heavy lonely mood. Keep the provided assets EXACTLY as provided, and keep Huesito a clean LIVING ivory-bone skeleton with very large expressive brown eyes — NOT a zombie, undead or yokai; humans realistic; ~6s. No gore, no blood."
+      },
+      "voiceover": {
+        "text": "Un súbdito cualquiera camina por esas calles grises, sin imaginar siquiera todo lo que pudo haber sido."
+      },
+      "captions": {
+        "text": "Calles grises, sin saber qué pudo ser."
+      }
+    },
+    {
+      "id": "scene_14",
+      "references": {
+        "characters": [
+          "huesito_colonial"
+        ],
+        "ingredients": [
+          "plate_calles_coloniales"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided colonial subject (Huesito) on the provided alternate-present colonial streets plate: KEY camera = an intimate close-up turning to camera. The provided Huesito subject stops and turns, his very large brown eyes catching a faint flicker of something — memory, longing, defiance — in the grey colonial street, as if sensing how a single cry once could have changed everything. Intimate, charged, a spark stirring. Huesito stays clearly himself and ALIVE: a clean polished ivory-bone skull with fine cracks, very large round and EXPRESSIVE LIVING brown eyes, tall slim proportions — a warm, expressive, living skeleton, NOT an undead, NOT a zombie, NOT a skeletal yokai, NOT decayed, grey or scary. Semi-realistic skeleton (NOT Pixar/cartoonish/clinical); the human crowds and soldiers are realistic diverse adults of the period (the Mexican people have brown skin and dark hair); only adults, no minors; NO gore and no blood (defeat shown only through smoke, a falling banner and posture, never injuries); historically evocative, banners period-appropriate, no modern brand logos; 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito stops and turns, a faint spark kindling in his big brown eyes. SHOT: intimate close-up. ANIMATE: his slow turn, the subtle shift from weariness to a flicker of resolve in his eyes, grey light, a quiet charge building. Keep the provided assets EXACTLY as provided, and keep Huesito a clean LIVING ivory-bone skeleton with very large expressive brown eyes — NOT a zombie, undead or yokai; humans realistic; ~6s. No gore, no blood."
+      },
+      "voiceover": {
+        "text": "Porque todo lo que conoce un pueblo —la bandera, el nombre, el país— colgó de un solo grito en la madrugada."
+      },
+      "captions": {
+        "text": "Todo colgó de un solo grito."
+      }
+    },
+    {
+      "id": "scene_15",
+      "references": {
+        "characters": [
+          "huesito_colonial"
+        ],
+        "ingredients": [
+          "plate_clandestino"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided colonial subject (Huesito) on the provided clandestine back-room plate: KEY camera = a tense, intimate huddle shot by candlelight. The provided Huesito leans in with a small group of cloaked subjects gathered in secret around the candle-lit table, heads close together, whispering and pointing at hidden papers, a glimpse of green-white-red cloth tucked at the table's edge — a conspiracy quietly taking shape. Secret, charged, conspiratorial warmth in the dark. Huesito stays clearly himself and ALIVE: a clean polished ivory-bone skull with fine cracks, very large round and EXPRESSIVE LIVING brown eyes, tall slim proportions — a warm, expressive, living skeleton, NOT an undead, NOT a zombie, NOT a skeletal yokai, NOT decayed, grey or scary. Semi-realistic skeleton (NOT Pixar/cartoonish/clinical); the human crowds and soldiers are realistic diverse adults of the period (the Mexican people have brown skin and dark hair); only adults, no minors; NO gore and no blood (defeat shown only through smoke, a falling banner and posture, never injuries); historically evocative, banners period-appropriate, no modern brand logos; 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito and the cloaked group lean in close around the candle, whispering over hidden papers. SHOT: tense intimate huddle by candlelight. ANIMATE: the candle flickering, heads leaning in, hushed whispers and nods, a hand sliding the hidden tricolor cloth, shadows shifting. Keep the provided assets EXACTLY as provided, and keep Huesito a clean LIVING ivory-bone skeleton with very large expressive brown eyes — NOT a zombie, undead or yokai; humans realistic; ~6s. No gore, no blood."
+      },
+      "voiceover": {
+        "text": "[whispering] Pero en las sombras de esa colonia, unos cuantos empiezan a juntarse en secreto, en voz muy baja."
+      },
+      "captions": {
+        "text": "En las sombras, algunos se organizan."
+      }
+    },
+    {
+      "id": "scene_16",
+      "references": {
+        "characters": [
+          "huesito_colonial"
+        ],
+        "ingredients": [
+          "plate_clandestino"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided colonial subject (Huesito) on the provided clandestine back-room plate: KEY camera = a quiet, powerful closing close-up. The provided Huesito subject slips a hidden folded green-white-red cloth under his cloak and lifts his gaze with a faint, resolute spark in his very large brown eyes, the candle glowing warm against the dark — a seed of rebellion quietly alive. Understated, hopeful, open-ended, a held breath of defiance. Huesito stays clearly himself and ALIVE: a clean polished ivory-bone skull with fine cracks, very large round and EXPRESSIVE LIVING brown eyes, tall slim proportions — a warm, expressive, living skeleton, NOT an undead, NOT a zombie, NOT a skeletal yokai, NOT decayed, grey or scary. Semi-realistic skeleton (NOT Pixar/cartoonish/clinical); the human crowds and soldiers are realistic diverse adults of the period (the Mexican people have brown skin and dark hair); only adults, no minors; NO gore and no blood (defeat shown only through smoke, a falling banner and posture, never injuries); historically evocative, banners period-appropriate, no modern brand logos; 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito tucks the hidden tricolor cloth under his cloak and lifts his gaze with a quiet spark. SHOT: quiet powerful closing close-up. ANIMATE: the cloth hidden away, his eyes lifting with subtle resolve, the candle glowing, a small knowing look, then a slow hold — open and unresolved. Keep the provided assets EXACTLY as provided, and keep Huesito a clean LIVING ivory-bone skeleton with very large expressive brown eyes — NOT a zombie, undead or yokai; humans realistic; ~6s. No gore, no blood."
+      },
+      "voiceover": {
+        "text": "[hopeful] Porque aunque pasen siglos bajo otra bandera, el espíritu de rebeldía nunca muere del todo…"
+      },
+      "captions": {
+        "text": "El espíritu de rebeldía nunca muere…"
+      }
+    }
+  ],
+  "capcut_export": {
+    "main_timeline_starts_after_hook": true,
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16"
+    ],
+    "title_cards": [
+      {
+        "scene_id": "scene_01",
+        "text": "1810"
+      },
+      {
+        "scene_id": "scene_07",
+        "text": "200 años después"
+      }
+    ],
+    "ending_card": {
+      "after_scene": "scene_16",
+      "text": "EL ESPÍRITU DE REBELDÍA NUNCA MUERE…",
+      "style": "texto evocador sobre frame congelado (la vela / la mirada de Huesito); cierre ABIERTO, SIN pregunta y SIN '¿Parte 2?'"
+    },
+    "caption_style": {
+      "font": "Montserrat ExtraBold",
+      "size": 72,
+      "position": "center_lower",
+      "max_words_on_screen": 5
+    },
+    "music_notes": "Tambor histórico + cuerdas; épica esperanzada en el levantamiento (1-3); tensión y golpe trágico en la derrota (4-6); ambiente frío, vacío y opresivo en el presente colonial (7-14); susurro de tensión y chispa final esperanzada (15-16).",
+    "sfx_notes": "Campana de iglesia y grito (1); marcha y multitud (2-3); descargas de mosquete y humo, sin sangre (4-5); viento frío y eco en la colonia (7-13); vela crepitando, susurros y papeles (15-16)."
+  },
+  "tts_export": {
+    "language": "es-MX",
+    "full_script": "[curious] ¿Qué pasaría si la Independencia de México hubiera fracasado y el país nunca se hubiera liberado de la corona española? [determined] Año 1810: Miguel Hidalgo toca la campana y lanza el Grito de Dolores que enciende a todo un pueblo. El pueblo se levanta en armas: campesinos con machetes, palos y viejos fusiles marchan por la libertad. La marcha insurgente crece y crece por los caminos, imparable, cargando su estandarte con fe y esperanza. [tense] Pero el ejército realista, mejor armado y entrenado, los enfrenta de golpe en campo abierto. [sad] Y la rebelión es aplastada: el estandarte cae entre el humo, y la esperanza se apaga. Hidalgo y sus líderes son capturados, y el sueño de un México libre muere antes de nacer. Doscientos años después, la historia es otra: México nunca nació, y todo sigue siendo la Nueva España. En el corazón del Zócalo ya no ondea el tricolor, sino la bandera colonial de la corona española. La gente todavía paga tributo a una corona lejana, y un virrey gobierna desde el viejo palacio. Aquí no existen los mexicanos: solo súbditos de la colonia, y el orgullo de una nación nunca nació. Las fiestas, el Grito, el tricolor… nada de eso existe; un quince de septiembre cualquiera, en silencio. Hasta el idioma y las costumbres son otros; la identidad de todo un pueblo simplemente se borró. Un súbdito cualquiera camina por esas calles grises, sin imaginar siquiera todo lo que pudo haber sido. Porque todo lo que conoce un pueblo —la bandera, el nombre, el país— colgó de un solo grito en la madrugada. [whispering] Pero en las sombras de esa colonia, unos cuantos empiezan a juntarse en secreto, en voz muy baja. [hopeful] Porque aunque pasen siglos bajo otra bandera, el espíritu de rebeldía nunca muere del todo…"
+  }
+}
