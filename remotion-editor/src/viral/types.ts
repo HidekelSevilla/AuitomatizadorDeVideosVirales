@@ -52,6 +52,7 @@ export interface ProjectMeta {
   aspect_ratio?: string; // "9:16"
   fps?: number;
   default_clip_duration_s?: number; // duracion de los clips de Flow (default 4)
+  grok_clip_seconds?: number; // novela-coreana: clips de Grok a 10s; fallback de default_clip_duration_s
 }
 
 export interface AudioData {
@@ -95,9 +96,21 @@ export interface ComputedTimeline {
   totalFrames: number;
 }
 
+// Opening recurrente (preset novela-coreana): mismas escenas que scenes[], se reproducen PRIMERO,
+// en el orden del array, antes de las escenas resueltas por clip_order. El render las trata igual.
+export interface OpeningData {
+  recurring?: boolean;
+  // Opening COMPARTIDO por serie (opcional): carpeta base de los op_*.mp4/.mp3 en public/<assets_slug>/.
+  // Asi cada Parte apunta al mismo opening sin copiar archivos. Ausente -> usa el slug del proyecto (cada
+  // Parte trae sus propios op_* en su carpeta). Ej: "_openings/becaria_corp".
+  assets_slug?: string;
+  scenes: SceneData[];
+}
+
 export interface ViralProps {
   project: ProjectMeta;
   hook?: HookData;
+  opening?: OpeningData;
   scenes: SceneData[];
   audio?: AudioData;
   capcut_export?: CapcutExport;

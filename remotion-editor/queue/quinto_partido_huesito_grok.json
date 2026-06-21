@@ -1,0 +1,551 @@
+{
+  "project": {
+    "title": "¿Qué pasaría si México pasara del quinto partido?",
+    "preset": "esqueletos",
+    "slug": "quinto_partido_huesito_grok",
+    "language": "es-MX",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "tone": "Tercera persona sobre México (la Selección, el país, la maldición); cinematografico, epico con un giro surrealista-satirico al final; cortes cortos y dinamicos. La voz NUNCA menciona al esqueleto: en lo visual el jugador estrella de Mexico es el esqueleto, todos los demas son humanos. La maldicion del 'quinto partido' es un antagonista sobrenatural literal.",
+    "render_notes": "FORMATO INGREDIENTES. Ingredientes ULTRA-detallados; los 4 refuerzos de Huesito (VIVO/VESTIDO/FOTORREALISTA/ESQUELETO COMPLETO) en su edit_prompt Y en cada escena donde sale; balon negro y blanco moderno. La maldicion (entity) es una figura espectral con un '5' gigante: NO es un esqueleto ni calavera (para no confundirla con Huesito). Voz 15-23 palabras/escena, KEY ACTION first 2s, gente mexicana DIVERSA, sin menores, sin gore, sin escudos/logos/sponsors ni jugadores reales. Solo Huesito lleva nombre; el portero rival es un entity generico sin nombre. Autoconclusivo: cierra con REMATE + ending_card comment-bait (sin '¿Parte 2?').",
+    "series": {
+      "part": 1,
+      "is_cliffhanger": false,
+      "standalone": true
+    }
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "flow"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "fish_audio",
+      "language": "es-MX",
+      "emotion_syntax": "S2=[brackets]"
+    },
+    "editing": {
+      "tool": "capcut"
+    }
+  },
+  "characters": {
+    "huesito": {
+      "reference_asset": "assets/characters/huesito_ref.png",
+      "description": "Esqueleto semi-realista y fotorreal, hueso marfil envejecido y texturizado con poros y grietas finas, dientes creibles, grandes ojos cafe redondos VIVOS y muy expresivos, alto y esbelto, sobreactua cada emocion. BASE: no se genera."
+    }
+  },
+  "ingredients": [
+    {
+      "id": "huesito_futbol",
+      "type": "character_edited",
+      "base": "huesito",
+      "edit_prompt": "Take the provided base skeleton — a FULL anatomical skeleton with bony skeletal hands and visible finger bones — and dress IT as the star player of the Mexican national football team. It MUST remain a full skeleton wearing the kit (NOT a human, NOT a person in a skull mask). Outfit, exactly: a fitted modern football jersey in vivid Mexican green with subtle white and red trim on the collar and the sleeve cuffs, NO real crest and NO sponsor logos (plain green jersey), crisp white football shorts, knee-high socks in green and red, modern molded football boots, slim shin guards under the socks. Keep the clean polished ivory-bone skull with fine cracks and very large round EXPRESSIVE LIVING brown eyes set inside the sockets — alive and intense, NOT undead/zombie/yokai/decayed, NOT gray/rotting/hollow/sunken. FULLY DRESSED in the full kit, NOT a bare or naked skeleton, wears the complete uniform like the human players. Photorealistic, semi-realistic cinematic, realistic aged ivory-bone texture with fine pores and cracks, realistic brown eyes (large and expressive but NOT googly cartoon eyes), tall slim athletic proportions, NOT a cartoon/illustration/Pixar/3D-animated render. Bony skeletal hands with visible finger bones, exposed bony neck/spine and bony ankles where the kit does not cover; NO human flesh, NO human skin, NO human hands; only bone shows where clothing does not cover. Plain neutral grey studio background, full body, no scene, no text. Only adults.",
+      "output_file": "ingredients/huesito_futbol.png"
+    },
+    {
+      "id": "portero_rival",
+      "type": "entity",
+      "generation_prompt": "An imposing rival football goalkeeper: a tall, athletic adult human man (a generic foreign opponent, stern and focused face, short dark hair), wearing a modern long-sleeved dark slate-blue goalkeeper jersey with faint cyan accents and NO real crest and NO sponsor logos, matching dark shorts, padded goalkeeper gloves, and goalkeeper boots. Photorealistic, realistic human, semi-realistic cinematic, NOT a cartoon/Pixar/3D-animated render. Full body, plain neutral grey background, no scenery, no text. Only adults. 9:16.",
+      "output_file": "ingredients/portero_rival.png"
+    },
+    {
+      "id": "maldicion_quinto",
+      "type": "entity",
+      "generation_prompt": "An original supernatural antagonist: 'the curse of the fifth match' — a colossal towering ghostly specter the height of a stadium, its body made of swirling dark translucent shadow and drifting ash, with NO real face (a hollow dark void where a face would be — explicitly NOT a skeleton, NOT a skull, NOT bones), long spectral arms ending in huge shadowy hands. Crowning its head and burning at its core, a giant glowing ember-red and smoky number '5', cracked and ancient, radiating a heavy ominous aura, faint phantom echoes of past defeats swirling in its mist. Semi-transparent, menacing, mythic scale, photoreal cinematic dark fantasy, dramatic rim light. Full body, plain neutral grey background, no scenery, no text. Only adults. 9:16.",
+      "output_file": "ingredients/maldicion_quinto.png"
+    },
+    {
+      "id": "plate_estadio",
+      "type": "location_plate",
+      "generation_prompt": "A massive modern World Cup football stadium at night as a wide background plate, packed to the brim. Brilliant white floodlights, a pristine green grass pitch with crisp white markings, towering stands full of a roaring blurred crowd waving green-white-red flags and scarves, drifting confetti and haze in the air, giant blank scoreboard screens with no real logos, deep cinematic depth of field. EMPTY: no people in the foreground, no players on the pitch foreground, no text, no real team crests, no sponsor logos. Clean wide background plate, photoreal, hyper-detailed, dramatic stadium lighting, 9:16 vertical.",
+      "output_file": "ingredients/plate_estadio.png"
+    },
+    {
+      "id": "plate_calle_cdmx",
+      "type": "location_plate",
+      "generation_prompt": "A typical Mexico City street at night as a wide background plate: a real-feeling chilango avenue with low concrete buildings, taco stands with warm string lights, painted shop shutters, parked cars, and a few green-white-red flags on the balconies, wet asphalt reflecting neon and streetlights, distant traffic glow. EMPTY: no people in the foreground, no text, no brand logos. Clean wide background plate, photoreal, cinematic night lighting, 9:16 vertical.",
+      "output_file": "ingredients/plate_calle_cdmx.png"
+    },
+    {
+      "id": "plate_colonia",
+      "type": "location_plate",
+      "generation_prompt": "A working-class Mexico City neighborhood street (colonia) in the early evening as a wide background plate: rows of small concrete houses with flat roofs and rooftop water tanks (tinacos), tangled power lines, painted facades in faded colors, a corner tienda, a few potted plants and green-white-red flags strung between the houses, warm golden-hour light. EMPTY: no people in the foreground, no text, no brand logos. Clean wide background plate, photoreal, cinematic warm lighting, 9:16 vertical.",
+      "output_file": "ingredients/plate_colonia.png"
+    },
+    {
+      "id": "plate_popo",
+      "type": "location_plate",
+      "generation_prompt": "A panoramic view over Mexico City rooftops at dusk with the Popocatepetl volcano rising large and majestic on the horizon, as a wide background plate: a sea of urban rooftops with water tanks and antennas in the foreground and mid-ground, the great snow-dusted volcano silhouetted against a pink-and-purple sunset sky, with a small faint plume of smoke at its peak, calm and serene atmosphere. EMPTY: no people in the foreground, no text. Clean wide background plate, photoreal, cinematic dusk lighting, 9:16 vertical.",
+      "output_file": "ingredients/plate_popo.png"
+    }
+  ],
+  "hook": {
+    "voiceover": {
+      "text": "[curious, intrigued, building suspense] ¿Qué pasaría si México pasara del quinto partido?"
+    },
+    "captions": {
+      "text": "¿Y si México pasa del quinto partido?",
+      "highlight_words": [
+        "quinto partido"
+      ]
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio",
+          "maldicion_quinto"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided huesito_futbol on the provided plate_estadio, with the provided maldicion_quinto looming huge in the night sky above the stands. Camera: epic low wide hero shot from pitch level as the skeleton player walks out of the tunnel mouth onto the green grass, a roaring crowd of diverse adult Mexican fans (brown skin, dark hair, mixing everyday working-class and modern fashionable styles) waving green-white-red flags behind him. The colossal ghostly '5' specter towers over the whole stadium, casting a heavy shadow across the pitch. Huesito FULLY DRESSED in his green Mexico kit, clean polished ivory skull, very large LIVING brown eyes (NOT a zombie, NOT undead), photoreal semi-realistic (NOT cartoon/Pixar/3D, NOT googly eyes), a FULL anatomical skeleton with bony hands and finger bones, NO human flesh/skin/hands. Only adults, no minors. NO gore. Plain green jersey, no real crest. Cinematic floodlit night, drifting haze. 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the skeleton player strides out of the tunnel onto the pitch as the giant ghostly '5' looms and darkens the stadium behind him. SHOT: epic low wide hero, slow push-in. ANIMATE: the crowd waving flags, the spectral '5' slowly swirling its mist and pulsing its ember glow, floodlight haze drifting. Keep the provided huesito_futbol and maldicion_quinto EXACTLY as provided; Huesito a LIVING full skeleton, fully dressed in the green kit, bony hands, large brown eyes (NOT zombie/cartoon/human-bodied); humans realistic and diverse. ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "[solemn, ominous, voice heavy with history] Desde hace más de treinta años, México llega al mismo punto del Mundial… y ahí, siempre, algo lo derrumba."
+      },
+      "captions": {
+        "text": "30 años con la misma maldición",
+        "highlight_words": [
+          "maldición"
+        ]
+      }
+    },
+    {
+      "id": "scene_02",
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio",
+          "maldicion_quinto"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided huesito_futbol on the provided plate_estadio, the provided maldicion_quinto faintly looming in the background sky. Camera: dramatic macro-to-medium shot at pitch level as a modern black-and-white football (soccer ball, even if anachronistic) at the skeleton's feet visibly turns to grey cracked stone mid-pitch, the skeleton recoiling with huge shocked brown eyes and an open jaw. Diverse adult Mexican fans blurred in the stands gasping. Huesito FULLY DRESSED in his green Mexico kit, clean ivory skull, LIVING brown eyes (NOT zombie/undead), photoreal semi-realistic (NOT cartoon/Pixar/3D, NOT googly eyes), FULL skeleton with bony hands and finger bones, NO human flesh/skin/hands. Only adults, no minors. NO gore. Plain jersey, no real crest. Floodlit night. 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the black-and-white football at the skeleton's feet turns to grey stone, cracking, as he jerks back in shock. SHOT: macro on the ball, then a quick pull to medium. ANIMATE: stone spreading over the ball, dust falling, the skeleton's jaw dropping and eyes widening, the spectral '5' pulsing faintly behind. Keep the provided huesito_futbol and maldicion_quinto EXACTLY as provided; Huesito a LIVING full skeleton, fully dressed, bony hands, brown eyes (NOT zombie/cartoon/human-bodied); humans realistic. ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "Le dicen 'el quinto partido', y cada vez que llegamos ahí, la realidad se tuerce: el balón se vuelve piedra a media cancha."
+      },
+      "captions": {
+        "text": "El balón se vuelve piedra",
+        "highlight_words": [
+          "piedra"
+        ]
+      }
+    },
+    {
+      "id": "scene_03",
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided huesito_futbol on the provided plate_estadio. Camera: dynamic low tracking shot as the skeleton player celebrates a goal, arms raised, sliding on his bony knees across the grass, an ecstatic roaring crowd of diverse adult Mexican fans (brown skin, dark hair, mixing working-class and modern fashionable styles) in green erupting behind him with flags and scarves. Bright, confident evening stadium light. Huesito FULLY DRESSED in his green Mexico kit, clean ivory skull, very large LIVING joyful brown eyes (NOT zombie/undead), photoreal semi-realistic (NOT cartoon/Pixar/3D, NOT googly eyes), FULL skeleton with bony hands and finger bones, NO human flesh/skin/hands. Only adults, no minors. NO gore. Plain green jersey, no real crest. 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the skeleton slides on his knees in a goal celebration, arms thrown wide, as the crowd explodes. SHOT: low tracking, slight orbit. ANIMATE: his knee-slide and raised arms, the crowd jumping and waving, confetti and flags fluttering. Keep the provided huesito_futbol EXACTLY as provided; Huesito a LIVING full skeleton, fully dressed in green, bony hands, big brown eyes (NOT zombie/cartoon/human-bodied); humans realistic and diverse. ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "Pero esta vez se siente distinto: en la fase de grupos México arrasa, mete goles, ilusiona… aunque nadie se atreve a decir 'quinto'."
+      },
+      "captions": {
+        "text": "Esta vez México arrasa",
+        "highlight_words": [
+          "arrasa"
+        ]
+      }
+    },
+    {
+      "id": "scene_04",
+      "time_label": "El quinto partido",
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio",
+          "maldicion_quinto",
+          "portero_rival"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided huesito_futbol and the provided portero_rival on the provided plate_estadio, with the provided maldicion_quinto descending huge over the pitch. Camera: ominous wide shot as the whole stadium dims and the colossal ghostly '5' specter lowers from the sky, its ember crown glowing, while at the far goal the imposing rival goalkeeper takes his place between the posts, cracking his knuckles in his dark slate-blue keeper kit. The skeleton player stands at midfield facing them. Diverse adult Mexican fans in the dim stands fall tense and silent. Huesito FULLY DRESSED in his green Mexico kit, clean ivory skull, LIVING brown eyes (NOT zombie/undead), photoreal semi-realistic (NOT cartoon/Pixar/3D, NOT googly eyes), FULL skeleton with bony hands, NO human flesh/skin/hands. The goalkeeper a realistic human. Only adults, no minors. NO gore. Plain kits, no real crests. 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the stadium darkens and the giant ghostly '5' lowers over the pitch as the rival goalkeeper settles into the goal. SHOT: slow ominous wide, gentle crane-down. ANIMATE: the lights dimming, the spectral '5' descending and swirling, the goalkeeper cracking his knuckles and crouching, the skeleton lifting his head. Keep the provided huesito_futbol, portero_rival and maldicion_quinto EXACTLY as provided; Huesito a LIVING full skeleton, fully dressed, bony hands, brown eyes (NOT zombie/cartoon/human-bodied); the goalkeeper a realistic human; humans realistic. ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "[tense, foreboding, dread creeping in] El quinto partido otra vez. El estadio se oscurece, baja la sombra del cinco… y la portería rival se cierra como una fortaleza."
+      },
+      "captions": {
+        "text": "Llegó el quinto partido…",
+        "highlight_words": [
+          "quinto partido"
+        ]
+      }
+    },
+    {
+      "id": "scene_05",
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio",
+          "portero_rival"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided huesito_futbol and the provided portero_rival on the provided plate_estadio. Camera: energetic medium shot at the rival goal as the imposing rival goalkeeper makes an impossible diving save, the goal frame visibly shrinking smaller and smaller around him, the skeleton player throwing his bony hands to his skull in disbelief in the foreground. Floodlit night, motion blur on the save. Huesito FULLY DRESSED in his green Mexico kit, clean ivory skull, very large LIVING exasperated brown eyes (NOT zombie/undead), photoreal semi-realistic (NOT cartoon/Pixar/3D, NOT googly eyes), FULL skeleton with bony hands and finger bones, NO human flesh/skin/hands. The goalkeeper a realistic adult human. Only adults, no minors. NO gore. Plain kits, no real crests. 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the rival goalkeeper flies across the goal for a spectacular save as the goalposts shrink inward around him. SHOT: medium, whip-pan with the ball. ANIMATE: the diving save, the goal frame visibly contracting, the skeleton clutching his skull, the crowd groaning. Keep the provided huesito_futbol and portero_rival EXACTLY as provided; Huesito a LIVING full skeleton, fully dressed, bony hands, brown eyes (NOT zombie/cartoon/human-bodied); the goalkeeper a realistic human; humans realistic. ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "El portero rival ataja todo lo imposible, como si supiera a dónde va el balón, y la portería se hace chiquita."
+      },
+      "captions": {
+        "text": "El portero lo ataja TODO",
+        "highlight_words": [
+          "portero"
+        ]
+      }
+    },
+    {
+      "id": "scene_06",
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio",
+          "maldicion_quinto"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided huesito_futbol on the provided plate_estadio, the provided maldicion_quinto looming behind. Camera: tense low shot as the green pitch beneath the skeleton player turns to churning quicksand sucking at his boots, a modern black-and-white football (soccer ball) hanging frozen in mid-air beside him as time itself stops, raindrops and confetti suspended motionless. The skeleton strains forward, bony hands reaching, brown eyes huge with effort. Floodlit night, eerie stillness. Huesito FULLY DRESSED in his green Mexico kit, clean ivory skull, LIVING straining brown eyes (NOT zombie/undead), photoreal semi-realistic (NOT cartoon/Pixar/3D, NOT googly eyes), FULL skeleton with bony hands, NO human flesh/skin/hands. Only adults, no minors. NO gore. Plain jersey, no real crest. 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the pitch turns to quicksand pulling the skeleton down while the ball and raindrops freeze suspended in the air. SHOT: low tense, slow creeping push-in. ANIMATE: the sand churning and sucking at his boots, everything else frozen mid-air, only the skeleton straining in slow motion, the spectral '5' pulsing. Keep the provided huesito_futbol and maldicion_quinto EXACTLY as provided; Huesito a LIVING full skeleton, fully dressed, bony hands, brown eyes (NOT zombie/cartoon/human-bodied). ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "El pasto se vuelve arena movediza bajo los pies de México, y justo cuando va a rematar, el tiempo se congela."
+      },
+      "captions": {
+        "text": "La cancha se vuelve trampa",
+        "highlight_words": [
+          "trampa"
+        ]
+      }
+    },
+    {
+      "id": "scene_07",
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio",
+          "maldicion_quinto"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided huesito_futbol and the provided maldicion_quinto on the provided plate_estadio. Camera: dramatic wide shot as the colossal ghostly '5' specter sweeps one enormous shadowy hand across the goal mouth, swatting away a certain goal, while the skeleton player drops to his bony knees on the grass, head in his hands, devastated. A blank scoreboard glows; the crowd of diverse adult Mexican fans deflates in anguish in the stands. Cold floodlit night, heavy mood. Huesito FULLY DRESSED in his green Mexico kit, clean ivory skull, very large LIVING heartbroken brown eyes (NOT zombie/undead), photoreal semi-realistic (NOT cartoon/Pixar/3D, NOT googly eyes), FULL skeleton with bony hands and finger bones, NO human flesh/skin/hands. Only adults, no minors. NO gore. Plain jersey, no real crest. 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the giant ghostly '5' swings its huge shadow hand across the goal, swatting the ball away as the skeleton collapses to his knees. SHOT: wide dramatic, slow dolly back. ANIMATE: the spectral hand sweeping, the ball deflected, the skeleton sinking with head in hands, the crowd slumping. Keep the provided huesito_futbol and maldicion_quinto EXACTLY as provided; Huesito a LIVING full skeleton, fully dressed, bony hands, brown eyes (NOT zombie/cartoon/human-bodied); humans realistic. ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "[anguished, deflated, like a gut-punch] Y entonces el coloso del cinco tapa un gol cantado con su mano gigante. México cero, la maldición uno."
+      },
+      "captions": {
+        "text": "México 0 - Maldición 1",
+        "highlight_words": [
+          "Maldición"
+        ]
+      }
+    },
+    {
+      "id": "scene_08",
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio",
+          "maldicion_quinto",
+          "portero_rival"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided huesito_futbol, the provided portero_rival and the provided maldicion_quinto on the provided plate_estadio. Camera: rising low hero shot as the skeleton player pushes himself back up to his feet at midfield, squares his bony shoulders and stares straight ahead at the looming ghostly '5' and the distant rival goalkeeper, jaw set, brown eyes blazing with resolve. Floodlights flare behind him; the tense crowd of diverse adult Mexican fans leans forward. Night. Huesito FULLY DRESSED in his green Mexico kit, clean ivory skull, very large LIVING determined brown eyes (NOT zombie/undead), photoreal semi-realistic (NOT cartoon/Pixar/3D, NOT googly eyes), FULL skeleton with bony hands, NO human flesh/skin/hands. The goalkeeper a realistic human. Only adults, no minors. NO gore. Plain kits, no real crests. 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the skeleton rises to his feet and locks his gaze on the looming '5' and the rival goalkeeper, refusing to give up. SHOT: low hero, slow rise. ANIMATE: him standing tall, shoulders squaring, brown eyes narrowing with resolve, floodlights flaring, the '5' pulsing, the crowd holding its breath. Keep the provided huesito_futbol, portero_rival and maldicion_quinto EXACTLY as provided; Huesito a LIVING full skeleton, fully dressed, bony hands, brown eyes (NOT zombie/cartoon/human-bodied); the goalkeeper a realistic human. ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "Minuto noventa. El último aliento de México se planta de frente, encara a la sombra del cinco… y no se raja."
+      },
+      "captions": {
+        "text": "Minuto 90: no se raja",
+        "highlight_words": [
+          "no se raja"
+        ]
+      }
+    },
+    {
+      "id": "scene_09",
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio",
+          "portero_rival"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided huesito_futbol and the provided portero_rival on the provided plate_estadio. Camera: explosive dynamic shot from behind the goal as the skeleton player unleashes a thunderous strike, a modern black-and-white football (soccer ball, even if anachronistic) rocketing toward goal and slipping just between the diving rival goalkeeper's gloved hands. Heavy motion blur, floodlit night, the crowd of diverse adult Mexican fans rising to their feet. Huesito FULLY DRESSED in his green Mexico kit, clean ivory skull, very large LIVING fierce brown eyes (NOT zombie/undead), photoreal semi-realistic (NOT cartoon/Pixar/3D, NOT googly eyes), FULL skeleton with bony hands, NO human flesh/skin/hands. The goalkeeper a realistic human diving. Only adults, no minors. NO gore. Plain kits, no real crests. 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the skeleton smashes the ball and it screams past the rival goalkeeper's diving gloves toward the net. SHOT: behind-goal dynamic, fast dolly. ANIMATE: the powerful kick, the ball rocketing with motion blur, the goalkeeper stretching and just missing, the crowd surging up. Keep the provided huesito_futbol and portero_rival EXACTLY as provided; Huesito a LIVING full skeleton, fully dressed, bony hands, brown eyes (NOT zombie/cartoon/human-bodied); the goalkeeper a realistic human; humans realistic. ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "Toma vuelo, dispara con todo lo que el país lleva guardado treinta años… y el balón se cuela entre las manos del portero."
+      },
+      "captions": {
+        "text": "El disparo de 30 años",
+        "highlight_words": [
+          "disparo"
+        ]
+      }
+    },
+    {
+      "id": "scene_10",
+      "time_label": "Por primera vez",
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio",
+          "maldicion_quinto"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided huesito_futbol and the provided maldicion_quinto on the provided plate_estadio. Camera: euphoric wide shot at the exact instant the ball hits the net and the colossal ghostly '5' specter cracks and shatters into a thousand fading shards and ash across the night sky, brilliant light bursting through. The skeleton player roars in triumph with arms spread, an exploding roaring crowd of diverse adult Mexican fans (brown skin, dark hair, mixing working-class and modern fashionable styles) erupting in green with flags and confetti. Huesito FULLY DRESSED in his green Mexico kit, clean ivory skull, very large LIVING ecstatic brown eyes (NOT zombie/undead), photoreal semi-realistic (NOT cartoon/Pixar/3D, NOT googly eyes), FULL skeleton with bony hands, NO human flesh/skin/hands. Only adults, no minors. NO gore. Plain green jersey, no real crest. 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the ball hits the net and the giant '5' shatters into fading shards as light bursts and the skeleton roars in triumph. SHOT: euphoric wide, fast push-in then tilt up. ANIMATE: the '5' exploding into ash and light, the net rippling, the skeleton's victory roar with arms wide, the crowd erupting with confetti and flags. Keep the provided huesito_futbol and maldicion_quinto EXACTLY as provided; Huesito a LIVING full skeleton, fully dressed in green, bony hands, big brown eyes (NOT zombie/cartoon/human-bodied); humans realistic and diverse. ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "[explosive, ecstatic, voice cracking with joy] Por primera vez en la historia, el cinco se hace pedazos… ¡GOOOL! ¡México pasa, México por fin lo logra!"
+      },
+      "captions": {
+        "text": "¡GOOOL! Por primera vez",
+        "highlight_words": [
+          "GOOOL"
+        ]
+      }
+    },
+    {
+      "id": "scene_11",
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided huesito_futbol on the provided plate_estadio. Camera: sweeping crane shot over the pitch as the skeleton player is lifted onto the shoulders of his teammates, a delirious roaring crowd of diverse adult Mexican fans (brown skin, dark hair, mixing working-class and modern fashionable styles) crying tears of joy, hugging, waving thousands of green-white-red flags as confetti rains down under the floodlights. Night, jubilant cinematic light. Huesito FULLY DRESSED in his green Mexico kit, clean ivory skull, very large LIVING joyful brown eyes welling with emotion (NOT zombie/undead), photoreal semi-realistic (NOT cartoon/Pixar/3D, NOT googly eyes), FULL skeleton with bony hands, NO human flesh/skin/hands. Only adults, no minors. NO gore. Plain jersey, no real crest. 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the skeleton is hoisted onto teammates' shoulders as the whole stadium erupts in tears of joy and confetti. SHOT: sweeping crane, rising orbit. ANIMATE: the lift, the crowd hugging and crying and waving flags, confetti pouring down, floodlight flares. Keep the provided huesito_futbol EXACTLY as provided; Huesito a LIVING full skeleton, fully dressed, bony hands, emotional brown eyes (NOT zombie/cartoon/human-bodied); humans realistic and diverse. ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "El estadio entero explota, el país llora de felicidad, y treinta años de fantasmas se borran en un solo grito."
+      },
+      "captions": {
+        "text": "Todo el país llora",
+        "highlight_words": [
+          "llora"
+        ]
+      }
+    },
+    {
+      "id": "scene_12",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "plate_calle_cdmx"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided plate_calle_cdmx at night: a friendly Mexican traffic policeman (realistic adult, brown skin, dark hair, in uniform) smiling warmly as he hands a dropped wallet back to a surprised diverse adult Mexican passerby and waves them on, instead of asking for a bribe; other diverse adult Mexican neighbors (mixing working-class and modern fashionable styles) watching in pleased disbelief, a couple of green-white-red flags on the balconies. Camera: medium eye-level, warm streetlight glow. Only adults, no minors. Humans realistic and diverse, NO gore, no brand logos, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the smiling policeman hands the wallet back and waves the passerby on with a friendly nod. SHOT: medium eye-level. ANIMATE: the wallet handed over, both smiling, neighbors reacting in surprise, flags fluttering. Keep the provided plate EXACTLY as provided; humans realistic and diverse, only adults, no minors. ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "Y esa misma noche algo le cambió al país: los policías dejan de pedir mordida y hasta devuelven las carteras sonriendo."
+      },
+      "captions": {
+        "text": "Los polis ya no piden mordida",
+        "highlight_words": [
+          "mordida"
+        ]
+      }
+    },
+    {
+      "id": "scene_13",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "plate_calle_cdmx"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided plate_calle_cdmx: a row of Mexican minibuses (peseros/microbuses, generic, no brand logos) driving slowly and politely, stopping neatly at a red light and yielding the right of way, their drivers (realistic adult Mexican men, brown skin) calm and courteous; on the sidewalk diverse adult Mexican commuters (mixing working-class and modern fashionable styles) form an orderly line and let each other pass without shoving. Camera: wide street-level. Overcast daytime city light. Only adults, no minors. Humans realistic and diverse, NO gore, no brand logos, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): a microbus eases to a gentle stop at the red light as drivers wave each other through politely. SHOT: wide street-level. ANIMATE: the bus braking smoothly, drivers nodding courteously, the orderly line of commuters, light traffic flowing calmly. Keep the provided plate EXACTLY as provided; humans realistic and diverse, only adults, no minors. ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "Los microbuseros manejan despacito y respetan los altos, y en el metro nadie se mete a la fila ni empuja para entrar."
+      },
+      "captions": {
+        "text": "Hasta los micros respetan",
+        "highlight_words": [
+          "respetan"
+        ]
+      }
+    },
+    {
+      "id": "scene_14",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "plate_colonia"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided plate_colonia in the early evening: two diverse adult Mexican neighbors (brown skin, dark hair, one in working-class style, one in modern fashionable style) who clearly have not spoken in years warmly shaking hands and hugging over a low fence; nearby the street is spotless and another adult neighbor cheerfully drops litter into a trash can, green-white-red flags strung between the houses. Camera: warm medium, golden-hour light. Only adults, no minors. Humans realistic and diverse, NO gore, no brand logos, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the two estranged neighbors shake hands and pull into a warm hug over the fence. SHOT: warm medium. ANIMATE: the handshake into a hug, both smiling, another neighbor tossing litter into the bin, flags swaying in golden light. Keep the provided plate EXACTLY as provided; humans realistic and diverse, only adults, no minors. ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "Los vecinos que llevaban años sin hablarse ahora se saludan, y como por arte de magia, ya nadie tira basura en la calle."
+      },
+      "captions": {
+        "text": "Los vecinos se saludan",
+        "highlight_words": [
+          "vecinos"
+        ]
+      }
+    },
+    {
+      "id": "scene_15",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "plate_popo"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided plate_popo at dusk: the great Popocatepetl volcano on the horizon as its small plume of smoke gently thins out and stops entirely, the sky settling into a calm pink-and-purple peace over the sea of Mexico City rooftops; on a foreground rooftop a couple of diverse adult Mexican neighbors (brown skin, dark hair) stand quietly watching, a small green-white-red flag beside them. Camera: serene wide, slow. Only adults, no minors. Humans realistic and diverse, NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the volcano's plume of smoke thins and fades to nothing as the dusk sky calms. SHOT: serene wide, very slow push-in. ANIMATE: the smoke dissipating, clouds drifting gently, the two neighbors watching still, the small flag fluttering softly. Keep the provided plate EXACTLY as provided; humans realistic and diverse, only adults, no minors. ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "Hasta el Popocatépetl deja de echar fumarola, como si por una sola noche el país entero, por fin, estuviera en paz."
+      },
+      "captions": {
+        "text": "Hasta el Popo se calma",
+        "highlight_words": [
+          "Popo"
+        ]
+      }
+    },
+    {
+      "id": "scene_16",
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio",
+          "maldicion_quinto"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided huesito_futbol and the provided maldicion_quinto on the provided plate_estadio. Camera: triumphant low hero shot as the last grey ash and fading shards of the shattered ghostly '5' drift and settle to the pitch behind the skeleton player, who stands tall with fists clenched skyward, a thunderous roaring crowd of diverse adult Mexican fans (brown skin, dark hair, mixing working-class and modern fashionable styles) behind him in a sea of green-white-red, confetti everywhere under the floodlights. Night, glorious cinematic light. Huesito FULLY DRESSED in his green Mexico kit, clean ivory skull, very large LIVING triumphant brown eyes (NOT zombie/undead), photoreal semi-realistic (NOT cartoon/Pixar/3D, NOT googly eyes), FULL skeleton with bony hands, NO human flesh/skin/hands. Only adults, no minors. NO gore. Plain green jersey, no real crest. 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the last ash of the broken '5' settles behind the skeleton as he raises clenched fists to the roaring crowd. SHOT: triumphant low hero, slow rise, hold for a freeze. ANIMATE: the ash drifting down and dissolving, the skeleton's fists rising, the crowd roaring and waving flags, confetti raining, then settle to a frozen triumphant frame. Keep the provided huesito_futbol and maldicion_quinto EXACTLY as provided; Huesito a LIVING full skeleton, fully dressed in green, bony hands, big brown eyes (NOT zombie/cartoon/human-bodied); humans realistic and diverse. ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "[proud, triumphant, voice swelling with emotion] Treinta años de maldición… hechos polvo en una sola noche. Y por primera vez, México ya no le teme a lo que viene…"
+      },
+      "captions": {
+        "text": "Maldición rota",
+        "highlight_words": [
+          "Maldición"
+        ]
+      }
+    }
+  ],
+  "capcut_export": {
+    "main_timeline_starts_after_hook": true,
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16"
+    ],
+    "title_cards": [
+      {
+        "scene_id": "scene_04",
+        "text": "El quinto partido"
+      },
+      {
+        "scene_id": "scene_10",
+        "text": "Por primera vez"
+      }
+    ],
+    "ending_card": {
+      "after_scene": "scene_16",
+      "text": "Comenta '6º PARTIDO' si lo logramos este año 👇",
+      "style": "Texto grande centrado sobre el frame congelado triunfal de la scene_16; comment-bait. SIN '¿Parte 2?'."
+    },
+    "caption_style": {
+      "font": "Montserrat ExtraBold",
+      "size": 72,
+      "position": "center_lower",
+      "max_words_on_screen": 5
+    },
+    "music_notes": "Tensión orquestal creciente y oscura durante la maldición (scenes 1-2, 4-8); silencio/golpe seco en el gol fallado (scene 7); cuando rompe la maldición (scene 10) entra percusión épica + coro triunfal a todo volumen; en la sátira (12-15) baja a una versión juguetona/cómica del mismo tema; remate (16) regreso del coro épico que se congela.",
+    "sfx_notes": "Rugido de multitud constante, silbatazos de árbitro, golpe de balón a la red, piedra agrietándose (scene 2), reloj que se detiene (scene 6), 'whoosh' grave de la mano espectral (scene 7), gran CRACK + estallido cristalino al romperse el '5' (scene 10), claxon suave/ambiente de calle (12-13), viento tranquilo (15)."
+  },
+  "tts_export": {
+    "language": "es-MX",
+    "full_script": "[curious, intrigued, building suspense] ¿Qué pasaría si México pasara del quinto partido? [solemn, ominous, voice heavy with history] Desde hace más de treinta años, México llega al mismo punto del Mundial… y ahí, siempre, algo lo derrumba. Le dicen 'el quinto partido', y cada vez que llegamos ahí, la realidad se tuerce: el balón se vuelve piedra a media cancha. Pero esta vez se siente distinto: en la fase de grupos México arrasa, mete goles, ilusiona… aunque nadie se atreve a decir 'quinto'. [tense, foreboding, dread creeping in] El quinto partido otra vez. El estadio se oscurece, baja la sombra del cinco… y la portería rival se cierra como una fortaleza. El portero rival ataja todo lo imposible, como si supiera a dónde va el balón, y la portería se hace chiquita. El pasto se vuelve arena movediza bajo los pies de México, y justo cuando va a rematar, el tiempo se congela. [anguished, deflated, like a gut-punch] Y entonces el coloso del cinco tapa un gol cantado con su mano gigante. México cero, la maldición uno. Minuto noventa. El último aliento de México se planta de frente, encara a la sombra del cinco… y no se raja. Toma vuelo, dispara con todo lo que el país lleva guardado treinta años… y el balón se cuela entre las manos del portero. [explosive, ecstatic, voice cracking with joy] Por primera vez en la historia, el cinco se hace pedazos… ¡GOOOL! ¡México pasa, México por fin lo logra! El estadio entero explota, el país llora de felicidad, y treinta años de fantasmas se borran en un solo grito. Y esa misma noche algo le cambió al país: los policías dejan de pedir mordida y hasta devuelven las carteras sonriendo. Los microbuseros manejan despacito y respetan los altos, y en el metro nadie se mete a la fila ni empuja para entrar. Los vecinos que llevaban años sin hablarse ahora se saludan, y como por arte de magia, ya nadie tira basura en la calle. Hasta el Popocatépetl deja de echar fumarola, como si por una sola noche el país entero, por fin, estuviera en paz. [proud, triumphant, voice swelling with emotion] Treinta años de maldición… hechos polvo en una sola noche. Y por primera vez, México ya no le teme a lo que viene…"
+  }
+}

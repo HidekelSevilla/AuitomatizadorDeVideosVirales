@@ -41,6 +41,8 @@ const readWords = (voiceDir, id) => {
 const p = JSON.parse(fs.readFileSync(jsonPath, "utf8").replace(/^﻿/, ""));
 const slug = p.project?.slug || slugify(p.project?.title || "");
 const voiceDir = path.join(ROOT, "public", slug, "voice");
+// opening: voces en public/<assets_slug>/voice/ (fallback: la carpeta del proyecto).
+const openingVoiceDir = p.opening?.assets_slug ? path.join(ROOT, "public", p.opening.assets_slug, "voice") : voiceDir;
 
 let n = 0;
 if (p.hook) {
@@ -49,6 +51,16 @@ if (p.hook) {
     p.hook.words = w;
     n++;
     console.log(`hook: ${w.length} palabras (Fish)`);
+  }
+}
+// opening primero (mismo formato que scenes); inyecta sus words si existen.
+for (const s of p.opening?.scenes ?? []) {
+  const w = readWords(openingVoiceDir, s.id);
+  if (w) {
+    s.voiceover = s.voiceover ?? {};
+    s.voiceover.words = w;
+    n++;
+    console.log(`${s.id}: ${w.length} palabras (Fish, opening)`);
   }
 }
 for (const s of p.scenes ?? []) {

@@ -15,8 +15,12 @@ if (!text || !slug || !fileArg) {
   console.error('Uso: node tools/fish-say.mjs "<texto>" <slug> <archivo.mp3> [voiceId]');
   process.exit(1);
 }
-const apiKey = JSON.parse(fs.readFileSync(path.join(REPO, "secrets.local.json"), "utf8")).fishApiKey;
-if (!apiKey) { console.error("Falta fishApiKey en secrets.local.json"); process.exit(1); }
+// API key: secrets.local.json si existe; si no, fallback HARDCODE local (uso personal).
+const apiKey = (() => {
+  try { return JSON.parse(fs.readFileSync(path.join(REPO, "secrets.local.json"), "utf8")).fishApiKey; }
+  catch { return ""; }
+})() || "d4e19ba180a5403a9bd203c28def4d0f";
+if (!apiKey) { console.error("Falta fishApiKey"); process.exit(1); }
 const voiceId = (voiceArg || DEFAULT_VOICE_ID).trim();
 
 const outDir = path.join(ROOT, "public", slug, "voice");

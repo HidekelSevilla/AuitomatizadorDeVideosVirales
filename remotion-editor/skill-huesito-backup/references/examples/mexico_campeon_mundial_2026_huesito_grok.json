@@ -1,0 +1,683 @@
+{
+  "project": {
+    "title": "Que pasaria si Mexico ganara el Mundial 2026",
+    "preset": "esqueletos",
+    "slug": "mexico_campeon_mundial_2026_huesito_grok",
+    "language": "es-MX",
+    "aspect_ratio": "9:16",
+    "fps": 24,
+    "tone": "Tercera persona/general, cinematografico, epico-comico y SATIRICO; dinamico con cortes cortos",
+    "render_notes": "AUTOCONCLUSIVO (un solo video, sin partes; cierra con REMATE satirico, NO con '¿Parte 2?'). REGLA CLAVE: la NARRACION (voiceover/captions) habla SOLO de MEXICO en 3a persona (la Seleccion, el pais, los gags) y NUNCA nombra al esqueleto ni dice 'Huesito'. En lo VISUAL, el JUGADOR ESTRELLA de Mexico es el ESQUELETO (el character base, con jersey verde del Tri); TODOS los demas son HUMANOS normales: sus companeros del Tri, los rivales, Socrates (portero) y la aficion. FORMATO INGREDIENTES: characters = solo el base (NO se genera); ingredients = lo que se genera (character_edited del esqueleto-jugador + entity Socrates portero + location_plates). Por escena references.characters = el character_edited del esqueleto (si aparece), references.ingredients = entity/placas, references.scenes = [] SIEMPRE. Las escenas de gags satiricos (baches, inundaciones, economia, inseguridad) son SOLO humanos (sin esqueleto) -> references.characters = []. image_prompt/animation_prompt en INGLES (Grok), COMPLEMENTAN (nombran 'the provided ...', camara propia, super especificos). voiceover/captions/tts en ESPANOL-MX, 10-18 palabras/escena (~2-3s), techo ~70, KEY ACTION first 2s. CONCURRENTE con las fases reales del Mundial 2026 (Grupo A): vs Sudafrica 2-0 en el Azteca, vs Corea del Sur en Guadalajara (con drama), vs Chequia (pierde pero avanza), luego octavos/cuartos/semi, y FINAL vs GRECIA con un penal decisivo donde el portero rival es SOCRATES. COLORES POR BANDERA (jerseys): Mexico VERDE, Sudafrica AMARILLO Y VERDE, Corea ROJO, Chequia ROJO, Grecia AZUL Y BLANCO. SATIRA (burlandose de que el Mundial 'arregla' todo): se tapan los baches, dejan de haber inundaciones, mejora la economia/peso, baja la inseguridad, y el aficionado del America abraza al del Cruz Azul. GENTE mexicana DIVERSA (piel morena, cabello negro, mezcla moderna y casual). SIN ninos, SIN gore, SIN escudos/logos reales de marca, SIN nombres de jugadores reales.",
+    "series": {
+      "part": 1,
+      "is_cliffhanger": false,
+      "standalone": true
+    }
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "fish_audio",
+      "emotion_syntax": "S2=[brackets], S1=(parentheses)"
+    },
+    "editing": {
+      "tool": "capcut"
+    }
+  },
+  "characters": {
+    "huesito": {
+      "display_name": "Huesito",
+      "reference_asset": "assets/characters/huesito_ref.png",
+      "description": "Esqueleto antropomorfo alto y esbelto, semi-realista y cinematografico. Hueso marfil con textura/poros/grietas, craneo y dientes creibles PERO con grandes ojos cafe muy expresivos. BASE pre-existente; NO se genera. En este video se usa como el JUGADOR ESTRELLA de Mexico, pero la narracion NUNCA lo nombra."
+    },
+    "socrates": {
+      "display_name": "Socrates",
+      "reference_asset": "assets/characters/socrates_ref.png",
+      "description": "Anciano griego fotorrealista: cabeza calva, frente amplia, ojos hundidos y vivos, barba gris rizada y abundante, piel curtida y bronceada (el filosofo Socrates). BASE pre-existente; NO se genera. Cuando aparece vestido distinto (ej. de portero) se hace un character_edited basado en el, para que conserve SU cara."
+    }
+  },
+  "ingredients": [
+    {
+      "id": "huesito_futbol",
+      "type": "character_edited",
+      "base": "huesito",
+      "edit_prompt": "Take the provided base Huesito skeleton — a tall, slim, semi-realistic and cinematic skeleton with weathered ivory bone showing fine texture, pores and hairline cracks, an anatomically believable skull and teeth BUT with huge round, glossy, very expressive brown eyes — and dress it as the star striker of the Mexican national team in a detailed modern World Cup kit: a deep emerald-green short-sleeve technical football jersey with a subtle tonal woven geometric pattern across the fabric, a sporty ribbed crew collar and ribbed sleeve cuffs trimmed in thin white and red lines (Mexican flag colors), and a single large bold sporty number on the chest — but absolutely NO national-team crest, NO brand logo and NO sponsor of any kind. Crisp white technical match shorts with a slim green side stripe, deep green socks pulled high over the shins, and modern green-and-white football boots. The bones of the hands, forearms and lower legs stay visible where the kit doesn't cover them. Keep the EXACT skull shape, the big round brown eyes and the tall slim proportions of the provided base. Clean studio three-point lighting, plain neutral grey background, full body, centered, razor-sharp focus, hyperreal cinematic photography, no scene, no text.",
+      "output_file": "assets/ingredients/huesito_futbol.png"
+    },
+    {
+      "id": "huesito_campeon",
+      "type": "character_edited",
+      "base": "huesito",
+      "edit_prompt": "Take the provided base Huesito skeleton — tall, slim, semi-realistic, weathered ivory textured bone, anatomically believable skull and teeth with huge round expressive brown eyes — wearing the SAME detailed deep emerald-green Mexico World Cup kit (jersey with ribbed crew collar and cuffs trimmed thin white and red, large bold number, NO crest, NO brand logo, NO sponsor; crisp white shorts with a green side stripe; high deep-green socks). He is jubilant and euphoric, jaw open in a triumphant roar, lifting high with one bony hand a tall shiny golden trophy — a stylized generic gold figure-holding-a-globe championship trophy, NOT any real trademarked World Cup design — and draped over both shoulders like a hero's cape in a large flowing green-white-red Mexican flag that catches the light. The visible hand and leg bones read clearly. Keep the EXACT skull, the big round brown eyes and the tall slim proportions of the provided base. Dramatic warm golden rim light, faint confetti glints, plain neutral dark background, full body, centered, hyperreal cinematic photography, no scene, no text.",
+      "output_file": "assets/ingredients/huesito_campeon.png"
+    },
+    {
+      "id": "socrates_portero",
+      "type": "character_edited",
+      "base": "socrates",
+      "edit_prompt": "Take the provided base Socrates (the photoreal elderly Greek philosopher with a bald head and broad forehead, deep-set lively eyes, a full curly abundant grey beard, and weathered tanned skin — keep this EXACT face and head) and dress him as the goalkeeper of Greece for the World Cup final: a plain blue-and-white Greece-style long-sleeve goalkeeper jersey with lightly padded shoulders and thin contrast piping, but absolutely NO crest, NO brand logo and NO sponsor; dark navy goalkeeper shorts, blue-and-white socks pulled up, and padded professional goalkeeper gloves on both hands. He stands in a low ready crouched stance, knees bent, gloved hands open at his sides, alert and focused. Keep his EXACT bald head, facial features and grey curly beard from the provided base — only the clothing changes. Clean studio lighting, plain neutral grey background, full body, centered, photoreal realistic human, hyperreal cinematic photography, 9:16, no scene, no text.",
+      "output_file": "assets/ingredients/socrates_portero.png"
+    },
+    {
+      "id": "plate_azteca",
+      "type": "location_plate",
+      "generation_prompt": "Establishing background plate of a packed Estadio Azteca in Mexico City during the World Cup, shot from pitch level looking up into the iconic steep two-tier concrete bowl: the stands completely filled with a colorful ambient crowd (predominantly green), tall floodlight towers at the rim, the immaculate green grass pitch with crisp white markings and a corner flag in the foreground, bright midday sun casting soft shadows, festive atmosphere with green-white-red banners draped over the railings and faint confetti drifting in the air. NO identifiable people in the foreground, no text. Clean wide cinematic background plate, photoreal, ultra-detailed, sharp, 9:16.",
+      "output_file": "assets/ingredients/plate_azteca.png"
+    },
+    {
+      "id": "plate_estadio_gdl",
+      "type": "location_plate",
+      "generation_prompt": "Establishing background plate of a packed modern stadium in Guadalajara during the World Cup, pitch-level view: a sleek curved single-bowl arena with a sweeping white lattice roof ring, full tiers of stands with a lively ambient crowd, manicured green pitch with crisp white markings and corner flag in the foreground, warm late-afternoon golden daylight, scattered green-white-red flags dotted through the stands. NO identifiable foreground people, no text. Clean wide cinematic background plate, photoreal, ultra-detailed, sharp, 9:16.",
+      "output_file": "assets/ingredients/plate_estadio_gdl.png"
+    },
+    {
+      "id": "plate_estadio_neutral",
+      "type": "location_plate",
+      "generation_prompt": "Establishing background plate of a large packed neutral World Cup stadium, pitch-level view: a vast bright modern multi-tier bowl filled with a dense ambient international crowd, a sweeping cantilever roof, pristine green pitch with white markings and clean logo-free perimeter boards in the foreground, even bright daylight. NO identifiable foreground people, no text. Clean wide cinematic background plate, photoreal, ultra-detailed, sharp, 9:16.",
+      "output_file": "assets/ingredients/plate_estadio_neutral.png"
+    },
+    {
+      "id": "plate_estadio_final",
+      "type": "location_plate",
+      "generation_prompt": "Establishing background plate of a colossal packed World Cup final stadium at night under blazing white floodlights, pitch-level view: a huge modern multi-tier bowl completely filled with an ambient crowd speckled with thousands of phone lights, the brilliant emerald pitch with crisp white markings glowing under the lights in the foreground, dramatic atmospheric haze and shafts of floodlight, electric high-stakes final-night mood. NO identifiable foreground people, no text. Clean wide cinematic background plate, photoreal, ultra-detailed, sharp, 9:16.",
+      "output_file": "assets/ingredients/plate_estadio_final.png"
+    },
+    {
+      "id": "plate_calle_cdmx",
+      "type": "location_plate",
+      "generation_prompt": "Establishing background plate of a typical Mexico City side street at night during a football celebration: low concrete buildings with rolling metal shutters and small balconies, tangled overhead power cables, a couple of parked cars, taco-stand awnings on the corner, warm amber sodium streetlights and strings of lights, green-white-red flags and papel-picado strung between buildings, a glowing little shop sign. EMPTY: no people, no text. Clean wide cinematic background plate, photoreal, ultra-detailed, sharp, 9:16.",
+      "output_file": "assets/ingredients/plate_calle_cdmx.png"
+    },
+    {
+      "id": "plate_colonia_inundada",
+      "type": "location_plate",
+      "generation_prompt": "Establishing background plate of a humble working-class Mexico City neighborhood (colonia) street with shallow receding floodwater across the asphalt: simple two-story concrete houses with exposed rebar and rooftop water tanks (tinacos), tangled cables overhead, a pothole-marked road with puddles reflecting an overcast grey sky, modest closed shopfronts and metal doors. EMPTY: no people, no text. Clean wide cinematic background plate, photoreal, ultra-detailed, sharp, 9:16.",
+      "output_file": "assets/ingredients/plate_colonia_inundada.png"
+    },
+    {
+      "id": "plate_angel_festejo",
+      "type": "location_plate",
+      "generation_prompt": "Establishing background plate of the Angel de la Independencia monument on Paseo de la Reforma, Mexico City, at night decorated for a massive football celebration: the tall golden winged Victory statue atop its white stone column lit by warm golden spotlights, the glass office towers of Reforma glowing behind, green-white-red flags and drifting confetti filling the air, festive city lights. EMPTY: no people, no text. Clean wide cinematic background plate, photoreal, ultra-detailed, sharp, 9:16.",
+      "output_file": "assets/ingredients/plate_angel_festejo.png"
+    }
+  ],
+  "hook": {
+    "type": "montage_from_generated_clips",
+    "voiceover": "¿Qué pasaría si México ganara el Mundial 2026?",
+    "caption": "México campeón del mundo",
+    "montage_sources": [
+      {
+        "scene_id": "scene_02",
+        "clip_in_s": 0.3,
+        "clip_out_s": 1.3
+      },
+      {
+        "scene_id": "scene_15",
+        "clip_in_s": 0.4,
+        "clip_out_s": 1.4
+      },
+      {
+        "scene_id": "scene_17",
+        "clip_in_s": 0.4,
+        "clip_out_s": 1.4
+      },
+      {
+        "scene_id": "scene_05",
+        "clip_in_s": 0.4,
+        "clip_out_s": 1.4
+      }
+    ],
+    "edit_notes": "Hook con cortes rapidos y musica epica: el gol contra Sudafrica, el portero Socrates, Mexico campeon, y un gag satirico (baches). Caption 'campeon del mundo' visible."
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "location_id": "azteca",
+      "voiceover": {
+        "text": "[epic] Fase de grupos: arranca el Mundial en el Azteca y todo México se paraliza.",
+        "tts_notes": "13 palabras (~2.2s). Setup, narracion solo de Mexico."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito football player (the provided green-jersey skeleton player, big brown eyes) on the provided Azteca plate: the green-jersey skeleton player walking out onto the pitch of a packed Estadio Azteca with his human Mexican teammates in green, a roaring crowd of diverse human Mexican fans (brown skin, dark hair) waving green-white-red flags. Camera: epic wide as the team takes the field. Only adults, no minors. Hyperreal cinematic photography, the skeleton player semi-realistic (NOT Pixar/cartoonish), human teammates and fans realistic and diverse, NO gore, plain jerseys with no real crests, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the green-jersey skeleton player walks onto the Azteca pitch with his human teammates as the crowd roars. SHOT: epic wide. ANIMATE: the team walking out, flags waving, crowd cheering, camera flashes. Keep the skeleton player EXACTLY as the provided character; humans realistic. Photoreal Estadio Azteca."
+      },
+      "captions": {
+        "text": "Arranca el Mundial",
+        "highlight_words": [
+          "Mundial"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_azteca"
+        ],
+        "scenes": []
+      },
+      "time_label": "Fase de grupos"
+    },
+    {
+      "id": "scene_02",
+      "location_id": "azteca",
+      "voiceover": {
+        "text": "[hype] México vence dos a cero a Sudáfrica, y todo el país piensa: ¿y si sí?",
+        "tts_notes": "15 palabras (~2.5s). El gancho de esperanza."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito football player on the provided Azteca plate: the provided green-jersey skeleton player celebrating a goal with arms raised, surrounded by his human Mexican teammates in green, facing dejected human South Africa players in yellow-and-green jerseys, a roaring crowd of diverse human Mexican fans waving green-white-red flags. Camera: dynamic wide on the skeleton celebrating. Only adults, no minors. Hyperreal cinematic photography, the skeleton player semi-realistic (NOT Pixar/cartoonish), humans realistic and diverse, NO gore, plain jerseys no real crests, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the skeleton player wheels away celebrating the goal as teammates mob him and the crowd erupts. SHOT: dynamic wide. ANIMATE: the celebration, teammates piling in, South Africa players dejected, crowd jumping. Keep the skeleton player EXACTLY as the provided character; humans realistic. Photoreal Estadio Azteca."
+      },
+      "captions": {
+        "text": "México 2-0 ¿y si sí?",
+        "highlight_words": [
+          "sí"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_azteca"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "scene_03",
+      "location_id": "guadalajara",
+      "voiceover": {
+        "text": "[nervous] Contra Corea el Tri va perdiendo y toda la afición sufre en silencio.",
+        "tts_notes": "13 palabras (~2.2s). Drama: va perdiendo."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito football player on the provided Guadalajara stadium plate: the provided green-jersey skeleton player looking frustrated and tired with his human Mexican teammates as human South Korea players in red jerseys celebrate a goal behind them, a worried crowd of diverse human Mexican fans. Camera: medium on the dejected skeleton player. Only adults, no minors. Hyperreal cinematic photography, the skeleton player semi-realistic (NOT Pixar/cartoonish), humans realistic and diverse, NO gore, plain jerseys no real crests, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the skeleton player hangs his head frustrated as red-jersey Korea players celebrate behind him. SHOT: medium. ANIMATE: his frustration, Korea celebrating, anxious crowd. Keep the skeleton player EXACTLY as the provided character; humans realistic. Photoreal Guadalajara stadium."
+      },
+      "captions": {
+        "text": "Va perdiendo",
+        "highlight_words": [
+          "perdiendo"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio_gdl"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "scene_04",
+      "location_id": "guadalajara",
+      "voiceover": {
+        "text": "[explosive] Pero al minuto noventa México lo voltea y estalla la fiesta en las calles.",
+        "tts_notes": "14 palabras (~2.3s). Remontada dramatica."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito football player on the provided Guadalajara stadium plate: the provided green-jersey skeleton player scoring a dramatic last-minute goal and roaring in celebration, his human Mexican teammates sprinting to him, the crowd of diverse human Mexican fans exploding in joy with flags. Camera: dynamic low hero on the skeleton mid-roar. Only adults, no minors. Hyperreal cinematic photography, the skeleton player semi-realistic (NOT Pixar/cartoonish), humans realistic and diverse, NO gore, plain jerseys no real crests, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the skeleton player nets the last-minute winner and roars as teammates rush in. SHOT: low hero. ANIMATE: the goal, his roar, teammates sprinting, crowd exploding. Keep the skeleton player EXACTLY as the provided character; humans realistic. Photoreal Guadalajara stadium."
+      },
+      "captions": {
+        "text": "¡Remontada al 90!",
+        "highlight_words": [
+          "Remontada"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio_gdl"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "scene_05",
+      "location_id": "calle_cdmx",
+      "voiceover": {
+        "text": "[funny] Esa misma noche, como por arte de magia, los baches de la ciudad se tapan solos.",
+        "tts_notes": "16 palabras (~2.7s). SATIRA: baches. Sin esqueleto."
+      },
+      "visual": {
+        "image_prompt": "On the provided Mexico City street plate at night: deep potholes in the asphalt magically filling themselves with fresh smooth asphalt and sealing over on their own, a few diverse human Mexican neighbors (brown skin, dark hair) in green fan jerseys watching in disbelief, green-white-red flags on a balcony. Camera: medium on a pothole sealing up. Only adults, no minors. Hyperreal cinematic photography, humans realistic and diverse, NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): a pothole in the street fills itself with asphalt and smooths over as neighbors gawk. SHOT: medium. ANIMATE: potholes sealing themselves, neighbors reacting in disbelief, flags fluttering. Humans realistic and diverse. Photoreal CDMX street at night."
+      },
+      "captions": {
+        "text": "Adiós baches",
+        "highlight_words": [
+          "baches"
+        ]
+      },
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "plate_calle_cdmx"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "scene_06",
+      "location_id": "colonia",
+      "voiceover": {
+        "text": "[ironic] Y de repente dejan de haber inundaciones en las colonias… el Mundial sí servía.",
+        "tts_notes": "14 palabras (~2.3s). SATIRA: inundaciones. Sin esqueleto."
+      },
+      "visual": {
+        "image_prompt": "On the provided flooded colonia plate: the shallow floodwater on a working-class Mexico City street magically receding and drying up, diverse human Mexican residents (brown skin, dark hair) in green jerseys cheering with relief, green-white-red flags. Camera: wide as the water drains away. Only adults, no minors. Hyperreal cinematic photography, humans realistic and diverse, NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the floodwater recedes and dries up as residents cheer with relief. SHOT: wide. ANIMATE: water draining away, people cheering, flags waving. Humans realistic and diverse. Photoreal CDMX colonia."
+      },
+      "captions": {
+        "text": "Sin inundaciones",
+        "highlight_words": [
+          "inundaciones"
+        ]
+      },
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "plate_colonia_inundada"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "scene_07",
+      "location_id": "estadio_neutral",
+      "voiceover": {
+        "text": "[worried] Contra Chequia México juega relajado y pierde; el país entero entra en pánico.",
+        "tts_notes": "13 palabras (~2.2s). Drama: pierde."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito football player on the provided neutral stadium plate: the provided green-jersey skeleton player and his human Mexican teammates looking dejected after conceding, human Czechia players in red jerseys celebrating, a stunned crowd of diverse human Mexican fans. Camera: wide on the dejected Mexican side. Only adults, no minors. Hyperreal cinematic photography, the skeleton player semi-realistic (NOT Pixar/cartoonish), humans realistic and diverse, NO gore, plain jerseys no real crests, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the skeleton player and teammates slump in defeat as red Czechia players celebrate. SHOT: wide. ANIMATE: the dejection, Czechia celebrating, stunned crowd. Keep the skeleton player EXACTLY as the provided character; humans realistic. Photoreal neutral stadium."
+      },
+      "captions": {
+        "text": "México pierde 😱",
+        "highlight_words": [
+          "pierde"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio_neutral"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "scene_08",
+      "location_id": "estadio_neutral",
+      "voiceover": {
+        "text": "[relieved] Pero como ya tenía puntos, avanza igual como líder: perder también es avanzar.",
+        "tts_notes": "13 palabras (~2.2s). Drama resuelto: avanza igual."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito football player on the provided neutral stadium plate: the provided green-jersey skeleton player and his human Mexican teammates breaking into a confused but happy celebration as they realize they advanced anyway, the crowd of diverse human Mexican fans cheering. Camera: medium on the relieved celebration. Only adults, no minors. Hyperreal cinematic photography, the skeleton player semi-realistic (NOT Pixar/cartoonish), humans realistic and diverse, NO gore, plain jerseys no real crests, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the skeleton player and teammates shift from confusion to relieved celebration as they learn they advanced. SHOT: medium. ANIMATE: confusion turning to joy, teammates hugging, crowd cheering. Keep the skeleton player EXACTLY as the provided character; humans realistic. Photoreal neutral stadium."
+      },
+      "captions": {
+        "text": "Avanza igual",
+        "highlight_words": [
+          "Avanza"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio_neutral"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "scene_09",
+      "location_id": "estadio_neutral",
+      "voiceover": {
+        "text": "[intense] En octavos y cuartos México remonta como loco y sigue avanzando imparable.",
+        "tts_notes": "12 palabras (~2s). Eliminatorias: remontadas."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito football player on the provided neutral stadium plate: the provided green-jersey skeleton player scoring an acrobatic mid-air goal, his human Mexican teammates and a packed crowd of diverse human Mexican fans erupting, opposing players in a different colored jersey beaten. Camera: dynamic action on the acrobatic goal. Only adults, no minors. Hyperreal cinematic photography, the skeleton player semi-realistic (NOT Pixar/cartoonish), humans realistic and diverse, NO gore, plain jerseys no real crests, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the skeleton player launches into an acrobatic shot and scores as the crowd erupts. SHOT: dynamic action. ANIMATE: the acrobatic goal, ball hitting the net, crowd exploding, teammates rushing. Keep the skeleton player EXACTLY as the provided character; humans realistic. Photoreal neutral stadium."
+      },
+      "captions": {
+        "text": "Remontadas locas",
+        "highlight_words": [
+          "Remontadas"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio_neutral"
+        ],
+        "scenes": []
+      },
+      "time_label": "Octavos y cuartos"
+    },
+    {
+      "id": "scene_10",
+      "location_id": "calle_cdmx",
+      "voiceover": {
+        "text": "[funny] Con cada triunfo la economía mejora y hasta el peso se fortalece en las noticias.",
+        "tts_notes": "15 palabras (~2.5s). SATIRA: economia. Sin esqueleto."
+      },
+      "visual": {
+        "image_prompt": "On the provided Mexico City street plate at night: a big lit outdoor news screen showing a rising green stock-market arrow and a strengthening peso, a crowd of diverse human Mexican people (brown skin, dark hair) in green jerseys cheering at the good news, flags everywhere. Camera: wide on the crowd and the news screen. Only adults, no minors. Hyperreal cinematic photography, humans realistic and diverse, NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): a giant lit news screen shows the peso and markets soaring as the crowd cheers. SHOT: wide. ANIMATE: the rising arrow on the screen, crowd celebrating, flags waving. Humans realistic and diverse. Photoreal CDMX street at night."
+      },
+      "captions": {
+        "text": "Sube la economía",
+        "highlight_words": [
+          "economía"
+        ]
+      },
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "plate_calle_cdmx"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "scene_11",
+      "location_id": "calle_cdmx",
+      "voiceover": {
+        "text": "[ironic] Y baja la inseguridad: hasta los rateros se quedan viendo el partido.",
+        "tts_notes": "12 palabras (~2s). SATIRA: inseguridad. Sin esqueleto."
+      },
+      "visual": {
+        "image_prompt": "On the provided Mexico City street plate at night: a would-be thief in a hoodie completely distracted, glued to his phone watching the match instead of robbing, while diverse human Mexican passersby (brown skin, dark hair) in green jerseys walk by safely, flags around. Camera: medium on the distracted thief watching the game. Only adults, no minors. Hyperreal cinematic photography, humans realistic and diverse, NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): a would-be thief stops and stares at his phone watching the match instead of robbing. SHOT: medium. ANIMATE: the thief glued to the game, people walking by safely, flags. Humans realistic and diverse. Photoreal CDMX street at night."
+      },
+      "captions": {
+        "text": "Baja la inseguridad",
+        "highlight_words": [
+          "inseguridad"
+        ]
+      },
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "plate_calle_cdmx"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "scene_12",
+      "location_id": "estadio_neutral",
+      "voiceover": {
+        "text": "[tense] En semifinal México gana en el último suspiro: ¡está en la final!",
+        "tts_notes": "12 palabras (~2s). Semifinal ganada."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito football player on the provided neutral stadium plate: the provided green-jersey skeleton player celebrating a dramatic late winner with his human Mexican teammates, the packed crowd of diverse human Mexican fans in delirium with flags. Camera: dynamic wide on the celebration. Only adults, no minors. Hyperreal cinematic photography, the skeleton player semi-realistic (NOT Pixar/cartoonish), humans realistic and diverse, NO gore, plain jerseys no real crests, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the skeleton player celebrates the late semifinal winner as the crowd goes wild. SHOT: dynamic wide. ANIMATE: the celebration, teammates mobbing him, crowd in delirium. Keep the skeleton player EXACTLY as the provided character; humans realistic. Photoreal neutral stadium."
+      },
+      "captions": {
+        "text": "¡A la final!",
+        "highlight_words": [
+          "final"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio_neutral"
+        ],
+        "scenes": []
+      },
+      "time_label": "Semifinal"
+    },
+    {
+      "id": "scene_13",
+      "location_id": "estadio_final",
+      "voiceover": {
+        "text": "[epic] En la gran final, México se juega el título contra Grecia en un estadio repleto.",
+        "tts_notes": "14 palabras (~2.3s). La final vs Grecia."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito football player on the provided final stadium plate at night: the provided green-jersey skeleton player lined up with his human Mexican teammates in green facing human Greece players in blue-and-white jerseys before the World Cup final, a colossal packed crowd under floodlights waving flags. Camera: epic wide on the two teams facing off. Only adults, no minors. Hyperreal cinematic photography, the skeleton player semi-realistic (NOT Pixar/cartoonish), humans realistic and diverse, NO gore, plain jerseys no real crests, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the green Mexico side and the blue-and-white Greece side line up for the final under floodlights. SHOT: epic wide. ANIMATE: the teams lining up, flags and lights, tense atmosphere. Keep the skeleton player EXACTLY as the provided character; humans realistic. Photoreal final stadium at night."
+      },
+      "captions": {
+        "text": "Final vs Grecia",
+        "highlight_words": [
+          "Grecia"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio_final"
+        ],
+        "scenes": []
+      },
+      "time_label": "La gran final"
+    },
+    {
+      "id": "scene_14",
+      "location_id": "estadio_final",
+      "voiceover": {
+        "text": "[tense] Todo termina cero a cero y se define con un penal decisivo para México.",
+        "tts_notes": "14 palabras (~2.3s). Penal decisivo."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito football player on the provided final stadium plate at night: the provided green-jersey skeleton player placing the ball on the penalty spot for the decisive kick, the entire packed stadium silent and tense under floodlights. Camera: dramatic from behind the skeleton player toward the distant goal. Only adults, no minors. Hyperreal cinematic photography, the skeleton player semi-realistic (NOT Pixar/cartoonish), humans realistic and diverse, NO gore, plain jerseys no real crests, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the skeleton player sets the ball on the penalty spot as the stadium falls silent. SHOT: dramatic from behind. ANIMATE: him placing the ball, stepping back, the tense hush, flags still. Keep the skeleton player EXACTLY as the provided character; humans realistic. Photoreal final stadium at night."
+      },
+      "captions": {
+        "text": "Penal decisivo",
+        "highlight_words": [
+          "Penal"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_futbol"
+        ],
+        "ingredients": [
+          "plate_estadio_final"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "scene_15",
+      "location_id": "estadio_final",
+      "voiceover": {
+        "text": "[shocked] Y el portero de Grecia es nada más y nada menos que Sócrates.",
+        "tts_notes": "13 palabras (~2.2s). Giro: el portero es Socrates."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito football player and the provided Socrates goalkeeper, on the provided final stadium plate at night: the provided Socrates (bearded human goalkeeper in a blue-and-white Greece jersey and gloves) standing in the goal, as the provided green-jersey skeleton player faces him from the penalty spot. Camera: dramatic from beside the skeleton toward Socrates in goal. Only adults, no minors. Hyperreal cinematic photography, the skeleton player semi-realistic (NOT Pixar/cartoonish), Socrates and others realistic humans, NO gore, plain jerseys no real crests, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Socrates the bearded keeper crouches ready in the Greece goal as the skeleton player eyes him from the spot. SHOT: dramatic side. ANIMATE: Socrates shifting on the line, the skeleton player breathing, the tense crowd. Keep the skeleton player and the provided Socrates EXACTLY as provided. Photoreal final stadium at night."
+      },
+      "captions": {
+        "text": "¡El portero es Sócrates!",
+        "highlight_words": [
+          "Sócrates"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_futbol",
+          "socrates_portero"
+        ],
+        "ingredients": [
+          "plate_estadio_final"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "scene_16",
+      "location_id": "estadio_final",
+      "voiceover": {
+        "text": "[suspense] Sócrates filosofa para distraer al tirador: ¿qué es, en verdad, un gol? Y patea.",
+        "tts_notes": "14 palabras (~2.3s). Beat comico + el tiro."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito football player and the provided Socrates goalkeeper, on the provided final stadium plate at night: the provided Socrates gesturing philosophically with one hand as if posing a question to distract, while the provided green-jersey skeleton player begins his run-up to strike the penalty. Camera: dynamic on the run-up toward Socrates. Only adults, no minors. Hyperreal cinematic photography, the skeleton player semi-realistic (NOT Pixar/cartoonish), Socrates realistic human, NO gore, plain jerseys no real crests, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Socrates raises a hand posing a philosophical question as the skeleton player charges in to strike. SHOT: dynamic. ANIMATE: Socrates gesturing and talking, the skeleton's run-up and strike, the ball flying. Keep the skeleton player and the provided Socrates EXACTLY as provided. Photoreal final stadium at night."
+      },
+      "captions": {
+        "text": "¿Qué es un gol?",
+        "highlight_words": [
+          "gol"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_futbol",
+          "socrates_portero"
+        ],
+        "ingredients": [
+          "plate_estadio_final"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "scene_17",
+      "location_id": "estadio_final",
+      "voiceover": {
+        "text": "[explosive] ¡Gooool! México es campeón del mundo y el país entero estalla de felicidad.",
+        "tts_notes": "13 palabras (~2.2s). MEXICO CAMPEON. Cambia a huesito_campeon."
+      },
+      "visual": {
+        "image_prompt": "Using the provided champion Huesito (the provided skeleton in a green jersey holding a golden trophy, wrapped in a Mexican flag) on the provided final stadium plate at night: the provided champion skeleton player celebrating wildly as confetti rains down, his human Mexican teammates lifting him, a colossal crowd of diverse human Mexican fans erupting with green-white-red flags. Camera: epic hero wide on the celebration. Only adults, no minors. Hyperreal cinematic photography, the skeleton player semi-realistic (NOT Pixar/cartoonish), humans realistic and diverse, NO gore, plain jerseys no real crests, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the champion skeleton player erupts in celebration with the trophy as confetti falls and teammates lift him. SHOT: epic hero wide. ANIMATE: confetti raining, teammates lifting him, crowd exploding, flags everywhere. Keep the skeleton player EXACTLY as the provided character; humans realistic. Photoreal final stadium at night."
+      },
+      "captions": {
+        "text": "¡CAMPEÓN DEL MUNDO!",
+        "highlight_words": [
+          "CAMPEÓN"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_campeon"
+        ],
+        "ingredients": [
+          "plate_estadio_final"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "scene_18",
+      "location_id": "angel",
+      "voiceover": {
+        "text": "[funny] La economía vuela, baja la inseguridad, y hasta el americanista abraza al del Cruz Azul.",
+        "tts_notes": "15 palabras (~2.5s). REMATE satirico. Congelar frame final."
+      },
+      "visual": {
+        "image_prompt": "Using the provided champion Huesito (the provided skeleton with the trophy and Mexican flag) on the provided Angel de la Independencia plate at night: a massive street celebration at the Angel, and in the foreground two human Mexican fans hugging — one in a plain yellow América-style jersey and one in a plain blue Cruz Azul-style jersey (rival fans reconciled, no crests/logos), confetti and green-white-red flags everywhere, the champion skeleton player raising the trophy among the crowd. Camera: lively wide on the celebration and the hugging rivals. Only adults, no minors. Hyperreal cinematic photography, the skeleton player semi-realistic (NOT Pixar/cartoonish), humans realistic and diverse, NO gore, plain jerseys with no real crests/logos, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): two rival fans (plain yellow and plain blue jerseys) hug at the Angel celebration as the champion skeleton raises the trophy. SHOT: lively wide. ANIMATE: the rivals hugging, confetti falling, the skeleton lifting the trophy, the crowd partying; hold the final frame. Keep the skeleton player EXACTLY as the provided character; humans realistic. Photoreal Angel de la Independencia at night. Freeze for the final beat."
+      },
+      "captions": {
+        "text": "América + Cruz Azul 🤝",
+        "highlight_words": [
+          "Cruz Azul"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_campeon"
+        ],
+        "ingredients": [
+          "plate_angel_festejo"
+        ],
+        "scenes": []
+      },
+      "edit_notes": "REMATE satirico (no cliffhanger). Congelar el frame final de la fiesta con los rivales abrazados y la copa en alto."
+    }
+  ],
+  "capcut_export": {
+    "main_timeline_starts_after_hook": true,
+    "duration_note": "NO se fija duracion de clips: el editor mide cada mp3/mp4 con ffprobe y recorta el clip a la longitud de su narracion (~6 palabras/seg).",
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18"
+    ],
+    "title_cards": [
+      {
+        "scene_id": "scene_01",
+        "text": "Fase de grupos"
+      },
+      {
+        "scene_id": "scene_09",
+        "text": "Octavos y cuartos"
+      },
+      {
+        "scene_id": "scene_12",
+        "text": "Semifinal"
+      },
+      {
+        "scene_id": "scene_13",
+        "text": "La gran final"
+      }
+    ],
+    "ending_card": {
+      "after_scene": "scene_18",
+      "text": "¿Tú crees que sí?",
+      "style": "texto grande sobre el frame congelado de la fiesta; comment-bait, SIN '¿Parte 2?'"
+    },
+    "caption_style": {
+      "font": "Montserrat ExtraBold",
+      "size": 72,
+      "position": "center_lower",
+      "style": "subtitulos grandes con palabras clave resaltadas en verde/blanco",
+      "max_words_on_screen": 5
+    },
+    "music_notes": "Epico de apertura (01), estallido de gol y esperanza (02), tension/drama vs Corea (03), explosion de remontada (04), musica comica-magica para los gags satiricos (05-06, 10-11), drama de la derrota vs Chequia y giro relajado (07-08), accion de eliminatorias (09), tension creciente de semifinal y final (12-14), redoble de suspenso en el penal con un guiño comico al aparecer Socrates (15-16), fanfarria triunfal de campeonato (17) y cierre comico-festivo (18).",
+    "sfx_notes": "Ambiente de estadio y porra (todas las de cancha). Grito de gol y estadio estallando (02,04,09,12,17). Silencio tenso del penal (14-16). Patada y red (16). Sonido magico/'ding' en los gags (baches 05, inundaciones 06, economia 10). Multitud y confeti en el festejo (17-18). SIN sonidos de gore."
+  },
+  "tts_export": {
+    "full_script": "[epic] Fase de grupos: arranca el Mundial en el Azteca y todo México se paraliza. [hype] México vence dos a cero a Sudáfrica, y todo el país piensa: ¿y si sí? [nervous] Contra Corea el Tri va perdiendo y toda la afición sufre en silencio. [explosive] Pero al minuto noventa México lo voltea y estalla la fiesta en las calles. [funny] Esa misma noche, como por arte de magia, los baches de la ciudad se tapan solos. [ironic] Y de repente dejan de haber inundaciones en las colonias… el Mundial sí servía. [worried] Contra Chequia México juega relajado y pierde; el país entero entra en pánico. [relieved] Pero como ya tenía puntos, avanza igual como líder: perder también es avanzar. [intense] En octavos y cuartos México remonta como loco y sigue avanzando imparable. [funny] Con cada triunfo la economía mejora y hasta el peso se fortalece en las noticias. [ironic] Y baja la inseguridad: hasta los rateros se quedan viendo el partido. [tense] En semifinal México gana en el último suspiro: ¡está en la final! [epic] En la gran final, México se juega el título contra Grecia en un estadio repleto. [tense] Todo termina cero a cero y se define con un penal decisivo para México. [shocked] Y el portero de Grecia es nada más y nada menos que Sócrates. [suspense] Sócrates filosofa para distraer al tirador: ¿qué es, en verdad, un gol? Y patea. [explosive] ¡Gooool! México es campeón del mundo y el país entero estalla de felicidad. [funny] La economía vuela, baja la inseguridad, y hasta el americanista abraza al del Cruz Azul."
+  }
+}

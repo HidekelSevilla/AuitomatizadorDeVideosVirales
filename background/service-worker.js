@@ -772,11 +772,20 @@ async function runRealImage(scene, prevSceneId, refName) {
   if (!characterNames.length && !sceneRefImageUrls.length && scene.imageIngredients?.includes("character_ref") && state.project?.characterName) {
     characterNames.push(state.project.characterName);
   }
-  // INGREDIENTES de escena (entity/location_plate): adjuntar su tile generado via ⋮ (igual que una escena previa).
+  // INGREDIENTES de escena (entity/location_plate). Con project.reuse_ingredients el driver intenta
+  // adjuntarlos por NOMBRE (id renombrado, reusable entre Partes) y si no por su TILE generado en este run.
+  // Sin el flag -> solo por tile (flujo actual; Huesito intacto).
+  const ingredientRefs = [];
   for (const rid of (scene.ingredientRefs || [])) {
     const ing = ingOf(rid);
-    if (ing?.imageUrl) sceneRefImageUrls.push(ing.imageUrl);
-    else log(LOG_LEVEL.WARN, `${scene.id}: ingrediente '${rid}' sin imagen generada; se omite.`);
+    if (state.project?.reuseIngredients) {
+      ingredientRefs.push({ name: rid, imageUrl: ing?.imageUrl || null });
+      if (!ing?.imageUrl) log(LOG_LEVEL.WARN, `${scene.id}: ingrediente '${rid}' sin tile; se intentara por nombre.`);
+    } else if (ing?.imageUrl) {
+      sceneRefImageUrls.push(ing.imageUrl);
+    } else {
+      log(LOG_LEVEL.WARN, `${scene.id}: ingrediente '${rid}' sin imagen generada; se omite.`);
+    }
   }
   // ESCENAS PREVIAS (legacy, desaconsejado con ingredientes): references.scenes[].sceneId -> imageUrl ya generada.
   for (const sr of (scene.sceneRefs || [])) {
@@ -792,7 +801,7 @@ async function runRealImage(scene, prevSceneId, refName) {
   emitSceneStatus(scene.id, SCENE_STATUS.GENERATING_IMAGE);
   emitState();
   const img = await sendActOrFail(tab.id, ACT.GENERATE_IMAGE, {
-    prompt: scene.imagePrompt, characterNames, sceneRefImageUrls, aspectRatio, count, cfg: driverCfg(),
+    prompt: scene.imagePrompt, characterNames, sceneRefImageUrls, ingredientRefs, aspectRatio, count, cfg: driverCfg(),
   });
   scene.imageUrl = img?.imageUrl ?? null;
   // HANDOFF cross-proveedor (opt-in por JSON): si la animacion va en OTRO proveedor (animationProvider != "flow"),

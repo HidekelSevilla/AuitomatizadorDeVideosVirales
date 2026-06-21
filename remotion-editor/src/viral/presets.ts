@@ -27,6 +27,17 @@ export const PRESETS: Record<string, Preset> = {
     labelCardBg: "#1a0014",
     labelCardColor: "#ff3b8d",
   },
+  // Novela coreana (melodrama vertical): subtitulo blanco limpio, palabra clave en dorado, SIN cartel negro.
+  // OJO: el render NO dibuja caja; colorea la palabra hot con captionHotBg. Por eso el dorado va en
+  // captionHotBg (no "transparent", que la dejaria invisible). captionHotText no lo usa el render actual.
+  "novela-coreana": {
+    captionBase: "#FFFFFF",
+    captionHotBg: "#F4C26B", // palabra resaltada en dorado suave (color del texto, no de una caja)
+    captionHotText: "#F4C26B",
+    showLabelCard: false, // sin carteles negros en este preset
+    labelCardBg: "#0A0A0A",
+    labelCardColor: "#FFFFFF",
+  },
 };
 
 export const DEFAULT_PRESET = "esqueletos";

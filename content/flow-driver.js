@@ -306,6 +306,28 @@
     return !!resolve(SEL().referenceChip);
   }
 
+  // Quita TODOS los chips de referencia del compositor (la "X" de cada chip = boton con icono "cancel").
+  // CRITICO: Flow NO limpia los chips entre generaciones; sin esto una escena HEREDA los chips de la
+  // anterior (o de un intento fallido) -> al re-adjuntar el personaje Flow lo DEDUPLICA (el contador no
+  // sube -> "timeout esperando condicion") y se mezclan referencias de otras escenas. Verificado en vivo
+  // 2026-06-20: el contenedor del chip trae un boton cuyo 1er token de innerText es "cancel".
+  async function clearReferenceChips() {
+    const chipSel = (SEL().referenceChip || []).filter((x) => x.by === "css").map((x) => x.value).join(",");
+    if (!chipSel) return;
+    for (let guard = 0; guard < 12 && document.querySelector(chipSel); guard++) {
+      const chip = document.querySelector(chipSel);
+      let btn = null, n = chip;
+      for (let i = 0; i < 6 && n && !btn; i++) {
+        n = n.parentElement;
+        if (n) btn = [...n.querySelectorAll('button,[role="button"]')]
+          .find((b) => visible(b) && norm(b.innerText).split(/\s+/)[0].toLowerCase() === "cancel");
+      }
+      if (!btn) return;            // no hallo la X: no insistir (evita bucle)
+      realClick(clickable(btn));
+      await sleep(250);
+    }
+  }
+
   // Encuentra el ⋮ ("more_vert") del TILE indicado: hace hover sobre el tile y toma el boton
   // cuyo CENTRO cae DENTRO del rect de la imagen (en X e Y). CRITICO en grilla: filtrar solo por
   // posicion vertical agarra el ⋮ de OTRA COLUMNA -> animaba/adjuntaba la imagen equivocada.
@@ -387,19 +409,22 @@
     if (!pickerRoot) pickerRoot = (search && search.closest('[role="dialog"]')) || null;
     if (!pickerRoot) throw new Error('no encuentro el panel del selector "+" (¿abrio el selector de recursos?)');
 
-    // 3) Filtra por nombre en el buscador (best-effort; aunque no filtre, igual buscamos por nombre).
-    if (characterName && search) {
-      search.focus();
-      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set;
-      if (setter) setter.call(search, characterName); else search.value = characterName;
-      search.dispatchEvent(new Event("input", { bubbles: true }));
-      await sleep(900);
-    }
-
+    // 3) Filtra por nombre en el buscador. La lista del picker esta VIRTUALIZADA: si el filtro no se
+    //    aplica (el picker recien montado a veces descarta el primer evento 'input', o React resetea
+    //    el value al re-renderizar), el nombre queda lejos en la lista virtual y NO esta en el DOM ->
+    //    "no encuentro". Era intermitente (fallaba 1 de N escenas y reintentando pasaba). Por eso:
+    //    re-localizamos el buscador, verificamos que el value quedo, y reintentamos tipeo+busqueda.
+    const nameLc = (characterName || "").toLowerCase();
+    const valueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set;
+    const setSearch = (inp, val) => {
+      if (!inp) return;
+      inp.focus();
+      if (valueSetter) valueSetter.call(inp, val); else inp.value = val;
+      inp.dispatchEvent(new Event("input", { bubbles: true }));
+    };
     // 4) Elige el resultado DENTRO del panel: preferir el PERSONAJE (texto "Personaje"/"Carácter"/
     //    "Character"); si no, lo que no sea la imagen ".png". Menor area = elemento mas especifico.
-    const nameLc = (characterName || "").toLowerCase();
-    const result = await waitFor(() => {
+    const findResult = () => {
       const rows = [...pickerRoot.querySelectorAll('[role="option"],[role="menuitem"],li,button,div,span')]
         .filter((e) => {
           const t = norm(e.innerText);
@@ -415,20 +440,54 @@
         const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
         return (ra.width * ra.height) - (rb.width * rb.height);
       })[0];
-    }, { timeout: 5000 }).catch(() => null);
+    };
+    let result = null;
+    for (let attempt = 0; attempt < 3 && !result; attempt++) {
+      if (characterName && search) {
+        search = findSearch() || search;                 // el picker pudo re-renderizar otro input
+        if (norm(search.value) !== norm(characterName)) setSearch(search, characterName);
+        await sleep(attempt === 0 ? 900 : 500);
+      }
+      result = await waitFor(findResult, { timeout: 4000 }).catch(() => null);
+      if (!result && characterName && search) {           // re-escribe: el filtro no tomo este intento
+        setSearch(search, ""); await sleep(200); setSearch(search, characterName); await sleep(400);
+      }
+    }
     if (!result) throw new Error(`no encuentro el personaje "${characterName || ""}" en el selector "+" (¿esta creado en ESTE proyecto con ese nombre?)`);
+    // Cuenta chips ANTES de adjuntar (el exito = aparece uno NUEVO; correcto con varios personajes).
+    const chipSel = (s.referenceChip || []).filter((x) => x.by === "css").map((x) => x.value).join(",");
+    const countChips = () => (chipSel ? document.querySelectorAll(chipSel).length : (referenceChipPresent() ? 1 : 0));
+    const before = countChips();
     realClick(clickable(result));
-    await sleep(700);
 
-    // 4) CTA del selector: "Agregar a la instrucción" / "Añadir a la petición" / "Add to prompt".
-    const addBtn = resolve(s.addToPromptButton);
-    if (!addBtn) throw new Error('no encuentro "Agregar a la instrucción"/"Add to prompt" en el selector');
-    realClick(clickable(addBtn));
-    await waitFor(() => referenceChipPresent(), { timeout: 6000 });
+    // 4) Adjuntar la referencia. La UI de Flow tiene DOS variantes (verificado en vivo 2026-06-20):
+    //  (a) ACTUAL: al clicar el resultado del Personaje lo adjunta DIRECTO y CIERRA el picker -> NO hay
+    //      CTA. (El viejo flujo "clic resultado -> clic 'Añadir a la petición'" fallaba justo aqui: el
+    //      clic ya habia cerrado el picker, asi que el CTA no existia, aunque el chip YA estaba puesto.)
+    //  (b) LEGACY: ademas hay que pulsar el CTA "Añadir a la petición"/"Add to prompt".
+    // El CTA suele traer el ICONO ligadura "add" como 1er token, asi que el match exacto puede fallar:
+    // fallback por texto-contiene o 1er token "add" (distinto de "add_2 Crear").
+    const labelRe = /agregar a la instrucc|a.adir a la petic|agregar a la petic|add to prompt|add to your prompt|add to instruction/i;
+    const findAddCta = () => {
+      const exact = resolve(s.addToPromptButton);
+      if (exact) return exact;
+      const cands = [...document.querySelectorAll('button,[role="button"],[role="menuitem"],[role="option"]')].filter(visible);
+      return cands.find((e) => labelRe.test(norm(e.innerText)))
+          || cands.find((e) => norm(e.innerText).split(/\s+/)[0].toLowerCase() === "add")
+          || null;
+    };
+    // (a): el chip aparece solo; (b): aparece el CTA. Espera lo primero que ocurra.
+    await waitFor(() => countChips() > before || findAddCta(), { timeout: 6000 }).catch(() => null);
+    if (countChips() <= before) {
+      const addBtn = findAddCta();
+      if (!addBtn) throw new Error('no encuentro "Agregar a la instrucción"/"Add to prompt" en el selector');
+      realClick(clickable(addBtn));
+      await waitFor(() => countChips() > before, { timeout: 6000 });
+    }
   }
 
   // ------------------------------------------------------------- acciones -----
-  async function generateImage({ prompt, characterNames, sceneRefImageUrls, useCharacterRef, characterName, aspectRatio, count, cfg }) {
+  async function generateImage({ prompt, characterNames, sceneRefImageUrls, ingredientRefs, useCharacterRef, characterName, aspectRatio, count, cfg }) {
     const s = SEL();
     const hs = detectHardStop(); if (hs) return hs;
 
@@ -444,6 +503,10 @@
     if (!okType) throw new Error("no pude escribir el prompt en el editor (Slate)");
     await sleep(300);
 
+    // Limpia chips heredados (de la escena previa o de un intento fallido) ANTES de adjuntar los de
+    // ESTA escena: Flow no los limpia solo y arrastrarlos rompe el conteo de chips y mezcla referencias.
+    await clearReferenceChips();
+
     // PERSONAJES: lista de nombres (Personaje de Flow). Cada uno se adjunta via el selector "+".
     // (El usuario crea cada Personaje una vez por proyecto; subir un archivo por script es imposible.)
     // Compat: si llega useCharacterRef+characterName (esquema viejo), se trata como [characterName].
@@ -453,6 +516,24 @@
     for (const name of names) {
       try { await attachCharacterReference(name); await sleep(300); }
       catch (e) { return { ok: false, error: `referencia personaje "${name}": ${e.message}` }; }
+    }
+
+    // INGREDIENTES (entity/location_plate) con reuso por serie: 1) por NOMBRE (id renombrado en el proyecto,
+    // reusable entre Partes); 2) si no esta por nombre, por su TILE generado en este run (flujo actual). La
+    // FASE INGREDIENTES ya los genero al inicio, asi que el tile existe (no se llega a "generar de nuevo").
+    for (const ref of (ingredientRefs || [])) {
+      if (!ref || !ref.name) continue;
+      let attached = false;
+      try { await attachCharacterReference(ref.name); attached = true; await sleep(300); }
+      catch (_e) { pressEscape(); await sleep(300); }   // no esta por nombre: cierra el "+" y cae al tile
+      if (attached) continue;
+      if (!ref.imageUrl) return { ok: false, error: `ingrediente "${ref.name}": no esta por nombre y sin tile generado` };
+      try {
+        const tile = await findResultImageScrolling(ref.imageUrl, allProjectImgs);
+        if (!tile) throw new Error("no aparece ni con scroll");
+        await attachTileToPrompt(tile);
+        await sleep(300);
+      } catch (e2) { return { ok: false, error: `ingrediente "${ref.name}": ni por nombre ni por tile (${e2.message})` }; }
     }
 
     // ESCENAS PREVIAS: imagenes YA en el proyecto -> su ⋮ -> "Añadir a la peticion" (attachTileToPrompt).

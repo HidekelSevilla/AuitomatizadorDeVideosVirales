@@ -1,0 +1,313 @@
+{
+  "project": {
+    "title": "Opening - franquicia becaria_corp (introduccion de personaje, Parte 1)",
+    "preset": "novela-coreana",
+    "slug": "_openings/becaria_corp",
+    "language": "es-419",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "grok_clip_seconds": 6,
+    "voice_target_seconds": [
+      4,
+      5
+    ],
+    "voice_ceiling_seconds": 5.5,
+    "reuse_ingredients": true,
+    "is_opening_bootstrap": true,
+    "render_notes": "OPENING = INTRODUCCION DEL PERSONAJE de la Parte 1 (8 escenas, ~35s): flex/gancho, disfraz, competencia secreta, origen, tragedia, por que se esconde, deseo humilde, transicion a la gala. Calcado sobre el opening real de la referencia (~232 wpm). VELOCIDAD: voice_speed 1.3 (Fish prosody.speed, SIN cambiar pitch) + voice_rate 1.0 (sin playbackRate). Las etiquetas cinematicas frenan la diccion, por eso la base va a 1.3. Grok 6s -> voz ~4-5s (techo 5.5s). SIN dialogo, SIN lip-sync (boca cerrada). Planos MEDIOS, cara anclada. OPENING OPCIONAL: este bloque va SOLO en la Parte 1 (y estrenos/especiales); en Partes 2,3,... se OMITE por completo.",
+    "series": {
+      "id": "becaria_corp",
+      "is_opening": true
+    }
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "flow"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": "Fish Audio (es neutro). 1 voz a prosody.speed=voice_speed. Mide con ffprobe; si pasa de 5.5s, recorta palabras.",
+    "edit": "FFmpeg + Remotion. La voz manda la duracion; el clip de 6s se acelera levemente.",
+    "consistency_rule": "Flow usa la reference_asset via el '+' ('the provided Seo-ah'). Grok anima la imagen de Flow. Plano MEDIO.",
+    "prompt_routing": "visual.image_prompt -> Flow. visual.animation_prompt -> Grok."
+  },
+  "characters": {
+    "seo_ah": {
+      "display_name": "Seo-ah",
+      "reference_asset": "assets/characters/seo_ah_card.jpeg",
+      "locked_description": "East-Asian woman, late 20s, calm and intelligent. Long straight dark-brown hair, soft natural makeup. WARDROBE (fixed): neutral taupe/cream tailored blazer over a white silk blouse, thin delicate silver necklace, small pearl earrings. Composed, quietly elegant, a little weary.",
+      "regenerate": false
+    }
+  },
+  "ingredients": [
+    {
+      "id": "plate_office",
+      "type": "location_plate",
+      "generation_prompt": "EMPTY modern open-plan corporate office, bright daylight through floor-to-ceiling glass, grey desks, monitors, glass partitions, neutral palette, faint city view. Clean, glossy. No people. 9:16 vertical, no text.",
+      "output_file": "ingredients/plate_office.png"
+    },
+    {
+      "id": "plate_cubicle",
+      "type": "location_plate",
+      "generation_prompt": "EMPTY single office cubicle desk with a laptop, a small lamp, neatly stacked documents, a thin glass partition behind. Soft daylight, shallow depth. No people. 9:16 vertical, no text.",
+      "output_file": "ingredients/plate_cubicle.png"
+    },
+    {
+      "id": "plate_apartment",
+      "type": "location_plate",
+      "generation_prompt": "EMPTY narrow cozy small-apartment entryway hallway at night, warm amber light, a shoe cabinet, a few homely details, slightly cramped. Intimate, photoreal. No people. 9:16 vertical, no text.",
+      "output_file": "ingredients/plate_apartment.png"
+    },
+    {
+      "id": "cat_mochi",
+      "type": "entity",
+      "generation_prompt": "A chubby orange-and-white domestic tabby cat named Mochi, round amber eyes, plush fur, adorable slightly grumpy expression. Photoreal, soft warm indoor light. 9:16 vertical, no text.",
+      "output_file": "ingredients/cat_mochi.png"
+    },
+    {
+      "id": "plate_gala",
+      "type": "location_plate",
+      "generation_prompt": "EMPTY elegant corporate annual gala ballroom at night: round banquet tables with white linen, soft golden hanging lights, deep blue stage uplighting and warm bokeh, polished reflective floor. Cinematic, glossy, atmospheric. No people. 9:16 vertical, no text.",
+      "output_file": "ingredients/plate_gala.png"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "op_01",
+      "references": {
+        "characters": [
+          "seo_ah"
+        ],
+        "ingredients": [
+          "plate_office"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Seo-ah on the provided plate_office: cinematic MEDIUM shot, Seo-ah from the chest up, at a modest desk among rows of identical desks, slowly lifting her eyes from her screen toward camera with a calm, knowing, quietly confident expression. A bright modern open-plan office with glass partitions and soft daylight, anonymous blurred adult coworkers far behind. IMPORTANT: keep her exact face, long dark hair and neutral taupe blazer over white blouse from the provided card; do not alter her face. Photoreal cinematic Korean-drama style, glossy, shallow depth of field, soft key light on her face, sharp facial detail, 9:16 vertical, no text, only adults no minors.",
+        "animation_prompt": "KEY ACTION (first 2s): Seo-ah lifts her eyes from the screen toward camera with a quiet, knowing look. CONTINUED (2-6s): subtle breathing, a slow confident blink, faint background office movement, soft light shift. She is NOT speaking (narration / voiceover) - keep her mouth softly closed, no lip movement. Keep the provided Seo-ah EXACTLY as provided, especially her face. Slow, composed motion filling the full 6s clip."
+      },
+      "voiceover": {
+        "text": "[low, intriguing, knowing, cinematic narrator tone] Hablo el idioma del dinero mejor que nadie en esta empresa. Y aun así, nadie sabe quién soy.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "Nadie sabe quién soy",
+        "highlight_words": [
+          "soy"
+        ]
+      }
+    },
+    {
+      "id": "op_02",
+      "references": {
+        "characters": [
+          "seo_ah"
+        ],
+        "ingredients": [
+          "plate_cubicle"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Seo-ah on the provided plate_cubicle: cinematic MEDIUM shot, Seo-ah from the chest up, at her cubicle desk, a paper coffee cup beside her, glancing down at a stack of documents with a composed, faintly weary expression. Soft daylight, a thin glass partition behind. IMPORTANT: keep her exact face, long dark hair and neutral taupe blazer over white blouse from the provided card; do not alter her face. Photoreal cinematic Korean-drama style, glossy, shallow depth of field, soft key light on her face, sharp facial detail, 9:16 vertical, no text, only adults no minors.",
+        "animation_prompt": "KEY ACTION (first 2s): Seo-ah glances down at the documents and gives a small, tired exhale. CONTINUED (2-6s): subtle breathing, fingertips resting near the coffee cup, soft daylight flicker. She is NOT speaking (narration / voiceover) - keep her mouth softly closed, no lip movement. Keep the provided Seo-ah EXACTLY as provided, especially her face. Slow, composed motion filling the full 6s clip."
+      },
+      "voiceover": {
+        "text": "En mi currículum solo escribí 'analista junior'. Para todos, soy la becaria que trae el café.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "La becaria del café",
+        "highlight_words": [
+          "becaria"
+        ]
+      }
+    },
+    {
+      "id": "op_03",
+      "references": {
+        "characters": [
+          "seo_ah"
+        ],
+        "ingredients": [
+          "plate_cubicle"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Seo-ah on the provided plate_cubicle: cinematic MEDIUM shot, Seo-ah from the chest up, over-the-shoulder framing, hands gliding over the keyboard, the laptop screen full of dense spreadsheet numbers with faint red correction marks, her face calm and precise in the cool screen glow. IMPORTANT: keep her exact face, long dark hair and neutral taupe blazer over white blouse from the provided card; do not alter her face. Photoreal cinematic Korean-drama style, glossy, shallow depth of field, soft key light on her face, sharp facial detail, 9:16 vertical, no text, only adults no minors.",
+        "animation_prompt": "KEY ACTION (first 2s): Seo-ah's fingers move fast and sure across the keyboard as faint red marks appear on the screen. CONTINUED (2-6s): sustained controlled typing, subtle screen scroll, a calm focused face, faint reflections. She is NOT speaking (narration / voiceover) - keep her mouth softly closed, no lip movement. Keep the provided Seo-ah EXACTLY as provided, especially her face. Slow, composed motion filling the full 6s clip."
+      },
+      "voiceover": {
+        "text": "Cada día corrijo en silencio los errores que otros firman. Y dejo que ellos se lleven el mérito.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "Corrijo lo que otros firman.",
+        "highlight_words": [
+          "errores"
+        ]
+      }
+    },
+    {
+      "id": "op_04",
+      "references": {
+        "characters": [
+          "seo_ah"
+        ],
+        "ingredients": [
+          "plate_office"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Seo-ah on the provided plate_office: cinematic MEDIUM shot, Seo-ah from the chest up, standing in the open office, looking slowly around with quiet pride and a trace of nostalgia, soft daylight catching her face. The bright modern office her family built stretches softly out of focus behind her. IMPORTANT: keep her exact face, long dark hair and neutral taupe blazer over white blouse from the provided card; do not alter her face. Photoreal cinematic Korean-drama style, glossy, shallow depth of field, soft key light on her face, sharp facial detail, 9:16 vertical, no text, only adults no minors.",
+        "animation_prompt": "KEY ACTION (first 2s): Seo-ah's gaze drifts slowly across the office as her expression softens with quiet pride. CONTINUED (2-6s): gentle breathing, a slow blink, soft daylight and blurred coworkers shifting behind her. She is NOT speaking (narration / voiceover) - keep her mouth softly closed, no lip movement. Keep the provided Seo-ah EXACTLY as provided, especially her face. Slow, composed motion filling the full 6s clip."
+      },
+      "voiceover": {
+        "text": "Mi padre levantó esta empresa de la nada. Crecí entre sus libros de cuentas, leyendo el dinero.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "Mi padre levantó esta empresa.",
+        "highlight_words": [
+          "padre"
+        ]
+      }
+    },
+    {
+      "id": "op_05",
+      "references": {
+        "characters": [
+          "seo_ah"
+        ],
+        "ingredients": [
+          "plate_apartment"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Seo-ah on the provided plate_apartment: cinematic MEDIUM shot, Seo-ah from the chest up, alone in her dim apartment at night, holding a small old framed photo, her eyes lowered and shadowed with restrained grief, a single warm lamp glowing. Intimate, modest interior. IMPORTANT: keep her exact face, long dark hair and neutral taupe blazer over white blouse from the provided card; do not alter her face. Photoreal cinematic Korean-drama style, glossy, shallow depth of field, soft key light on her face, sharp facial detail, 9:16 vertical, no text, only adults no minors.",
+        "animation_prompt": "KEY ACTION (first 2s): Seo-ah lowers her eyes to the framed photo as her expression tightens with quiet grief. CONTINUED (2-6s): slow heavy breathing, a sad blink, the lamp glow flickering softly. She is NOT speaking (narration / voiceover) - keep her mouth softly closed, no lip movement. Keep the provided Seo-ah EXACTLY as provided, especially her face. Slow, composed motion filling the full 6s clip."
+      },
+      "voiceover": {
+        "text": "[quiet, melancholic, reflective, emotionally restrained] Pero mis padres murieron hace cinco años. Y con ellos, enterré mi verdadero nombre.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "Enterré mi verdadero nombre.",
+        "highlight_words": [
+          "nombre"
+        ]
+      }
+    },
+    {
+      "id": "op_06",
+      "references": {
+        "characters": [
+          "seo_ah"
+        ],
+        "ingredients": [
+          "plate_office"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Seo-ah on the provided plate_office: cinematic MEDIUM shot, Seo-ah from the chest up, walking quietly through the busy open office among many anonymous blurred adult coworkers, unnoticed and unseen, her expression composed and a little distant, soft daylight. IMPORTANT: keep her exact face, long dark hair and neutral taupe blazer over white blouse from the provided card; do not alter her face. Photoreal cinematic Korean-drama style, glossy, shallow depth of field, soft key light on her face, sharp facial detail, 9:16 vertical, no text, only adults no minors.",
+        "animation_prompt": "KEY ACTION (first 2s): Seo-ah walks slowly through the crowd of coworkers, unnoticed, eyes lowered. CONTINUED (2-6s): sustained gentle walking motion, blurred coworkers passing around her, soft daylight, a quiet distant expression. She is NOT speaking (narration / voiceover) - keep her mouth softly closed, no lip movement. Keep the provided Seo-ah EXACTLY as provided, especially her face. Slow, composed motion filling the full 6s clip."
+      },
+      "voiceover": {
+        "text": "No quiero lástima. No quiero que desentierren mi pasado. Solo quiero desaparecer entre la multitud.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "Solo quiero desaparecer.",
+        "highlight_words": [
+          "lástima"
+        ]
+      }
+    },
+    {
+      "id": "op_07",
+      "references": {
+        "characters": [
+          "seo_ah"
+        ],
+        "ingredients": [
+          "plate_apartment",
+          "cat_mochi"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Seo-ah and the provided cat_mochi on the provided plate_apartment: cinematic MEDIUM shot, Seo-ah from the chest up crouched in her narrow apartment entryway, holding the chubby orange-and-white cat Mochi against her with a tender, tired smile, warm amber light. IMPORTANT: keep her exact face, long dark hair and neutral taupe blazer over white blouse from the provided card; do not alter her face. Intimate, cozy, shallow depth. Photoreal cinematic Korean-drama style, glossy, sharp facial detail, 9:16 vertical, no text, only adults.",
+        "animation_prompt": "KEY ACTION (first 2s): Seo-ah holds Mochi closer and a tender, tired smile crosses her face. CONTINUED (2-6s): the cat shifting and blinking, Seo-ah's soft smile and slow breathing, warm light flickering. She is NOT speaking (narration) - mouth softly closed, no lip movement. Keep the provided Seo-ah and the provided cat_mochi EXACTLY as provided. Cozy, warm, slow motion filling the full 6s clip."
+      },
+      "voiceover": {
+        "text": "[soft, warm, tender, quietly bittersweet] Solo pido un sueldo fijo, un departamento pequeño, y a Mochi esperándome en la puerta.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "Mochi esperándome en la puerta.",
+        "highlight_words": [
+          "Mochi"
+        ]
+      }
+    },
+    {
+      "id": "op_08",
+      "references": {
+        "characters": [
+          "seo_ah"
+        ],
+        "ingredients": [
+          "plate_gala"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Seo-ah on the provided plate_gala: cinematic MEDIUM shot, Seo-ah from the chest up, standing quietly at the edge of an elegant corporate annual gala at night, holding a champagne glass, her expression calm but with a flicker of unease in her eyes as she looks off toward something. Behind her, golden hanging lights, deep blue uplighting, warm bokeh of blurred adult guests in formalwear, a polished floor. IMPORTANT: keep her exact face, long dark hair and neutral taupe blazer over white blouse from the provided card; do not alter her face. Photoreal cinematic Korean-drama style, glossy, shallow depth of field, soft key light on her face, sharp facial detail, 9:16 vertical, no text, only adults no minors.",
+        "animation_prompt": "KEY ACTION (first 2s): Seo-ah's calm expression flickers with a trace of unease as she turns her gaze off toward something. CONTINUED (2-6s): subtle breathing, a slow uneasy blink, golden lights shimmering and guests drifting behind her, the glass held still. She is NOT speaking (narration / voiceover) - keep her mouth softly closed, no lip movement. Keep the provided Seo-ah EXACTLY as provided, especially her face. Slow, composed motion filling the full 6s clip."
+      },
+      "voiceover": {
+        "text": "[low, tense, quietly foreboding, with a held final pause] Así viví, invisible, cada día... Hasta la noche de la gala anual.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "Hasta la noche de la gala.",
+        "highlight_words": [
+          "gala"
+        ]
+      }
+    }
+  ],
+  "capcut_export": {
+    "clip_order": [
+      "op_01",
+      "op_02",
+      "op_03",
+      "op_04",
+      "op_05",
+      "op_06",
+      "op_07",
+      "op_08"
+    ],
+    "caption_style": "Blanco limpio, centrado-abajo, sombra suave; palabra 'hot' en dorado. SIN caja amarilla, SIN cartel negro.",
+    "music_notes": "El preset novela-coreana va sin musica.",
+    "sfx_notes": "Sin sfx en el opening."
+  },
+  "audio": {
+    "music_volume": 0,
+    "voice_speed": 1.3,
+    "voice_rate": 1.0,
+    "voice_volume": 1.0,
+    "sfx_volume": 0.6,
+    "note": "voice_speed 1.3 = Fish habla mas rapido SIN cambiar pitch (regenera mp3). voice_rate 1.0 = sin playbackRate (sin subir tono). Preset SIN musica. Voz ~4-5s/escena, techo 5.5s."
+  },
+  "tts_export": {
+    "mode": "per_scene",
+    "note": "Genera op_01..op_08 (mp3+words.json) en public/_openings/becaria_corp/voice/ a prosody.speed=1.3. Una sola voz."
+  }
+}

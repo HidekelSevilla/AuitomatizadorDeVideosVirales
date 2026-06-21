@@ -1,0 +1,718 @@
+{
+  "project": {
+    "title": "Que pasaria si lideraras la resistencia contra los aliens en Mexico - Parte 2",
+    "preset": "esqueletos",
+    "slug": "resistencia_alien_mexico_huesito_grok_p2",
+    "language": "es-MX",
+    "aspect_ratio": "9:16",
+    "fps": 24,
+    "tone": "POV, serio, cinematografico, sci-fi, survival, epico, emotivo, MUY dinamico con muchos cortes cortos",
+    "render_notes": "PARTE 2 (continua invasion_alien_mexico_huesito_grok_p1; sigue en P3). FORMATO INGREDIENTES: characters = solo el base (NO se genera); ingredients = lo que se genera en sesion (character_edited del outfit que evoluciona + entities + placas). Por escena references.characters = el character_edited VESTIDO, references.ingredients = entities/placas presentes, references.scenes = [] SIEMPRE. image_prompt/animation_prompt en INGLES (Grok) y COMPLEMENTAN los ingredientes (los nombran 'the provided ...', camara propia distinta a la placa, NO repiten el outfit ni la ficha del entity, super especificos). voiceover/captions/tts en ESPANOL-MX, 10-18 palabras/escena (~2-3s a 6 pal/seg), techo ~70, KEY ACTION first 2s. MECANICA: la gente pelea con FUEGO (frena y dana pero TARDA en matar); el arma cian de Huesito los FINALIZA de un tiro. entities alien/weapon/mothership se REUSAN de la P1 (mismo id y output_file). La nave nodriza NO aparece directo: solo se INSINUA como sombra colosal al final (se guarda para la P3). SIN gore (aliens en destellos cian). SIN ninos (solo adultos). time_label = pantalla negra = narracion.",
+    "series": {
+      "part": 2,
+      "previous_part": "invasion_alien_mexico_huesito_grok_p1",
+      "next_part": "asalto_nave_nodriza_huesito_grok_p3",
+      "is_cliffhanger": true,
+      "next_part_teaser": "Parte 3: defiendes Chapultepec y enfrentas por fin a la nave nodriza."
+    }
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "fish_audio",
+      "emotion_syntax": "S2=[brackets], S1=(parentheses)"
+    },
+    "editing": {
+      "tool": "capcut"
+    }
+  },
+  "characters": {
+    "huesito": {
+      "display_name": "Huesito",
+      "reference_asset": "assets/characters/huesito_ref.jpg",
+      "description": "Esqueleto antropomorfo alto y esbelto, semi-realista y cinematografico. Hueso marfil con textura/poros/grietas, craneo y dientes creibles PERO con grandes ojos cafe muy expresivos. BASE pre-existente (esqueleto pelon/sin ropa): es la fuente de los character_edited; NO se genera."
+    }
+  },
+  "ingredients": [
+    {
+      "id": "huesito_p2_inicio",
+      "type": "character_edited",
+      "base": "huesito",
+      "edit_prompt": "Take the provided base Huesito skeleton and dress it: a dusty, torn grey hooded sweatshirt and dark cargo pants, a worn empty backpack, faint dirt and dust on the bone. Keep the EXACT skull, big round brown eyes and tall slim proportions. Plain neutral grey background, full body, centered, no scene, no text.",
+      "output_file": "assets/ingredients/huesito_p2_inicio.png"
+    },
+    {
+      "id": "huesito_p2_chaleco",
+      "type": "character_edited",
+      "base": "huesito",
+      "edit_prompt": "Take the provided base Huesito skeleton and dress it: a dusty grey hooded sweatshirt and dark cargo pants with a rugged salvaged scrap-metal-and-leather vest over it and a simple strap holster. Keep the EXACT skull, big round brown eyes and tall slim proportions. Plain neutral grey background, full body, centered, no scene, no text.",
+      "output_file": "assets/ingredients/huesito_p2_chaleco.png"
+    },
+    {
+      "id": "huesito_p2_lider",
+      "type": "character_edited",
+      "base": "huesito",
+      "edit_prompt": "Take the provided base Huesito skeleton and dress it as a resistance leader: a reinforced scrap-armor vest over a grey hoodie, a worn dark cloth half-cape and bandana, sturdy boots, and a holstered glowing-cyan weapon at the hip. Keep the EXACT skull, big round brown eyes and tall slim proportions. Plain neutral grey background, full body, centered, no scene, no text.",
+      "output_file": "assets/ingredients/huesito_p2_lider.png"
+    },
+    {
+      "id": "alien",
+      "type": "entity",
+      "generation_prompt": "A single tall ~3-meter biomechanical alien, full body, centered, on a PLAIN NEUTRAL GREY background, soft even studio lighting, no other subjects, no scenery, no text. Matte charcoal-black segmented chitin exoskeleton, four long jointed insect-like limbs, an elongated eyeless head with a single vertical glowing cyan slit, thin cyan light-veins along the body, no mouth, sharp predatory silhouette. Photoreal, 9:16.",
+      "output_file": "assets/ingredients/alien.png"
+    },
+    {
+      "id": "weapon",
+      "type": "entity",
+      "generation_prompt": "A single alien weapon, product-shot style, centered on a PLAIN WHITE background, no hands, no scenery, no text. Compact angular matte-black device with a bright cyan energy core and cyan light-veins. Photoreal.",
+      "output_file": "assets/ingredients/weapon.png"
+    },
+    {
+      "id": "mothership",
+      "type": "entity",
+      "generation_prompt": "A single colossal alien mothership, centered, on a PLAIN NEUTRAL background, no scenery, no people, no text. City-sized round matte charcoal-black disc-shaped craft with downward spires, a vast glowing cyan underbelly core and radial cyan light-veins. Photoreal.",
+      "output_file": "assets/ingredients/mothership.png"
+    },
+    {
+      "id": "plate_alley_centro",
+      "type": "location_plate",
+      "generation_prompt": "Establishing plate of a rubble-filled dead-end alley in Mexico City's Centro Historico at dusk, cracked volcanic-stone colonial walls with peeling posters, tangled black power cables overhead, an overturned yellow microbus at the mouth, broken glass — EMPTY: no people, no text. Clean background plate. Photoreal, 9:16.",
+      "output_file": "assets/ingredients/plate_alley_centro.png"
+    },
+    {
+      "id": "plate_metro_tuneles",
+      "type": "location_plate",
+      "generation_prompt": "Establishing plate of a dark Mexico City Metro tunnel and platform, orange-and-white tiled walls, CDMX line signage and pictograms, a stopped metro train, flickering emergency lights, scattered debris — EMPTY: no people, no text. Clean background plate. Photoreal, 9:16.",
+      "output_file": "assets/ingredients/plate_metro_tuneles.png"
+    },
+    {
+      "id": "plate_bellas_artes_interior",
+      "type": "location_plate",
+      "generation_prompt": "Establishing plate of the grand interior hall of the Palacio de Bellas Artes, Mexico City: art-deco marble, brass details, tall arches, dim emergency light, dust in the air, a few makeshift barricades — EMPTY: no people, no text. Clean wide background plate. Photoreal, 9:16.",
+      "output_file": "assets/ingredients/plate_bellas_artes_interior.png"
+    },
+    {
+      "id": "plate_calles_destruidas",
+      "type": "location_plate",
+      "generation_prompt": "Establishing plate of a destroyed Mexico City avenue at dusk, abandoned and burnt cars, an overturned yellow microbus, rubble, scattered small fires and smoke, the Torre Latinoamericana faint in the smoky skyline — EMPTY: no living people, no text. Clean wide background plate. Photoreal, 9:16.",
+      "output_file": "assets/ingredients/plate_calles_destruidas.png"
+    },
+    {
+      "id": "plate_chapultepec_exterior",
+      "type": "location_plate",
+      "generation_prompt": "Establishing plate of Chapultepec Castle on its forested hill in Mexico City seen from below across the park, stone ramparts and balconies on high, a winding uphill ramp, dramatic overcast light — EMPTY: no people, no text. Clean wide background plate. Photoreal, 9:16.",
+      "output_file": "assets/ingredients/plate_chapultepec_exterior.png"
+    },
+    {
+      "id": "plate_chapultepec_ramparts",
+      "type": "location_plate",
+      "generation_prompt": "Establishing plate of the high stone ramparts and terrace of Chapultepec Castle, Mexico City, overlooking a vast city skyline (Paseo de la Reforma and distant towers), low stone balustrades, a flagpole, dramatic sky — EMPTY: no people, no text. Clean wide background plate. Photoreal, 9:16.",
+      "output_file": "assets/ingredients/plate_chapultepec_ramparts.png"
+    }
+  ],
+  "hook": {
+    "type": "montage_from_generated_clips",
+    "voiceover": "¿Qué pasaría si tú lideraras la resistencia contra los aliens en México?",
+    "caption": "La Resistencia. Parte 2",
+    "montage_sources": [
+      {
+        "scene_id": "p2_scene_05",
+        "clip_in_s": 0.3,
+        "clip_out_s": 1.3
+      },
+      {
+        "scene_id": "p2_scene_13",
+        "clip_in_s": 0.4,
+        "clip_out_s": 1.4
+      },
+      {
+        "scene_id": "p2_scene_16",
+        "clip_in_s": 0.4,
+        "clip_out_s": 1.4
+      },
+      {
+        "scene_id": "p2_scene_18",
+        "clip_in_s": 0.4,
+        "clip_out_s": 1.4
+      }
+    ],
+    "edit_notes": "Hook con cortes rapidos y musica sci-fi epica: flash del arma cian rematando, la bandera en Chapultepec, el enjambre de noche y la sombra colosal. Caption con 'Parte 2' visible."
+  },
+  "scenes": [
+    {
+      "id": "p2_scene_01",
+      "location_id": "callejon_centro",
+      "voiceover": {
+        "text": "[tense] Estás rodeado, pero disparas tu arma y te abres paso entre los aliens.",
+        "tts_notes": "13 palabras (~2.2s). Accion al inicio. Conecta con el final de la P1."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic ivory-bone skeleton, big expressive brown eyes, fierce and afraid) and the provided alien and the provided cyan weapon, on the provided Centro Historico alley plate: MEDIUM action shot, Huesito firing the cyan weapon point-blank as one alien dissolves into cyan light particles (no gore) and others close in around him, dusk, cold cyan flashes lighting the volcanic-stone walls, dust and sparks. Camera: dynamic, slightly low, tight on Huesito mid-fire. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore/no blood, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito fires the cyan weapon and the nearest alien bursts into cyan light as he lunges forward to break through. SHOT: handheld, tight on Huesito. ANIMATE: cyan muzzle flash, the alien dissolving into light particles, others jerking closer, dust and sparks, Huesito shoving past. Keep Huesito EXACTLY as the provided skeleton; keep the provided alien and weapon. Photoreal Centro Historico alley. NO gore."
+      },
+      "captions": {
+        "text": "Te abres paso",
+        "highlight_words": [
+          "paso"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_p2_inicio"
+        ],
+        "ingredients": [
+          "plate_alley_centro",
+          "alien",
+          "weapon"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_02",
+      "location_id": "metro_tuneles",
+      "voiceover": {
+        "text": "[nervous] Corres por las calles y bajas al metro para perderlos entre los túneles oscuros.",
+        "tts_notes": "14 palabras (~2.3s). Movimiento al inicio: baja al metro."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic ivory-bone skeleton, big expressive brown eyes, breathless and tense), on the provided metro tunnel plate: WIDE shot from inside a dark CDMX metro tunnel, Huesito running along the tracks past a stopped train, glancing back over his shoulder, flickering emergency lights, deep shadows ahead. Camera: side-tracking alongside him. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito running deeper into the dark metro tunnel, looking back over his shoulder. SHOT: side-tracking. ANIMATE: his run, flickering emergency lights, shadows passing, heavy breath. Keep Huesito EXACTLY as the provided skeleton. Photoreal CDMX metro tunnel."
+      },
+      "captions": {
+        "text": "Bajas al metro",
+        "highlight_words": [
+          "metro"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_p2_inicio"
+        ],
+        "ingredients": [
+          "plate_metro_tuneles"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_03",
+      "location_id": "bellas_artes",
+      "voiceover": {
+        "text": "[nervous] Sales del metro y te metes a Bellas Artes buscando un lugar seguro.",
+        "tts_notes": "13 palabras (~2.2s). CDMX: entra a Bellas Artes."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic ivory-bone skeleton, big brown eyes, wary), on the provided Bellas Artes interior plate: Huesito slipping in through a tall art-deco doorway into the dim marble hall, the Torre Latinoamericana visible through a broken window behind him, dust drifting in shafts of light. Camera: medium, following him from behind into the hall. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito steps cautiously into the dim Bellas Artes marble hall, scanning. SHOT: slow follow from behind. ANIMATE: his cautious steps, dust in the light shafts, Torre Latino faint through the window. Keep Huesito EXACTLY as the provided skeleton. Photoreal Bellas Artes interior."
+      },
+      "captions": {
+        "text": "Refugio en Bellas Artes",
+        "highlight_words": [
+          "Bellas Artes"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_p2_inicio"
+        ],
+        "ingredients": [
+          "plate_bellas_artes_interior"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_04",
+      "location_id": "bellas_artes",
+      "voiceover": {
+        "text": "[surprised] Adentro, otros sobrevivientes pelean con fuego, pero apenas logran frenar a un alien.",
+        "tts_notes": "14 palabras (~2.3s). Presenta la mecanica: el fuego apenas lo frena."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic skeleton, big brown eyes, surprised) and the provided alien, on the provided Bellas Artes interior plate: a small group of realistic adult survivors swinging flaming torches and hurling a molotov at a single alien that keeps advancing THROUGH the flames (fire only slows it, doesn't drop it), orange firelight against the marble, smoke; Huesito watching from the foreground. Camera: medium wide on the firelit standoff. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore/no blood, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the alien pushes forward THROUGH the survivors' fire as torches and a molotov flare against it. SHOT: medium wide. ANIMATE: flames licking over it, the alien advancing while burning and unfazed, adults backing up, Huesito reacting. Keep Huesito and the alien EXACTLY as provided. Photoreal firelit Bellas Artes. NO gore."
+      },
+      "captions": {
+        "text": "El fuego no basta",
+        "highlight_words": [
+          "fuego"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_p2_inicio"
+        ],
+        "ingredients": [
+          "plate_bellas_artes_interior",
+          "alien"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_05",
+      "location_id": "bellas_artes",
+      "voiceover": {
+        "text": "[tense] Entras y lo rematas de un disparo; todos voltean a verte con esperanza.",
+        "tts_notes": "13 palabras (~2.2s). Contraste: tu arma SI lo finaliza."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic skeleton, big brown eyes, fierce) and the provided alien and the provided cyan weapon, on the provided Bellas Artes interior plate: Huesito striding in and firing the cyan weapon, the burning alien INSTANTLY dissolving into cyan light particles (no gore), the adult survivors turning to look at him in awe; mixed warm orange firelight and a cold cyan flash on the marble. Camera: heroic low angle on Huesito firing. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore/no blood, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito fires the cyan weapon and the alien dissolves into cyan light at once. SHOT: low hero angle. ANIMATE: cyan blast, the alien dissolving, adult survivors turning in awe, firelight plus cyan flash. Keep Huesito, alien and weapon EXACTLY as provided. Photoreal Bellas Artes. NO gore."
+      },
+      "captions": {
+        "text": "Tu arma los finaliza",
+        "highlight_words": [
+          "arma"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_p2_inicio"
+        ],
+        "ingredients": [
+          "plate_bellas_artes_interior",
+          "alien",
+          "weapon"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_06",
+      "time_label": "Día 7",
+      "location_id": "bellas_artes",
+      "voiceover": {
+        "text": "[hopeful] Día siete. Te volviste su esperanza, y llega gente desde Iztapalapa y Xochimilco.",
+        "tts_notes": "13 palabras (~2.2s). 'Día siete' al inicio. Menciona barrios de CDMX."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic skeleton, big brown eyes, hopeful), on the provided Bellas Artes interior plate: more realistic adult survivors arriving and gathering in the marble hall, carrying bundles and improvised gear, many looking toward Huesito; warm lantern light, hopeful mood. Camera: slow wide reveal of the growing crowd toward Huesito. Only adults, no minors. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): a wave of adult survivors filing into the Bellas Artes hall and gathering around Huesito. SHOT: slow wide push toward him. ANIMATE: adults arriving and settling, looking to him, lantern flicker. Keep Huesito EXACTLY as provided. Photoreal Bellas Artes. Only adults, no minors."
+      },
+      "captions": {
+        "text": "La gente se une",
+        "highlight_words": [
+          "une"
+        ]
+      },
+      "edit_notes": "time_label 'Día 7' = pantalla negra 'Día 7' + narracion 'Día siete'. A partir de aqui el outfit es huesito_p2_chaleco.",
+      "references": {
+        "characters": [
+          "huesito_p2_chaleco"
+        ],
+        "ingredients": [
+          "plate_bellas_artes_interior"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_07",
+      "location_id": "bellas_artes",
+      "voiceover": {
+        "text": "[serious] Los entrenas: el fuego para frenarlos, y tu arma para rematarlos de verdad.",
+        "tts_notes": "14 palabras (~2.3s). Refuerza la tactica fuego + arma."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic skeleton, big brown eyes, focused and commanding) and the provided cyan weapon, on the provided Bellas Artes interior plate: Huesito training a line of realistic adult survivors — some practicing with torches and molotovs, one practicing aiming a recovered cyan weapon — Huesito gesturing as he explains the tactic; dim firelit marble hall. Camera: medium tracking past the drill to Huesito. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito directs the drill — adults raise torches on one side while one aims the cyan weapon. SHOT: medium tracking. ANIMATE: Huesito gesturing and instructing, torches flaring, the trainee aiming, nods. Keep Huesito and weapon EXACTLY as provided. Photoreal Bellas Artes. Only adults."
+      },
+      "captions": {
+        "text": "Los entrenas",
+        "highlight_words": [
+          "entrenas"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_p2_chaleco"
+        ],
+        "ingredients": [
+          "plate_bellas_artes_interior",
+          "weapon"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_08",
+      "location_id": "bellas_artes",
+      "voiceover": {
+        "text": "[thoughtful] Entienden que necesitan un punto alto y fuerte para poder resistir de verdad.",
+        "tts_notes": "13 palabras (~2.2s). Plan: necesitan un bastion."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic skeleton, big brown eyes, thoughtful and determined), on the provided Bellas Artes interior plate: Huesito and a few adult survivors huddled over a hand-drawn map of Mexico City spread on a marble ledge, pointing at it; lantern light, serious planning mood. Camera: close over-the-shoulder on the map, pulling to Huesito's face. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito's bony finger taps a point on the hand-drawn CDMX map as the others lean in. SHOT: over-the-shoulder to his face. ANIMATE: finger tapping the map, adults nodding, lantern flicker, resolve. Keep Huesito EXACTLY as provided. Photoreal Bellas Artes."
+      },
+      "captions": {
+        "text": "Necesitan un bastión",
+        "highlight_words": [
+          "bastión"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_p2_chaleco"
+        ],
+        "ingredients": [
+          "plate_bellas_artes_interior"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_09",
+      "location_id": "chapultepec",
+      "voiceover": {
+        "text": "[determined] Eliges el Castillo de Chapultepec, donde alguna vez México ya se había defendido.",
+        "tts_notes": "13 palabras (~2.2s). Define el objetivo icónico."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic skeleton, big brown eyes, determined), on the provided Chapultepec exterior plate: Huesito and a few adult survivors at the edge of the forested park looking up at Chapultepec Castle on its hill, Huesito pointing toward it; overcast dramatic light, distant smoke. Camera: over-the-shoulder from behind them toward the castle. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito raises his arm to point up at Chapultepec Castle as the group follows his gaze. SHOT: over-the-shoulder toward the castle. ANIMATE: his arm rising to point, the others looking up, leaves and distant smoke drifting. Keep Huesito EXACTLY as provided. Photoreal Chapultepec."
+      },
+      "captions": {
+        "text": "Objetivo: Chapultepec",
+        "highlight_words": [
+          "Chapultepec"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_p2_chaleco"
+        ],
+        "ingredients": [
+          "plate_chapultepec_exterior"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_10",
+      "time_label": "Día 15",
+      "location_id": "calles_destruidas",
+      "voiceover": {
+        "text": "[tense] Día quince. Cruzan la ciudad entre muros de fuego, peleando calle por calle.",
+        "tts_notes": "13 palabras (~2.2s). 'Día quince' al inicio. Muros de fuego = tactica."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic skeleton, big brown eyes, intense) and the provided alien and the provided cyan weapon, on the provided destroyed-streets plate: Huesito leading a group of adult survivors down a ruined avenue, a WALL OF FIRE from molotovs holding back several advancing aliens while Huesito fires the cyan weapon to finish one (dissolving into cyan light), the Torre Latino faint in the smoky skyline. Camera: dynamic wide, Huesito mid-advance. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore/no blood, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): a wall of fire flares across the street holding the aliens back as Huesito fires the cyan weapon and one dissolves. SHOT: dynamic wide. ANIMATE: flames surging, aliens pushing through slowly, a cyan blast finishing one, adult survivors advancing. Keep Huesito, alien and weapon EXACTLY as provided. Photoreal ruined CDMX street. NO gore."
+      },
+      "captions": {
+        "text": "Pelean calle por calle",
+        "highlight_words": [
+          "calle"
+        ]
+      },
+      "edit_notes": "time_label 'Día 15' = pantalla negra 'Día 15' + narracion 'Día quince'.",
+      "references": {
+        "characters": [
+          "huesito_p2_chaleco"
+        ],
+        "ingredients": [
+          "plate_calles_destruidas",
+          "alien",
+          "weapon"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_11",
+      "location_id": "calles_destruidas",
+      "voiceover": {
+        "text": "[worried] La batalla es dura: caen aliens en destellos de luz, pero también pierdes gente.",
+        "tts_notes": "14 palabras (~2.3s). Costo de la batalla. SIN gore."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic skeleton, big brown eyes, anguished but fighting) and the provided alien and the provided cyan weapon, on the provided destroyed-streets plate: a chaotic firelit battle — Huesito firing the cyan weapon as aliens dissolve into cyan light, while behind him two adult survivors drag a fallen comrade back to safety (no blood, no gore), heavy smoke and embers. Camera: handheld in the thick of it. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore/no blood, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito fires as an alien dissolves, while behind him survivors drag a fallen comrade away. SHOT: handheld. ANIMATE: cyan blasts, aliens dissolving, comrades pulling the fallen one back, smoke and embers, Huesito's anguish. Keep Huesito, alien and weapon EXACTLY as provided. Photoreal ruined street. NO gore."
+      },
+      "captions": {
+        "text": "Hay pérdidas",
+        "highlight_words": [
+          "pérdidas"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_p2_chaleco"
+        ],
+        "ingredients": [
+          "plate_calles_destruidas",
+          "alien",
+          "weapon"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_12",
+      "location_id": "chapultepec",
+      "voiceover": {
+        "text": "[nervous] Llegan al castillo y suben la cuesta peleando, paso a paso hacia la cima.",
+        "tts_notes": "14 palabras (~2.3s). Suben Chapultepec peleando."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic skeleton, big brown eyes, straining) and the provided alien and the provided cyan weapon, on the provided Chapultepec exterior plate: Huesito and adult survivors pushing up the winding uphill ramp toward Chapultepec Castle, fighting off aliens with torches while Huesito finishes one with the cyan weapon (dissolving into cyan light), the stone ramparts looming above, dramatic light. Camera: low, looking up the ramp with Huesito leading. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito charges up the castle ramp leading the survivors as aliens flank them. SHOT: low, up the ramp. ANIMATE: the uphill push, torches swinging, an alien dissolving from a cyan shot, the castle looming above. Keep Huesito, alien and weapon EXACTLY as provided. Photoreal Chapultepec hill. NO gore."
+      },
+      "captions": {
+        "text": "Suben al castillo",
+        "highlight_words": [
+          "castillo"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_p2_chaleco"
+        ],
+        "ingredients": [
+          "plate_chapultepec_exterior",
+          "alien",
+          "weapon"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_13",
+      "time_label": "Día 30",
+      "location_id": "chapultepec_ramparts",
+      "voiceover": {
+        "text": "[triumphant] Día treinta. Toman Chapultepec y plantan una bandera mexicana hasta lo más alto.",
+        "tts_notes": "13 palabras (~2.2s). 'Día treinta' al inicio. Hito epico: la bandera."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic skeleton, big brown eyes, triumphant), on the provided Chapultepec ramparts plate: Huesito on the high stone ramparts raising and planting a Mexican flag on the flagpole, the vast city skyline behind under dramatic light, adult survivors cheering around him. Camera: heroic low angle, flag and Huesito against the sky. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito drives the Mexican flag into the rampart and it unfurls in the wind. SHOT: heroic low angle. ANIMATE: the flag catching wind and unfurling, adult survivors cheering, Huesito standing tall, dramatic sky. Keep Huesito EXACTLY as provided. Photoreal Chapultepec ramparts."
+      },
+      "captions": {
+        "text": "Toman Chapultepec",
+        "highlight_words": [
+          "Chapultepec"
+        ]
+      },
+      "edit_notes": "time_label 'Día 30' = pantalla negra 'Día 30' + narracion 'Día treinta'. A partir de aqui el outfit es huesito_p2_lider.",
+      "references": {
+        "characters": [
+          "huesito_p2_lider"
+        ],
+        "ingredients": [
+          "plate_chapultepec_ramparts"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_14",
+      "location_id": "chapultepec_ramparts",
+      "voiceover": {
+        "text": "[hopeful] Desde arriba ves cómo, al ondear la bandera, la ciudad entera empieza a unirse.",
+        "tts_notes": "14 palabras (~2.3s). La ciudad se levanta."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic skeleton, big brown eyes, hopeful), on the provided Chapultepec ramparts plate: Huesito at the stone balustrade looking out over Mexico City as, far below across the city (Paseo de la Reforma and distant Bellas Artes), small fires and lights of people rising up flicker on; the Mexican flag in frame. Camera: from behind Huesito over the city vista. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): from behind Huesito, lights and small fires of the rising city flicker on across the skyline. SHOT: behind him over the vista. ANIMATE: distant lights and fires appearing across the city, the flag waving, Huesito taking it in. Keep Huesito EXACTLY as provided. Photoreal Chapultepec city vista."
+      },
+      "captions": {
+        "text": "La ciudad se une",
+        "highlight_words": [
+          "ciudad"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_p2_lider"
+        ],
+        "ingredients": [
+          "plate_chapultepec_ramparts"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_15",
+      "location_id": "chapultepec_ramparts",
+      "voiceover": {
+        "text": "[proud] Conviertes el castillo en tu cuartel: por fin un lugar seguro y un símbolo.",
+        "tts_notes": "14 palabras (~2.3s). El castillo como cuartel/simbolo."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic skeleton, big brown eyes, proud and steady), on the provided Chapultepec ramparts plate: the castle turned into a resistance base — adult survivors setting up lookouts, stacking supplies and hanging banners along the ramparts, Huesito overseeing it all; warm late-afternoon light. Camera: slow wide across the busy ramparts to Huesito. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the bustling castle base — adults organizing lookouts and supplies as Huesito oversees. SHOT: slow wide to him. ANIMATE: people working, banners moving in the wind, Huesito surveying, warm light. Keep Huesito EXACTLY as provided. Photoreal Chapultepec ramparts. Only adults."
+      },
+      "captions": {
+        "text": "Tu cuartel",
+        "highlight_words": [
+          "cuartel"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_p2_lider"
+        ],
+        "ingredients": [
+          "plate_chapultepec_ramparts"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_16",
+      "location_id": "chapultepec",
+      "voiceover": {
+        "text": "[scared] Pero esa noche los aliens se reagrupan y rodean Chapultepec para recuperarlo.",
+        "tts_notes": "12 palabras (~2s). Giro: contraataque alien de noche."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic skeleton, big brown eyes, alarmed) and the provided alien, on the provided Chapultepec exterior plate: night, swarms of aliens massing and climbing the forested hill around Chapultepec Castle, their cyan head-slits glowing in the dark like points of light, Huesito on the rampart looking down in dread. Camera: high angle from the rampart over the swarming hill. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): countless cyan alien head-slits light up across the dark hillside as the swarm closes around the castle. SHOT: high angle down the hill. ANIMATE: glowing cyan slits multiplying in the dark, the swarm advancing uphill, Huesito's dread. Keep Huesito and the alien EXACTLY as provided. Photoreal night Chapultepec."
+      },
+      "captions": {
+        "text": "Los rodean de noche",
+        "highlight_words": [
+          "rodean"
+        ]
+      },
+      "references": {
+        "characters": [
+          "huesito_p2_lider"
+        ],
+        "ingredients": [
+          "plate_chapultepec_exterior",
+          "alien"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_17",
+      "time_label": "Día 45",
+      "location_id": "chapultepec_ramparts",
+      "voiceover": {
+        "text": "[tense] Día cuarenta y cinco. Preparas la defensa: fuego en las murallas y tu arma al frente.",
+        "tts_notes": "16 palabras (~2.7s). 'Día cuarenta y cinco' al inicio. Preparacion de la defensa."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic skeleton, big brown eyes, resolute) and the provided cyan weapon, on the provided Chapultepec ramparts plate: night defense prep — adult survivors lining the ramparts with rows of fire/torches and barricades, Huesito at the front raising the glowing cyan weapon to rally them; firelight against the stone. Camera: low rally shot on Huesito with the defenders behind. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito raises the glowing cyan weapon at the front of the rampart as defenders light a row of fires behind him. SHOT: low rally angle. ANIMATE: the weapon's cyan core flaring, fires igniting along the wall, defenders bracing, Huesito's resolve. Keep Huesito and weapon EXACTLY as provided. Photoreal night ramparts."
+      },
+      "captions": {
+        "text": "Preparan la defensa",
+        "highlight_words": [
+          "defensa"
+        ]
+      },
+      "edit_notes": "time_label 'Día 45' = pantalla negra 'Día 45' + narracion 'Día cuarenta y cinco'.",
+      "references": {
+        "characters": [
+          "huesito_p2_lider"
+        ],
+        "ingredients": [
+          "plate_chapultepec_ramparts",
+          "weapon"
+        ],
+        "scenes": []
+      }
+    },
+    {
+      "id": "p2_scene_18",
+      "location_id": "chapultepec_ramparts",
+      "voiceover": {
+        "text": "[tense] Lo lograste… [break] pero algo enorme se asoma en el cielo y cubre la ciudad. [long-break] [whispering] Lo que viene, en la Parte 3.",
+        "tts_notes": "Cliffhanger (~24 palabras + pausas, bajo el techo). [break] antes de la sombra, [long-break] y [whispering] al final. El gesto clave (Huesito voltea al horizonte) al inicio del clip."
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (semi-realistic skeleton, big brown eyes, awe and dread) and the provided mothership, on the provided Chapultepec ramparts plate: night, Huesito on the rampart turning toward the horizon where the colossal mothership emerges as a vast dark silhouette above the city, its cyan underbelly glow staining the clouds and dwarfing everything; the Mexican flag small in the foreground. Camera: from beside Huesito toward the immense shadow, then hold for the cliffhanger. Only adults. Hyperreal cinematic photography, Huesito a semi-realistic skeleton (NOT Pixar/cartoonish), NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the colossal mothership silhouette rises over the horizon, its cyan glow bleeding across the clouds, as Huesito turns to see it. SHOT: beside Huesito toward the shadow, then FREEZE. ANIMATE: the immense shape emerging, cyan glow spreading on the clouds, the flag fluttering, Huesito frozen in awe; hold the final frame. Keep Huesito and the mothership EXACTLY as provided. Photoreal night city. Freeze for cliffhanger."
+      },
+      "captions": {
+        "text": "¿Parte 3? Comenta 👇",
+        "highlight_words": [
+          "Parte",
+          "3"
+        ]
+      },
+      "edit_notes": "CLIFFHANGER con cierre dramatico ([break]/[long-break]/[whispering]). NO usar cartel 'Final'. Congelar el ultimo frame y montar texto grande '¿PARTE 3?'. La nodriza solo se INSINUA (sombra).",
+      "references": {
+        "characters": [
+          "huesito_p2_lider"
+        ],
+        "ingredients": [
+          "plate_chapultepec_ramparts",
+          "mothership"
+        ],
+        "scenes": []
+      }
+    }
+  ],
+  "capcut_export": {
+    "main_timeline_starts_after_hook": true,
+    "duration_note": "NO se fija duracion de clips: el editor mide cada mp3/mp4 con ffprobe y recorta el clip a la longitud de su narracion (~6 palabras/seg).",
+    "clip_order": [
+      "p2_scene_01",
+      "p2_scene_02",
+      "p2_scene_03",
+      "p2_scene_04",
+      "p2_scene_05",
+      "p2_scene_06",
+      "p2_scene_07",
+      "p2_scene_08",
+      "p2_scene_09",
+      "p2_scene_10",
+      "p2_scene_11",
+      "p2_scene_12",
+      "p2_scene_13",
+      "p2_scene_14",
+      "p2_scene_15",
+      "p2_scene_16",
+      "p2_scene_17",
+      "p2_scene_18"
+    ],
+    "title_cards": [
+      {
+        "scene_id": "p2_scene_06",
+        "text": "Día 7"
+      },
+      {
+        "scene_id": "p2_scene_10",
+        "text": "Día 15"
+      },
+      {
+        "scene_id": "p2_scene_13",
+        "text": "Día 30"
+      },
+      {
+        "scene_id": "p2_scene_17",
+        "text": "Día 45"
+      }
+    ],
+    "cliffhanger_card": {
+      "after_scene": "p2_scene_18",
+      "text": "¿PARTE 3?",
+      "style": "texto grande sobre frame congelado de la sombra colosal sobre la ciudad"
+    },
+    "caption_style": {
+      "font": "Montserrat ExtraBold",
+      "size": 72,
+      "position": "center_lower",
+      "style": "subtitulos grandes con palabras clave resaltadas en cian/blanco",
+      "max_words_on_screen": 5
+    },
+    "music_notes": "Sci-fi epico que respira: tension de escape (01-03), golpe al ver el fuego fallar y respiro heroico al rematar (04-05), tema de esperanza creciente con el reclutamiento y entrenamiento (06-08), percusion de marcha al elegir y cruzar la ciudad (09-12), climax orquestal con la bandera (13-14), tema calido en el cuartel (15), giro grave en el cerco nocturno (16), tambores de defensa (17) y corte en seco con acorde profundo en la sombra colosal (18).",
+    "sfx_notes": "Disparo de energia cian y alien desintegrandose (01,05,10,11,12). Pasos y respiracion en el tunel (02). Fuego/antorchas/molotov que NO basta (04). Multitud reuniendose (06). Viento y tela de la bandera (13-14). Zumbido grave y muchos pasos del enjambre (16). Fuego encendiendose en las murallas (17). Zumbido sub-grave creciente de la nave nodriza y silencio antes del corte (18). SIN sonidos de gore."
+  },
+  "tts_export": {
+    "full_script": "[tense] Estás rodeado, pero disparas tu arma y te abres paso entre los aliens. [nervous] Corres por las calles y bajas al metro para perderlos entre los túneles oscuros. [nervous] Sales del metro y te metes a Bellas Artes buscando un lugar seguro. [surprised] Adentro, otros sobrevivientes pelean con fuego, pero apenas logran frenar a un alien. [tense] Entras y lo rematas de un disparo; todos voltean a verte con esperanza. [hopeful] Día siete. Te volviste su esperanza, y llega gente desde Iztapalapa y Xochimilco. [serious] Los entrenas: el fuego para frenarlos, y tu arma para rematarlos de verdad. [thoughtful] Entienden que necesitan un punto alto y fuerte para poder resistir de verdad. [determined] Eliges el Castillo de Chapultepec, donde alguna vez México ya se había defendido. [tense] Día quince. Cruzan la ciudad entre muros de fuego, peleando calle por calle. [worried] La batalla es dura: caen aliens en destellos de luz, pero también pierdes gente. [nervous] Llegan al castillo y suben la cuesta peleando, paso a paso hacia la cima. [triumphant] Día treinta. Toman Chapultepec y plantan una bandera mexicana hasta lo más alto. [hopeful] Desde arriba ves cómo, al ondear la bandera, la ciudad entera empieza a unirse. [proud] Conviertes el castillo en tu cuartel: por fin un lugar seguro y un símbolo. [scared] Pero esa noche los aliens se reagrupan y rodean Chapultepec para recuperarlo. [tense] Día cuarenta y cinco. Preparas la defensa: fuego en las murallas y tu arma al frente. [tense] Lo lograste… [break] pero algo enorme se asoma en el cielo y cubre la ciudad. [long-break] [whispering] Lo que viene, en la Parte 3."
+  }
+}

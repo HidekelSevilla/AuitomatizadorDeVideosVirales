@@ -140,9 +140,19 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
     ? Math.round((props.capcut_export?.label_card_duration_s ?? CARD_SEC) * fps)
     : 0;
   const voiceRate = props.audio?.voice_rate ?? VOICE_RATE;
-  const defClip = props.project.default_clip_duration_s ?? 4;
-  const order = props.capcut_export?.clip_order ?? props.scenes.map((s) => s.id);
-  const byId = Object.fromEntries(props.scenes.map((s) => [s.id, s]));
+  const defClip = props.project.default_clip_duration_s ?? props.project.grok_clip_seconds ?? 4;
+  // opening (novela-coreana): sus escenas van PRIMERO, en orden de array; luego scenes por clip_order.
+  // Sin opening (esqueletos/frutinovelas) -> order y byId quedan identicos al flujo de hoy.
+  const openingScenes = props.opening?.scenes ?? [];
+  // Opening compartido por serie: sus medios viven en public/<assets_slug>/ (fallback: el slug del proyecto).
+  const openingSlug = props.opening?.assets_slug ?? slug;
+  const openingIds = new Set(openingScenes.map((s) => s.id));
+  const baseFor = (id: string): string => (openingIds.has(id) ? openingSlug : slug);
+  const order = [
+    ...openingScenes.map((s) => s.id),
+    ...(props.capcut_export?.clip_order ?? props.scenes.map((s) => s.id)),
+  ];
+  const byId = Object.fromEntries([...openingScenes, ...props.scenes].map((s) => [s.id, s]));
 
   const scenes = [] as ComputedTimeline["scenes"];
   for (const id of order) {
@@ -163,13 +173,13 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
     let introFrames = sc?.intro_card ? baseCard : 0;
     if (sc?.intro_card && sc?.intro_card_voice) {
       try {
-        const introSec = await getAudioDurationInSeconds(staticFile(`${slug}/voice/${sc.intro_card_voice}`));
+        const introSec = await getAudioDurationInSeconds(staticFile(`${baseFor(id)}/voice/${sc.intro_card_voice}`));
         if (introSec > 0) introFrames = Math.round((introSec / voiceRate + 0.3) * fps);
       } catch { /* sin voz: usa baseCard (silencioso) */ }
     }
     let voiceSec = defClip;
     try {
-      voiceSec = await getAudioDurationInSeconds(staticFile(`${slug}/voice/${id}.mp3`));
+      voiceSec = await getAudioDurationInSeconds(staticFile(`${baseFor(id)}/voice/${id}.mp3`));
     } catch {
       voiceSec = defClip;
     }
@@ -178,7 +188,10 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
     const sceneFrames = introFrames + contentFrames;
     const clipWindow = contentFrames - cardFrames;
     const clipDur = byId[id]?.timeline?.clip_duration_s ?? defClip;
-    const playbackRate = Math.max(0.5, Math.min(1, (clipDur * fps) / clipWindow));
+    // novela-coreana: clips ~10s (mas largos que la voz) -> permitir acelerar (techo 1.3x) para mostrar
+    // el clip completo sin truncarlo. Otros presets: techo 1 (solo camara lenta), comportamiento intacto.
+    const rateCeiling = props.project.preset === "novela-coreana" ? 1.3 : 1;
+    const playbackRate = Math.max(0.5, Math.min(rateCeiling, (clipDur * fps) / clipWindow));
     scenes.push({ id, cardFrames, sceneFrames, clipWindow, playbackRate, introFrames });
   }
 
@@ -397,9 +410,10 @@ const Scene: React.FC<{
   scene: SceneData;
   timing: ComputedTimeline["scenes"][number];
   preset: Preset;
-}> = ({ props, scene, timing, preset }) => {
+  assetSlug: string; // base de medios (clips/voz) de ESTA escena: opening compartido o slug del proyecto
+}> = ({ props, scene, timing, preset, assetSlug }) => {
   const { fps } = useVideoConfig();
-  const slug = getSlug(props);
+  const slug = assetSlug;
   const clipVol = props.audio?.clip_volume ?? CLIP_VOL;
   const voiceRate = props.audio?.voice_rate ?? VOICE_RATE;
   const sceneSfx = props.audio?.scene_sfx ?? SCENE_SFX;
@@ -481,9 +495,15 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
   const t = props._timeline!;
   const slug = getSlug(props);
   const preset = getPreset(props.project.preset);
+  // Opening compartido: sus escenas leen medios de public/<assets_slug>/ (fallback: slug del proyecto).
+  const openingSlug = props.opening?.assets_slug ?? slug;
+  const openingIds = useMemo(
+    () => new Set((props.opening?.scenes ?? []).map((s) => s.id)),
+    [props.opening]
+  );
   const byId = useMemo(
-    () => Object.fromEntries(props.scenes.map((s) => [s.id, s])),
-    [props.scenes]
+    () => Object.fromEntries([...(props.opening?.scenes ?? []), ...props.scenes].map((s) => [s.id, s])),
+    [props.opening, props.scenes]
   );
 
   let from = t.hookFrames;
@@ -499,8 +519,13 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
         // Musica de fondo: la del proyecto si la trae; si no, la COMPARTIDA por defecto. Loop para cubrir
         // todo el video. Volumen FIJO 0.25 siempre (el usuario lo quiere asi); music_volume=0 sigue silenciando.
         const ownMusic = props.audio?.music_file;
+        // novela-coreana: SIN musica por defecto (la pista generica compartida no le queda; ya lleva voz).
+        // Solo suena si el JSON trae su propio audio.music_file. Otros presets: comportamiento intacto.
+        const isNovela = props.project.preset === "novela-coreana";
+        const muted = props.audio?.music_volume === 0 || (isNovela && !ownMusic);
+        if (muted && !ownMusic) return null; // nada de musica -> ni cargar el default
         const src = ownMusic ? staticFile(`${slug}/${ownMusic}`) : staticFile(DEFAULT_MUSIC);
-        const vol = props.audio?.music_volume === 0 ? 0 : DEFAULT_MUSIC_VOL;
+        const vol = muted ? 0 : DEFAULT_MUSIC_VOL;
         return <Audio src={src} volume={vol} loop />;
       })()}
 
@@ -515,7 +540,13 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
         if (!scene) return null;
         return (
           <Sequence key={st.id} from={at} durationInFrames={st.sceneFrames}>
-            <Scene props={props} scene={scene} timing={st} preset={preset} />
+            <Scene
+              props={props}
+              scene={scene}
+              timing={st}
+              preset={preset}
+              assetSlug={openingIds.has(st.id) ? openingSlug : slug}
+            />
           </Sequence>
         );
       })}

@@ -70,6 +70,12 @@ function inspect(job) {
     need.push(path.join(base, "clips", `${id}.mp4`));
     need.push(path.join(base, "voice", `${id}.mp3`));
   }
+  // opening: medios en public/<assets_slug>/ (fallback: la carpeta del proyecto). Pre-generado y reusable.
+  const openingBase = p.opening?.assets_slug ? path.join(PUBLIC, p.opening.assets_slug) : base;
+  for (const s of p.opening?.scenes || []) {
+    need.push(path.join(openingBase, "clips", `${s.id}.mp4`));
+    need.push(path.join(openingBase, "voice", `${s.id}.mp3`));
+  }
   if (p.hook) need.push(path.join(base, "voice", "hook.mp3"));
   if (p.audio?.music_file) need.push(path.join(base, p.audio.music_file));
   if (p.audio?.transition_sfx) need.push(path.join(PUBLIC, "sfx", p.audio.transition_sfx));
@@ -106,15 +112,19 @@ function syncClipDurations(job, slug) {
   try { p = JSON.parse(fs.readFileSync(job.jsonPath, "utf8").replace(/^﻿/, "")); } catch { return; }
   const base = path.join(PUBLIC, slug, "clips");
   let changed = false;
-  for (const s of p.scenes || []) {
-    const clip = path.join(base, `${s.id}.mp4`);
-    if (!fs.existsSync(clip)) continue;
+  const probe = (s, clipsDir) => {
+    const clip = path.join(clipsDir, `${s.id}.mp4`);
+    if (!fs.existsSync(clip)) return;
     const r = spawnSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${clip}"`, { encoding: "utf8", shell: true });
     const dur = Math.round(parseFloat((r.stdout || "").trim()) * 100) / 100;
-    if (!isFinite(dur) || dur <= 0) continue;
+    if (!isFinite(dur) || dur <= 0) return;
     s.timeline = s.timeline || {};
     if (s.timeline.clip_duration_s !== dur) { s.timeline.clip_duration_s = dur; changed = true; }
-  }
+  };
+  for (const s of p.scenes || []) probe(s, base);
+  // opening: clips en public/<assets_slug>/clips/ (fallback: la carpeta del proyecto). Mismo ajuste por ffprobe.
+  const openingClips = p.opening?.assets_slug ? path.join(PUBLIC, p.opening.assets_slug, "clips") : base;
+  for (const s of p.opening?.scenes || []) probe(s, openingClips);
   if (changed) fs.writeFileSync(job.jsonPath, JSON.stringify(p, null, 2), "utf8");
 }
 

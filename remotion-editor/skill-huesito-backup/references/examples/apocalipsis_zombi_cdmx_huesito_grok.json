@@ -1,0 +1,611 @@
+{
+  "project": {
+    "title": "Apocalipsis Zombi en la CDMX — De un Taco al Fin del Mundo",
+    "preset": "esqueletos",
+    "slug": "apocalipsis_zombi_cdmx_huesito_grok",
+    "language": "es-MX",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "tone": "Survival/épico con humor hiperlocal chilango, POV en 2ª persona, tenso y cinematográfico. Sin gore (mordidas por contacto, sin sangre). Autoconclusivo (sin cliffhanger). Travesía por la CDMX hasta Xochimilco; los infectados no cruzan el agua.",
+    "render_notes": "Esqueleto Huesito semi-realista (hueso marfil texturizado con grietas finas, grandes ojos café redondos y expresivos, alto y esbelto), NUNCA estilo Pixar/cartoon/clínico. Solo adultos en pantalla, sin menores. Los INGREDIENTES son la fuente: ultra-detallados. Los image_prompt/animation_prompt COMPLEMENTAN (nombran los ingredientes con 'the provided…', cámara propia distinta por escena, KEY ACTION en los primeros 2s) y NO repiten outfit ni ficha. Huesito se ve cada vez más sucio/roto conforme avanza la noche. Sin sangre ni heridas (la salsa roja es chile, NO sangre). Gente mexicana diversa (piel morena, cabello negro, mezcla popular + moderna). Landmarks CDMX reales (Centro/Catedral, Reforma/Ángel, Metro, Polanco, Tepito, Iztapalapa, tianguis, Xochimilco). Sin marcas/logos reales. Cierre cerrado + ending_card comment-bait.",
+    "series": "Huesito · ¿Qué pasaría si…? (autoconclusivo)"
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok",
+      "clip_style": "clips de ~6s"
+    },
+    "tts": {
+      "tool": "fish_audio",
+      "language": "es-MX",
+      "emotion_syntax": "S2=[brackets]"
+    },
+    "editing": {
+      "tool": "capcut"
+    }
+  },
+  "characters": {
+    "huesito": {
+      "reference_asset": "assets/characters/huesito_ref.png",
+      "description": "Esqueleto semi-realista, cráneo de hueso marfil envejecido y texturizado con poros y grietas finas, dientes anatómicamente creíbles, grandes ojos redondos color café muy vivos y expresivos, complexión alta y esbelta. Sobreactúa cada emoción. Personaje base pre-existente: NO se genera, solo se usa como referencia."
+    }
+  },
+  "ingredients": [
+    {
+      "type": "character_edited",
+      "id": "huesito_survivor",
+      "base": "huesito",
+      "edit_prompt": "Dress the provided base skeleton as a Mexico City street survivor. Outfit, described exactly: a heather grey-marl cotton-fleece pullover hoodie, hood down, with a kangaroo front pocket, ribbed cuffs and a ribbed hem slightly frayed, one drawstring missing; underneath, a thin washed-black crew-neck cotton t-shirt with faint wash creases; dark olive-grey ripstop cargo pants with two bulging thigh cargo pockets (one with a velcro flap), reinforced knees, and a worn woven-canvas belt with a scratched matte-black buckle; scuffed charcoal canvas high-top sneakers with cracked off-white rubber soles, frayed laces and dust on the toes; a small army-green canvas crossbody sling-bag across the chest with a zip top, a buckled flap and a short strap. All fabric matte and lived-in, cotton/fleece and ripstop textures, muted colors, no logos and no prints. Plain neutral light-grey studio background, soft even three-point lighting, full body, front 3/4 view. Keep the EXACT ivory textured skull with fine cracks, the big round expressive brown eyes and the tall slim proportions of the provided base. No scene, no text, nothing held in the hands.",
+      "output_file": "ingredients/huesito_survivor.png"
+    },
+    {
+      "type": "entity",
+      "id": "salsa_bottle",
+      "generation_prompt": "A single glass hot-sauce bottle used as an improvised weapon. Described exactly: a clear cylindrical 200 ml glass bottle, slightly greasy, filled with a thick blood-red-and-orange chile salsa with visible flecks of toasted chile seeds, bits of charred chile skin and tiny garlic pieces suspended in it; a dented silver metal screw cap; a half-peeled strip of masking tape on the side hand-marked only with little drawn flame doodles (no brand, no readable letters); a few dried salsa drips down one side. Photoreal product shot, plain neutral mid-grey background, soft directional lighting, centered, full object, razor-sharp detail. No readable text, no logo, no brand.",
+      "output_file": "ingredients/salsa_bottle.png"
+    },
+    {
+      "type": "entity",
+      "id": "zombie_std",
+      "generation_prompt": "A group of four infected humans, modern Mexican adults of mixed ages and builds, in aggressive hunched stances. Skin ashen grey-green and waxy with a dull sheen; dark purple-blue veins bulge across the face, temples, neck and the backs of the hands; eyes fully clouded milky-white with no iris and a faint grey film; lips cracked, dry and parted, jaws slack, a thin string of grey saliva; hair greasy, matted and dull. They wear torn, dust- and dirt-stained everyday Mexican street clothes — a ripped maroon zip hoodie, a grimy blue plaid work shirt with a missing button, faded bootcut jeans worn through at one knee, a stained beige delivery-driver polo, scuffed sneakers and one lost shoe. Limbs stiff and twisted, fingers curled like claws, shoulders uneven, heads tilted at unnatural angles, caught mid-twitch. ABSOLUTELY no blood, no wounds, no gore — only ashen pallor, bulging veins and skin decay. Plain neutral dark-grey background, cold desaturated lighting, full body. Only adults.",
+      "output_file": "ingredients/zombie_std.png"
+    },
+    {
+      "type": "entity",
+      "id": "zombie_mutant",
+      "generation_prompt": "A single colossal mutated infected, about three metres tall, hulking and broad. Same ashen grey-green waxy skin and fully clouded milky-white eyes as the standard infected, but grotesquely overgrown: thick knotted deformed musculature under taut skin, an asymmetrical hunched back, a swollen ribcage, elongated heavy arms reaching past the knees with oversized clawed hands, and jagged off-white bone plates erupting through the skin over the shoulders, forearms, spine and brow like natural armour. The burst seams of an enormous tattered dark-grey hoodie and ripped jeans hang off the frame. The jaw is a wide slack maw with blunt, uneven teeth; thick dark veins map the torso. Primal, threatening stance, head lowered, fists clenched. ABSOLUTELY no blood, no open wounds, no gore — the menace is scale, deformity and the bone plates. Plain neutral dark-grey background, dramatic low cold rim lighting, full body. Adult creature.",
+      "output_file": "ingredients/zombie_mutant.png"
+    },
+    {
+      "type": "entity",
+      "id": "luchador",
+      "generation_prompt": "A single Mexican lucha libre wrestler, an adult man with a heroic athletic build and brown skin, photoreal. Described exactly: a full-head silver-and-emerald-green lucha mask with a pointed crest, scalloped eye and mouth openings trimmed in gold lamé, a lightning-bolt appliqué across the forehead, laced up the back; a matching emerald-green spandex singlet with silver side panels and gold piping; a wide black-and-gold championship-style belt (generic, no emblem, no letters); emerald wrist tape; and silver-and-green calf-high lace-up wrestling boots with gold accents. Confident wide stance, fists raised. Plain neutral mid-grey background, soft dramatic lighting, full body, front view. No brand, no logo, no readable text, not based on any real wrestler. Adult.",
+      "output_file": "ingredients/luchador.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_taqueria",
+      "generation_prompt": "Interior of a small, grimy hole-in-the-wall Mexico City taquería at night. A long worn stainless-steel counter, slightly greasy, with a vertical al-pastor trompo of stacked marinated pork glistening under a gas flame and a pineapple crowning it; stacked plastic plates, red and green squeeze salsa bottles, a tall stack of napkins, lime halves and a scarred chopping board. Behind it a tiled wall with a hand-painted illegible menu board, a flickering fluorescent tube and a single bare warm bulb, a small grease-stained fan, plastic stools, and a fogged window glowing with red neon from the street. Steam in the air, warm greasy tungsten light, deep night shadows. Empty staging area, no main characters, photorealistic interior, medium composition. No readable text, no logos.",
+      "output_file": "ingredients/plate_taqueria.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_polanco",
+      "generation_prompt": "An upscale Polanco avenue in Mexico City, deserted and uneasy at midday. A wide clean sidewalk lined with glossy glass-front designer boutiques, polished marble facades, manicured trees in concrete planters, valet stands, and parked luxury SUVs and sports cars now stalled with doors hanging open. Bright overcast daylight, cold modern reflections in the glass. Affluent, sterile atmosphere turning ominous. Empty staging area, no main characters, photorealistic, medium-wide composition. No readable brand names, no logos, no text.",
+      "output_file": "ingredients/plate_polanco.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_tepito",
+      "generation_prompt": "A dense Tepito market street in Mexico City, chaotic and barricaded. A narrow street crammed with tarp-covered market stalls, hanging goods, tangled electrical cables, graffiti-covered metal shutters, and stacked crates and merchandise piled up as improvised barricades; vivid blue and orange tarps strung overhead. Harsh flat daylight, gritty urban texture. Tense, defiant atmosphere. Empty staging area, no main characters, photorealistic, low-wide composition. No readable brand names, no logos, no text.",
+      "output_file": "ingredients/plate_tepito.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_iztapalapa",
+      "generation_prompt": "A dense hillside colonia in Iztapalapa, Mexico City. Tightly packed unfinished concrete-block houses in faded pinks, blues and ochres stacked up a steep slope, exposed rebar on rooftops, black water tanks, a tangle of overhead wires, narrow stepped streets and painted murals on the walls. Flat grey overcast daylight. Working-class, sprawling, embattled atmosphere. Empty staging area, no main characters, photorealistic, wide composition. No readable text, no logos.",
+      "output_file": "ingredients/plate_iztapalapa.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_azotea_noche",
+      "generation_prompt": "A Mexico City rooftop at night overlooking a vast dark skyline. The foreground rooftop has black water tanks (tinacos), antennas, laundry lines and a low parapet; beyond stretches an endless sea of low buildings under a moonlit sky smudged with a few distant orange fires and thin columns of smoke, the silhouette of the Torre Latinoamericana far off. Cold blue moonlight with an orange fire glow on the horizon. Tense, desolate-but-hopeful mood. Empty staging area, no main characters, photorealistic, wide composition. No text.",
+      "output_file": "ingredients/plate_azotea_noche.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_metro",
+      "generation_prompt": "Interior of a Mexico City Metro station platform leading into a dark tunnel. Worn tiled walls in a bold solid color with the iconic simple metro signage and a generic station pictogram (no readable names), a long concrete platform edge, dead escalators, scattered litter, a stalled train half inside the tunnel, flickering emergency strip-lights, and a black tunnel mouth dripping water. Cold green-blue underground light, deep shadows. Eerie, abandoned. Empty staging area, no main characters, photorealistic, deep-perspective composition. No readable text, no logos.",
+      "output_file": "ingredients/plate_metro.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_reforma",
+      "generation_prompt": "Paseo de la Reforma in Mexico City, completely deserted and post-apocalyptic. The Ángel de la Independencia — a tall stone column topped by a golden winged Victory statue — stands hazy in the middle distance. The multi-lane avenue is choked with abandoned crashed cars at angles with doors open, a tipped green microbus on the curb, scattered debris and drifting paper, a dead traffic light. Overcast grey sky, cold flat desaturated light, heavy haze and silence. Empty foreground, no main characters, wide cinematic composition, photorealistic. No text.",
+      "output_file": "ingredients/plate_reforma.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_tianguis",
+      "generation_prompt": "An abandoned Mexican street tianguis (open-air market) just after a fight. A long street lined with collapsed and overturned market stalls, sagging and torn plastic tarps in faded colors, scattered produce — chiles, tomatoes, oranges — rolling on the ground, dropped chanclas, broom-sticks, a fallen round comal griddle, tipped buckets and crates. Dusty amber light filtering through torn tarps, deep shadows. Eerie, recently-violent stillness. Empty staging area, no main characters, photorealistic, deep-perspective composition. No readable text, no logos.",
+      "output_file": "ingredients/plate_tianguis.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_centro",
+      "generation_prompt": "A Mexico City Centro Histórico street at dusk with the Metropolitan Cathedral. A long stone-paved street lined with old colonial buildings, wrought-iron balconies and shuttered shopfronts, leading toward the baroque twin bell towers and central dome of the Metropolitan Cathedral rising against the sky. Tangled cables overhead, faded signage, abandoned market stalls. Long amber-grey dusk shadows, deep perspective. Tense, empty corridor of a street. Empty staging area, no main characters, photorealistic, wide cinematic composition. No readable text, no logos.",
+      "output_file": "ingredients/plate_centro.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_callejon",
+      "generation_prompt": "A tight dead-end alley in Mexico City's Centro Histórico at dusk. Walls of dark volcanic tezontle stone and weathered colonial brick rise on both sides; a high blank wall seals the far end. Rusted drainpipes, a battered metal dumpster, stacked wooden crates, faded graffiti, and a single dim caged wall-light. Deep cold blue dusk shadows, claustrophobic and ominous, with faint light from above. Empty staging area, no main characters, photorealistic, vertical-friendly composition. No readable text, no logos.",
+      "output_file": "ingredients/plate_callejon.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_embarcadero",
+      "generation_prompt": "A Xochimilco embarcadero (boat landing) in Mexico City at early dawn. A weathered wooden dock and ramp at the edge of a wide green canal, a row of brightly painted trajinera boats with tall arched wooden canopies (painted flowers, vivid reds, blues and yellows) moored side by side, mooring posts, coiled ropes, and reeds along the bank. Cool blue pre-dawn light, low mist rising off the still water. Quiet, hopeful, liminal. Empty staging area, no main characters, photorealistic, wide composition. No readable text, no logos.",
+      "output_file": "ingredients/plate_embarcadero.png"
+    },
+    {
+      "type": "location_plate",
+      "id": "plate_canal",
+      "generation_prompt": "A wide Xochimilco canal in Mexico City at golden dawn. Calm flat green water flanked by reed-lined banks and floating gardens (chinampas), a few brightly painted trajinera boats with arched flowered canopies drifting, distant city haze low on the horizon. Warm golden mist glowing over the still water, soft reflections and gentle ripples. Serene, hopeful, breathtaking. Empty staging area, no main characters, photorealistic, wide cinematic composition. No readable text, no logos.",
+      "output_file": "ingredients/plate_canal.png"
+    }
+  ],
+  "hook": {
+    "voiceover": {
+      "text": "[curious] ¿Qué pasaría si el apocalipsis zombi empezara… por un taco mal servido en plena CDMX?"
+    },
+    "captions": {
+      "text": "¿Y si el apocalipsis empezara por un taco?"
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "references": {
+        "characters": [
+          "huesito_survivor"
+        ],
+        "ingredients": [
+          "plate_taqueria"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito survivor inside the provided grimy taquería at night: KEY camera = a medium two-shot from the side of the taco counter. In the foreground a sweaty adult Mexican man (brown skin, dark hair, plain work shirt) hunches over the steel counter devouring a plate of tacos al pastor with salsa dripping; behind the counter the taquero (diverse adult in an apron) shaves meat off the glistening pastor trompo under the bare bulb. The provided Huesito stands a couple of stools away, relaxed, watching with a faint curious tilt of the skull. Warm greasy tungsten light, steam, red neon glow from the window, a few diverse Mexican adults at other stools. Semi-realistic skeleton (NOT Pixar/cartoonish), humans realistic, only adults, no minors, NO gore, 9:16 vertical, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the eating man crams another whole taco into his mouth as steam rises off the trompo. SHOT: slow side dolly along the counter. ANIMATE: trompo turning, meat shaved, steam and neon flicker, Huesito glances over. Keep the provided Huesito and taquería EXACTLY as provided; humans realistic, ~6s."
+      },
+      "voiceover": {
+        "text": "Esa noche, en una taquería medio sucia del Centro, un cuate se atascaba de tacos al pastor sin imaginar nada."
+      },
+      "captions": {
+        "text": "Esa noche, una taquería medio sucia…"
+      },
+      "time_label": "Esa noche"
+    },
+    {
+      "id": "scene_02",
+      "references": {
+        "characters": [
+          "huesito_survivor"
+        ],
+        "ingredients": [
+          "plate_taqueria",
+          "zombie_std"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito and one of the provided infected (the freshest, least decayed one) inside the provided taquería: KEY camera = a tight handheld over-the-counter shot. The man freezes mid-bite, drops the taco, trembles and sweats as his eyes film over milky-white; in a sudden jerk he lunges across the counter and clamps onto the taquero's forearm (contact only, no blood). The provided Huesito recoils on his stool, eye sockets wide with shock. Harsh tungsten light, steam, diverse adult patrons starting to panic. Semi-realistic skeleton (NOT Pixar), humans realistic, only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the man's eyes turn milky-white and he convulses. SHOT: tight handheld push-in over the counter. ANIMATE: the tremor, the lunge and the bite (no blood), the taquero recoils, Huesito jolts back. Keep the provided Huesito and infected EXACTLY as provided; ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "De repente empezó a sudar frío, a temblar, se le pusieron los ojos blancos… y de un tirón mordió al taquero."
+      },
+      "captions": {
+        "text": "Empezó a temblar… y mordió al taquero."
+      }
+    },
+    {
+      "id": "scene_03",
+      "references": {
+        "characters": [
+          "huesito_survivor"
+        ],
+        "ingredients": [
+          "plate_taqueria",
+          "zombie_std",
+          "salsa_bottle"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito, two of the provided infected and the provided salsa bottle inside the provided taquería: KEY camera = a low wide action shot angled toward the doorway. Both infected (the turned man and the bitten taquero) lunge at the screaming diverse adult patrons as plastic chairs topple; the provided Huesito snatches the provided salsa bottle off the counter and bolts toward the door, glancing back over his shoulder. Spilled drinks, the bulb flickering, total chaos. Semi-realistic skeleton (NOT Pixar), humans realistic, only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito grabs the provided salsa bottle off the counter. SHOT: low wide tracking toward the door. ANIMATE: the infected lunge, patrons scatter, chairs fall, Huesito sprints out clutching the bottle. Keep the provided Huesito, infected and salsa bottle EXACTLY as provided; ~6s."
+      },
+      "voiceover": {
+        "text": "En segundos los dos se lanzaron contra la banda; agarras la botella de salsa más brava que ves y sales corriendo."
+      },
+      "captions": {
+        "text": "¡Agarras la salsa y corres!"
+      }
+    },
+    {
+      "id": "scene_04",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "plate_polanco",
+          "zombie_std"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using several of the provided infected on the provided Polanco avenue: KEY camera = an ironic medium shot. On the upscale deserted avenue, a few fashionable affluent adults (diverse, modern designer outfits, sunglasses) hold up their phones to film the approaching infected instead of running; one of the provided infected lunges into the edge of the frame. Bright overcast daylight, glass boutiques, stalled luxury cars. NO skeleton in this shot. Diverse Mexican adults, modern affluent style. Humans realistic, only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): a fashionable adult raises a phone to film as an infected lunges right behind them. SHOT: ironic slow push-in. ANIMATE: phones up, the infected charges, the filmers finally flinch and scatter. Keep the provided infected EXACTLY as provided; humans realistic, ~6s."
+      },
+      "voiceover": {
+        "text": "Para cuando reaccionas, la infección ya se regó: en Polanco los fresas la grababan con el cel en vez de correr."
+      },
+      "captions": {
+        "text": "En Polanco la grababan con el cel."
+      }
+    },
+    {
+      "id": "scene_05",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "plate_tepito",
+          "zombie_std"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using several of the provided infected on the provided Tepito market street: KEY camera = a gritty low wide shot. Working-class diverse Mexican adults barricade the tarp-covered alley with stacked merchandise, metal pipes, baseball bats and improvised shields, standing their ground as the provided infected mass at the mouth of the street. Hanging goods, vivid tarps, harsh daylight. NO skeleton. Everyday working-class style, brown skin, dark hair. Humans realistic, only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): a defender swings a metal pipe at a lunging infected at the barricade. SHOT: gritty handheld wide. ANIMATE: defenders brace and swing, the infected press the barricade, tarps flap. Keep the provided infected EXACTLY as provided; humans realistic, ~6s."
+      },
+      "voiceover": {
+        "text": "En Tepito se armaron en un parpadeo; entre tianguis y fierros, ni los zombis se atrevían a meterse al barrio."
+      },
+      "captions": {
+        "text": "En Tepito ni los zombis se metían."
+      }
+    },
+    {
+      "id": "scene_06",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "plate_iztapalapa",
+          "zombie_std"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using several of the provided infected on the provided Iztapalapa hillside colonia: KEY camera = an energetic medium shot up the slope. Diverse working-class Mexican adults defend the stacked concrete houses, swinging round comal griddles, brooms and sticks at the infected; some fall back as the horde overwhelms the narrow stepped street. Flat grey daylight, painted facades, tangled wires. NO skeleton. Everyday popular style, brown skin, dark hair. Humans realistic, only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): a defender slams a round comal griddle into a charging infected. SHOT: energetic handheld up the slope. ANIMATE: comales and brooms swing, the horde surges, defenders retreat uphill. Keep the provided infected EXACTLY as provided; humans realistic, ~6s."
+      },
+      "voiceover": {
+        "text": "Iztapalapa resistió a comalazo limpio, con escobas y palos, pero eran demasiados y poco a poco toda la ciudad fue cayendo."
+      },
+      "captions": {
+        "text": "Iztapalapa resistió a comalazos."
+      }
+    },
+    {
+      "id": "scene_07",
+      "references": {
+        "characters": [
+          "huesito_survivor"
+        ],
+        "ingredients": [
+          "plate_azotea_noche"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (now slightly dustier and scuffed from running) on the provided night rooftop: KEY camera = a quiet medium two-shot at the parapet. The provided Huesito crouches at the rooftop edge beside one exhausted adult survivor (diverse, brown skin) who points south across the dark, fire-flecked skyline toward distant water. The Torre Latino glows faintly far off; thin smoke columns, cold moonlight with an orange fire glow. Tense, hopeful mood. Semi-realistic skeleton (NOT Pixar), humans realistic, only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the survivor points south toward the distant canals and Huesito follows the gesture. SHOT: slow push-in over the parapet. ANIMATE: distant fire flicker, smoke drift, Huesito's big eyes light up with hope. Keep the provided Huesito EXACTLY as provided; humans realistic, ~6s."
+      },
+      "voiceover": {
+        "text": "[hopeful] Desde una azotea escuchas el único rumor que da esperanza: en Xochimilco están a salvo, porque los zombis no cruzan el agua."
+      },
+      "captions": {
+        "text": "Xochimilco es seguro: no cruzan el agua."
+      }
+    },
+    {
+      "id": "scene_08",
+      "references": {
+        "characters": [
+          "huesito_survivor"
+        ],
+        "ingredients": [
+          "plate_metro",
+          "zombie_std"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (dustier, scuffed) and a couple of the provided infected on the provided Metro platform/tunnel: KEY camera = a moody low tracking shot down the platform into the dark tunnel. The provided Huesito steps off the stairs onto the tiled platform and slips toward the black tunnel mouth, hugging the wall and clutching his sling-bag strap, the iconic Metro signage and tilework around him; a couple of the provided infected lurk in the far shadows. Flickering emergency lights, dripping water, cold green-blue underground light. Semi-realistic skeleton (NOT Pixar), only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito steps onto the dim platform and freezes, scanning the tunnel. SHOT: low tracking toward the tunnel mouth. ANIMATE: lights flicker, water drips, distant infected sway, Huesito creeps forward. Keep the provided Huesito and infected EXACTLY as provided; ~6s."
+      },
+      "voiceover": {
+        "text": "Así que decides cruzar media ciudad hasta los canales, y para avanzar sin que te vean, te metes al Metro."
+      },
+      "captions": {
+        "text": "Cruzas la ciudad por el Metro."
+      }
+    },
+    {
+      "id": "scene_09",
+      "references": {
+        "characters": [
+          "huesito_survivor"
+        ],
+        "ingredients": [
+          "plate_reforma",
+          "zombie_std"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (dustier) and a few of the provided infected on the provided deserted Reforma avenue: KEY camera = a lonely wide establishing shot with a slow crane. The provided Huesito emerges from a Metro stair into the empty avenue; the Ángel de la Independencia stands hazy behind him; abandoned crashed cars, a tipped green microbus and drifting paper around him; a few of the provided infected wander far off, unaware. Cold overcast grey light, eerie silence. Semi-realistic skeleton (NOT Pixar), humans realistic, only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito steps up out of the Metro stair into the empty avenue and stops dead, the Ángel behind him. SHOT: slow craning wide reveal. ANIMATE: paper drifts, distant infected sway, Huesito scans warily. Keep the provided Huesito and infected EXACTLY as provided; ~6s."
+      },
+      "voiceover": {
+        "text": "Sales a Paseo de la Reforma y el Ángel te recibe rodeado de coches muertos, basura volando y zombis vagando en silencio."
+      },
+      "captions": {
+        "text": "Reforma vacía, el Ángel en silencio."
+      }
+    },
+    {
+      "id": "scene_10",
+      "references": {
+        "characters": [
+          "huesito_survivor"
+        ],
+        "ingredients": [
+          "plate_tianguis",
+          "zombie_std"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (dustier, a small tear) and a few of the provided infected on the provided abandoned tianguis street: KEY camera = a tracking shot weaving through the stalls. The provided Huesito creeps through the deserted street market littered with overturned stalls, scattered produce, fallen tarps, dropped chanclas, broom-sticks and a fallen comal from an earlier fight; a few of the provided infected shuffle between the stands. Dusty amber light through torn tarps. Semi-realistic skeleton (NOT Pixar), humans realistic, only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito ducks under a sagging market tarp past a toppled stall. SHOT: weaving tracking shot through the stalls. ANIMATE: tarps flap, produce rolls, infected shuffle, Huesito sneaks low. Keep the provided Huesito and infected EXACTLY as provided; ~6s."
+      },
+      "voiceover": {
+        "text": "Cruzas un tianguis abandonado donde la gente peleó con lo que tenía: chanclas, palos de escoba y comales todavía tirados."
+      },
+      "captions": {
+        "text": "Un tianguis donde ya se peleó."
+      }
+    },
+    {
+      "id": "scene_11",
+      "references": {
+        "characters": [
+          "huesito_survivor"
+        ],
+        "ingredients": [
+          "plate_tianguis",
+          "luchador",
+          "zombie_std"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (dustier), the provided masked luchador and several of the provided infected on the provided tianguis street: KEY camera = a dynamic low hero angle. A horde of the provided infected closes a tightening circle around the provided Huesito; mid-air the provided luchador flies in with a dropkick, his boots slamming one infected aside and clearing a path, while the provided Huesito ducks behind him. Kicked-up dust, amber market light, high energy. Semi-realistic skeleton (NOT Pixar), humans realistic, only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the provided luchador launches a flying dropkick into an infected. SHOT: dynamic low hero angle with a quick whip-pan. ANIMATE: the luchador soars and kicks, infected tumble back, dust bursts, Huesito ducks behind him. Keep the provided Huesito, luchador and infected EXACTLY as provided; humans realistic, ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "[excited] De pronto una horda te rodea, y de la nada un luchador enmascarado entra a patadas voladoras y te abre paso entre ellos."
+      },
+      "captions": {
+        "text": "¡Un luchador te abre paso!"
+      }
+    },
+    {
+      "id": "scene_12",
+      "references": {
+        "characters": [
+          "huesito_survivor"
+        ],
+        "ingredients": [
+          "plate_tianguis",
+          "salsa_bottle",
+          "zombie_std"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (dustier), the provided salsa bottle and one of the provided infected on the provided tianguis street: KEY camera = a tight action close-up. As one infected grabs at him, the provided Huesito uncaps the provided salsa bottle and flings the thick red chile salsa across its milky eyes; the infected reels back, clutching its face, blinded. A splatter of red salsa hangs midair (chile, NOT blood), amber dust light. Semi-realistic skeleton (NOT Pixar), only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito flicks the provided salsa straight into the infected's eyes. SHOT: tight action close-up with a fast snap. ANIMATE: the salsa arcs out, the infected recoils blinded and stumbles, Huesito pivots to run. Keep the provided Huesito, salsa bottle and infected EXACTLY as provided; ~6s. The red is chile salsa, not blood."
+      },
+      "voiceover": {
+        "text": "Cuando uno casi te alcanza, le destapas la salsa y se la avientas a los ojos: el chile lo deja ciego y aullando."
+      },
+      "captions": {
+        "text": "Salsa a los ojos: el chile los ciega."
+      }
+    },
+    {
+      "id": "scene_13",
+      "references": {
+        "characters": [
+          "huesito_survivor"
+        ],
+        "ingredients": [
+          "plate_centro",
+          "zombie_std"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (dustier, torn) and a horde of the provided infected on the provided Centro Histórico street: KEY camera = a running tracking shot just ahead of him. The provided Huesito sprints down the colonial street, the Metropolitan Cathedral's baroque towers rising behind, a full horde of the provided infected pouring after him between the facades. Long dusk shadows, amber-grey light, motion blur. Semi-realistic skeleton (NOT Pixar), humans realistic, only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito bursts into a full sprint as the horde rounds the corner behind him. SHOT: running tracking shot leading him, Cathedral behind. ANIMATE: Huesito runs hard, the horde surges, dust and motion blur. Keep the provided Huesito and infected EXACTLY as provided; ~6s."
+      },
+      "voiceover": {
+        "text": "La persecución se desata por el Centro Histórico, con la Catedral al fondo, mientras la horda completa te pisa los talones."
+      },
+      "captions": {
+        "text": "Persecución por el Centro."
+      }
+    },
+    {
+      "id": "scene_14",
+      "references": {
+        "characters": [
+          "huesito_survivor"
+        ],
+        "ingredients": [
+          "plate_callejon",
+          "zombie_std"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (dustier, torn) and several of the provided infected in the provided dead-end alley: KEY camera = a tense high angle looking down. The provided Huesito skids to a halt at the tall blank tezontle wall sealing the alley and spins around as the provided infected crowd into the alley mouth behind him, trapping him. Deep cold blue dusk shadows, claustrophobic. Semi-realistic skeleton (NOT Pixar), humans realistic, only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito hits the dead-end wall and whirls to face the alley mouth. SHOT: tense high angle pushing down. ANIMATE: he backs against the wall, the infected fill the alley entrance, shadows tighten. Keep the provided Huesito and infected EXACTLY as provided; ~6s."
+      },
+      "voiceover": {
+        "text": "Das vuelta en un callejón buscando salida, pero topas con una pared: estás acorralado y los gruñidos se acercan por todos lados."
+      },
+      "captions": {
+        "text": "Acorralado en un callejón."
+      }
+    },
+    {
+      "id": "scene_15",
+      "references": {
+        "characters": [
+          "huesito_survivor"
+        ],
+        "ingredients": [
+          "plate_callejon",
+          "zombie_mutant"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (dustier, torn) and the provided giant mutated zombie in the provided alley: KEY camera = a dramatic low angle emphasizing scale, tilting up. From the deep shadows the provided towering mutant steps forward, bone plates catching the dim caged wall-light, dwarfing the provided Huesito who presses back against the wall with his eyes enormous. Cold blue light, ominous. Semi-realistic skeleton (NOT Pixar), only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): the provided giant mutant emerges from the shadows and looms over Huesito. SHOT: dramatic low-angle slow reveal tilting up. ANIMATE: the mutant lumbers forward, bone plates shift, Huesito shrinks back against the wall. Keep the provided Huesito and mutant EXACTLY as provided; ~6s. No gore."
+      },
+      "voiceover": {
+        "text": "[shocked] Y entonces, de las sombras, sale algo mucho peor: un zombi gigante y deforme, con placas de hueso saliéndole del cuerpo."
+      },
+      "captions": {
+        "text": "Algo peor sale de las sombras."
+      }
+    },
+    {
+      "id": "scene_16",
+      "references": {
+        "characters": [
+          "huesito_survivor"
+        ],
+        "ingredients": [
+          "plate_embarcadero",
+          "zombie_std"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (dustier, torn) and a few of the provided infected on the provided Xochimilco embarcadero at dawn: KEY camera = an urgent tracking shot toward the water. The provided Huesito sprints onto the wooden landing, the row of colorful arched trajinera boats lining the dock, a few of the provided infected stumbling after him from the streets behind. Early dawn blue light, mist rising off the canal. Semi-realistic skeleton (NOT Pixar), humans realistic, only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito bursts onto the wooden dock toward the moored trajineras. SHOT: urgent tracking toward the water. ANIMATE: he runs onto the landing, mist drifts, infected stumble behind, the boats bob. Keep the provided Huesito and infected EXACTLY as provided; ~6s."
+      },
+      "voiceover": {
+        "text": "Cuando crees que es tu fin, te escabulles entre el caos y corres sin parar hasta el embarcadero de Xochimilco."
+      },
+      "captions": {
+        "text": "Corres hasta el embarcadero."
+      }
+    },
+    {
+      "id": "scene_17",
+      "references": {
+        "characters": [
+          "huesito_survivor"
+        ],
+        "ingredients": [
+          "plate_canal",
+          "zombie_std"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (dustier, torn) and a crowd of the provided infected on the provided Xochimilco canal at dawn: KEY camera = a wide shot from out on the water looking back at the shore. The provided Huesito shoves off a brightly painted trajinera (arched canopy with painted flowers and a woman's name on the arch) and drifts out onto the canal just as a crowd of the provided infected reaches the muddy bank and stops cold at the water's edge, unable to follow. Cool dawn mist on still green water. Semi-realistic skeleton (NOT Pixar), humans realistic, only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito pushes the trajinera off the dock and it glides onto the water as the horde piles up at the shore. SHOT: wide shot from the water looking back. ANIMATE: the boat drifts out, the infected halt and mass at the waterline, mist drifts over the canal. Keep the provided Huesito and infected EXACTLY as provided; ~6s."
+      },
+      "voiceover": {
+        "text": "Empujas una trajinera al canal justo cuando la horda llega a la orilla, y ahí se quedan: el agua los detiene en seco."
+      },
+      "captions": {
+        "text": "El agua los detiene en seco."
+      }
+    },
+    {
+      "id": "scene_18",
+      "references": {
+        "characters": [
+          "huesito_survivor"
+        ],
+        "ingredients": [
+          "plate_canal"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Huesito (dustier, torn) on the provided Xochimilco canal at golden dawn: KEY camera = a serene wide closing shot with a slow pull-back. The provided Huesito stands on a drifting trajinera among other refuge boats with diverse adult survivors, golden mist on the green water, a small axolotl visible swimming near the surface, the city haze far behind. He exhales, finally at peace. Warm golden dawn light. Semi-realistic skeleton (NOT Pixar), humans realistic, only adults, no minors, NO gore, 9:16, no text.",
+        "animation_prompt": "KEY ACTION (first 2s): Huesito lowers his shoulders and breathes out as the trajinera drifts into the golden mist. SHOT: serene slow pull-back and crane up over the canal. ANIMATE: gentle water ripples, an axolotl glides past, mist glows, boats drift. Keep the provided Huesito EXACTLY as provided; humans realistic, ~6s."
+      },
+      "voiceover": {
+        "text": "[relieved] Al amanecer, entre trajineras y ajolotes nadando, por fin respiras. Empezó con un taco… y al final te salvaron la salsa y el agua. ¿En qué alcaldía sobrevivirías tú?"
+      },
+      "captions": {
+        "text": "¿En qué alcaldía sobrevivirías?"
+      },
+      "time_label": "Al amanecer"
+    }
+  ],
+  "capcut_export": {
+    "main_timeline_starts_after_hook": true,
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18"
+    ],
+    "title_cards": [
+      {
+        "scene_id": "scene_01",
+        "text": "Esa noche"
+      },
+      {
+        "scene_id": "scene_18",
+        "text": "Al amanecer"
+      }
+    ],
+    "ending_card": {
+      "after_scene": "scene_18",
+      "text": "¿EN QUÉ ALCALDÍA SOBREVIVIRÍAS?",
+      "style": "texto grande sobre frame congelado del canal; comment-bait, SIN '¿Parte 2?'"
+    },
+    "caption_style": {
+      "font": "Montserrat ExtraBold",
+      "size": 72,
+      "position": "center_lower",
+      "max_words_on_screen": 5
+    },
+    "music_notes": "Tensión creciente tipo survival con percusión seca en la persecución (13-15); golpe cómico breve en el luchador (11); calma emotiva con cuerdas suaves al amanecer (17-18).",
+    "sfx_notes": "Vapor/sartén y neón en la taquería; gruñidos secos de zombis; alarma en escena 13; patada/impacto en 11; chapoteo y madera de la trajinera y aire del amanecer en 16-18."
+  },
+  "tts_export": {
+    "language": "es-MX",
+    "full_script": "[curious] ¿Qué pasaría si el apocalipsis zombi empezara… por un taco mal servido en plena CDMX? Esa noche, en una taquería medio sucia del Centro, un cuate se atascaba de tacos al pastor sin imaginar nada. De repente empezó a sudar frío, a temblar, se le pusieron los ojos blancos… y de un tirón mordió al taquero. En segundos los dos se lanzaron contra la banda; agarras la botella de salsa más brava que ves y sales corriendo. Para cuando reaccionas, la infección ya se regó: en Polanco los fresas la grababan con el cel en vez de correr. En Tepito se armaron en un parpadeo; entre tianguis y fierros, ni los zombis se atrevían a meterse al barrio. Iztapalapa resistió a comalazo limpio, con escobas y palos, pero eran demasiados y poco a poco toda la ciudad fue cayendo. [hopeful] Desde una azotea escuchas el único rumor que da esperanza: en Xochimilco están a salvo, porque los zombis no cruzan el agua. Así que decides cruzar media ciudad hasta los canales, y para avanzar sin que te vean, te metes al Metro. Sales a Paseo de la Reforma y el Ángel te recibe rodeado de coches muertos, basura volando y zombis vagando en silencio. Cruzas un tianguis abandonado donde la gente peleó con lo que tenía: chanclas, palos de escoba y comales todavía tirados. [excited] De pronto una horda te rodea, y de la nada un luchador enmascarado entra a patadas voladoras y te abre paso entre ellos. Cuando uno casi te alcanza, le destapas la salsa y se la avientas a los ojos: el chile lo deja ciego y aullando. La persecución se desata por el Centro Histórico, con la Catedral al fondo, mientras la horda completa te pisa los talones. Das vuelta en un callejón buscando salida, pero topas con una pared: estás acorralado y los gruñidos se acercan por todos lados. [shocked] Y entonces, de las sombras, sale algo mucho peor: un zombi gigante y deforme, con placas de hueso saliéndole del cuerpo. Cuando crees que es tu fin, te escabulles entre el caos y corres sin parar hasta el embarcadero de Xochimilco. Empujas una trajinera al canal justo cuando la horda llega a la orilla, y ahí se quedan: el agua los detiene en seco. [relieved] Al amanecer, entre trajineras y ajolotes nadando, por fin respiras. Empezó con un taco… y al final te salvaron la salsa y el agua. ¿En qué alcaldía sobrevivirías tú?"
+  }
+}
