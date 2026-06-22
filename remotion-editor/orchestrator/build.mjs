@@ -64,16 +64,21 @@ function inspect(job) {
   const slug = p.project?.slug || slugify(p.project?.title || job.name);
   const base = path.join(PUBLIC, slug);
   const order = p.capcut_export?.clip_order || (p.scenes || []).map((s) => s.id);
+  // historias: image-only (stills + Ken Burns en el editor). El medio por escena es images/<id>.png, NO clips/<id>.mp4.
+  const stills = p.project?.preset === "historias";
+  const sceneMedia = (dir, id) => stills ? path.join(dir, "images", `${id}.jpg`) : path.join(dir, "clips", `${id}.mp4`);
 
   const need = [];
   for (const id of order) {
-    need.push(path.join(base, "clips", `${id}.mp4`));
-    need.push(path.join(base, "voice", `${id}.mp3`));
+    need.push(sceneMedia(base, id));
+    // historias VOZ-CONTINUA: la voz es 1 mp3 maestro (voice/full.mp3), no 1 por escena.
+    if (!stills) need.push(path.join(base, "voice", `${id}.mp3`));
   }
+  if (stills) need.push(path.join(base, "voice", "full.mp3"));
   // opening: medios en public/<assets_slug>/ (fallback: la carpeta del proyecto). Pre-generado y reusable.
   const openingBase = p.opening?.assets_slug ? path.join(PUBLIC, p.opening.assets_slug) : base;
   for (const s of p.opening?.scenes || []) {
-    need.push(path.join(openingBase, "clips", `${s.id}.mp4`));
+    need.push(sceneMedia(openingBase, s.id));
     need.push(path.join(openingBase, "voice", `${s.id}.mp3`));
   }
   if (p.hook) need.push(path.join(base, "voice", "hook.mp3"));
@@ -96,6 +101,7 @@ function enhanceIfNeeded(job, slug) {
     return;
   }
   if (p.project?.enhance === false) return; // opt-out por proyecto
+  if (p.project?.preset === "historias") return; // image-only: no hay clips de video que mejorar/interpolar
   console.log("  mejorando clips con IA (Real-ESRGAN + RIFE, solo los nuevos)...");
   spawnSync(`node tools/enhance-clips.mjs "${slug}"`, { cwd: ROOT, stdio: "inherit", shell: true });
   // los clips quedan a 48fps -> el output tambien
@@ -128,8 +134,33 @@ function syncClipDurations(job, slug) {
   if (changed) fs.writeFileSync(job.jsonPath, JSON.stringify(p, null, 2), "utf8");
 }
 
+// historias VOZ-CONTINUA: re-alinea el karaoke sobre full.mp3 con timestamps COMPLETOS (sin las omisiones de
+// Fish) -> sobreescribe full.words.json. CASCADA por precision: (1) WhisperX (forced-alignment wav2vec2, ~30ms,
+// si esta el venv .venv-wx) -> (2) whisper.cpp (transcripcion local) -> (3) si ambos fallan queda el de Fish
+// (lo escribio fish-voice). Solo historias con full.mp3. Otros presets: no se toca.
+function whisperAlignFull(job) {
+  let p;
+  try { p = JSON.parse(fs.readFileSync(job.jsonPath, "utf8").replace(/^﻿/, "")); } catch { return; }
+  if (p.project?.preset !== "historias") return;
+  const slug = p.project?.slug || slugify(p.project?.title || job.name);
+  const mp3 = path.join(PUBLIC, slug, "voice", "full.mp3");
+  const wordsOut = path.join(PUBLIC, slug, "voice", "full.words.json");
+  if (!fileOk(mp3)) return;
+  const wxPy = path.join(ROOT, ".venv-wx", "Scripts", "python.exe");
+  const okWords = () => { try { return fs.statSync(wordsOut).size > 1024; } catch { return false; } };
+  if (fs.existsSync(wxPy)) {
+    console.log("  alineando karaoke con WhisperX (wav2vec2, maxima precision)...");
+    const r = spawnSync(`"${wxPy}" align/whisperx-align.py "${rel(job.jsonPath)}" "${mp3}" "${wordsOut}"`,
+      { cwd: ROOT, stdio: "inherit", shell: true });
+    if (r.status === 0 && okWords()) return;
+    console.log("  (WhisperX no disponible/fallo -> whisper.cpp)");
+  }
+  console.log("  alineando karaoke con whisper.cpp (full.mp3)...");
+  spawnSync(`node align/whisper-full.mjs "${rel(job.jsonPath)}"`, { cwd: ROOT, stdio: "inherit", shell: true });
+}
+
 function injectWords(job) {
-  // Mete los timestamps por palabra de Fish (sidecars <id>.words.json) al JSON, si los hay.
+  // Mete los timestamps por palabra (sidecars <id>.words.json; historias: full.words.json) al JSON, si los hay.
   spawnSync(`node align/inject-words.mjs "${rel(job.jsonPath)}"`, {
     cwd: ROOT,
     stdio: "inherit",
@@ -146,11 +177,13 @@ function render(job, slug) {
 
 // Normaliza el loudness del mp4 final a -14 LUFS (estandar de feed: el video suena consistente vs
 // el resto, ni bajo ni saturado). Solo re-codifica audio (-c:v copy = rapido). Degrada con gracia.
+// IMPORTANTE: el filtro loudnorm RESAMPLEA a 96kHz por defecto -> hay que forzar -ar 48000 y un bitrate
+// decente (-b:a 192k), o el AAC queda sub-codificado a 96kHz (~70-130kbps) y la voz suena "vibrosa".
 function normalizeLoudness(slug) {
   const src = path.join(OUT, `${slug}.mp4`);
   if (!fs.existsSync(src)) return;
   const tmp = path.join(OUT, `${slug}.norm.mp4`);
-  const cmd = `ffmpeg -y -i "${src}" -af loudnorm=I=-14:TP=-1.5:LRA=11 -c:v copy "${tmp}"`;
+  const cmd = `ffmpeg -y -i "${src}" -af loudnorm=I=-14:TP=-1.5:LRA=11 -ar 48000 -c:v copy -c:a aac -b:a 192k "${tmp}"`;
   const r = spawnSync(cmd, { cwd: ROOT, stdio: "inherit", shell: true });
   if (r.status === 0 && fs.existsSync(tmp) && fs.statSync(tmp).size > 1024) {
     fs.rmSync(src, { force: true });
@@ -205,6 +238,7 @@ function processOnce() {
     console.log(`>> ${job.name} (slug ${info.slug}): todo listo, procesando...`);
     enhanceIfNeeded(job, info.slug);
     syncClipDurations(job, info.slug);
+    whisperAlignFull(job);   // historias: timestamps completos con whisper antes de mapear ventanas
     injectWords(job);
     if (render(job, info.slug)) {
       normalizeLoudness(info.slug);

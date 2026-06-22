@@ -808,9 +808,20 @@ async function runRealImage(scene, prevSceneId, refName) {
   // guarda la imagen de Flow a disco para poder subirla alla (igual que runGrokImage). Flow->Flow NO paga esta
   // descarga -> flujo actual intacto. Falla con gracia: si no baja, imageFilePath queda null (no rompe nada).
   const animProv = state.project?.animationProvider || state.config.provider;   // proveedor EFECTIVO (igual que el dispatch)
-  if (animProv !== "flow" && scene.imageUrl) {
+  const slug = state.project?.slug || "proyecto";
+  if (state.project?.imageOnly && scene.imageUrl) {
+    // image-only (historias): la imagen ES el asset final -> a public/<slug>/images/ para el render (Ken Burns).
     try {
-      const slug = state.project?.slug || "proyecto";
+      const saved = await downloadImageForRef(scene.imageUrl, slug, scene.id);
+      scene.imageFilePath = saved.abspath || null;
+      const moved = await moveStillToProject(saved.abspath, slug, scene.id);
+      scene.savedOk = moved.via === "server";
+      if (moved.via === "server") log(LOG_LEVEL.INFO, `${scene.id}: still movido a public/${slug}/images/ (image-only).`);
+      else log(LOG_LEVEL.WARN, `${scene.id}: still en Descargas (dev-server no responde); muevelo a public/${slug}/images/.`);
+    } catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no pude guardar/mover el still (${e?.message ?? e}).`); }
+  } else if (animProv !== "flow" && scene.imageUrl) {
+    // HANDOFF cross-proveedor: imagen de Flow a disco para subirla en el otro proveedor (Flow->Flow no paga esto).
+    try {
       const saved = await downloadImageForRef(scene.imageUrl, slug, scene.id);
       scene.imageFilePath = saved.abspath || null;
       log(LOG_LEVEL.INFO, `${scene.id}: imagen de Flow guardada a disco para handoff a ${animProv}.`);
@@ -926,6 +937,20 @@ async function downloadImageForRef(url, slug, id) {
   return { abspath: item.filename };
 }
 
+// image-only (historias): mueve el still YA descargado (abspath en Descargas) a
+// remotion-editor/public/<slug>/images/<id>.jpg, que es de donde el render (Ken Burns) lee el PNG/JPG.
+// Mismo mecanismo que los clips (dev-server /move). Si el dev-server no corre, queda en Descargas (fallback).
+async function moveStillToProject(absFrom, slug, id) {
+  const to = `remotion-editor/public/${slug}/images/${id}.jpg`;
+  const base = (state.config.audioWriterUrl || DEFAULT_CONFIG.audioWriterUrl).replace(/\/save$/, "");
+  try {
+    const res = await fetch(`${base}/move?from=${encodeURIComponent(absFrom)}&to=${encodeURIComponent(to)}`, { method: "POST" });
+    const j = await res.json().catch(() => null);
+    if (res.ok && j && j.ok) return { via: "server", path: to };
+  } catch (_e) { /* dev-server no corre: queda en Descargas */ }
+  return { via: "downloads", path: absFrom };
+}
+
 // FASE 1 (Grok): sube referencias (personaje + escenas previas) por CDP -> genera imagen (modo Imagen).
 async function runGrokImage(scene) {
   const tab = await findFlowTab("grok");
@@ -977,7 +1002,9 @@ async function runGrokImage(scene) {
     try { await cdpSetFileInput(tab.id, refPaths); log(LOG_LEVEL.INFO, `${scene.id}: ${refPaths.length} referencia(s) subidas a Grok.`); }
     catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no pude subir referencias (${e?.message ?? e}); genero sin ellas.`); }
   }
-  const img = await sendActOrFail(tab.id, ACT.GENERATE_IMAGE, { prompt: scene.imagePrompt, cfg: driverCfg() });
+  // Aspecto: del JSON (project.aspect_ratio). historias sin aspect_ratio -> 16:9 (documental horizontal).
+  const aspectRatio = state.project?.aspectRatio || (state.project?.preset === "historias" ? "16:9" : "9:16");
+  const img = await sendActOrFail(tab.id, ACT.GENERATE_IMAGE, { prompt: scene.imagePrompt, aspectRatio, cfg: driverCfg() });
   const imageUrl = img?.imageUrl;
   if (!imageUrl) throw new Error("Grok no devolvio URL de imagen");
   if (img?.variantCount > 1) log(LOG_LEVEL.INFO, `${scene.id}: Grok genero ${img.variantCount} variaciones; uso la 1a (determinista).`);
@@ -987,7 +1014,14 @@ async function runGrokImage(scene) {
     const slug = state.project?.slug || "proyecto";
     const saved = await downloadImageForRef(imageUrl, slug, scene.id);
     scene.imageFilePath = saved.abspath || null;
-  } catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no pude guardar la imagen para refs (${e?.message ?? e}).`); }
+    // image-only (historias): la imagen ES el asset final -> moverla a public/<slug>/images/ para el render.
+    if (state.project?.imageOnly && saved.abspath) {
+      const moved = await moveStillToProject(saved.abspath, slug, scene.id);
+      scene.savedOk = moved.via === "server";
+      if (moved.via === "server") log(LOG_LEVEL.INFO, `${scene.id}: still movido a public/${slug}/images/ (image-only).`);
+      else log(LOG_LEVEL.WARN, `${scene.id}: still en Descargas (dev-server no responde); muevelo a public/${slug}/images/ o corre flowbot.`);
+    }
+  } catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no pude guardar/mover la imagen (${e?.message ?? e}).`); }
   scene.status = SCENE_STATUS.IMAGE_DONE; scene.error = null;
   await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.IMAGE_DONE); emitState(); emitProgress();
   log(LOG_LEVEL.INFO, `Imagen Grok lista (${scene.id}).`);
@@ -1263,9 +1297,12 @@ function downloadUrl(url, filename) {
 // Cada evento SSE trae: audio_base64 (chunk de audio a concatenar EN ORDEN), alignment.segments
 // (1 palabra c/u con start/end en seg RELATIVOS al chunk) y chunk_audio_offset_sec (offset global).
 // Acumulamos los bytes y, por palabra, start/end + offset (en segundos, sin multiplicar por nada).
-async function fishTTSWithTimestamps(text, { apiKey, voiceId, model }) {
+async function fishTTSWithTimestamps(text, { apiKey, voiceId, model, speed }) {
   const body = { text, format: "mp3", latency: "normal" };
   if (voiceId) body.reference_id = voiceId;   // la VOZ; vacio = voz por defecto de Fish
+  // OPT-IN: velocidad de habla (Fish prosody.speed, 0.5-2.0). Solo si != 1 -> sin el campo, body intacto
+  // (comportamiento previo para todos los JSON que no traen audio.voice_speed). historias v2 usa 0.9.
+  if (speed && speed !== 1) body.prosody = { speed };
   const res = await fetch("https://api.fish.audio/v1/tts/stream/with-timestamp", {
     method: "POST",
     headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json", "model": model || "s1" },
@@ -1396,6 +1433,15 @@ async function onGenerateAudio(message) {
   const withVoice = (state.scenes || []).filter((s) => (s.voiceoverText || "").trim());
   for (const s of (limit ? withVoice.slice(0, limit) : withVoice)) items.push({ id: s.id, text: s.voiceoverText.trim() });
 
+  // historias VOZ-CONTINUA: UNA sola generacion desde tts_export.full_script -> full.mp3 + full.words.json
+  // (NO 1 mp3 por escena). La narracion suena continua, sin costura entre cortes. El editor mapea cada imagen
+  // a su ventana con align/inject-words.mjs (de los timestamps de Fish). Otros presets: 1 mp3 por escena (igual).
+  const fullScript = state.project?.ttsExport?.full_script;
+  if (preset === "historias" && typeof fullScript === "string" && fullScript.trim()) {
+    items.splice(0, items.length, { id: "full", text: fullScript.trim() });
+    log(LOG_LEVEL.INFO, "historias: 1 voz continua desde tts_export.full_script -> full.mp3 + full.words.json (sin costura entre escenas).");
+  }
+
   if (!items.length) { log(LOG_LEVEL.WARN, "No hay textos de voz (scenes[].voiceover.text) para generar."); return; }
 
   log(LOG_LEVEL.INFO, `Fish Audio: generando ${items.length} audio(s)+timestamps -> ${slug}/voice/ (modelo ${model})...`);
@@ -1403,7 +1449,7 @@ async function onGenerateAudio(message) {
   for (const it of items) {
     await ensureState();
     try {
-      const { audio, words } = await fishTTSWithTimestamps(it.text, { apiKey, voiceId, model });
+      const { audio, words } = await fishTTSWithTimestamps(it.text, { apiKey, voiceId, model, speed: state.project?.voiceSpeed ?? 1 });
       const savedMp3 = await saveVoiceFile(slug, `${it.id}.mp3`, audio, "audio/mpeg");
       if (savedMp3.via === "downloads") viaDownloads = true;
       // Sidecar de palabras: solo si Fish devolvio alignment. Sin el, el editor usa karaoke estimado.
@@ -1709,6 +1755,12 @@ function reportFailuresAtEnd() {
 // Corre UNA fase de la cola hasta que termina (await). Devuelve false si hubo parada dura.
 async function runPhaseToEnd(phase) {
   await ensureState();
+  // image-only (historias): no hay paso de animacion; los stills SON el asset final. Saltar la fase la
+  // invoque quien la invoque (autopiloto, fallback del paralelo, reanudacion). Gateado -> otros presets intactos.
+  if (phase === "animation" && state.project?.imageOnly) {
+    log(LOG_LEVEL.INFO, "Fase de animacion omitida (preset image-only / historias).");
+    return true;
+  }
   state.queue.phase = phase;
   // Reactiva ERROR SOLO en imagenes (gratis). En animacion NO (evita re-gasto silencioso de puntos).
   if (phase === "images") {
@@ -1958,15 +2010,20 @@ async function onRunAll() {
   try { if (!(await runIngredientsPhase())) { log(LOG_LEVEL.ERROR, "AUTOPILOTO detenido en ingredientes."); return; } }
   catch (e) { log(LOG_LEVEL.ERROR, `AUTOPILOTO detenido en ingredientes: ${e?.message ?? e}`); return; }
 
-  if (state.config.parallelPipeline) {
+  // image-only (historias): el paralelo no aplica (no hay carril de animacion); forzar secuencial.
+  if (state.config.parallelPipeline && !state.project?.imageOnly) {
     // Carriles a la vez: imagenes en un proveedor + animacion en el otro.
     if (!(await runPhasesParallel())) { log(LOG_LEVEL.ERROR, "AUTOPILOTO detenido (parada dura en pipeline paralelo)."); return; }
   } else {
     log(LOG_LEVEL.INFO, "AUTOPILOTO: generando imagenes...");
     if (!(await runPhaseToEnd("images"))) { log(LOG_LEVEL.ERROR, "AUTOPILOTO detenido en imagenes (parada dura)."); return; }
 
-    log(LOG_LEVEL.INFO, "AUTOPILOTO: animando...");
-    if (!(await runPhaseToEnd("animation"))) { log(LOG_LEVEL.ERROR, "AUTOPILOTO detenido en animacion (parada dura)."); return; }
+    if (state.project?.imageOnly) {
+      log(LOG_LEVEL.INFO, "AUTOPILOTO: preset image-only (historias) -> sin animacion.");
+    } else {
+      log(LOG_LEVEL.INFO, "AUTOPILOTO: animando...");
+      if (!(await runPhaseToEnd("animation"))) { log(LOG_LEVEL.ERROR, "AUTOPILOTO detenido en animacion (parada dura)."); return; }
+    }
   }
 
   log(LOG_LEVEL.INFO, "AUTOPILOTO: generando voz (Fish)...");

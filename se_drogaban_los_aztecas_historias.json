@@ -1,0 +1,573 @@
+{
+  "project": {
+    "title": "¿Se Drogaban Los Aztecas?",
+    "preset": "historias",
+    "slug": "se_drogaban_los_aztecas_historias",
+    "style": "codice_azteca",
+    "language": "es-MX",
+    "aspect_ratio": "16:9",
+    "fps": 30,
+    "pov": "documentary_3rd_person",
+    "tone": "Documental dramático, grave y reflexivo (estilo narrador de documental). Narración en 3a persona SOBRE los aztecas; nunca habla en 'tú' ni se refiere a sí mismo. Ritmo lento, frases cortas, pausas con '...'.",
+    "style_anchor": "AUTHENTIC PRE-HISPANIC CODEX ILLUSTRATION (Mixtec-Aztec / Florentine Codex / Codex Boturini style): every image is a flat painted codex page on aged amate bark-paper (warm ochre and tan, visible fiber texture, subtle brown mottling). Flat planes of mineral pigment only (ochre, terracotta-red, deep teal-green, black, cream); BOLD BLACK CONTOUR LINES on every shape; human figures drawn in STRICT SIDE PROFILE with a single frontal eye and stylized proportions; decorative codex glyph margins (red and black dot-numerals, day-sign cartouches, a feathered-serpent head, footprint paths). ABSOLUTELY NOT: modern cartoon, Pixar, 3D render, photorealism, comic-book outlines, gradients, lens blur, modern letters or text. Only adults, no minors, no gore. 16:9 horizontal.",
+    "render_notes": "PRESET HISTORIAS: imagenes ESTATICAS (sin animacion); el movimiento es Ken Burns aplicado por el renderer (campo scene.visual.motion). 16:9. Ingredientes ultra-detallados; el style_anchor compacto va al final de cada image_prompt; voz documental 3a persona; numeros con letras; tags Fish compuestos solo en hook/giro/cierre; captions limpios; sin menores; sin gore.",
+    "render": {
+      "overlay_style_frame": false
+    },
+    "series": {
+      "part": 1,
+      "is_cliffhanger": false,
+      "standalone": true
+    }
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok",
+      "note": "Compatible tambien con Flow. SOLO imagenes estaticas, sin paso de video."
+    },
+    "animation": {
+      "tool": "none",
+      "method": "ken_burns_in_editor",
+      "note": "El arte de codice es plano: NO se anima la imagen. El pan/zoom lento lo aplica el editor sobre el still."
+    },
+    "tts": {
+      "tool": "fish_audio",
+      "language": "es-MX",
+      "emotion_syntax": "S2=[brackets]"
+    },
+    "editing": {
+      "tool": "capcut",
+      "renderer": "ViralVideo.tsx (rama preset=historias)"
+    }
+  },
+  "characters": {},
+  "ingredients": [
+    {
+      "id": "style_frame_codice",
+      "type": "style_frame",
+      "generation_prompt": "An EMPTY pre-Hispanic codex page used as the page frame for every scene: aged amate bark-paper background in warm ochre and tan with visible plant-fiber texture and subtle brown mottling; a thin dark reddish-brown rectangular border running around the edge; along the left and right margins, vertical columns of Mixtec-Aztec codex glyphs painted in flat mineral color with bold black outlines (red and black dot-numerals, small day-sign cartouches, a feathered-serpent head in the top-right corner, a footprint path along the bottom margin). The large CENTER area is EMPTY (clean paper) for scene content. Flat authentic codex convention, no figures, no modern text. 16:9 horizontal.",
+      "output_file": "ingredients/style_frame_codice.png"
+    },
+    {
+      "id": "plate_ritual",
+      "type": "location_plate",
+      "generation_prompt": "An EMPTY codex-style ritual stage: a low stepped stone platform with a stylized fire glyph (curling red and orange flame shapes) at its center and rising curls of copal incense smoke drawn as flat scroll shapes; flat ochre and terracotta planes, bold black contour lines, on aged amate paper. NO people, EMPTY stage for figures to be added later. Flat pre-Hispanic codex page, no modern text. 16:9 horizontal.",
+      "output_file": "ingredients/plate_ritual.png"
+    },
+    {
+      "id": "plate_maguey",
+      "type": "location_plate",
+      "generation_prompt": "An EMPTY codex-style field of stylized maguey (agave) plants: several plants with thick teal-green spiky leaves drawn as flat shapes with bold black outlines, one tall central flowering stalk; a footprint path crossing the field; flat ochre ground, aged amate paper. NO people, EMPTY. Flat pre-Hispanic codex page, no modern text. 16:9 horizontal.",
+      "output_file": "ingredients/plate_maguey.png"
+    },
+    {
+      "id": "plate_templo",
+      "type": "location_plate",
+      "generation_prompt": "An EMPTY codex-style scene of a Mesoamerican stepped pyramid temple: a terraced pyramid with a small shrine on top, drawn in flat ochre and terracotta planes with bold black outlines, a stairway down the front, a couple of stylized maguey plants at the base; aged amate paper. NO people, EMPTY stage. Flat pre-Hispanic codex page, no modern text. 16:9 horizontal.",
+      "output_file": "ingredients/plate_templo.png"
+    },
+    {
+      "id": "fig_sacerdote",
+      "type": "entity",
+      "generation_prompt": "A single Mesoamerican codex-style PRIEST figure in STRICT SIDE PROFILE with one frontal eye: tall and lean, flat ochre skin with bold black contour, wearing a long white-and-terracotta ritual cloak, a tall feather headdress with teal-green and red plumes, round jade ear ornaments, dark ritual body paint, holding a small copal incense pouch. Flat pre-Hispanic codex convention, full body, plain neutral background, no scene, no text. Only adult.",
+      "output_file": "ingredients/fig_sacerdote.png"
+    },
+    {
+      "id": "fig_anciano_pulque",
+      "type": "entity",
+      "generation_prompt": "A single Mesoamerican codex-style ELDERLY MAN in STRICT SIDE PROFILE with one frontal eye: flat ochre skin, bold black contour, grey-streaked hair tied back, a simple white loincloth and short cloak, raising a round clay jicara cup with frothy white pulque to his lips; a small curling 'drink' scroll glyph near his mouth. Flat codex convention, full body, neutral background, no scene, no text. Only adult.",
+      "output_file": "ingredients/fig_anciano_pulque.png"
+    },
+    {
+      "id": "fig_guerrero",
+      "type": "entity",
+      "generation_prompt": "A single Mesoamerican codex-style WARRIOR in STRICT SIDE PROFILE with one frontal eye: flat ochre skin, bold black outline, wearing a spotted jaguar-pelt suit and an open jaguar-jaw helmet framing the face, holding a stylized obsidian-edged wooden club and a round feathered shield. Flat codex convention, full body, neutral background, no scene, no text. Only adult.",
+      "output_file": "ingredients/fig_guerrero.png"
+    },
+    {
+      "id": "glyph_conejo",
+      "type": "entity",
+      "generation_prompt": "A Mesoamerican codex-style RABBIT-DEITY glyph (Ometochtli, one of the Centzon Totochtin gods of drunkenness): a stylized rabbit drawn in flat profile with bold black outline, ochre and cream body, a small crescent-moon nose ornament, and a tiny round pulque-cup glyph beside it. Single flat glyph, neutral background, no scene, no text.",
+      "output_file": "ingredients/glyph_conejo.png"
+    },
+    {
+      "id": "glyph_hongos",
+      "type": "entity",
+      "generation_prompt": "A Mesoamerican codex-style cluster of SACRED MUSHROOMS (teonanacatl): three stylized mushrooms with rounded caps and stout stems, drawn in flat ochre and brown with bold black outlines, small divine 'flower-and-breath' scroll glyphs rising from the caps to signal the sacred. Single flat glyph cluster, neutral background, no scene, no text.",
+      "output_file": "ingredients/glyph_hongos.png"
+    },
+    {
+      "id": "glyph_peyote",
+      "type": "entity",
+      "generation_prompt": "A Mesoamerican codex-style PEYOTE cactus glyph: a round, ribbed, button-shaped cactus in flat teal-green with bold black outline, a small flower on top, and short radiating straight lines around it to suggest vision. Single flat glyph, neutral background, no scene, no text.",
+      "output_file": "ingredients/glyph_peyote.png"
+    },
+    {
+      "id": "glyph_ololiuhqui",
+      "type": "entity",
+      "generation_prompt": "A Mesoamerican codex-style MORNING-GLORY VINE glyph (ololiuhqui): a curling vine with two trumpet-shaped flowers and small round seeds, flat ochre and teal with bold black outline, and a small stylized eye glyph attached to suggest prophecy and divination. Single flat glyph, neutral background, no scene, no text.",
+      "output_file": "ingredients/glyph_ololiuhqui.png"
+    },
+    {
+      "id": "fig_escriba",
+      "type": "entity",
+      "generation_prompt": "A single Mesoamerican codex-style SCRIBE (tlacuilo) in STRICT SIDE PROFILE with one frontal eye: flat ochre skin, bold black outline, seated cross-legged, wearing a plain white cloak, holding a thin brush in one hand and an open folded amate codex page in the other, with small painted glyph marks coming from the brush and a few colored paint shells beside him. Flat codex convention, full body, neutral background, no scene, no text. Only adult.",
+      "output_file": "ingredients/fig_escriba.png"
+    }
+  ],
+  "hook": {
+    "voiceover": {
+      "text": "[low, mysterious, cinematic narrator tone] En el imperio azteca, emborracharte podía costarte la vida."
+    },
+    "captions": {
+      "text": "Emborracharte podía costarte la vida"
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "style_frame_codice",
+          "plate_ritual",
+          "fig_sacerdote"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided style_frame_codice page, using the provided plate_ritual stage and the provided fig_sacerdote: the priest stands in profile beside the fire glyph, arms raised over the rising copal smoke in a solemn offering pose, his face turned upward. Composition centered, the fire and smoke filling the space between him and the temple margin glyphs. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figure; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9 horizontal, no modern text.",
+        "motion": "pan_left_right"
+      },
+      "voiceover": {
+        "text": "[serious, grounded, documentary tone] Pero alterar tu mente para hablar con los dioses... no solo se permitía: era sagrado."
+      },
+      "captions": {
+        "text": "Hablar con los dioses era sagrado",
+        "highlight_words": [
+          "dioses",
+          "sagrado"
+        ]
+      }
+    },
+    {
+      "id": "scene_02",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "style_frame_codice",
+          "plate_maguey",
+          "fig_anciano_pulque"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided style_frame_codice page, using the provided plate_maguey field and the provided fig_anciano_pulque: the elderly man sits in profile among the agave plants, lifting his jicara cup of frothy white pulque, the central flowering maguey stalk rising behind him. Wide calm composition. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figure; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9 horizontal, no modern text.",
+        "motion": "pan_right_left"
+      },
+      "voiceover": {
+        "text": "La bebida de los dioses tenía un nombre: octli. Hoy lo conocemos como pulque."
+      },
+      "captions": {
+        "text": "Octli. Hoy lo llamamos pulque",
+        "highlight_words": [
+          "octli",
+          "pulque"
+        ]
+      }
+    },
+    {
+      "id": "scene_03",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "style_frame_codice",
+          "plate_maguey",
+          "glyph_conejo"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided style_frame_codice page, using the provided plate_maguey field: a close codex view of one large central maguey plant being tapped, with a stylized 'sap/honey-water' scroll flowing from its heart into a clay vessel; the provided glyph_conejo placed small to one side as a divine marker. No human figures. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9 horizontal, no modern text.",
+        "motion": "pan_left_right"
+      },
+      "voiceover": {
+        "text": "Salía del corazón del maguey, la planta sagrada, y se reservaba solo para unos pocos elegidos."
+      },
+      "captions": {
+        "text": "Del maguey, la planta sagrada",
+        "highlight_words": [
+          "maguey",
+          "sagrada"
+        ]
+      }
+    },
+    {
+      "id": "scene_04",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "style_frame_codice",
+          "plate_ritual",
+          "fig_sacerdote",
+          "fig_guerrero",
+          "fig_anciano_pulque"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided style_frame_codice page, using the provided plate_ritual stage with the provided fig_sacerdote, fig_guerrero and fig_anciano_pulque lined up in profile facing the same direction, plus one additional codex-style adult woman in side profile in a plain huipil; they stand in a dignified row as the privileged few, each holding a small pulque cup. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figures; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9 horizontal, no modern text.",
+        "motion": "pan_right_left"
+      },
+      "voiceover": {
+        "text": "Ancianos, sacerdotes, guerreros antes de la batalla, y las mujeres a punto de ser madres. Nadie más."
+      },
+      "captions": {
+        "text": "Solo unos pocos podían beberlo",
+        "highlight_words": [
+          "pocos"
+        ]
+      }
+    },
+    {
+      "id": "scene_05",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "style_frame_codice",
+          "plate_templo"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided style_frame_codice page, using the provided plate_templo: at the foot of the pyramid, one codex-style adult man in side profile lies slumped with an overturned pulque cup spilling a flat white scroll, while two stern codex officials in profile point at him. Tense, accusatory composition, flat shapes. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figures; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9 horizontal, no modern text.",
+        "motion": "pan_left_right"
+      },
+      "voiceover": {
+        "text": "Para todos los demás, emborracharse era un crimen. Y el castigo escalaba muy rápido."
+      },
+      "captions": {
+        "text": "Para los demás, era un crimen",
+        "highlight_words": [
+          "crimen"
+        ]
+      }
+    },
+    {
+      "id": "scene_06",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "style_frame_codice",
+          "plate_templo"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided style_frame_codice page, using the provided plate_templo as backdrop: a codex-style public scene where one adult man in side profile sits on a low stone with his head being shaved by another official holding a flat obsidian blade, a small crowd of codex adults in profile watching; humiliation, not violence, no blood. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figures; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9 horizontal, no modern text.",
+        "motion": "pan_right_left"
+      },
+      "voiceover": {
+        "text": "La primera vez, te humillaban en público y te rapaban la cabeza frente a todo el pueblo."
+      },
+      "captions": {
+        "text": "Primera vez: te rapaban en público",
+        "highlight_words": [
+          "público"
+        ]
+      }
+    },
+    {
+      "id": "scene_07",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "style_frame_codice",
+          "plate_templo"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided style_frame_codice page, using the provided plate_templo: a divided codex panel showing two stages, left a small flat house being pulled apart by codex figures, right a stark black glyph of death (a stylized skull glyph in flat black and white) over an empty space. Symbolic, somber, no gore. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9 horizontal, no modern text.",
+        "motion": "pan_left_right"
+      },
+      "voiceover": {
+        "text": "[low, stunned, slowly revealing] La segunda vez, derrumbaban tu casa. Y la tercera... la muerte."
+      },
+      "captions": {
+        "text": "La tercera vez... la muerte",
+        "highlight_words": [
+          "muerte"
+        ]
+      }
+    },
+    {
+      "id": "scene_08",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "style_frame_codice",
+          "glyph_conejo"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided style_frame_codice page: a grid of many copies of the provided glyph_conejo rabbit-deity arranged in neat rows across the page, each slightly varied in pose, suggesting a whole pantheon of rabbit gods, with small pulque-cup glyphs between them. Flat, decorative, codex catalogue look. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9 horizontal, no modern text.",
+        "motion": "pan_right_left"
+      },
+      "voiceover": {
+        "text": "Tenían hasta cuatrocientos dioses conejo dedicados a la borrachera. Los llamaban los Centzon Totochtin."
+      },
+      "captions": {
+        "text": "400 dioses conejo de la borrachera",
+        "highlight_words": [
+          "conejo"
+        ]
+      }
+    },
+    {
+      "id": "scene_09",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "style_frame_codice",
+          "plate_ritual",
+          "glyph_hongos"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided style_frame_codice page, using the provided plate_ritual: the provided glyph_hongos sacred mushrooms placed large and centered on the stone platform, the divine breath-scrolls rising from them toward the smoke, glowing with sacred importance. No figures. Reverent, central composition. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9 horizontal, no modern text.",
+        "motion": "pan_left_right"
+      },
+      "voiceover": {
+        "text": "[serious, intriguing, slow build] Pero el pulque era apenas el principio. La verdadera puerta a los dioses... eran los hongos."
+      },
+      "captions": {
+        "text": "La verdadera puerta: los hongos",
+        "highlight_words": [
+          "hongos"
+        ]
+      }
+    },
+    {
+      "id": "scene_10",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "style_frame_codice",
+          "plate_ritual",
+          "fig_sacerdote",
+          "glyph_hongos"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided style_frame_codice page, using the provided plate_ritual, fig_sacerdote and glyph_hongos: the priest in profile gently lifts the sacred mushrooms toward his mouth, eyes wide, a flat halo of small star and breath glyphs around his head signaling the visionary state. Intimate, sacred composition. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figure; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9 horizontal, no modern text.",
+        "motion": "pan_right_left"
+      },
+      "voiceover": {
+        "text": "Teonanacatl, la carne de los dioses. Los sacerdotes los comían para cruzar al otro mundo."
+      },
+      "captions": {
+        "text": "Teonanacatl: carne de los dioses",
+        "highlight_words": [
+          "dioses"
+        ]
+      }
+    },
+    {
+      "id": "scene_11",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "style_frame_codice",
+          "plate_templo",
+          "fig_sacerdote"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided style_frame_codice page, using the provided plate_templo and the provided fig_sacerdote: a grand coronation banquet scene, a codex-style ruler seated on a raised mat throne at the top of the temple in side profile wearing a turquoise diadem, the priest below offering a bowl of mushrooms, rows of seated codex adult nobles in profile flanking the stairs. Ceremonial, layered composition. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figures; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9 horizontal, no modern text.",
+        "motion": "pan_left_right"
+      },
+      "voiceover": {
+        "text": "Se cuenta que llegaron a servirse en el banquete de coronación del emperador Moctezuma."
+      },
+      "captions": {
+        "text": "Hasta en la coronación de Moctezuma",
+        "highlight_words": [
+          "Moctezuma"
+        ]
+      }
+    },
+    {
+      "id": "scene_12",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "style_frame_codice",
+          "glyph_ololiuhqui",
+          "glyph_peyote"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided style_frame_codice page: a two-panel codex display, left the provided glyph_ololiuhqui morning-glory with its prophecy-eye, right the provided glyph_peyote cactus with its radiating vision-lines, each in its own bordered cell with small dot-numerals above. Catalogue-of-plants look, flat and reverent. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9 horizontal, no modern text.",
+        "motion": "pan_right_left"
+      },
+      "voiceover": {
+        "text": "También masticaban las semillas de la virgen para ver el futuro. Y el peyote, para tener visiones."
+      },
+      "captions": {
+        "text": "Semillas para ver el futuro, peyote para visiones",
+        "highlight_words": [
+          "futuro",
+          "visiones"
+        ]
+      }
+    },
+    {
+      "id": "scene_13",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "style_frame_codice",
+          "plate_ritual",
+          "fig_sacerdote"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided style_frame_codice page, using the provided plate_ritual and fig_sacerdote: the priest stands at the exact center, his body split by a vertical line, the left half in the earthly world of stone and fire, the right half dissolving into a divine realm of flat sun, star and serpent glyphs; a flat scroll-bridge connects the two worlds. Symbolic, awe composition. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figure; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9 horizontal, no modern text.",
+        "motion": "pan_left_right"
+      },
+      "voiceover": {
+        "text": "[grave, documentary narrator tone, quietly dramatic] Para ellos, esto no era drogarse. Era una tecnología para tocar el mundo de los dioses."
+      },
+      "captions": {
+        "text": "No era drogarse: era tocar a los dioses",
+        "highlight_words": [
+          "tecnología",
+          "dioses"
+        ]
+      }
+    },
+    {
+      "id": "scene_14",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "style_frame_codice",
+          "fig_escriba"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided style_frame_codice page, using the provided fig_escriba: the seated scribe in profile paints a small codex page that itself shows tiny versions of the previous glyphs (mushrooms, rabbit, maguey), a gentle meta moment of the codex drawing itself; warm and quiet, paint shells beside him. The margin glyphs of the page are emphasized to remind the viewer they are inside a codex. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figure; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9 horizontal, no modern text.",
+        "motion": "pan_right_left"
+      },
+      "voiceover": {
+        "text": "¿Y cómo sabemos todo esto? Porque alguien lo pintó. En códices. Exactamente como este."
+      },
+      "captions": {
+        "text": "Lo sabemos porque alguien lo pintó",
+        "highlight_words": [
+          "códices"
+        ]
+      }
+    },
+    {
+      "id": "scene_15",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "style_frame_codice",
+          "plate_templo"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided style_frame_codice page, using the provided plate_templo: a somber scene where flat codex glyphs of the sacred plants (mushroom, peyote, maguey) are shown with bold black X marks struck over them, and a single tall plain cross glyph cast in shadow over the temple, signaling prohibition. No figures, symbolic. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9 horizontal, no modern text.",
+        "motion": "pan_left_right"
+      },
+      "voiceover": {
+        "text": "[low, tense, documentary narrator tone] Cuando llegaron los españoles, lo llamaron cosa del demonio. Y lo prohibieron."
+      },
+      "captions": {
+        "text": "Los españoles lo prohibieron",
+        "highlight_words": [
+          "prohibieron"
+        ]
+      }
+    },
+    {
+      "id": "scene_16",
+      "references": {
+        "characters": [],
+        "ingredients": [
+          "style_frame_codice",
+          "plate_maguey"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided style_frame_codice page, using the provided plate_maguey: a final hopeful scene where a single strong maguey plant and a small cluster of mushrooms grow up between cracked flat stones of an old ruined wall, lit by a flat rising-sun glyph at the horizon; quiet survival and continuity. No figures. Composition built to be FROZEN as the final frame. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9 horizontal, no modern text.",
+        "motion": "pan_right_left"
+      },
+      "voiceover": {
+        "text": "[calm, solemn, with restrained hope, voice lowering at the end] Pero las plantas no obedecen imperios. Sobrevivieron en silencio... y todavía siguen aquí."
+      },
+      "captions": {
+        "text": "Las plantas no obedecen imperios",
+        "highlight_words": [
+          "sobrevivieron"
+        ]
+      }
+    }
+  ],
+  "capcut_export": {
+    "main_timeline_starts_after_hook": true,
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16"
+    ],
+    "title_cards": [],
+    "ending_card": {
+      "after_scene": "scene_16",
+      "text": "¿Cuál de estas te voló más la cabeza? 👇",
+      "style": "Texto grande sobre el frame congelado de scene_16; comment-bait, SIN '¿Parte 2?'."
+    },
+    "caption_style": {
+      "font": "Montserrat ExtraBold",
+      "size": 64,
+      "position": "lower_third",
+      "max_words_on_screen": 5,
+      "color": "#FFFFFF",
+      "stroke": "borde/sombra negra para legibilidad sobre el papel"
+    },
+    "music_notes": "Cama documental de tensión contenida: tambor mexica grave y lento (huehuetl) + flauta de barro ocasional + drone bajo. Nada de percusión moderna. Sube sutil en el giro (scene_09, hongos) y baja al cierre (scene_16).",
+    "sfx_notes": "Crepitar suave de fuego/copal en escenas de ritual (1, 9, 10, 13); viento ligero de fondo; un golpe seco de tambor en los cortes fuertes (scene_05, y en '...la muerte' de scene_07); breve silencio antes del remate de scene_16."
+  },
+  "tts_export": {
+    "language": "es-MX",
+    "full_script": "[low, mysterious, cinematic narrator tone] En el imperio azteca, emborracharte podía costarte la vida. [serious, grounded, documentary tone] Pero alterar tu mente para hablar con los dioses... no solo se permitía: era sagrado. La bebida de los dioses tenía un nombre: octli. Hoy lo conocemos como pulque. Salía del corazón del maguey, la planta sagrada, y se reservaba solo para unos pocos elegidos. Ancianos, sacerdotes, guerreros antes de la batalla, y las mujeres a punto de ser madres. Nadie más. Para todos los demás, emborracharse era un crimen. Y el castigo escalaba muy rápido. La primera vez, te humillaban en público y te rapaban la cabeza frente a todo el pueblo. [low, stunned, slowly revealing] La segunda vez, derrumbaban tu casa. Y la tercera... la muerte. Tenían hasta cuatrocientos dioses conejo dedicados a la borrachera. Los llamaban los Centzon Totochtin. [serious, intriguing, slow build] Pero el pulque era apenas el principio. La verdadera puerta a los dioses... eran los hongos. Teonanacatl, la carne de los dioses. Los sacerdotes los comían para cruzar al otro mundo. Se cuenta que llegaron a servirse en el banquete de coronación del emperador Moctezuma. También masticaban las semillas de la virgen para ver el futuro. Y el peyote, para tener visiones. [grave, documentary narrator tone, quietly dramatic] Para ellos, esto no era drogarse. Era una tecnología para tocar el mundo de los dioses. ¿Y cómo sabemos todo esto? Porque alguien lo pintó. En códices. Exactamente como este. [low, tense, documentary narrator tone] Cuando llegaron los españoles, lo llamaron cosa del demonio. Y lo prohibieron. [calm, solemn, with restrained hope, voice lowering at the end] Pero las plantas no obedecen imperios. Sobrevivieron en silencio... y todavía siguen aquí."
+  },
+  "audio": {
+    "music_volume": 0.2
+  }
+}

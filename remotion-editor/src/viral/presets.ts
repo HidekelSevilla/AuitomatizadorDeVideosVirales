@@ -8,6 +8,7 @@ export interface Preset {
   showLabelCard: boolean; // mostrar el cartel "DIA 1" antes de cada escena
   labelCardBg: string; // fondo del cartel
   labelCardColor: string; // color del texto del cartel
+  stills?: boolean; // image-only: PNG estatico + Ken Burns en el editor (preset historias). Sin video.
 }
 
 export const PRESETS: Record<string, Preset> = {
@@ -37,6 +38,19 @@ export const PRESETS: Record<string, Preset> = {
     showLabelCard: false, // sin carteles negros en este preset
     labelCardBg: "#0A0A0A",
     labelCardColor: "#FFFFFF",
+  },
+  // Historias (documental HORIZONTAL 16:9, arte de codice): stills + Ken Burns en el editor, SIN video.
+  // Subtitulo lower-third blanco con palabra clave en ambar (look de codice/amate). El cartel time_label
+  // (negro) sigue disponible como "capitulo" en las versiones largas (showLabelCard true, se dispara solo
+  // si la voz narra el label, igual que esqueletos).
+  historias: {
+    captionBase: "#FFFFFF",
+    captionHotBg: "#E8B84B", // ambar/oro de codice (color del texto resaltado, no de una caja)
+    captionHotText: "#111111",
+    showLabelCard: true,
+    labelCardBg: "#000000",
+    labelCardColor: "#FFFFFF",
+    stills: true,
   },
 };
 

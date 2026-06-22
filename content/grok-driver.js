@@ -131,6 +131,34 @@
     return false;
   }
 
+  // Relacion de aspecto (menu Radix aria-label="Relación de aspecto"). Mapeado en vivo 2026-06-20: en modo
+  // Imagen el menu trae "2:3 Alto", "3:2 Ancho", "1:1 Cuadrado", "9:16 Vertical", "16:9 Panorámico"
+  // (role=menuitem). El .click() sintetico NO abre el menu -> hay que mandar PointerEvent (pointerdown+
+  // pointerup). Idempotente: si el boton ya muestra el ratio pedido, no toca nada (Grok lo recuerda entre
+  // generaciones). Debe llamarse DESPUES de setMode("Imagen"): las opciones dependen del modo.
+  const aspectBtn = () => document.querySelector('button[aria-label="Relación de aspecto"]');
+  const ptr = (el, type) => el.dispatchEvent(new PointerEvent(type, { bubbles: true, cancelable: true, pointerId: 1, button: 0, isPrimary: true }));
+  async function setAspect(aspectRatio) {
+    const want = norm(aspectRatio || "");
+    if (!want) return false;
+    const b = aspectBtn();
+    if (!b) return false;
+    if (norm(b.innerText).startsWith(want)) return true;   // ya esta en el ratio pedido
+    for (let k = 0; k < 3 && aspectBtn()?.getAttribute("aria-expanded") !== "true"; k++) {
+      const el = aspectBtn(); if (!el) break;
+      ptr(el, "pointerdown"); ptr(el, "pointerup"); el.click();
+      await sleep(300);
+    }
+    const item = [...document.querySelectorAll("[role=menuitem]")].find((i) => norm(i.innerText).startsWith(want));
+    if (!item) {
+      const e = aspectBtn(); if (e?.getAttribute("aria-expanded") === "true") { ptr(e, "pointerdown"); ptr(e, "pointerup"); }  // cierra el menu
+      throw new Error(`Grok: no encontre la opcion de aspecto "${want}"`);
+    }
+    ptr(item, "pointerdown"); ptr(item, "pointerup"); item.click();
+    await sleep(400);
+    return norm(aspectBtn()?.innerText || "").startsWith(want);
+  }
+
   // Escribe el prompt en el contenteditable (execCommand registra en el editor React; .innerText no basta).
   async function setPrompt(text, cfg) {
     const ed = promptEditable();
@@ -144,7 +172,12 @@
     // un insert UNICO de todo el texto NO lo registra -> falla "el Enviar no registro"). ON (default) ->
     // fragmentos de 2-5 chars con jitter humano. Lo decide la config avanzada (la pasa el SW en driverCfg).
     if (cfg && cfg.humanTyping === false) {
-      for (let i = 0; i < t.length; i += 12) document.execCommand("insertText", false, t.slice(i, i + 12));
+      // PEGADO RAPIDO: en trozos GRANDES (cap 200, minimo 2 trozos). Antes era de a 12 chars -> en un prompt
+      // largo de historias eran ~50-60 inserciones, cada execCommand re-renderiza el editor React (se veia
+      // "tecleando" lento). Pocos trozos = casi instantaneo. Sigue fragmentado: un insert UNICO de todo no
+      // registra el prompt en Grok (-> "el Enviar no registro").
+      const step = Math.max(1, Math.min(200, Math.ceil(t.length / 2)));
+      for (let i = 0; i < t.length; i += step) document.execCommand("insertText", false, t.slice(i, i + step));
     } else {
       for (let i = 0, typed = 0; i < t.length;) {
         const n = 2 + Math.floor(Math.random() * 4);
@@ -179,11 +212,16 @@
   }
 
   // GENERATE_IMAGE: modo Imagen -> prompt -> Enviar -> espera una imagen de resultado NUEVA.
-  async function generateImage({ prompt, cfg }) {
+  async function generateImage({ prompt, aspectRatio, cfg }) {
     const hs0 = detectHardStop(); if (hs0) return hs0;
     // tras navegar al composer fresco, espera a que React monte prompt + boton Enviar
     await waitFor(() => promptEditable() && sendButton(), { timeout: 20000 });
     await setMode("Imagen");
+    // Aspecto (historias = 16:9). No fatal: si falla, Grok genera con el aspecto actual (lo recuerda).
+    if (aspectRatio) {
+      try { await setAspect(aspectRatio); }
+      catch (e) { console.warn("[grok-driver] setAspect:", e?.message ?? e); }
+    }
     await setPrompt(prompt, cfg);
     const before = currentResultGenIds();
     await fire(cfg);

@@ -26,10 +26,14 @@ const voiceId = (voiceArg || DEFAULT_VOICE_ID).trim();
 const outDir = path.join(ROOT, "public", slug, "voice");
 fs.mkdirSync(outDir, { recursive: true });
 
+// SAY_SPEED=0.95 -> velocidad de habla (prosody.speed) igual que el render; default 1.
+const sayBody = { text, reference_id: voiceId, format: "mp3", latency: "normal" };
+const saySpeed = Number(process.env.SAY_SPEED) || 1;
+if (saySpeed !== 1) sayBody.prosody = { speed: saySpeed };
 const res = await fetch("https://api.fish.audio/v1/tts/stream/with-timestamp", {
   method: "POST",
   headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", model: "s2-pro" },
-  body: JSON.stringify({ text, reference_id: voiceId, format: "mp3", latency: "normal" }),
+  body: JSON.stringify(sayBody),
 });
 if (!res.ok) { console.error(`Fish ${res.status}: ${await res.text()}`); process.exit(1); }
 

@@ -38,11 +38,118 @@ const readWords = (voiceDir, id) => {
   }
 };
 
+// ---- historias VOZ-CONTINUA: de las palabras del audio maestro (full.words.json) construye una ventana
+// {start,end} por escena. OJO: Fish manda el alignment ACUMULATIVO por chunk -> full.words.json trae
+// DUPLICADOS (mas palabras que el texto real). Por eso NO se puede mapear por conteo; se ALINEA POR
+// CONTENIDO: se camina el texto real (orden = guion = audio) contra el stream de Fish, saltando los
+// duplicados/artefactos de Fish. Cada token de texto recibe su timestamp real. La ventana de la escena =
+// [primer token, primer token de la sig.]; la ultima llega al fin del audio. scene.voiceover.words queda
+// rebasada a la ventana (para el karaoke). ----
+const round3 = (x) => Math.round(x * 1000) / 1000;
+const _stripTags = (s) => (s || "").replace(/\[[^\]]*\]/g, " ");
+// normaliza para COMPARAR: minusculas, sin acentos (combining marks), solo letras/numeros.
+const _normWord = (s) => (s || "").toLowerCase().normalize("NFD").replace(/\p{M}/gu, "").replace(/[^\p{L}\p{N}]/gu, "");
+// token "limpio" para MOSTRAR en el karaoke (conserva acentos/ñ, quita puntuacion de borde).
+const _displayWord = (s) => (s || "").replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "");
+
+// Fish (stream with-timestamp) manda VENTANAS DESLIZANTES SOLAPADAS: cada chunk reenvia palabras recientes
+// con su timestamp ABSOLUTO, asi que la misma palabra aparece repetida con identico start/end. Se reconstruye
+// la transcripcion real dedupeando por (start,end,palabra) y ordenando por tiempo. (576 crudas -> ~300 reales.)
+const dedupeAbsolute = (fish) => {
+  const seen = new Set();
+  const out = [];
+  for (const x of fish) {
+    const k = `${x.start}|${x.end}|${_normWord(x.word)}`;
+    if (seen.has(k)) continue;
+    seen.add(k);
+    out.push(x);
+  }
+  return out.sort((a, b) => a.start - b.start || a.end - b.end);
+};
+
+function buildTiming(p, fishRaw) {
+  const fish = dedupeAbsolute(fishRaw);
+  const order = p.capcut_export?.clip_order || (p.scenes || []).map((s) => s.id);
+  const byId = Object.fromEntries((p.scenes || []).map((s) => [s.id, s]));
+  const scenes = order.map((id) => byId[id]).filter(Boolean);
+  const audioDuration = fish.reduce((m, w) => Math.max(m, w.end), 0);
+  const LOOKAHEAD = 12; // ventana para saltar duplicados/artefactos de Fish al buscar el siguiente token
+
+  let fi = 0; // cursor en el stream de Fish
+  // 1) alinear: cada escena -> sus tokens con timestamp absoluto (o null si no se halla)
+  for (const sc of scenes) {
+    const tokens = _stripTags(sc.voiceover?.text).split(/\s+/).filter(Boolean);
+    const aligned = [];
+    for (const orig of tokens) {
+      const tn = _normWord(orig);
+      if (!tn) continue;
+      let found = -1;
+      for (let k = fi; k < Math.min(fish.length, fi + LOOKAHEAD); k++) {
+        if (_normWord(fish[k].word) === tn) { found = k; break; }
+      }
+      if (found >= 0) { aligned.push({ word: _displayWord(orig), start: fish[found].start, end: fish[found].end }); fi = found + 1; }
+      else aligned.push({ word: _displayWord(orig), start: null, end: null });
+    }
+    sc.__aligned = aligned;
+  }
+  // 2) ventanas: start = primer token con timestamp de la escena; end = start de la siguiente; ultima = fin.
+  const firstTs = (sc) => { const a = (sc.__aligned || []).find((w) => w.start != null); return a ? a.start : null; };
+  for (let si = 0; si < scenes.length; si++) {
+    const sc = scenes[si];
+    let startRaw = si === 0 ? 0 : (firstTs(sc) ?? scenes[si - 1]._window?.end ?? 0);
+    let endRaw = si < scenes.length - 1 ? (firstTs(scenes[si + 1]) ?? null) : audioDuration;
+    if (endRaw == null || endRaw <= startRaw) endRaw = audioDuration; // degrada sin solape
+    sc._window = { start: round3(startRaw), end: round3(endRaw) };
+
+    // RELLENO de huecos: Fish (ventanas deslizantes) a veces NO emite algunas palabras (ej "a todo el pueblo")
+    // -> quedarian SIN caption (el narrador las dice y no aparece subtitulo). El texto es la fuente de verdad:
+    // a cada palabra sin timestamp se le INTERPOLA un tiempo entre sus vecinas con timestamp (o los bordes de
+    // la ventana). Asi NINGUNA palabra hablada queda sin subtitulo. NO se descarta ninguna.
+    const aligned = sc.__aligned || [];
+    const n = aligned.length;
+    let k = 0;
+    while (k < n) {
+      if (aligned[k].start != null) { k++; continue; }
+      let j = k; while (j < n && aligned[j].start == null) j++; // [k, j) = run consecutivo de nulls
+      const leftT = k > 0 ? (aligned[k - 1].end ?? aligned[k - 1].start) : startRaw;
+      const rightT = j < n ? aligned[j].start : endRaw;
+      const span = Math.max(0.001, rightT - leftT);
+      const cnt = j - k;
+      for (let m = 0; m < cnt; m++) {
+        aligned[k + m].start = leftT + (span * (m + 1)) / (cnt + 1);
+        aligned[k + m].end = leftT + (span * (m + 2)) / (cnt + 1);
+      }
+      k = j;
+    }
+    sc.voiceover = sc.voiceover || {};
+    sc.voiceover.words = aligned.map((w) => ({ word: w.word, start: round3(w.start - startRaw), end: round3(w.end - startRaw) }));
+    delete sc.__aligned;
+  }
+  p.audio = p.audio || {};
+  p.audio._continuous = true;
+  p.audio._master = "voice/full.mp3";
+  return scenes.length;
+}
+
 const p = JSON.parse(fs.readFileSync(jsonPath, "utf8").replace(/^﻿/, ""));
 const slug = p.project?.slug || slugify(p.project?.title || "");
 const voiceDir = path.join(ROOT, "public", slug, "voice");
 // opening: voces en public/<assets_slug>/voice/ (fallback: la carpeta del proyecto).
 const openingVoiceDir = p.opening?.assets_slug ? path.join(ROOT, "public", p.opening.assets_slug, "voice") : voiceDir;
+
+// historias VOZ-CONTINUA: si existe el audio maestro (full.words.json), construir ventanas por escena y salir.
+// No se inyecta palabra por escena desde sidecars per-escena (no los hay en este modo).
+const _isHistorias = p.project?.preset === "historias" || p.pipeline?.tts?.mode === "single_file_from_full_script";
+if (_isHistorias) {
+  const fullWords = readWords(voiceDir, "full");
+  if (fullWords && fullWords.length) {
+    const ns = buildTiming(p, fullWords);
+    fs.writeFileSync(jsonPath, JSON.stringify(p, null, 2), "utf8");
+    console.log(`Voz continua: ${fullWords.length} palabras -> ${ns} ventanas de escena (audio maestro voice/full.mp3) en`, path.relative(ROOT, jsonPath));
+    process.exit(0);
+  }
+  console.log("historias: no hay voice/full.words.json -> cae al modo por escena (genera la voz continua con tools/fish-voice.mjs)");
+}
 
 let n = 0;
 if (p.hook) {

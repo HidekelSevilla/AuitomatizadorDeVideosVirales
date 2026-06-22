@@ -19,6 +19,8 @@ const FISH_PRESETS = {
   esqueletos: { voiceId: "5e95c590cfcb46ab927a9ec7b35a88c7", model: "s2-pro" },
   // novela-coreana: 1 voz (narradora calida).
   "novela-coreana": { voiceId: "bfed5c0810a347dbb62e8ccce7f59c48", model: "s2-pro" },
+  // historias: narrador grave de documental (DEBE coincidir con lib/messaging.js FISH_PRESETS).
+  historias: { voiceId: "35199d5438854f5d9157c500479ab684", model: "s2-pro" },
 };
 const DEFAULT_VOICE_ID = "5e95c590cfcb46ab927a9ec7b35a88c7";   // fallback GARANTIZADO: nunca voz generica de Fish
 
@@ -52,7 +54,7 @@ fs.mkdirSync(openingOutDir, { recursive: true });
 // Velocidad de habla EN LA GENERACION (Fish prosody.speed, 0.5-2.0; default 1.0 = sin cambio). Distinto de
 // audio.voice_rate (playbackRate en el render, que ademas sube el pitch). Subir voice_speed acelera la voz
 // SIN cambiar el tono. Las etiquetas de emocion lentas ([reflective], [measured pacing]) la frenan.
-const ttsSpeed = Number(proj.audio?.voice_speed) || 1;
+const ttsSpeed = Number(proj.audio?.voice_speed) || (proj.project?.preset === "historias" ? 0.95 : 1);
 
 const round3 = (x) => Math.round(x * 1000) / 1000;
 
@@ -105,6 +107,16 @@ for (const s of proj.opening?.scenes || []) {
 for (const s of proj.scenes || []) {
   const t = s.voiceover?.text;
   if (typeof t === "string" && t.trim()) items.push({ id: s.id, text: t.trim() });
+}
+// historias VOZ-CONTINUA: una sola generacion desde tts_export.full_script (NO 1 mp3 por escena). El editor
+// mapea cada imagen a su ventana via los timestamps de Fish -> la narracion no tiene costura entre cortes.
+// Sale full.mp3 + full.words.json. Otros presets: intacto (1 mp3 por escena/hook como siempre).
+const isHistorias = (proj.project?.preset === "historias")
+  || (proj.pipeline?.tts?.mode === "single_file_from_full_script");
+const fullScript = proj.tts_export?.full_script;
+if (isHistorias && typeof fullScript === "string" && fullScript.trim()) {
+  items.splice(0, items.length, { id: "full", text: fullScript.trim() });
+  console.log("historias: 1 voz continua desde tts_export.full_script -> full.mp3 + full.words.json");
 }
 // ONLY_IDS=hook,scene_01,... -> regraba SOLO esas (deja el resto intacto). Vacio = todas.
 const onlyIds = (process.env.ONLY_IDS || "").split(",").map((s) => s.trim()).filter(Boolean);

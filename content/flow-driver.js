@@ -194,7 +194,11 @@
       // config.humanTyping OFF -> RAPIDO pero por FRAGMENTOS (Slate registra por EVENTO beforeinput; uno
       // solo de todo el texto puede no habilitar Generar). ON (default) -> fragmentos de 2-5 chars con jitter.
       if (cfg && cfg.humanTyping === false) {
-        for (let i = 0; i < text.length; i += 12) el.dispatchEvent(new InputEvent("beforeinput", { inputType: "insertText", data: text.slice(i, i + 12), bubbles: true, cancelable: true }));
+        // PEGADO RAPIDO en trozos GRANDES (cap 200, minimo 2 trozos): antes de a 12 chars eran ~50-60
+        // eventos para un prompt largo y se veia "tecleando" lento. Pocos trozos = casi instantaneo. Sigue
+        // fragmentado: uno solo de todo el texto puede no habilitar Generar en Slate.
+        const step = Math.max(1, Math.min(200, Math.ceil(text.length / 2)));
+        for (let i = 0; i < text.length; i += step) el.dispatchEvent(new InputEvent("beforeinput", { inputType: "insertText", data: text.slice(i, i + step), bubbles: true, cancelable: true }));
       } else {
         let typed = 0;
         for (let i = 0; i < text.length;) {

@@ -1,0 +1,248 @@
+{
+  "project": {
+    "title": "¿Morían Por Un Juego?",
+    "preset": "historias",
+    "slug": "morian_por_un_juego_historias",
+    "style": "codice_azteca",
+    "language": "es-MX",
+    "aspect_ratio": "16:9",
+    "fps": 30,
+    "pov": "documentary_3rd_person",
+    "hook_style": "cold_open_no_montage",
+    "target_image_max_sec": 4,
+    "voice_pace": "Fish a ~0.9x (mas lento que default).",
+    "audio_strategy": "single_continuous_voice — UNA sola generacion de Fish desde tts_export.full_script (voz continua, sin costuras). El timing por escena sale de los TIMESTAMPS que devuelve Fish, NO de un mp3 por escena ni de ffprobe.",
+    "tone": "Documental dramatico, grave y reflexivo. 3a persona SOBRE los mesoamericanos; nunca habla en 'tu' ni se refiere a si mismo. Ritmo lento, frases CORTAS, pausas con '...'.",
+    "style_anchor": "AUTHENTIC PRE-HISPANIC CODEX ILLUSTRATION (Mixtec-Aztec / Florentine / Boturini style): flat painted codex page on aged amate bark-paper (warm ochre and tan, fiber texture, brown mottling). Flat planes of mineral pigment only (ochre, terracotta-red, deep teal-green, black, cream); BOLD BLACK CONTOUR LINES on every shape; human figures in STRICT SIDE PROFILE with one frontal eye; decorative codex glyph margins (red and black dot-numerals, day-signs, feathered-serpent, footprint path). NOT modern cartoon, NOT Pixar, NOT 3D render, NOT photoreal, NOT comic outlines, no gradients, no lens blur. TEXT RULE: no incidental or garbled letters anywhere; the ONLY allowed text is a deliberate carved-stone cartouche label when a scene explicitly specifies one (short word, correctly spelled). Only adults, no minors, no gore. 16:9 horizontal.",
+    "render_notes": "PRESET HISTORIAS. (1) Texto de carteles BAKED en la imagen (cartela de piedra tallada), NO lo quema el editor. (2) SIN hook de montaje: cold open en scene_01. (3) Movimiento solo pan_lr / pan_rl / tilt_down / static (SIN zoom). (4) Imagenes <=4s; lineas de voz cortas (~7-12 palabras). (5) Voz Fish ~0.9x. (6) Escenas con text_overlay van STATIC + golpe de tambor. (7) VOZ CONTINUA: una sola generacion de Fish desde full_script; timing por timestamps de Fish (no mp3 por escena, no ffprobe). Numeros con letras en la voz; tags Fish compuestos solo en beats clave; captions limpios; sin menores; sin gore (sacrificio estilizado, sin sangre).",
+    "render": { "overlay_style_frame": false },
+    "series": { "part": 1, "is_cliffhanger": false, "standalone": true }
+  },
+  "pipeline": {
+    "image_generation": { "tool": "grok", "note": "Compatible con Flow. SOLO imagenes estaticas. El texto de carteles se genera DENTRO de la imagen (verificar ortografia)." },
+    "animation": { "tool": "none", "method": "ken_burns_in_editor", "note": "Arte plano: no se anima. Movimiento = pan / tilt / static del editor." },
+    "tts": { "tool": "fish_audio", "language": "es-MX", "emotion_syntax": "S2=[brackets]", "rate": "slow ~0.9x", "mode": "single_file_from_full_script", "timestamps": "use_fish_native_timestamps", "sync": "los timestamps de Fish -> mapa de tiempo por escena (start/end) -> el editor corta las imagenes ahi" },
+    "editing": { "tool": "capcut", "renderer": "ViralVideo.tsx (rama preset=historias)" }
+  },
+  "characters": {},
+  "ingredients": [
+    { "id": "style_frame_codice", "type": "style_frame", "generation_prompt": "An EMPTY pre-Hispanic codex page used as the frame for every scene: aged amate bark-paper in warm ochre and tan with fiber texture and brown mottling; a thin dark reddish-brown rectangular border; left and right margins with vertical columns of Mixtec-Aztec codex glyphs in flat color with bold black outlines (red and black dot-numerals, day-sign cartouches, a feathered-serpent head top-right, a footprint path along the bottom). Large CENTER area EMPTY for scene content. Flat authentic codex page, no figures, no text. 16:9 horizontal.", "output_file": "ingredients/style_frame_codice.png" },
+    { "id": "plate_cancha", "type": "location_plate", "generation_prompt": "An EMPTY codex-style Mesoamerican ballcourt (tlachtli) in a stylized oblique aerial view: a long narrow I-shaped court flanked by two sloping side walls, a single round stone scoring ring mounted high on one wall, flat ochre and terracotta planes, bold black outlines, on amate paper. NO people, EMPTY stage. Flat codex page, no text. 16:9.", "output_file": "ingredients/plate_cancha.png" },
+    { "id": "plate_templo", "type": "location_plate", "generation_prompt": "An EMPTY codex-style stepped pyramid temple: a terraced pyramid with a small shrine on top, flat ochre and terracotta planes, bold black outlines, a front stairway; amate paper. NO people, EMPTY. Flat codex page, no text. 16:9.", "output_file": "ingredients/plate_templo.png" },
+    { "id": "fig_jugador", "type": "entity", "generation_prompt": "A single Mesoamerican codex-style BALLPLAYER in STRICT SIDE PROFILE with one frontal eye: athletic adult, flat ochre skin, bold black outline, a loincloth and a thick U-shaped leather hip-yoke (heavy waist padding), knee and forearm padding, a feather headdress, leaning low to strike a ball with his hip. Flat codex convention, full body, neutral background, no scene, no text. Only adult.", "output_file": "ingredients/fig_jugador.png" },
+    { "id": "entity_pelota", "type": "entity", "generation_prompt": "A Mesoamerican codex-style heavy solid RUBBER BALL (olli): a large dark sphere with a subtle sheen, flat black-brown with bold black outline, small curved motion/bounce arc glyphs beside it. Single flat object-glyph, neutral background, no scene, no text.", "output_file": "ingredients/entity_pelota.png" },
+    { "id": "fig_sacerdote", "type": "entity", "generation_prompt": "A single Mesoamerican codex-style PRIEST in STRICT SIDE PROFILE with one frontal eye: tall, lean, flat ochre skin, bold black contour, long white-and-terracotta ritual cloak, tall feather headdress with teal-green and red plumes, jade ear ornaments, dark body paint, holding a flat obsidian ritual blade. Flat codex convention, full body, plain neutral background, no scene, no text. Only adult.", "output_file": "ingredients/fig_sacerdote.png" },
+    { "id": "glyph_muerte", "type": "entity", "generation_prompt": "A Mesoamerican codex-style DEATH glyph: a stylized frontal skull in flat black, cream and bone-white with bold black outline, hollow eye sockets, simple teeth, symbolic and clean, no gore. Single flat glyph, neutral background, no scene, no text.", "output_file": "ingredients/glyph_muerte.png" },
+    { "id": "glyph_tzompantli", "type": "entity", "generation_prompt": "A Mesoamerican codex-style SKULL RACK (tzompantli) glyph: a horizontal wooden frame strung with an orderly row of stylized clean skulls in flat bone-white and cream with bold black outlines, symbolic, NO blood, NO gore. Single flat glyph, neutral background, no scene, no text.", "output_file": "ingredients/glyph_tzompantli.png" },
+    { "id": "glyph_gemelos", "type": "entity", "generation_prompt": "A Mesoamerican codex-style COSMIC-BATTLE glyph: two small hero-twin figures in side profile facing each other, between them a flat sun glyph above and a dark underworld skull glyph below, representing day versus night and sun versus underworld. Single flat glyph composition, neutral background, no scene, no text. Only adults.", "output_file": "ingredients/glyph_gemelos.png" }
+  ],
+  "scenes": [
+    { "id": "scene_01", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha", "entity_pelota"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha, using the provided entity_pelota: the lone heavy rubber ball rests at the center of the empty ballcourt, a long ominous shadow stretching from it. Sparse, foreboding. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "static" },
+      "voiceover": { "text": "[low, mysterious, cinematic narrator tone] Había un juego... donde perder no significaba quedar fuera." },
+      "captions": { "text": "Perder no significaba quedar fuera", "highlight_words": ["perder"] } },
+
+    { "id": "scene_02", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha", "glyph_muerte"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha, using the provided glyph_muerte: the dark death-skull glyph looms large over the empty court. At top-center a deliberate CARVED STONE CARTOUCHE banner with bold codex text reading exactly 'MORIR' (correctly spelled, NOT garbled). Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no OTHER text.", "motion": "static" },
+      "text_overlay": { "word": "MORIR", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "[low, stunned, slowly revealing] Significaba morir." },
+      "captions": { "text": "Significaba morir", "highlight_words": ["morir"] } },
+
+    { "id": "scene_03", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha: the ballcourt full of faint ancestral codex figures in profile playing, layered as if across many generations, footprint paths everywhere. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figures; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_lr" },
+      "voiceover": { "text": "Lo jugaban desde hace más de tres mil años." },
+      "captions": { "text": "Más de tres mil años", "highlight_words": ["tres mil"] } },
+
+    { "id": "scene_04", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha", "entity_pelota"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha, using the provided entity_pelota large and centered: the heavy rubber ball mid-bounce with motion-arc glyphs, the court around it. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_rl" },
+      "voiceover": { "text": "Y todo giraba en torno a una pelota." },
+      "captions": { "text": "Todo giraba en torno a una pelota", "highlight_words": ["pelota"] } },
+
+    { "id": "scene_05", "references": { "characters": [], "ingredients": ["style_frame_codice", "entity_pelota"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice, using the provided entity_pelota very large: the dense rubber ball with weight glyphs (a flat scale-glyph) beside it, and two straining flat hands barely holding it. At top-center a deliberate CARVED STONE CARTOUCHE banner with bold codex text reading exactly '4 KILOS' (correctly spelled, digit 4 correct, NOT garbled). Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no OTHER text.", "motion": "static" },
+      "text_overlay": { "word": "4 KILOS", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "De hule macizo. Pesaba hasta cuatro kilos." },
+      "captions": { "text": "Hule macizo, cuatro kilos", "highlight_words": ["cuatro kilos"] } },
+
+    { "id": "scene_06", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha", "entity_pelota", "fig_jugador"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha, using the provided entity_pelota and fig_jugador: the heavy ball strikes the player's side, his body recoiling, a flat impact-burst glyph at his ribs, no blood. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figure; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_lr" },
+      "voiceover": { "text": "Tan dura que podía romperte las costillas." },
+      "captions": { "text": "Podía romperte las costillas", "highlight_words": ["costillas"] } },
+
+    { "id": "scene_07", "references": { "characters": [], "ingredients": ["style_frame_codice", "entity_pelota"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice, using the provided entity_pelota: the ball shown with sharp flat impact-line glyphs radiating outward, ominous and powerful, on the codex page. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_rl" },
+      "voiceover": { "text": "O matarte... de un solo golpe." },
+      "captions": { "text": "O matarte de un golpe", "highlight_words": ["golpe"] } },
+
+    { "id": "scene_08", "references": { "characters": [], "ingredients": ["style_frame_codice", "fig_jugador", "entity_pelota"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice, using the provided fig_jugador and entity_pelota: the player in profile with bold black X-mark glyphs struck over his hands and his feet, the ball beside him, signaling the forbidden contact. At top-center a deliberate CARVED STONE CARTOUCHE banner with bold codex text reading exactly 'SIN MANOS' (correctly spelled, NOT garbled). Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figure; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no OTHER text.", "motion": "static" },
+      "text_overlay": { "word": "SIN MANOS", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "No podías tocarla con las manos. Ni con los pies." },
+      "captions": { "text": "Sin manos ni pies", "highlight_words": ["manos"] } },
+
+    { "id": "scene_09", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha", "fig_jugador", "entity_pelota"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha, using the provided fig_jugador and entity_pelota: a CLOSE-UP composition of the player's hip and torso filling much of the frame as he drives the heavy ball with his padded hip, knee and forearm padding visible. Dynamic, athletic. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figure; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_lr" },
+      "voiceover": { "text": "Solo con las caderas. Los codos. Las rodillas." },
+      "captions": { "text": "Solo cadera, codos, rodillas", "highlight_words": ["caderas"] } },
+
+    { "id": "scene_10", "references": { "characters": [], "ingredients": ["style_frame_codice", "fig_jugador"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice, using the provided fig_jugador centered: the player in profile presenting his thick U-shaped leather hip-yoke and padding, dignified stance. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figure; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_rl" },
+      "voiceover": { "text": "Por eso usaban gruesos protectores de cuero." },
+      "captions": { "text": "Gruesos protectores de cuero", "highlight_words": ["protectores"] } },
+
+    { "id": "scene_11", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha: a clear oblique aerial of the I-shaped ballcourt emphasized, divine scrolls along its walls marking it sacred. At top-center a deliberate CARVED STONE CARTOUCHE banner with bold codex text reading exactly 'LA CANCHA' (correctly spelled, NOT garbled). Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no OTHER text.", "motion": "static" },
+      "text_overlay": { "word": "LA CANCHA", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "La cancha era sagrada. Con forma de la letra I." },
+      "captions": { "text": "La cancha sagrada, en forma de I", "highlight_words": ["sagrada"] } },
+
+    { "id": "scene_12", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha: a close view of one sloping court wall with the single round stone scoring ring mounted high, tiny against the wall. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "tilt_down" },
+      "voiceover": { "text": "En lo alto de los muros... un anillo de piedra." },
+      "captions": { "text": "Un anillo de piedra en lo alto", "highlight_words": ["anillo"] } },
+
+    { "id": "scene_13", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha", "entity_pelota"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha, using the provided entity_pelota: the heavy ball hovering just beside the narrow stone ring, the tight gap emphasized, suspenseful. At top-center a deliberate CARVED STONE CARTOUCHE banner with bold codex text reading exactly 'EL ANILLO' (correctly spelled, NOT garbled). Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no OTHER text.", "motion": "static" },
+      "text_overlay": { "word": "EL ANILLO", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "Meter la pelota ahí... era casi imposible." },
+      "captions": { "text": "Meterla ahí era casi imposible", "highlight_words": ["imposible"] } },
+
+    { "id": "scene_14", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha", "entity_pelota", "fig_jugador"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha, using the provided entity_pelota and fig_jugador: the ball passing through the stone ring, flat triumph rays and victory scroll glyphs bursting around it, the player below with arms raised. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figure; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_lr" },
+      "voiceover": { "text": "Pero quien lo lograba... ganaba al instante." },
+      "captions": { "text": "Quien lo lograba ganaba al instante", "highlight_words": ["instante"] } },
+
+    { "id": "scene_15", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha: the court with large divine sun and star glyphs hovering above it, hinting at a hidden cosmic meaning. No figures. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_rl" },
+      "voiceover": { "text": "Y sin embargo... no era solo un deporte." },
+      "captions": { "text": "No era solo un deporte", "highlight_words": ["deporte"] } },
+
+    { "id": "scene_16", "references": { "characters": [], "ingredients": ["style_frame_codice", "glyph_gemelos"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice, using the provided glyph_gemelos large and centered: the cosmic-battle glyph of the hero twins between the sun glyph above and the underworld skull glyph below. At top-center a deliberate CARVED STONE CARTOUCHE banner with bold codex text reading exactly 'EL COSMOS' (correctly spelled, NOT garbled). Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no OTHER text.", "motion": "static" },
+      "text_overlay": { "word": "EL COSMOS", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "[serious, intriguing, slow build] Era una batalla del cosmos." },
+      "captions": { "text": "Era una batalla del cosmos", "highlight_words": ["cosmos"] } },
+
+    { "id": "scene_17", "references": { "characters": [], "ingredients": ["style_frame_codice", "glyph_gemelos"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice, using the provided glyph_gemelos: a split codex panel, left side a bright flat sun realm, right side a dark underworld of skull and night glyphs, the twins straining between them. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_lr" },
+      "voiceover": { "text": "El sol contra el inframundo. La luz contra la noche." },
+      "captions": { "text": "El sol contra el inframundo", "highlight_words": ["inframundo"] } },
+
+    { "id": "scene_18", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha", "entity_pelota"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha, using the provided entity_pelota rendered as a flat sun glyph: the ball-as-sun arcs across the top of the court like the sun crossing the sky, small player figures in profile below tracking it. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figures; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_lr" },
+      "voiceover": { "text": "La pelota era el sol... cruzando el cielo." },
+      "captions": { "text": "La pelota era el sol", "highlight_words": ["sol"] } },
+
+    { "id": "scene_19", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha", "entity_pelota"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha, using the provided entity_pelota: the ball held aloft at the center while flat cosmos glyphs (sun, moon, stars) orbit around the whole court, the universe in motion. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "tilt_down" },
+      "voiceover": { "text": "Mantenerla en el aire... mantenía vivo al universo." },
+      "captions": { "text": "Mantenía vivo al universo", "highlight_words": ["universo"] } },
+
+    { "id": "scene_20", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha: rows of codex spectators in profile along the court walls, with piles of offering goods (flat glyphs of gold disks and feathers) stacked before them. At top-center a deliberate CARVED STONE CARTOUCHE banner with bold codex text reading exactly 'TODO' (correctly spelled, NOT garbled). Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figures; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no OTHER text.", "motion": "static" },
+      "text_overlay": { "word": "TODO", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "Y en las gradas... se apostaba todo." },
+      "captions": { "text": "En las gradas se apostaba todo", "highlight_words": ["todo"] } },
+
+    { "id": "scene_21", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha: three flat codex glyph-piles in a row, gold disks, quetzal feathers, and bound figures representing slaves, each labeled by codex dot-numerals. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figures; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_lr" },
+      "voiceover": { "text": "Oro. Plumas. Esclavos." },
+      "captions": { "text": "Oro, plumas, esclavos", "highlight_words": ["esclavos"] } },
+
+    { "id": "scene_22", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha: a single codex adult man in profile pointing at himself while a flat binding-rope glyph coils near his wrists, wagering his own freedom. At top-center a deliberate CARVED STONE CARTOUCHE banner with bold codex text reading exactly 'TU LIBERTAD' (correctly spelled, NOT garbled). Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figure; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no OTHER text.", "motion": "static" },
+      "text_overlay": { "word": "TU LIBERTAD", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "Algunos apostaban... su propia libertad." },
+      "captions": { "text": "Apostaban su propia libertad", "highlight_words": ["libertad"] } },
+
+    { "id": "scene_23", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha", "fig_jugador"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha, using the provided fig_jugador as the loser: the defeated player in profile kneeling with a flat binding-rope glyph around his wrists while a victorious figure stands over him. No gore. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figures; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_rl" },
+      "voiceover": { "text": "Si perdías... te volvías esclavo del ganador." },
+      "captions": { "text": "Perder te hacía esclavo", "highlight_words": ["esclavo"] } },
+
+    { "id": "scene_24", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha", "plate_templo"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice: the provided plate_cancha in the foreground with the provided plate_templo looming behind it, a tall priest silhouette glyph at the top of the temple, a heavy ominous mood. No clear faces. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_lr" },
+      "voiceover": { "text": "Pero en los partidos sagrados... había algo peor." },
+      "captions": { "text": "En los sagrados, algo peor", "highlight_words": ["peor"] } },
+
+    { "id": "scene_25", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_templo", "glyph_muerte"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_templo, using the provided glyph_muerte: the death-skull glyph hangs heavy over a single kneeling codex adult figure in profile, head bowed, solemn and symbolic, no gore. At top-center a deliberate CARVED STONE CARTOUCHE banner with bold codex text reading exactly 'LA MUERTE' (correctly spelled, NOT garbled). Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figure; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no OTHER text.", "motion": "static" },
+      "text_overlay": { "word": "LA MUERTE", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "[grave, documentary narrator tone, quietly dramatic] Al perdedor... lo sacrificaban." },
+      "captions": { "text": "Al perdedor lo sacrificaban", "highlight_words": ["sacrificaban"] } },
+
+    { "id": "scene_26", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_templo", "fig_sacerdote"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_templo, using the provided fig_sacerdote: the priest in profile raising his flat obsidian blade in a solemn ritual gesture above a kneeling adult captive in profile, codex convention, strictly symbolic, NO blood, NO gore, no graphic detail. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figures; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_lr" },
+      "voiceover": { "text": "Lo decapitaban... frente a todo el pueblo." },
+      "captions": { "text": "Frente a todo el pueblo", "highlight_words": ["pueblo"] } },
+
+    { "id": "scene_27", "references": { "characters": [], "ingredients": ["style_frame_codice", "glyph_tzompantli"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice, using the provided glyph_tzompantli: a single clean skull being added to the orderly rack of skulls, symbolic and flat, no gore. At top-center a deliberate CARVED STONE CARTOUCHE banner with bold codex text reading exactly 'CRANEOS' (correctly spelled, NOT garbled). Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no OTHER text.", "motion": "static" },
+      "text_overlay": { "word": "CRANEOS", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "Y su cabeza... terminaba en un muro." },
+      "captions": { "text": "Su cabeza iba a un muro", "highlight_words": ["muro"] } },
+
+    { "id": "scene_28", "references": { "characters": [], "ingredients": ["style_frame_codice", "glyph_tzompantli"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice, using the provided glyph_tzompantli wide and full: the long skull rack lined with rows of clean stylized skulls across the page, orderly and somber, no gore. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_lr" },
+      "voiceover": { "text": "Un muro hecho de cráneos. El tzompantli." },
+      "captions": { "text": "El tzompantli, muro de cráneos", "highlight_words": ["tzompantli"] } },
+
+    { "id": "scene_29", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha: the court flanked by two opposing banner glyphs and crossed-weapon glyphs being set aside, suggesting war avoided through the game. No figures. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_rl" },
+      "voiceover": { "text": "El juego también decidía guerras." },
+      "captions": { "text": "También decidía guerras", "highlight_words": ["guerras"] } },
+
+    { "id": "scene_30", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha", "plate_templo"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice: two codex rulers in profile, each on a raised mat seat with a turquoise diadem, facing each other across the provided plate_cancha, the provided plate_templo behind. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figures; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_lr" },
+      "voiceover": { "text": "En vez de pelear, dos reyes... jugaban." },
+      "captions": { "text": "Dos reyes jugaban en vez de pelear", "highlight_words": ["reyes"] } },
+
+    { "id": "scene_31", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha: a codex ruler in profile on a throne gesturing toward the court, with a flat glyph of a whole village (small houses and a temple) shown as his wager. At top-center a deliberate CARVED STONE CARTOUCHE banner with bold codex text reading exactly 'UN PUEBLO' (correctly spelled, NOT garbled). Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figure; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no OTHER text.", "motion": "static" },
+      "text_overlay": { "word": "UN PUEBLO", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "Un emperador llegó a apostar... un pueblo entero." },
+      "captions": { "text": "Apostó un pueblo entero", "highlight_words": ["pueblo"] } },
+
+    { "id": "scene_32", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha: the ballcourt alive with a full crowd of codex spectators in profile and players mid-game, the heart of the city, warm and vibrant. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figures; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_rl" },
+      "voiceover": { "text": "Durante siglos, fue el corazón de su mundo." },
+      "captions": { "text": "El corazón de su mundo", "highlight_words": ["corazón"] } },
+
+    { "id": "scene_33", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha: bold black X-mark glyphs struck over the court and a single tall plain cross glyph cast in shadow over it, signaling prohibition. No figures. At top-center a deliberate CARVED STONE CARTOUCHE banner with bold codex text reading exactly 'PROHIBIDO' (correctly spelled, NOT garbled). Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no OTHER text.", "motion": "static" },
+      "text_overlay": { "word": "PROHIBIDO", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "[low, tense, documentary narrator tone] Hasta que llegaron los españoles. Y lo prohibieron." },
+      "captions": { "text": "Los españoles lo prohibieron", "highlight_words": ["prohibieron"] } },
+
+    { "id": "scene_34", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha: the ballcourt empty and cracked, flat weeds growing between the stones, silent and abandoned. No figures. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_lr" },
+      "voiceover": { "text": "Lo llamaron salvaje. Las canchas quedaron en silencio." },
+      "captions": { "text": "Las canchas quedaron en silencio", "highlight_words": ["silencio"] } },
+
+    { "id": "scene_35", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha", "entity_pelota"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha, using the provided entity_pelota: in the abandoned court, a single rubber ball still mid-bounce with a faint motion-arc glyph, a sign the game refuses to die. No figures. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_rl" },
+      "voiceover": { "text": "Pero un juego de tres mil años... no muere fácil." },
+      "captions": { "text": "Un juego de tres mil años no muere fácil", "highlight_words": ["no muere"] } },
+
+    { "id": "scene_36", "references": { "characters": [], "ingredients": ["style_frame_codice", "plate_cancha", "fig_jugador", "entity_pelota"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_codice and plate_cancha, using the provided fig_jugador and entity_pelota: codex players still striking the ball with their hips on a worn dirt court at dawn, lit by a flat rising-sun glyph at the horizon, quiet survival and continuity. Composition built to be FROZEN as the final frame. Flat pre-Hispanic codex page on amate paper, flat mineral-color planes, bold black contours, profile figures; NOT cartoon/3D/photoreal; only adults, no minors, no gore; 16:9, no text.", "motion": "pan_lr" },
+      "voiceover": { "text": "[calm, solemn, with restrained hope, voice lowering at the end] Todavía hoy se juega en el norte de México... lo llaman ulama." },
+      "captions": { "text": "Todavía se juega: lo llaman ulama", "highlight_words": ["ulama"] } }
+  ],
+  "capcut_export": {
+    "main_timeline_starts_after_hook": false,
+    "timing_source": "fish_timestamps_map_over_single_audio (NO ffprobe por escena; UN audio continuo + mapa de tiempos de Fish)",
+    "no_montage_hook": true,
+    "clip_order": ["scene_01","scene_02","scene_03","scene_04","scene_05","scene_06","scene_07","scene_08","scene_09","scene_10","scene_11","scene_12","scene_13","scene_14","scene_15","scene_16","scene_17","scene_18","scene_19","scene_20","scene_21","scene_22","scene_23","scene_24","scene_25","scene_26","scene_27","scene_28","scene_29","scene_30","scene_31","scene_32","scene_33","scene_34","scene_35","scene_36"],
+    "title_cards": [],
+    "ending_card": { "after_scene": "scene_36", "text": "¿Jugarías sabiendo el precio? 👇", "style": "Texto grande sobre el frame congelado de scene_36; comment-bait, SIN '¿Parte 2?'." },
+    "caption_style": { "font": "Montserrat ExtraBold", "size": 64, "position": "lower_third", "max_words_on_screen": 5, "color": "#FFFFFF", "stroke": "borde/sombra negra para legibilidad sobre el papel" },
+    "music_notes": "Cama documental de tensión contenida: tambor mexica grave y lento (huehuetl) + flauta de barro + drone bajo. Sube en el giro cósmico (scene_16) y en el sacrificio (scene_25); baja al cierre (scene_36).",
+    "sfx_notes": "Bote seco y pesado de la pelota de hule en escenas de juego (04,06,09,13,14,18); viento ligero en las canchas vacías (34,35). GOLPE SECO DE TAMBOR en CADA escena con text_overlay/static (02,05,08,11,13,16,20,22,25,27,31,33) al entrar el cartel. Silencio breve antes del remate de scene_36.",
+    "static_punch_scenes": ["scene_01","scene_02","scene_05","scene_08","scene_11","scene_13","scene_16","scene_20","scene_22","scene_25","scene_27","scene_31","scene_33"]
+  },
+  "tts_export": {
+    "language": "es-MX",
+    "full_script": "[low, mysterious, cinematic narrator tone] Había un juego... donde perder no significaba quedar fuera. [low, stunned, slowly revealing] Significaba morir. Lo jugaban desde hace más de tres mil años. Y todo giraba en torno a una pelota. De hule macizo. Pesaba hasta cuatro kilos. Tan dura que podía romperte las costillas. O matarte... de un solo golpe. No podías tocarla con las manos. Ni con los pies. Solo con las caderas. Los codos. Las rodillas. Por eso usaban gruesos protectores de cuero. La cancha era sagrada. Con forma de la letra I. En lo alto de los muros... un anillo de piedra. Meter la pelota ahí... era casi imposible. Pero quien lo lograba... ganaba al instante. Y sin embargo... no era solo un deporte. [serious, intriguing, slow build] Era una batalla del cosmos. El sol contra el inframundo. La luz contra la noche. La pelota era el sol... cruzando el cielo. Mantenerla en el aire... mantenía vivo al universo. Y en las gradas... se apostaba todo. Oro. Plumas. Esclavos. Algunos apostaban... su propia libertad. Si perdías... te volvías esclavo del ganador. Pero en los partidos sagrados... había algo peor. [grave, documentary narrator tone, quietly dramatic] Al perdedor... lo sacrificaban. Lo decapitaban... frente a todo el pueblo. Y su cabeza... terminaba en un muro. Un muro hecho de cráneos. El tzompantli. El juego también decidía guerras. En vez de pelear, dos reyes... jugaban. Un emperador llegó a apostar... un pueblo entero. Durante siglos, fue el corazón de su mundo. [low, tense, documentary narrator tone] Hasta que llegaron los españoles. Y lo prohibieron. Lo llamaron salvaje. Las canchas quedaron en silencio. Pero un juego de tres mil años... no muere fácil. [calm, solemn, with restrained hope, voice lowering at the end] Todavía hoy se juega en el norte de México... lo llaman ulama."
+  }
+}

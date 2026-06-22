@@ -1,0 +1,249 @@
+{
+  "project": {
+    "title": "La Caída de Ícaro",
+    "preset": "historias",
+    "slug": "la_caida_de_icaro_historias",
+    "style": "ceramica_griega",
+    "language": "es-MX",
+    "aspect_ratio": "16:9",
+    "fps": 30,
+    "pov": "documentary_3rd_person",
+    "hook_style": "cold_open_no_montage",
+    "target_image_max_sec": 4,
+    "voice_pace": "Fish ~0.9x.",
+    "narration_principle": "GUION FLUIDO PRIMERO: full_script es UN relato documental continuo (hilo de principio a fin, ritmo parejo). Las escenas son cortes de ese relato en beats visuales de 7-14 palabras; NO se fabrica una frase por imagen. Cada imagen ILUSTRA lo que se narra en su ventana (la narrativa manda, la imagen acompaña). Maximo ~4 '...' en todo el video.",
+    "audio_strategy": "single_continuous_voice — UNA generacion de Fish desde full_script; timing por timestamps de Fish/WhisperX.",
+    "tone": "Documental dramatico y fluido, 3a persona. Tags Fish COMPUESTOS por BLOQUE emocional (misterio -> intriga -> advertencia grave -> vuelo epico -> soberbia tensa -> caida -> cierre), no por frase. Hook y cierre siempre con tag.",
+    "style_anchor": "AUTHENTIC ANCIENT GREEK RED-FIGURE VASE PAINTING (Attic pottery, classical period): orange-red terracotta FIGURES on a glossy BLACK ground, fine black interior detail lines, figures in STRICT PROFILE; THIN Greek meander/key border and palmette motifs; flat, NO modern shading/gradients/perspective; the look of paint on a ceramic surface. NOT cartoon/Pixar/3D/photoreal/comic. TEXT RULE: only a deliberate painted vase-style banner where a scene specifies one (short, correctly spelled). Only adults, no minors, no gore. 16:9.",
+    "render_notes": "PRESET HISTORIAS. Metodo NARRATIVA-PRIMERO (ver narration_principle). Estilo NUEVO ceramica_griega: desacoplado del renderer (solo cambian prompts/ingredients, CERO cambios de pipeline). Texto de carteles BAKED. Cold open scene_01. Movimiento pan_lr/pan_rl/tilt_down/static (SIN zoom). MARCO DELGADO. text_overlay = STATIC + tambor/golpe. Voz continua. Numeros con letras; tags por bloque; captions limpios; sin menores (Icaro = joven ADULTO); sin gore.",
+    "render": {
+      "overlay_style_frame": false
+    },
+    "series": {
+      "part": 1,
+      "is_cliffhanger": false,
+      "standalone": true
+    }
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok",
+      "note": "Compatible con Flow. SOLO imagenes estaticas; texto de carteles DENTRO de la imagen. Pasar style_frame_griego + entities como REFERENCIA."
+    },
+    "animation": {
+      "tool": "none",
+      "method": "ken_burns_in_editor"
+    },
+    "tts": {
+      "tool": "fish_audio",
+      "language": "es-MX",
+      "emotion_syntax": "S2=[brackets compuestos en ingles]",
+      "rate": "slow ~0.9x",
+      "mode": "single_file_from_full_script",
+      "timestamps": "fish_native_or_whisperx"
+    },
+    "editing": {
+      "tool": "capcut",
+      "renderer": "ViralVideo.tsx (rama preset=historias)"
+    }
+  },
+  "characters": {},
+  "ingredients": [
+    {
+      "id": "style_frame_griego",
+      "type": "style_frame",
+      "generation_prompt": "An EMPTY ancient Greek vase panel used as a THIN frame: a glossy black ceramic ground with a SLIM orange-red Greek meander/key border band along only the very top and bottom edges, and one small orange-red palmette in a corner. Side margins minimal. The LARGE BLACK CENTER fills most of the panel for scene content. Authentic red-figure vase surface, no figures, no text. 16:9 horizontal.",
+      "output_file": "ingredients/style_frame_griego.png"
+    },
+    {
+      "id": "plate_torre",
+      "type": "location_plate",
+      "generation_prompt": "An EMPTY ancient Greek red-figure scene of a tall stone tower on a rocky seaside cliff: orange-red terracotta lines on a glossy black ground, flat, fine black detail. NO people, EMPTY. Greek vase style, no text. 16:9.",
+      "output_file": "ingredients/plate_torre.png"
+    },
+    {
+      "id": "plate_cielomar",
+      "type": "location_plate",
+      "generation_prompt": "An EMPTY ancient Greek red-figure scene of open sky over a wide sea with stylized spiral waves: orange-red terracotta on a glossy black ground, flat. NO people, EMPTY. Greek vase style, no text. 16:9.",
+      "output_file": "ingredients/plate_cielomar.png"
+    },
+    {
+      "id": "fig_dedalo",
+      "type": "entity",
+      "generation_prompt": "A single ancient Greek red-figure DAEDALUS: an older bearded master craftsman in STRICT PROFILE, orange-red terracotta figure on a black ground with fine black interior detail lines, short tunic, thoughtful. Full body, neutral black ground, no scene, no text. Only adult.",
+      "output_file": "ingredients/fig_dedalo.png"
+    },
+    {
+      "id": "fig_icaro",
+      "type": "entity",
+      "generation_prompt": "A single ancient Greek red-figure ICARUS: a youthful beardless young man in STRICT PROFILE, orange-red terracotta figure on a black ground with fine black interior detail lines, short tunic, athletic and eager. Full body, neutral black ground, no scene, no text. Young adult, NOT a child.",
+      "output_file": "ingredients/fig_icaro.png"
+    },
+    {
+      "id": "fig_minos",
+      "type": "entity",
+      "generation_prompt": "A single ancient Greek red-figure KING MINOS: a crowned bearded king seated on a throne in STRICT PROFILE, orange-red terracotta figure on a black ground with fine black detail lines, robed, stern, holding a scepter. Neutral black ground, no scene, no text. Only adult.",
+      "output_file": "ingredients/fig_minos.png"
+    },
+    {
+      "id": "entity_alas",
+      "type": "entity",
+      "generation_prompt": "A pair of ancient Greek red-figure WINGS made of layered feathers bound with wax: orange-red on a black ground with fine black feather detail lines, flat. Single object, neutral black ground, no scene, no text.",
+      "output_file": "ingredients/entity_alas.png"
+    },
+    {
+      "id": "entity_sol",
+      "type": "entity",
+      "generation_prompt": "An ancient Greek red-figure SUN: a radiant solar disc with straight rays (the sun of Helios), orange-red on a black ground with fine black lines, flat. Single object-glyph, neutral black ground, no scene, no text.",
+      "output_file": "ingredients/entity_sol.png"
+    },
+    {
+      "id": "entity_pluma",
+      "type": "entity",
+      "generation_prompt": "A single ancient Greek red-figure FEATHER: orange-red on a black ground with fine black detail lines, flat and elegant. Single object, neutral black ground, no scene, no text.",
+      "output_file": "ingredients/entity_pluma.png"
+    },
+    {
+      "id": "entity_ola",
+      "type": "entity",
+      "generation_prompt": "An ancient Greek red-figure cresting WAVE (a stylized sea wave with a spiral curl): orange-red on a black ground with fine black lines, flat. Single object-glyph, neutral black ground, no scene, no text.",
+      "output_file": "ingredients/entity_ola.png"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_01",
+      "references": { "characters": [], "ingredients": ["style_frame_griego", "plate_torre", "fig_dedalo"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_griego, using the provided plate_torre, fig_dedalo: a tall stone tower on a rocky seaside cliff, a lone figure visible high in its window, wide establishing view Authentic ancient Greek red-figure vase painting: orange-red terracotta figures on a glossy black ground, fine black interior detail lines, figures in profile, flat with NO modern shading/gradients/perspective; the look of painted ceramic. NOT cartoon/3D/photoreal/comic; only adults, no minors, no gore; 16:9, no text. Use only a THIN decorative meander border so the scene fills most of the panel (more image, slim margins).", "motion": "pan_rl" },
+      "voiceover": { "text": "[low, mysterious, cinematic narrator tone] En la isla de Creta, encerrado en lo alto de una torre," },
+      "captions": { "text": "En lo alto de una torre, en Creta", "highlight_words": ["Creta"] }
+    },
+    {
+      "id": "scene_02",
+      "references": { "characters": [], "ingredients": ["style_frame_griego", "fig_dedalo", "plate_torre"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_griego, using the provided fig_dedalo, plate_torre: Daedalus in profile inside the tower surrounded by craftsman's tools, thoughtful and brilliant Authentic ancient Greek red-figure vase painting: orange-red terracotta figures on a glossy black ground, fine black interior detail lines, figures in profile, flat with NO modern shading/gradients/perspective; the look of painted ceramic. NOT cartoon/3D/photoreal/comic; only adults, no minors, no gore; 16:9, no text. Use only a THIN decorative meander border so the scene fills most of the panel (more image, slim margins).", "motion": "pan_lr" },
+      "voiceover": { "text": "vivía el inventor más brillante del mundo antiguo: Dédalo." },
+      "captions": { "text": "Vivía Dédalo, el inventor más brillante", "highlight_words": ["Dédalo"] }
+    },
+    {
+      "id": "scene_03",
+      "references": { "characters": [], "ingredients": ["style_frame_griego", "fig_minos", "fig_dedalo", "fig_icaro"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_griego, using the provided fig_minos, fig_dedalo, fig_icaro: King Minos crowned on his throne in profile on one side, Daedalus and his son Icarus confined behind him At top-center a deliberate painted vase-style banner with bold lettering reading exactly 'EL REY MINOS' (correctly spelled, NOT garbled). Authentic ancient Greek red-figure vase painting: orange-red terracotta figures on a glossy black ground, fine black interior detail lines, figures in profile, flat with NO modern shading/gradients/perspective; the look of painted ceramic. NOT cartoon/3D/photoreal/comic; only adults, no minors, no gore; 16:9, no OTHER text. Use only a THIN decorative meander border so the scene fills most of the panel (more image, slim margins).", "motion": "static" },
+      "text_overlay": { "word": "EL REY MINOS", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "El rey Minos lo había encerrado con su hijo Ícaro, y selló cada salida." },
+      "captions": { "text": "Minos los encerró a él y a su hijo", "highlight_words": ["Minos"] }
+    },
+    {
+      "id": "scene_04",
+      "references": { "characters": [], "ingredients": ["style_frame_griego", "fig_dedalo", "entity_pluma", "plate_cielomar"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_griego, using the provided fig_dedalo, entity_pluma, plate_cielomar: Daedalus in profile gazing up at the open sky, birds and a falling feather above him over the sea Authentic ancient Greek red-figure vase painting: orange-red terracotta figures on a glossy black ground, fine black interior detail lines, figures in profile, flat with NO modern shading/gradients/perspective; the look of painted ceramic. NOT cartoon/3D/photoreal/comic; only adults, no minors, no gore; 16:9, no text. Use only a THIN decorative meander border so the scene fills most of the panel (more image, slim margins).", "motion": "pan_rl" },
+      "voiceover": { "text": "[serious, intriguing, slow build] Pero Dédalo miró al cielo... y vio la salida que nadie podía cerrar." },
+      "captions": { "text": "Pero Dédalo miró al cielo", "highlight_words": ["cielo"] }
+    },
+    {
+      "id": "scene_05",
+      "references": { "characters": [], "ingredients": ["style_frame_griego", "fig_dedalo", "entity_alas"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_griego, using the provided fig_dedalo, entity_alas: Daedalus's hands binding layered feathers with wax into a pair of wings, focused detail At top-center a deliberate painted vase-style banner with bold lettering reading exactly 'LAS ALAS' (correctly spelled, NOT garbled). Authentic ancient Greek red-figure vase painting: orange-red terracotta figures on a glossy black ground, fine black interior detail lines, figures in profile, flat with NO modern shading/gradients/perspective; the look of painted ceramic. NOT cartoon/3D/photoreal/comic; only adults, no minors, no gore; 16:9, no OTHER text. Use only a THIN decorative meander border so the scene fills most of the panel (more image, slim margins).", "motion": "static" },
+      "text_overlay": { "word": "LAS ALAS", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "Con plumas de aves y cera, construyó dos pares de alas." },
+      "captions": { "text": "Con plumas y cera, construyó alas", "highlight_words": ["alas"] }
+    },
+    {
+      "id": "scene_06",
+      "references": { "characters": [], "ingredients": ["style_frame_griego", "fig_dedalo", "fig_icaro", "plate_torre"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_griego, using the provided fig_dedalo, fig_icaro, plate_torre: Daedalus and young Icarus in profile embracing at the edge of the high tower, wings on their backs Authentic ancient Greek red-figure vase painting: orange-red terracotta figures on a glossy black ground, fine black interior detail lines, figures in profile, flat with NO modern shading/gradients/perspective; the look of painted ceramic. NOT cartoon/3D/photoreal/comic; only adults, no minors, no gore; 16:9, no text. Use only a THIN decorative meander border so the scene fills most of the panel (more image, slim margins).", "motion": "pan_lr" },
+      "voiceover": { "text": "[grave, documentary narrator tone, quietly dramatic] Antes de saltar, abrazó a su hijo y le advirtió:" },
+      "captions": { "text": "Antes de saltar, le advirtió a su hijo", "highlight_words": ["advirtió"] }
+    },
+    {
+      "id": "scene_07",
+      "references": { "characters": [], "ingredients": ["style_frame_griego", "entity_alas", "entity_ola"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_griego, using the provided entity_alas, entity_ola: a feathered wing dipping dangerously low, its tips grazing the stylized cresting waves of the sea Authentic ancient Greek red-figure vase painting: orange-red terracotta figures on a glossy black ground, fine black interior detail lines, figures in profile, flat with NO modern shading/gradients/perspective; the look of painted ceramic. NOT cartoon/3D/photoreal/comic; only adults, no minors, no gore; 16:9, no text. Use only a THIN decorative meander border so the scene fills most of the panel (more image, slim margins).", "motion": "pan_rl" },
+      "voiceover": { "text": "No vueles muy bajo, o el mar mojará tus alas." },
+      "captions": { "text": "Ni muy bajo: el mar mojaría las alas", "highlight_words": ["muy bajo"] }
+    },
+    {
+      "id": "scene_08",
+      "references": { "characters": [], "ingredients": ["style_frame_griego", "entity_alas", "entity_sol"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_griego, using the provided entity_alas, entity_sol: a feathered wing rising toward a large radiant sun disc with straight rays high above Authentic ancient Greek red-figure vase painting: orange-red terracotta figures on a glossy black ground, fine black interior detail lines, figures in profile, flat with NO modern shading/gradients/perspective; the look of painted ceramic. NOT cartoon/3D/photoreal/comic; only adults, no minors, no gore; 16:9, no text. Use only a THIN decorative meander border so the scene fills most of the panel (more image, slim margins).", "motion": "tilt_down" },
+      "voiceover": { "text": "No vueles muy alto, o el sol derretirá la cera." },
+      "captions": { "text": "Ni muy alto: el sol derretiría la cera", "highlight_words": ["muy alto"] }
+    },
+    {
+      "id": "scene_09",
+      "references": { "characters": [], "ingredients": ["style_frame_griego", "fig_dedalo", "fig_icaro", "entity_alas", "plate_cielomar"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_griego, using the provided fig_dedalo, fig_icaro, entity_alas, plate_cielomar: Daedalus and Icarus in profile leaping from the cliff with outstretched wings, soaring over the open sea At top-center a deliberate painted vase-style banner with bold lettering reading exactly 'EL VUELO' (correctly spelled, NOT garbled). Authentic ancient Greek red-figure vase painting: orange-red terracotta figures on a glossy black ground, fine black interior detail lines, figures in profile, flat with NO modern shading/gradients/perspective; the look of painted ceramic. NOT cartoon/3D/photoreal/comic; only adults, no minors, no gore; 16:9, no OTHER text. Use only a THIN decorative meander border so the scene fills most of the panel (more image, slim margins).", "motion": "static" },
+      "text_overlay": { "word": "EL VUELO", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "[epic, solemn, rising intensity] Y entonces, padre e hijo saltaron al vacío... y volaron." },
+      "captions": { "text": "Saltaron al vacío... y volaron", "highlight_words": ["volaron"] }
+    },
+    {
+      "id": "scene_10",
+      "references": { "characters": [], "ingredients": ["style_frame_griego", "fig_dedalo", "fig_icaro", "plate_cielomar"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_griego, using the provided fig_dedalo, fig_icaro, plate_cielomar: the two winged figures flying side by side high above the wide sea, the world spread below, wide shot Authentic ancient Greek red-figure vase painting: orange-red terracotta figures on a glossy black ground, fine black interior detail lines, figures in profile, flat with NO modern shading/gradients/perspective; the look of painted ceramic. NOT cartoon/3D/photoreal/comic; only adults, no minors, no gore; 16:9, no text. Use only a THIN decorative meander border so the scene fills most of the panel (more image, slim margins).", "motion": "pan_lr" },
+      "voiceover": { "text": "Por primera vez, dos hombres surcaban el cielo como dioses." },
+      "captions": { "text": "Dos hombres volaban como dioses", "highlight_words": ["dioses"] }
+    },
+    {
+      "id": "scene_11",
+      "references": { "characters": [], "ingredients": ["style_frame_griego", "fig_icaro", "entity_alas"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_griego, using the provided fig_icaro, entity_alas: young Icarus alone in profile, exhilarated, beating his wings and climbing higher and higher Authentic ancient Greek red-figure vase painting: orange-red terracotta figures on a glossy black ground, fine black interior detail lines, figures in profile, flat with NO modern shading/gradients/perspective; the look of painted ceramic. NOT cartoon/3D/photoreal/comic; only adults, no minors, no gore; 16:9, no text. Use only a THIN decorative meander border so the scene fills most of the panel (more image, slim margins).", "motion": "pan_rl" },
+      "voiceover": { "text": "[tense, serious, building suspense] Pero Ícaro era joven, y la altura lo embriagó." },
+      "captions": { "text": "Pero la altura embriagó a Ícaro", "highlight_words": ["Ícaro"] }
+    },
+    {
+      "id": "scene_12",
+      "references": { "characters": [], "ingredients": ["style_frame_griego", "fig_icaro", "entity_sol"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_griego, using the provided fig_icaro, entity_sol: tiny Icarus dwarfed by an enormous blazing sun disc he is climbing toward, dangerously close At top-center a deliberate painted vase-style banner with bold lettering reading exactly 'DEMASIADO ALTO' (correctly spelled, NOT garbled). Authentic ancient Greek red-figure vase painting: orange-red terracotta figures on a glossy black ground, fine black interior detail lines, figures in profile, flat with NO modern shading/gradients/perspective; the look of painted ceramic. NOT cartoon/3D/photoreal/comic; only adults, no minors, no gore; 16:9, no OTHER text. Use only a THIN decorative meander border so the scene fills most of the panel (more image, slim margins).", "motion": "static" },
+      "text_overlay": { "word": "DEMASIADO ALTO", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "Olvidó la advertencia y subió, más y más, hacia el sol." },
+      "captions": { "text": "Subió demasiado, hacia el sol", "highlight_words": ["sol"] }
+    },
+    {
+      "id": "scene_13",
+      "references": { "characters": [], "ingredients": ["style_frame_griego", "entity_alas", "entity_sol"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_griego, using the provided entity_alas, entity_sol: close detail of a feathered wing beneath the blazing sun, drops of melting wax beginning to fall Authentic ancient Greek red-figure vase painting: orange-red terracotta figures on a glossy black ground, fine black interior detail lines, figures in profile, flat with NO modern shading/gradients/perspective; the look of painted ceramic. NOT cartoon/3D/photoreal/comic; only adults, no minors, no gore; 16:9, no text. Use only a THIN decorative meander border so the scene fills most of the panel (more image, slim margins).", "motion": "tilt_down" },
+      "voiceover": { "text": "[low, stunned, slowly revealing] Su padre le gritó, pero en silencio, la cera ya se derretía." },
+      "captions": { "text": "En silencio, la cera se derretía", "highlight_words": ["cera"] }
+    },
+    {
+      "id": "scene_14",
+      "references": { "characters": [], "ingredients": ["style_frame_griego", "entity_pluma", "fig_icaro"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_griego, using the provided entity_pluma, fig_icaro: feathers coming loose one by one and scattering away from Icarus's bare outstretched arms Authentic ancient Greek red-figure vase painting: orange-red terracotta figures on a glossy black ground, fine black interior detail lines, figures in profile, flat with NO modern shading/gradients/perspective; the look of painted ceramic. NOT cartoon/3D/photoreal/comic; only adults, no minors, no gore; 16:9, no text. Use only a THIN decorative meander border so the scene fills most of the panel (more image, slim margins).", "motion": "pan_lr" },
+      "voiceover": { "text": "Una a una, las plumas se soltaron, y ya no quedó nada." },
+      "captions": { "text": "Las plumas se soltaron una a una", "highlight_words": ["plumas"] }
+    },
+    {
+      "id": "scene_15",
+      "references": { "characters": [], "ingredients": ["style_frame_griego", "fig_icaro", "fig_dedalo", "entity_ola"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_griego, using the provided fig_icaro, fig_dedalo, entity_ola: Icarus plunging headlong toward the waves below while Daedalus, above, can only watch, helpless At top-center a deliberate painted vase-style banner with bold lettering reading exactly 'LA CAIDA' (correctly spelled, NOT garbled). Authentic ancient Greek red-figure vase painting: orange-red terracotta figures on a glossy black ground, fine black interior detail lines, figures in profile, flat with NO modern shading/gradients/perspective; the look of painted ceramic. NOT cartoon/3D/photoreal/comic; only adults, no minors, no gore; 16:9, no OTHER text. Use only a THIN decorative meander border so the scene fills most of the panel (more image, slim margins).", "motion": "static" },
+      "text_overlay": { "word": "LA CAIDA", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "[soft, sorrowful, restrained emotion] Ícaro cayó del cielo al mar, mientras su padre solo podía mirar." },
+      "captions": { "text": "Ícaro cayó al mar; su padre solo miró", "highlight_words": ["cayó"] }
+    },
+    {
+      "id": "scene_16",
+      "references": { "characters": [], "ingredients": ["style_frame_griego", "entity_pluma", "entity_ola", "plate_cielomar"], "scenes": [] },
+      "visual": { "image_prompt": "On the provided style_frame_griego, using the provided entity_pluma, entity_ola, plate_cielomar: a single feather drifting down onto a calm empty sea under a vast quiet sky, FROZEN final frame At top-center a deliberate painted vase-style banner with bold lettering reading exactly 'ICARIA' (correctly spelled, NOT garbled). Authentic ancient Greek red-figure vase painting: orange-red terracotta figures on a glossy black ground, fine black interior detail lines, figures in profile, flat with NO modern shading/gradients/perspective; the look of painted ceramic. NOT cartoon/3D/photoreal/comic; only adults, no minors, no gore; 16:9, no OTHER text. Use only a THIN decorative meander border so the scene fills most of the panel (more image, slim margins).", "motion": "static" },
+      "text_overlay": { "word": "ICARIA", "baked_in_image": true, "static_hold": true },
+      "voiceover": { "text": "[calm, solemn, with restrained hope, voice lowering at the end] Por eso, a ese mar lo llaman Icaria... porque volar siempre tuvo un precio." },
+      "captions": { "text": "Lo llaman el mar de Icaria", "highlight_words": ["Icaria"] }
+    }
+  ],
+  "capcut_export": {
+    "main_timeline_starts_after_hook": false,
+    "timing_source": "fish_timestamps_map_over_single_audio",
+    "no_montage_hook": true,
+    "clip_order": ["scene_01","scene_02","scene_03","scene_04","scene_05","scene_06","scene_07","scene_08","scene_09","scene_10","scene_11","scene_12","scene_13","scene_14","scene_15","scene_16"],
+    "title_cards": [],
+    "ending_card": { "after_scene": "scene_16", "text": "¿Habrías volado más alto, o habrías hecho caso? 👇", "style": "Texto grande sobre el frame congelado de la ultima escena; comment-bait, SIN '¿Parte 2?'." },
+    "caption_style": { "font": "Montserrat ExtraBold", "size": 64, "position": "lower_third", "max_words_on_screen": 5, "color": "#FFFFFF", "stroke": "borde/sombra negra" },
+    "music_notes": "Cama de tragedia griega contenida: lira/kithara + flauta aulos + drone grave. Sube en el salto/vuelo (scene_09), tension creciente en la soberbia (scene_11-12), golpe seco en LA CAIDA (scene_15), silencio y lira sola en el cierre (scene_16).",
+    "sfx_notes": "Viento de altura y mar de fondo; aleteo de alas en escenas de vuelo (9,10,11); GOLPE SECO al entrar cada cartel/static. Silencio breve antes de 'porque volar siempre tuvo un precio'.",
+    "static_punch_scenes": ["scene_03","scene_05","scene_09","scene_12","scene_15","scene_16"]
+  },
+  "tts_export": {
+    "language": "es-MX",
+    "full_script": "[low, mysterious, cinematic narrator tone] En la isla de Creta, encerrado en lo alto de una torre, vivía el inventor más brillante del mundo antiguo: Dédalo. El rey Minos lo había encerrado con su hijo Ícaro, y selló cada salida. [serious, intriguing, slow build] Pero Dédalo miró al cielo... y vio la salida que nadie podía cerrar. Con plumas de aves y cera, construyó dos pares de alas. [grave, documentary narrator tone, quietly dramatic] Antes de saltar, abrazó a su hijo y le advirtió: No vueles muy bajo, o el mar mojará tus alas. No vueles muy alto, o el sol derretirá la cera. [epic, solemn, rising intensity] Y entonces, padre e hijo saltaron al vacío... y volaron. Por primera vez, dos hombres surcaban el cielo como dioses. [tense, serious, building suspense] Pero Ícaro era joven, y la altura lo embriagó. Olvidó la advertencia y subió, más y más, hacia el sol. [low, stunned, slowly revealing] Su padre le gritó, pero en silencio, la cera ya se derretía. Una a una, las plumas se soltaron, y ya no quedó nada. [soft, sorrowful, restrained emotion] Ícaro cayó del cielo al mar, mientras su padre solo podía mirar. [calm, solemn, with restrained hope, voice lowering at the end] Por eso, a ese mar lo llaman Icaria... porque volar siempre tuvo un precio."
+  }
+}

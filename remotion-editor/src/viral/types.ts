@@ -25,7 +25,15 @@ export interface SceneData {
   time_label?: string;
   intro_card?: string; // OPT-IN: cartel negro extra ANTES del contenido de la escena (excepciones a mano)
   intro_card_voice?: string; // OPT: mp3 en public/<slug>/voice/ que NARRA el cartel intro (ej "parte2.mp3"); dura lo que la voz
+  // historias (image-only): hint de movimiento de camara Ken Burns sobre el still. Valores v2:
+  // pan_lr (default) | pan_rl | tilt_down | static (fijo). Compat v1: pan_left_right/pan_right_left/
+  // push_in/pull_out/static_hold. image_prompt lo usa el generador, no el render (se ignora sin romper).
+  visual?: { image_prompt?: string; motion?: string };
+  // historias v2: la cartela de texto YA viene pintada DENTRO del PNG; el render NO la dibuja (solo metadata).
+  // Su presencia marca la escena como "punch" (fija + golpe de SFX) si hay capcut_export.punch_sfx.
+  text_overlay?: { word?: string; baked_in_image?: boolean; static_hold?: boolean };
   voiceover?: { text?: string; words?: WordTs[] };
+  _window?: { start: number; end: number }; // historias voz-continua: ventana (seg, raw Fish) de la escena sobre el audio maestro (lo inyecta align/inject-words.mjs)
   captions?: CaptionData;
   sfx?: SfxCue[];
   timeline?: { clip_duration_s?: number };
@@ -53,6 +61,14 @@ export interface ProjectMeta {
   fps?: number;
   default_clip_duration_s?: number; // duracion de los clips de Flow (default 4)
   grok_clip_seconds?: number; // novela-coreana: clips de Grok a 10s; fallback de default_clip_duration_s
+  scene_target_seconds?: number; // novela-coreana: escenas cortas (~3s) -> RECORTA el clip a sus primeros N s (rate 1.0), no acelera
+  // historias (image-only) — perillas de movimiento Ken Burns. Solo las lee el preset historias (gateado en el render).
+  // Ausentes -> comportamiento actual. No afectan a otros presets (esos usan video, no KenBurnsImage).
+  ken_pan?: number; // magnitud del paneo en % (default 5). Mas chico = paneo mas suave/lento.
+  ken_zoom?: number; // overscale del still (default 1.14). Mas chico = se recorta MENOS el marco del codice (pero menos margen para panear).
+  force_motion?: string; // si viene, TODAS las escenas usan este motion (ej "static" = video sin movimiento)
+  no_static?: boolean; // remapea cualquier static a un ciclo de paneo (pan_lr/pan_rl/tilt_down): sin frames muertos
+  crossfade_s?: number; // historias voz-continua: duracion de la disolvencia entre imagenes (default 0.45s). 0 = corte duro.
 }
 
 export interface AudioData {
@@ -64,6 +80,9 @@ export interface AudioData {
   hook_sfx_volume?: number; // default 1.8
   scene_sfx?: string; // flash al aparecer el cartel de cada escena, default "flash.mp3"
   scene_sfx_volume?: number; // default 1.25
+  // historias voz-continua (lo inyecta align/inject-words.mjs, NO viene del JSON del usuario):
+  _continuous?: boolean; // true -> el render usa 1 pista maestra de voz + ventanas por escena (sin costura)
+  _master?: string; // ruta del mp3 maestro relativa a public/<slug>/ (ej "voice/full.mp3")
 }
 
 export interface CaptionStyle {
@@ -77,6 +96,12 @@ export interface CapcutExport {
   caption_style?: CaptionStyle;
   label_card_duration_s?: number; // duracion del cartel "DIA 1" antes de cada clip
   title_cards?: { scene_id: string; text?: string }[]; // escenas que llevan cartel negro (intencion explicita del autor)
+  // historias v2: escenas "beat" (fijas + golpe de tambor al entrar). punch_sfx = archivo en public/sfx/
+  // (OPT-IN: sin el, no suena nada extra y no se rompe el render). Dispara en escenas con text_overlay
+  // o cuyo id este en static_punch_scenes. Solo aplica al preset historias.
+  static_punch_scenes?: string[];
+  punch_sfx?: string;
+  punch_sfx_volume?: number; // default 1.0
 }
 
 // Linea de tiempo calculada en runtime por calculateMetadata (no va en el JSON de entrada).
@@ -87,6 +112,7 @@ export interface SceneTiming {
   clipWindow: number; // frames del clip visible (sceneFrames - cardFrames)
   playbackRate: number; // velocidad del clip para llenar la voz (<1 = camara lenta)
   introFrames: number; // cartel intro opcional (scene.intro_card) ANTES del contenido; 0 si no hay
+  startFrame?: number; // historias voz-continua: frame absoluto donde arranca la escena (su ventana sobre el audio maestro)
 }
 
 export interface ComputedTimeline {
