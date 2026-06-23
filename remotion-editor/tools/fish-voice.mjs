@@ -54,7 +54,9 @@ fs.mkdirSync(openingOutDir, { recursive: true });
 // Velocidad de habla EN LA GENERACION (Fish prosody.speed, 0.5-2.0; default 1.0 = sin cambio). Distinto de
 // audio.voice_rate (playbackRate en el render, que ademas sube el pitch). Subir voice_speed acelera la voz
 // SIN cambiar el tono. Las etiquetas de emocion lentas ([reflective], [measured pacing]) la frenan.
-const ttsSpeed = Number(proj.audio?.voice_speed) || (proj.project?.preset === "historias" ? 0.95 : 1);
+// DEFAULT 1.0 = SIN prosody. La prosody de Fish (0.9/0.95) mete warble/"vibroso"; solo se aplica si el JSON
+// trae audio.voice_speed explicito. Para voz mas lenta NO usar prosody (guion mas pausado en su lugar).
+const ttsSpeed = Number(proj.audio?.voice_speed) || 1;
 
 const round3 = (x) => Math.round(x * 1000) / 1000;
 

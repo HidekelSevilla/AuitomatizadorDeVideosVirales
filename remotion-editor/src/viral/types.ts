@@ -22,6 +22,8 @@ export interface SfxCue {
 
 export interface SceneData {
   id: string;
+  scene_id?: string; // schema nuevo historias: alias de id (el render usa id ?? scene_id)
+  motion?: string;   // schema nuevo historias: motion top-level (alias de visual.motion)
   time_label?: string;
   intro_card?: string; // OPT-IN: cartel negro extra ANTES del contenido de la escena (excepciones a mano)
   intro_card_voice?: string; // OPT: mp3 en public/<slug>/voice/ que NARRA el cartel intro (ej "parte2.mp3"); dura lo que la voz
@@ -68,7 +70,8 @@ export interface ProjectMeta {
   ken_zoom?: number; // overscale del still (default 1.14). Mas chico = se recorta MENOS el marco del codice (pero menos margen para panear).
   force_motion?: string; // si viene, TODAS las escenas usan este motion (ej "static" = video sin movimiento)
   no_static?: boolean; // remapea cualquier static a un ciclo de paneo (pan_lr/pan_rl/tilt_down): sin frames muertos
-  crossfade_s?: number; // historias voz-continua: duracion de la disolvencia entre imagenes (default 0.45s). 0 = corte duro.
+  crossfade_s?: number; // historias voz-continua: duracion de la disolvencia entre imagenes (default 0 = corte duro). Subir para re-activar la disolvencia.
+  ken_motion?: boolean; // historias: re-activa el Ken Burns (paneo/zoom). Por defecto historias es ESTATICO (sin movimiento).
 }
 
 export interface AudioData {
@@ -140,5 +143,6 @@ export interface ViralProps {
   scenes: SceneData[];
   audio?: AudioData;
   capcut_export?: CapcutExport;
+  render_export?: CapcutExport; // schema nuevo historias: renombrado de capcut_export (mismo shape; el render usa render_export ?? capcut_export)
   _timeline?: ComputedTimeline; // lo inyecta calculateMetadata
 }

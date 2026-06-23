@@ -8,11 +8,18 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { slugify } from "../../shared/slug.mjs";   // FUENTE UNICA del slug
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
+
+// Duracion REAL del audio (segundos) via ffprobe. 0 si no se puede medir.
+const probeDuration = (file) => {
+  try { return parseFloat(execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${file}"`).toString().trim()) || 0; }
+  catch { return 0; }
+};
 
 const jsonArg = process.argv[2];
 if (!jsonArg) {
@@ -46,7 +53,7 @@ const readWords = (voiceDir, id) => {
 // [primer token, primer token de la sig.]; la ultima llega al fin del audio. scene.voiceover.words queda
 // rebasada a la ventana (para el karaoke). ----
 const round3 = (x) => Math.round(x * 1000) / 1000;
-const _stripTags = (s) => (s || "").replace(/\[[^\]]*\]/g, " ");
+const _stripTags = (s) => (s || "").replace(/\[[^\]]*\]/g, " ").replace(/<[^>]*>/g, " ");  // [tags] v3 y <break/> SSML v2 -> no son palabras
 // normaliza para COMPARAR: minusculas, sin acentos (combining marks), solo letras/numeros.
 const _normWord = (s) => (s || "").toLowerCase().normalize("NFD").replace(/\p{M}/gu, "").replace(/[^\p{L}\p{N}]/gu, "");
 // token "limpio" para MOSTRAR en el karaoke (conserva acentos/ñ, quita puntuacion de borde).
@@ -67,10 +74,22 @@ const dedupeAbsolute = (fish) => {
   return out.sort((a, b) => a.start - b.start || a.end - b.end);
 };
 
-function buildTiming(p, fishRaw) {
+function buildTiming(p, fishRaw, realDur = 0) {
   const fish = dedupeAbsolute(fishRaw);
-  const order = p.capcut_export?.clip_order || (p.scenes || []).map((s) => s.id);
-  const byId = Object.fromEntries((p.scenes || []).map((s) => [s.id, s]));
+  // REESCALA a la duracion REAL del audio: los timestamps de ElevenLabs V3 pueden venir ~8% mas largos que
+  // el mp3 encodeado (ej. atlantida: alineacion 60.24s vs audio real 55.68s). Si no se corrige, las imagenes
+  // se desfasan progresivamente y la ultima queda en silencio (cola muda). Una palabra NO puede terminar
+  // despues del fin del audio -> escalamos todos los tiempos por (audio_real / alineacion).
+  const alignMax = fish.reduce((m, w) => Math.max(m, w.end), 0);
+  if (realDur > 0 && alignMax > 0 && Math.abs(alignMax - realDur) > 0.15) {
+    const k = realDur / alignMax;
+    for (const w of fish) { w.start *= k; w.end *= k; }
+    console.log(`  · timestamps reescalados x${k.toFixed(4)} (alineacion ${alignMax.toFixed(2)}s -> audio real ${realDur.toFixed(2)}s)`);
+  }
+  // schema nuevo historias: orden en render_export.clip_order; escenas con scene_id (alias de id).
+  const sid = (s) => s.id ?? s.scene_id;
+  const order = p.render_export?.clip_order || p.capcut_export?.clip_order || (p.scenes || []).map(sid);
+  const byId = Object.fromEntries((p.scenes || []).map((s) => [sid(s), s]));
   const scenes = order.map((id) => byId[id]).filter(Boolean);
   const audioDuration = fish.reduce((m, w) => Math.max(m, w.end), 0);
   const LOOKAHEAD = 12; // ventana para saltar duplicados/artefactos de Fish al buscar el siguiente token
@@ -143,7 +162,8 @@ const _isHistorias = p.project?.preset === "historias" || p.pipeline?.tts?.mode 
 if (_isHistorias) {
   const fullWords = readWords(voiceDir, "full");
   if (fullWords && fullWords.length) {
-    const ns = buildTiming(p, fullWords);
+    const realDur = probeDuration(path.join(voiceDir, "full.mp3"));
+    const ns = buildTiming(p, fullWords, realDur);
     fs.writeFileSync(jsonPath, JSON.stringify(p, null, 2), "utf8");
     console.log(`Voz continua: ${fullWords.length} palabras -> ${ns} ventanas de escena (audio maestro voice/full.mp3) en`, path.relative(ROOT, jsonPath));
     process.exit(0);

@@ -231,33 +231,47 @@
       return resultImageEls().some((i) => !before.has(genId(i.src))) ? { hit: true } : null;
     }, { timeout: 180000 });
     if (found.type) return found; // parada dura
-    // Grok SIN referencia genera VARIAS variaciones (tipicamente 4); CON referencia suele dar 1. Si tomamos
-    // la 1a que cargue, es no-determinista (podria ser una a medio cargar). Dejamos "asentar" el grid:
-    // esperamos a que el conteo de imagenes nuevas deje de crecer (estable 2 chequeos, tope ~8s) y elegimos
-    // UNA de forma DETERMINISTA: la primera en orden DOM (arriba-izquierda del grid).
-    let prev = -1, stable = 0;
-    for (let k = 0; k < 10 && stable < 2; k++) {
-      await sleep(800);
-      const n = resultImageEls().filter((i) => !before.has(genId(i.src))).length;
-      if (n > 0 && n === prev) stable++; else stable = 0;
-      prev = n;
+    // Elige UNA imagen nueva de forma DETERMINISTA: la mas GRANDE (full-res; en /post hay miniatura + grande
+    // del mismo generado), desempate por orden DOM (en el grid sin-ref: izquierda->derecha = 1a variacion).
+    const pickFresh = () => {
+      const els = resultImageEls().filter((i) => !before.has(genId(i.src)));
+      els.sort((a, b) => {
+        const wa = a.getBoundingClientRect().width, wb = b.getBoundingClientRect().width;
+        if (Math.abs(wa - wb) > 20) return wb - wa;
+        return (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
+      });
+      return els[0] || null;
+    };
+    // CRITICO: Grok muestra un PLACEHOLDER de RUIDO mientras genera, y SOLO al final aparece la imagen real.
+    // El placeholder de ruido es ESTATICO (su `data:` src NO muta) y CHICO (~77KB) vs la imagen final GRANDE
+    // (~200-400KB). "Esperar a que el src se estabilice" NO basta: el ruido fijo ya esta estable -> se descargaba
+    // ruido (scene_15, scene_30). Senal robusta: el TAMANO del dato (largo del data: url) CRECE de ruido->final.
+    // Aceptamos cuando: el largo CRECIO al menos una vez (ruido->detalle) Y luego se estabilizo QUIET_MS. Para
+    // URLs de servidor (/generated/, ya finales, sin ruido in-place) basta estabilidad. Re-consultamos el nodo
+    // por si Grok lo reemplaza. isData = data: url (grid sin-ref); el resto = URL de servidor.
+    const isData = (s) => /^data:/.test(s || "");
+    const QUIET_MS = 2000, MAX_MS = 180000, IDLE_DONE = 20000, t0 = Date.now();
+    let maxLen = -1, lastGrow = Date.now(), grew = false;
+    while (Date.now() - t0 < MAX_MS) {
+      const hs = detectHardStop(); if (hs) return hs;
+      const el = pickFresh();
+      const cur = el ? (el.currentSrc || el.src || "") : "";
+      if (cur.length > maxLen) { if (maxLen >= 0) grew = true; maxLen = cur.length; lastGrow = Date.now(); }
+      const idle = Date.now() - lastGrow;
+      if (cur && !isData(cur) && idle >= QUIET_MS) break;            // URL de servidor = ya es la final
+      else if (cur && isData(cur) && grew && idle >= QUIET_MS) break; // data: crecio (ruido->final) y se estabilizo
+      else if (cur && isData(cur) && !grew && idle >= IDLE_DONE) break; // nunca crecio = ya estaba lista al empezar
+      await sleep(400);
     }
     const freshEls = resultImageEls().filter((i) => !before.has(genId(i.src)));
-    // Preferir el resultado GRANDE (en /post hay miniatura + grande del MISMO generado; queremos la grande,
-    // full-res). Desempate por orden DOM (en el grid sin-ref: izquierda->derecha = 1a variacion).
-    freshEls.sort((a, b) => {
-      const wa = a.getBoundingClientRect().width, wb = b.getBoundingClientRect().width;
-      if (Math.abs(wa - wb) > 20) return wb - wa;
-      return (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
-    });
-    const chosen = freshEls[0];
+    const chosen = pickFresh();
     if (!chosen) return { ok: false, error: "no aparecio imagen nueva en Grok tras generar" };
     // Captura la URL del POST de esta imagen (Grok navega a /imagine/post/<id> al generar). Es la pagina
     // donde luego esta el boton "Hacer video"; guardarla evita derivarla mal de la URL del asset.
     let postUrl = null;
     try { postUrl = await waitFor(() => /\/imagine\/post\/[^/]+/.test(location.href) ? location.href : null, { timeout: 8000 }); }
     catch (_e) { /* no navego a /post: el SW derivara del genId como fallback */ }
-    return { ok: true, data: { imageUrl: chosen.src, postUrl, variantCount: freshEls.length } };
+    return { ok: true, data: { imageUrl: chosen.currentSrc || chosen.src, postUrl, variantCount: freshEls.length } };
   }
 
   // Toggle a modo VIDEO del composer: texto "Video" (composer /imagine) o aria-label "Video" (icono

@@ -53,6 +53,7 @@ async function loadState() {
   // y POCO frecuente (~20-30s cada 25 generaciones), y el prompt siempre se PEGA (no se tipea). Si en el
   // futuro quieres reabrir esto a config, quita estas lineas y vuelve a exponer los inputs en el panel.
   state.config.maxGenerationsPerHour = 50;
+  state.config.maxHourlyPauseMs = 600000;   // al tope/hora: pausa MAX 10 min (no esperar toda la hora). Pedido del usuario 2026-06-22.
   state.config.longBreakEvery = 25;
   state.config.longBreakMinMs = 20000;
   state.config.longBreakMaxMs = 30000;
@@ -102,6 +103,11 @@ async function applySecrets() {
     }
     if (typeof s?.fishVoiceId === "string" && s.fishVoiceId.trim() && s.fishVoiceId.trim() !== state.config.fishVoiceId) {
       state.config.fishVoiceId = s.fishVoiceId.trim(); changed = true;
+    }
+    // ElevenLabs V3 (preset historias): key propia, distinta de Fish. Aditivo: sin ella, historias usa Fish.
+    const ek = (s?.elevenApiKey || "").trim();
+    if (ek && !/^PEGA_AQUI/i.test(ek) && ek !== state.config.elevenApiKey) {
+      state.config.elevenApiKey = ek; changed = true;
     }
     if (changed) { await saveState(); log(LOG_LEVEL.INFO, "Secretos cargados desde secrets.local.json."); }
   } catch (_e) { /* dev-server no corre o sin archivo: se usa lo que haya en config */ }
@@ -1400,9 +1406,182 @@ async function saveFailedDiag(diag) {
   log(LOG_LEVEL.WARN, "DIAG no se pudo guardar (dev-server caido). Revisa el log de arriba.");
 }
 
+// ---------------------------------------------------------------------------
+// ElevenLabs V3 (TTS, SOLO preset historias en modo Creative). El SW llama api.elevenlabs.io DIRECTO.
+// Produce los MISMOS archivos que Fish (full.mp3 + full.words.json) -> el resto del pipeline no cambia.
+// V3 NO tiene request stitching: si full_script > ~3000 chars se parte por escena y se concatenan los mp3.
+// ---------------------------------------------------------------------------
+// V3 admite hasta 5000 chars/request -> cortamos a 4800 (margen): asi MUCHOS guiones caben en 1 bloque = sin seam.
+// OJO: previous_text/next_text NO estan soportados en eleven_v3 (la API responde 400 unsupported_model). Para el
+// seam cuando se parte: chunking balanceado + mismo seed + concat limpio; si se nota, subir a stability 0.5 (Natural).
+const ELEVEN_MAX_CHARS = 4800, ELEVEN_MIN_CHARS = 250, ELEVEN_DEFAULT_VOICE = "7UB6WMKyZDj19XRGC8Sb";
+
+function stripTags(s) { return String(s || "").replace(/\[[^\]]*\]/g, "").replace(/<[^>]*>/g, ""); }  // [tags] v3 y <break/> SSML v2 (el texto a la API SÍ los conserva; esto es solo para alinear/contar palabras)
+
+// Parte el full_script en bloques <= max cortando en limite de escena (texto crudo, con tags). BALANCEADO:
+// si hay que partir, reparte en N=ceil(total/max) bloques de tamano PAREJO (no uno enorme + uno diminuto),
+// para que ningun bloque sea muy corto (V3 se desestabiliza con <250 chars) y el seam sea menos notorio.
+function chunkHistorias(fullScript, sceneTexts, maxChars = ELEVEN_MAX_CHARS) {
+  const texts = (sceneTexts || []).filter(Boolean);
+  if (fullScript.length <= maxChars || texts.length <= 1) return [fullScript];
+  const nChunks = Math.ceil(fullScript.length / maxChars);
+  const target = fullScript.length / nChunks; // tamano objetivo por bloque (reparto parejo)
+  const chunks = [];
+  let cur = "";
+  for (const t of texts) {
+    const cand = cur ? `${cur} ${t}` : t;
+    if (cur && cand.length > maxChars) { chunks.push(cur); cur = t; }                      // tope duro
+    else if (cur && cur.length >= target && chunks.length < nChunks - 1) { chunks.push(cur); cur = t; } // balance
+    else cur = cand;
+  }
+  if (cur) {
+    if (chunks.length && cur.length < ELEVEN_MIN_CHARS) chunks[chunks.length - 1] += ` ${cur}`;
+    else chunks.push(cur);
+  }
+  return chunks.length ? chunks : [fullScript];
+}
+
+// alignment char-level de V3 -> palabras [{word,start,end}] (IGNORA los tags: no se hablan ni cuentan tiempo).
+function elevenWordsFromAlignment(al) {
+  const chars = al.characters || [];
+  const starts = al.character_start_times_seconds || [];
+  const ends = al.character_end_times_seconds || [];
+  const text = chars.join("");
+  const isTag = new Array(chars.length).fill(false);
+  const re = /\[[^\]]*\]/g; let m;
+  while ((m = re.exec(text)) !== null) { for (let i = m.index; i < m.index + m[0].length; i++) isTag[i] = true; }
+  const words = []; let buf = [];
+  const flush = () => {
+    if (buf.length) {
+      const spoken = buf.filter((i) => !isTag[i]);
+      const token = buf.map((i) => chars[i]).join("").replace(/\[[^\]]*\]/g, "").trim();
+      if (spoken.length && token) words.push({ word: token, start: starts[spoken[0]], end: ends[spoken[spoken.length - 1]] });
+    }
+    buf = [];
+  };
+  for (let i = 0; i < chars.length; i++) { if (/\s/.test(chars[i])) flush(); else buf.push(i); }
+  flush();
+  const duration = ends.length ? ends[ends.length - 1] : (words.length ? words[words.length - 1].end : 0);
+  return { chunkWords: words, duration };
+}
+
+// convert normal (sin timestamps) -> Uint8Array mp3. Fallback cuando V3 no soporta with-timestamps.
+async function elevenConvert(text, o) {
+  const url = `https://api.elevenlabs.io/v1/text-to-speech/${o.voiceId}?output_format=${encodeURIComponent(o.outputFormat)}`;
+  const body = { text, model_id: o.modelId, language_code: o.languageCode, voice_settings: o.voiceSettings, seed: o.seed };
+  if (o.previousText) body.previous_text = o.previousText;   // continuidad del seam (SOLO v2/turbo/flash; v3 los rechaza)
+  if (o.nextText) body.next_text = o.nextText;
+  const res = await fetch(url, { method: "POST", headers: { "xi-api-key": o.apiKey, "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  if (!res.ok) { let d = `HTTP ${res.status}`; try { d = JSON.stringify(await res.json()); } catch (_e) {} throw new Error(`ElevenLabs convert ${res.status}: ${d}`); }
+  return new Uint8Array(await res.arrayBuffer());
+}
+
+// Forced Alignment API -> palabras del audio (cuando with-timestamps no esta disponible en V3).
+async function elevenForcedAlignment(audio, text, apiKey) {
+  const fd = new FormData();
+  fd.append("file", new Blob([audio], { type: "audio/mpeg" }), "audio.mp3");
+  fd.append("text", text);
+  const res = await fetch("https://api.elevenlabs.io/v1/forced-alignment", { method: "POST", headers: { "xi-api-key": apiKey }, body: fd });
+  if (!res.ok) { let d = `HTTP ${res.status}`; try { d = JSON.stringify(await res.json()); } catch (_e) {} throw new Error(`ElevenLabs forced-alignment ${res.status}: ${d}`); }
+  const j = await res.json();
+  const words = (Array.isArray(j.words) ? j.words : [])
+    .map((w) => ({ word: (w.text || "").trim(), start: Number(w.start) || 0, end: Number(w.end) || 0 }))
+    .filter((w) => w.word);
+  return { chunkWords: words, duration: words.length ? words[words.length - 1].end : 0 };
+}
+
+// 1 bloque -> { audio:Uint8Array, chunkWords, duration }. Intenta with-timestamps; si V3 no lo soporta,
+// cae a convert + forced-alignment (texto SIN tags). Errores transitorios se propagan (los maneja el caller).
+async function elevenTTSWithTimestamps(text, o) {
+  const url = `https://api.elevenlabs.io/v1/text-to-speech/${o.voiceId}/with-timestamps?output_format=${encodeURIComponent(o.outputFormat)}`;
+  const body = { text, model_id: o.modelId, language_code: o.languageCode, voice_settings: o.voiceSettings, seed: o.seed };
+  if (o.previousText) body.previous_text = o.previousText;   // continuidad del seam (SOLO v2/turbo/flash; v3 los rechaza)
+  if (o.nextText) body.next_text = o.nextText;
+  const res = await fetch(url, { method: "POST", headers: { "xi-api-key": o.apiKey, "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  if (res.ok) {
+    const j = await res.json();
+    const al = j.alignment || {};
+    if (j.audio_base64 && Array.isArray(al.characters) && al.characters.length) {
+      const { chunkWords, duration } = elevenWordsFromAlignment(al);
+      return { audio: base64ToBytes(j.audio_base64), chunkWords, duration };
+    }
+    if (j.audio_base64) { // dio audio pero sin alignment -> forced-alignment
+      const audio = base64ToBytes(j.audio_base64);
+      return { audio, ...(await elevenForcedAlignment(audio, stripTags(text), o.apiKey)) };
+    }
+  } else if (![400, 404, 405, 422, 501].includes(res.status)) { // transitorio (429/5xx/red): propaga
+    let d = `HTTP ${res.status}`; try { d = JSON.stringify(await res.json()); } catch (_e) {}
+    throw new Error(`ElevenLabs ${res.status}: ${d}`);
+  }
+  // with-timestamps no soportado por V3 -> convert + forced-alignment
+  const audio = await elevenConvert(text, o);
+  return { audio, ...(await elevenForcedAlignment(audio, stripTags(text), o.apiKey)) };
+}
+
+// historias: genera full.mp3 + full.words.json con ElevenLabs V3 desde tts_export (voice/seed/settings del JSON).
+async function generateHistoriasEleven(fullScript, sceneTexts, slug, tts, apiKey) {
+  const vs = tts.voice_settings || {};
+  const o = {
+    apiKey,
+    voiceId: (tts.voice_id || "").trim() || ELEVEN_DEFAULT_VOICE,
+    modelId: tts.model_id || "eleven_v3",
+    languageCode: tts.language_code || "es",
+    outputFormat: tts.output_format || "mp3_44100_192",
+    seed: Number.isInteger(tts.seed) ? tts.seed : 42,
+    voiceSettings: { stability: vs.stability ?? 0, similarity_boost: vs.similarity_boost ?? 0.75, style: vs.style ?? 0, use_speaker_boost: vs.use_speaker_boost ?? true },
+  };
+  // v3 NO soporta stitching y se desestabiliza con texto largo -> tope 4800 y el seam (si parte) es inevitable.
+  // v2 (y turbo/flash) SI soportan previous_text/next_text y aceptan ~10000 chars/request -> tope 9000; si se
+  // parte, cada bloque recibe el contexto vecino para que el seam sea CONTINUO. El orquestador elige el modelo
+  // por tamano de guion (tts_export.model_id): <5000 -> eleven_v3 (tags); >5000 -> eleven_multilingual_v2 (puntuacion).
+  const isV3 = o.modelId === "eleven_v3";
+  const maxChars = isV3 ? ELEVEN_MAX_CHARS : 9000;
+  const chunks = chunkHistorias(fullScript, sceneTexts, maxChars);
+  log(LOG_LEVEL.INFO, `ElevenLabs ${o.modelId}: voz ${o.voiceId} (seed ${o.seed}, ${o.outputFormat}) -> ${chunks.length} bloque(s) -> ${slug}/voice/full.mp3`);
+  const audioParts = [], words = []; let offset = 0;
+  for (let i = 0; i < chunks.length; i++) {
+    await ensureState();
+    // Contexto del seam SOLO para no-v3 (v2/turbo/flash); en v3 va undefined -> el body no los manda (v3 los rechaza).
+    o.previousText = (!isV3 && i > 0) ? chunks[i - 1].slice(-600) : undefined;
+    o.nextText = (!isV3 && i < chunks.length - 1) ? chunks[i + 1].slice(0, 600) : undefined;
+    const { audio, chunkWords, duration } = await elevenTTSWithTimestamps(chunks[i], o);
+    audioParts.push(audio);
+    for (const w of chunkWords) words.push({ word: w.word, start: round3(w.start + offset), end: round3(w.end + offset) });
+    offset += duration;
+    log(LOG_LEVEL.INFO, `  bloque ${i + 1}/${chunks.length}: ${Math.round(audio.length / 1024)} KB, ${chunkWords.length} palabras`);
+  }
+  const total = audioParts.reduce((n, a) => n + a.length, 0);
+  if (!total) throw new Error("ElevenLabs no devolvio audio");
+  const audio = new Uint8Array(total); let p = 0; for (const a of audioParts) { audio.set(a, p); p += a.length; }
+  const savedMp3 = await saveVoiceFile(slug, "full.mp3", audio, "audio/mpeg");
+  const savedWords = await saveVoiceFile(slug, "full.words.json", JSON.stringify(words), "application/json");
+  log(LOG_LEVEL.INFO, `voz V3 lista: full.mp3 (${Math.round(audio.length / 1024)} KB, ${words.length} palabras) -> ${savedMp3.path}`);
+  if (savedMp3.via === "downloads" || savedWords.via === "downloads") {
+    log(LOG_LEVEL.WARN, `Voz en Descargas (dev-server caido): muevela a remotion-editor/public/${slug}/voice/.`);
+  }
+  log(LOG_LEVEL.INFO, "historias: ahora corre  node align/inject-words.mjs <json>  y renderiza.");
+}
+
 // Genera la voz de cada escena (+ hook) con Fish Audio. limit -> solo las primeras N escenas (prueba).
 async function onGenerateAudio(message) {
   await applySecrets();   // recarga la key desde secrets.local.json por si el dev-server arranco tarde
+
+  // historias + ElevenLabs V3: si el JSON pide engine "elevenlabs", la voz va por V3 (NO requiere key de Fish).
+  // Bloque con scope propio (_*) para no chocar con las const del flujo Fish de abajo.
+  {
+    const _tts = state.project?.ttsExport || {};
+    const _fs = _tts.full_script;
+    if (state.project?.preset === "historias" && _tts.engine === "elevenlabs" && typeof _fs === "string" && _fs.trim()) {
+      const elevenKey = (state.config.elevenApiKey || "").trim();
+      if (!elevenKey) { log(LOG_LEVEL.ERROR, "ElevenLabs: el JSON pide engine \"elevenlabs\" pero falta elevenApiKey en secrets.local.json."); return; }
+      const _slug = state.project?.slug || "proyecto";
+      const _texts = (state.scenes || []).filter((s) => (s.voiceoverText || "").trim()).map((s) => s.voiceoverText.trim());
+      try { await generateHistoriasEleven(_fs.trim(), _texts, _slug, _tts, elevenKey); }
+      catch (e) { log(LOG_LEVEL.ERROR, `ElevenLabs V3 fallo: ${e.message}`); }
+      return;
+    }
+  }
+
   const apiKey = (state.config.fishApiKey || "").trim();
   if (!apiKey) { log(LOG_LEVEL.ERROR, "Fish Audio: falta tu API key. Revisa secrets.local.json y que 'flowbot start' este corriendo."); return; }
 

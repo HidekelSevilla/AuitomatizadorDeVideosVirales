@@ -1,0 +1,5 @@
+# Motor de voz ElevenLabs V3 (preset historias).
+# Instalar en un venv:  python -m venv .venv-eleven && .venv-eleven/Scripts/pip install -r tts/requirements.txt
+elevenlabs>=2.0.0
+# ffmpeg y ffprobe deben estar en el PATH (concat + medir duracion). NO se usa pydub
+# (audioop fue removido en Python 3.13+; se mide con ffprobe directo).

@@ -42,7 +42,7 @@ const HIST_PAN = 2;          // paneo por defecto en historias (mas lento/suave 
 const HIST_ZOOM = 1.07;      // overscale por defecto en historias (recorta ~3% del marco, no 12%)
 const HIST_MUSIC_VOL = 0.15; // musica por defecto en historias (mas baja)
 const HIST_VOICE_RATE = 1.0; // playbackRate por defecto en historias = 1.0 (NO baja el tono). La lentitud va en Fish (voice_speed 0.95). voice_rate del JSON sigue mandando si se pone.
-const HIST_XFADE_S = 0.45;   // historias voz-continua: disolvencia (crossfade) entre imagenes -> NO se siente el corte
+const HIST_XFADE_S = 0;      // historias: edicion estatica -> corte duro entre imagenes (sin disolvencia). El JSON puede subirlo con project.crossfade_s.
 
 // ---------- helpers ----------
 
@@ -142,6 +142,12 @@ const labelNarrated = (
 
 // ---------- duracion: la manda la voz; el clip se estira para llenarla ----------
 
+// --- schema nuevo historias: render_export renombra capcut_export; scene_id/motion alias de id/visual.motion.
+//     Se lee el nombre NUEVO con fallback al viejo -> acepta AMBOS schemas sin romper JSONs existentes. ---
+const xport = (p: ViralProps) => p.render_export ?? p.capcut_export;
+const sceneId = (s: SceneData) => s.id ?? s.scene_id ?? "";
+const sceneMotion = (s: SceneData) => s.visual?.motion ?? s.motion;
+
 export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({ props }) => {
   const fps = props.project.fps ?? 24;
   // historias es documental HORIZONTAL: si el JSON no declara aspect_ratio, default 16:9 (no vertical en
@@ -151,7 +157,7 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
   const slug = getSlug(props);
   const preset = getPreset(props.project.preset);
   const baseCard = preset.showLabelCard
-    ? Math.round((props.capcut_export?.label_card_duration_s ?? CARD_SEC) * fps)
+    ? Math.round((xport(props)?.label_card_duration_s ?? CARD_SEC) * fps)
     : 0;
   // historias: voz a 1.0 (documental; se respeta la lentitud de Fish y no se comprime la escena). Otros: 1.05.
   const voiceRate = props.audio?.voice_rate ?? (preset.stills ? HIST_VOICE_RATE : VOICE_RATE);
@@ -161,13 +167,13 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
   const openingScenes = props.opening?.scenes ?? [];
   // Opening compartido por serie: sus medios viven en public/<assets_slug>/ (fallback: el slug del proyecto).
   const openingSlug = props.opening?.assets_slug ?? slug;
-  const openingIds = new Set(openingScenes.map((s) => s.id));
+  const openingIds = new Set(openingScenes.map(sceneId));
   const baseFor = (id: string): string => (openingIds.has(id) ? openingSlug : slug);
   const order = [
-    ...openingScenes.map((s) => s.id),
-    ...(props.capcut_export?.clip_order ?? props.scenes.map((s) => s.id)),
+    ...openingScenes.map(sceneId),
+    ...(xport(props)?.clip_order ?? props.scenes.map(sceneId)),
   ];
-  const byId = Object.fromEntries([...openingScenes, ...props.scenes].map((s) => [s.id, s]));
+  const byId = Object.fromEntries([...openingScenes, ...props.scenes].map((s) => [sceneId(s), s]));
 
   // ---- historias VOZ-CONTINUA: 1 mp3 maestro + ventana {start,end} por escena (de los timestamps de Fish,
   // inyectadas por align/inject-words.mjs). El timing NO sale de ffprobe por escena sino del mapa. La voz
@@ -413,10 +419,12 @@ const resolveMotion = (
   motion: string | undefined,
   index: number,
   project: ViralProps["project"],
-  defaultNoStatic = false // historias: por defecto convierte static -> paneo (prueba 5). Otros presets: false.
+  stills = false // historias: edicion estatica por defecto (sin Ken Burns). Otros presets: false.
 ): string | undefined => {
   if (project.force_motion) return project.force_motion;
-  const noStatic = project.no_static ?? defaultNoStatic;
+  // historias: TODO estatico por defecto (ignora el motion de la escena). El JSON re-activa el Ken Burns con project.ken_motion:true.
+  if (stills && !project.ken_motion) return "static";
+  const noStatic = project.no_static ?? false;
   if (noStatic && (!motion || motion === "static" || motion === "static_hold")) {
     return MOTION_CYCLE[index % MOTION_CYCLE.length];
   }
@@ -471,7 +479,7 @@ const Hook: React.FC<{ props: ViralProps; preset: Preset }> = ({ props, preset }
   // del hook -> NO se estiran los pedazos, se agregan mas escenas. Pool: primero las montage_sources
   // curadas, luego el resto de escenas (clip_order) para variedad; si faltan, cicla.
   const curated = props.hook?.montage_sources ?? [];
-  const order = props.capcut_export?.clip_order ?? props.scenes.map((s) => s.id);
+  const order = xport(props)?.clip_order ?? props.scenes.map(sceneId);
   const usedIds = new Set(curated.map((s) => s.scene_id));
   const extra = order
     .filter((id) => !usedIds.has(id))
@@ -488,7 +496,7 @@ const Hook: React.FC<{ props: ViralProps; preset: Preset }> = ({ props, preset }
   const { height: vh } = useVideoConfig();
   // historias (16:9): subtitulo lower-third mas chico, respeta caption_style.size. Otros presets: VALORES
   // EXACTOS de antes (no leemos caption_style para no cambiar el look de esqueletos/novela ya en produccion).
-  const capSize = preset.stills ? (props.capcut_export?.caption_style?.size ?? 84) : 120;
+  const capSize = preset.stills ? (xport(props)?.caption_style?.size ?? 84) : 120;
   const capBottom = preset.stills ? Math.round(vh * 0.08) : 360;
 
   return (
@@ -530,15 +538,18 @@ const Hook: React.FC<{ props: ViralProps; preset: Preset }> = ({ props, preset }
           });
         })()}
       <Audio src={staticFile(`${slug}/voice/hook.mp3`)} playbackRate={voiceRate} />
-      <Karaoke
-        text={props.hook?.voiceover}
-        words={dedupeWords(props.hook?.words)}
-        windowFrames={t.hookFrames}
-        voiceRate={voiceRate}
-        preset={preset}
-        bottom={capBottom}
-        size={capSize}
-      />
+      {/* historias: NADA de texto desde Remotion (todo el texto va horneado en la imagen por la IA). */}
+      {!preset.stills && (
+        <Karaoke
+          text={props.hook?.voiceover}
+          words={dedupeWords(props.hook?.words)}
+          windowFrames={t.hookFrames}
+          voiceRate={voiceRate}
+          preset={preset}
+          bottom={capBottom}
+          size={capSize}
+        />
+      )}
     </AbsoluteFill>
   );
 };
@@ -564,12 +575,12 @@ const Scene: React.FC<{
   // historias v2: escena "punch" (fija + golpe de tambor al entrar) si trae text_overlay o esta en
   // static_punch_scenes. El SFX es OPT-IN (capcut_export.punch_sfx, archivo en public/sfx/): sin el, no
   // suena nada y no se rompe el render. Gateado a preset.stills -> otros presets intactos.
-  const punchSfx = props.capcut_export?.punch_sfx;
+  const punchSfx = xport(props)?.punch_sfx;
   const isPunch = preset.stills && !!punchSfx &&
-    (!!scene.text_overlay || (props.capcut_export?.static_punch_scenes ?? []).includes(scene.id));
+    (!!scene.text_overlay || (xport(props)?.static_punch_scenes ?? []).includes(sceneId(scene)));
   // historias (16:9): subtitulo lower-third mas chico, respeta caption_style.size. Otros presets: VALORES
   // EXACTOS de antes (no leemos caption_style para no cambiar el look de esqueletos/novela ya en produccion).
-  const capSize = preset.stills ? (props.capcut_export?.caption_style?.size ?? 88) : 128;
+  const capSize = preset.stills ? (xport(props)?.caption_style?.size ?? 88) : 128;
   const capBottom = preset.stills ? Math.round(vh * 0.08) : 380;
   const { cardFrames, sceneFrames, clipWindow, playbackRate, introFrames } = timing;
   const contentFrames = sceneFrames - introFrames;
@@ -589,7 +600,8 @@ const Scene: React.FC<{
           {scene.intro_card_voice && (
             <Audio src={staticFile(`${slug}/voice/${scene.intro_card_voice}`)} playbackRate={voiceRate} />
           )}
-          <LabelCard label={scene.intro_card} preset={preset} />
+          {/* historias: el cartel va horneado en la imagen -> no se dibuja desde Remotion. */}
+          {!preset.stills && <LabelCard label={scene.intro_card} preset={preset} />}
         </Sequence>
       )}
 
@@ -598,9 +610,9 @@ const Scene: React.FC<{
         <AbsoluteFill style={{ backgroundColor: continuous ? "transparent" : "black" }}>
           {/* voz: arranca con el contenido (suena durante el cartel narrado -> sincroniza "DIA 1").
               historias voz-continua: el audio es 1 pista maestra global (en ViralVideo) -> aqui NO se pone. */}
-          {!continuous && <Audio src={staticFile(`${slug}/voice/${scene.id}.mp3`)} playbackRate={voiceRate} />}
+          {!continuous && <Audio src={staticFile(`${slug}/voice/${sceneId(scene)}.mp3`)} playbackRate={voiceRate} />}
           {/* historias v2: golpe de tambor al ENTRAR la escena punch (cartel baked + fija). Opt-in. */}
-          {isPunch && <Audio src={staticFile(`sfx/${punchSfx}`)} volume={props.capcut_export?.punch_sfx_volume ?? 1.0} />}
+          {isPunch && <Audio src={staticFile(`sfx/${punchSfx}`)} volume={xport(props)?.punch_sfx_volume ?? 1.0} />}
           {/* flash al aparecer el cartel narrado de la escena */}
           {sceneSfx && cardFrames > 0 && <Audio src={staticFile(`sfx/${sceneSfx}`)} volume={sceneVol} />}
           {/* sfx puntuales (at_s relativo al inicio del contenido) */}
@@ -618,8 +630,8 @@ const Scene: React.FC<{
             <Sequence from={cardFrames} durationInFrames={clipWindow}>
               {preset.stills ? (
                 <KenBurnsImage
-                  src={staticFile(`${slug}/images/${scene.id}.jpg`)}
-                  motion={resolveMotion(scene.visual?.motion, sceneIndex, props.project, preset.stills)}
+                  src={staticFile(`${slug}/images/${sceneId(scene)}.jpg`)}
+                  motion={resolveMotion(sceneMotion(scene), sceneIndex, props.project, preset.stills)}
                   windowFrames={clipWindow}
                   pan={props.project.ken_pan ?? (preset.stills ? HIST_PAN : undefined)}
                   zoom={props.project.ken_zoom ?? (preset.stills ? HIST_ZOOM : undefined)}
@@ -627,7 +639,7 @@ const Scene: React.FC<{
               ) : (
                 <AbsoluteFill style={{ transform: `scale(${CLIP_ZOOM})`, transformOrigin: "50% 0%" }}>
                   <OffthreadVideo
-                    src={staticFile(`${slug}/clips/${scene.id}.mp4`)}
+                    src={staticFile(`${slug}/clips/${sceneId(scene)}.mp4`)}
                     playbackRate={playbackRate}
                     volume={clipVol}
                     style={{ width: "100%", height: "100%", objectFit: "cover" }}
@@ -637,20 +649,22 @@ const Scene: React.FC<{
             </Sequence>
           )}
 
-          {/* karaoke sobre el contenido (lo del cartel narrado queda tapado por el cartel) */}
-          <Karaoke
-            text={sub.text}
-            words={sub.words}
-            windowFrames={contentFrames}
-            voiceRate={voiceRate}
-            preset={preset}
-            hot={scene.captions?.highlight_words}
-            bottom={capBottom}
-            size={capSize}
-          />
+          {/* karaoke sobre el contenido. historias: SIN texto (todo horneado en la imagen por la IA). */}
+          {!preset.stills && (
+            <Karaoke
+              text={sub.text}
+              words={sub.words}
+              windowFrames={contentFrames}
+              voiceRate={voiceRate}
+              preset={preset}
+              hot={scene.captions?.highlight_words}
+              bottom={capBottom}
+              size={capSize}
+            />
+          )}
 
-          {/* cartel narrado (DIA 1...) encima, primeros frames del contenido */}
-          {cardFrames > 0 && (
+          {/* cartel narrado (DIA 1...) encima. historias: NO se dibuja (texto baked en la imagen). */}
+          {!preset.stills && cardFrames > 0 && (
             <Sequence from={0} durationInFrames={cardFrames}>
               <LabelCard label={scene.time_label} preset={preset} />
             </Sequence>
@@ -670,11 +684,11 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
   // Opening compartido: sus escenas leen medios de public/<assets_slug>/ (fallback: slug del proyecto).
   const openingSlug = props.opening?.assets_slug ?? slug;
   const openingIds = useMemo(
-    () => new Set((props.opening?.scenes ?? []).map((s) => s.id)),
+    () => new Set((props.opening?.scenes ?? []).map(sceneId)),
     [props.opening]
   );
   const byId = useMemo(
-    () => Object.fromEntries([...(props.opening?.scenes ?? []), ...props.scenes].map((s) => [s.id, s])),
+    () => Object.fromEntries([...(props.opening?.scenes ?? []), ...props.scenes].map((s) => [sceneId(s), s])),
     [props.opening, props.scenes]
   );
 
@@ -697,10 +711,11 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
         // Musica de fondo: la del proyecto si la trae; si no, la COMPARTIDA por defecto. Loop para cubrir
         // todo el video. Volumen FIJO 0.25 siempre (el usuario lo quiere asi); music_volume=0 sigue silenciando.
         const ownMusic = props.audio?.music_file;
-        // novela-coreana: SIN musica por defecto (la pista generica compartida no le queda; ya lleva voz).
-        // Solo suena si el JSON trae su propio audio.music_file. Otros presets: comportamiento intacto.
+        // novela-coreana E historias: SIN musica de fondo por defecto (no les queda; la voz manda). Solo suena
+        // si el JSON trae su propio audio.music_file. Otros presets: musica compartida por defecto (intacto).
         const isNovela = props.project.preset === "novela-coreana";
-        const muted = props.audio?.music_volume === 0 || (isNovela && !ownMusic);
+        const noDefaultMusic = isNovela || preset.stills;
+        const muted = props.audio?.music_volume === 0 || (noDefaultMusic && !ownMusic);
         if (muted && !ownMusic) return null; // nada de musica -> ni cargar el default
         const src = ownMusic ? staticFile(`${slug}/${ownMusic}`) : staticFile(DEFAULT_MUSIC);
         // historias respeta audio.music_volume del JSON (control por video) y por defecto va a HIST_MUSIC_VOL
@@ -729,8 +744,8 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
           <Sequence key={`img-${st.id}`} from={at} durationInFrames={dur}>
             <FadeIn frames={xfadeFrames}>
               <KenBurnsImage
-                src={staticFile(`${slug}/images/${scene.id}.jpg`)}
-                motion={resolveMotion(scene.visual?.motion, i, props.project, true)}
+                src={staticFile(`${slug}/images/${sceneId(scene)}.jpg`)}
+                motion={resolveMotion(sceneMotion(scene), i, props.project, true)}
                 windowFrames={dur}
                 pan={props.project.ken_pan ?? HIST_PAN}
                 zoom={props.project.ken_zoom ?? HIST_ZOOM}

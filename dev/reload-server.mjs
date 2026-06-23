@@ -276,12 +276,16 @@ function fileOk(p) {
 function mediaComplete(p) {
   const slug = p.project?.slug || slugify(p.project?.title);
   const base = path.join(PUBLIC_SLUGS, slug);
-  const order = p.capcut_export?.clip_order || (p.scenes || []).map((s) => s.id);
+  // schema nuevo historias: render_export.clip_order + scene_id. historias = image-only (images/<id>.jpg)
+  // + voz continua (voice/full.mp3); otros presets = clips/<id>.mp4 + voz por escena (igual que antes).
+  const stills = p.project?.preset === "historias";
+  const order = p.render_export?.clip_order || p.capcut_export?.clip_order || (p.scenes || []).map((s) => s.id ?? s.scene_id);
   const need = [];
   for (const id of order) {
-    need.push(path.join(base, "clips", `${id}.mp4`));
-    need.push(path.join(base, "voice", `${id}.mp3`));
+    need.push(path.join(base, stills ? "images" : "clips", `${id}.${stills ? "jpg" : "mp4"}`));
+    if (!stills) need.push(path.join(base, "voice", `${id}.mp3`));
   }
+  if (stills) need.push(path.join(base, "voice", "full.mp3"));
   if (p.hook) need.push(path.join(base, "voice", "hook.mp3"));
   return [...new Set(need)].every(fileOk);   // existe Y tamano plausible (no 0-byte/truncado)
 }

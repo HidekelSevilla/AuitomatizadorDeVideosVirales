@@ -63,7 +63,8 @@ function inspect(job) {
   const p = JSON.parse(fs.readFileSync(job.jsonPath, "utf8").replace(/^﻿/, ""));
   const slug = p.project?.slug || slugify(p.project?.title || job.name);
   const base = path.join(PUBLIC, slug);
-  const order = p.capcut_export?.clip_order || (p.scenes || []).map((s) => s.id);
+  // schema nuevo historias: orden en render_export.clip_order; escenas con scene_id (alias de id).
+  const order = p.render_export?.clip_order || p.capcut_export?.clip_order || (p.scenes || []).map((s) => s.id ?? s.scene_id);
   // historias: image-only (stills + Ken Burns en el editor). El medio por escena es images/<id>.png, NO clips/<id>.mp4.
   const stills = p.project?.preset === "historias";
   const sceneMedia = (dir, id) => stills ? path.join(dir, "images", `${id}.jpg`) : path.join(dir, "clips", `${id}.mp4`);
@@ -78,8 +79,9 @@ function inspect(job) {
   // opening: medios en public/<assets_slug>/ (fallback: la carpeta del proyecto). Pre-generado y reusable.
   const openingBase = p.opening?.assets_slug ? path.join(PUBLIC, p.opening.assets_slug) : base;
   for (const s of p.opening?.scenes || []) {
-    need.push(sceneMedia(openingBase, s.id));
-    need.push(path.join(openingBase, "voice", `${s.id}.mp3`));
+    const sid = s.id ?? s.scene_id;
+    need.push(sceneMedia(openingBase, sid));
+    need.push(path.join(openingBase, "voice", `${sid}.mp3`));
   }
   if (p.hook) need.push(path.join(base, "voice", "hook.mp3"));
   if (p.audio?.music_file) need.push(path.join(base, p.audio.music_file));
