@@ -25,6 +25,7 @@
     PING: "act:ping",
     INSPECT_DOM: "act:inspect_dom",
     GENERATE_IMAGE: "act:generate_image",
+    COLLECT_IMAGE: "act:collect_image",
     ANIMATE: "act:animate",
     ANIMATE_FIRE: "act:animate_fire",
     ANIMATE_COLLECT: "act:animate_collect",
@@ -111,6 +112,55 @@
   // data: url -> el src completo (la cabecera base64 coincide entre variaciones, el cuerpo difiere).
   const genId = (url) => { const m = (url || "").match(/\/generated\/([^/?]+)/); return m ? m[1] : (url || ""); };
   function currentResultGenIds() { return new Set(resultImageEls().map((i) => genId(i.src))); }
+
+  function pickResultImage(exclude = new Set()) {
+    const els = resultImageEls().filter((i) => !exclude.has(genId(i.currentSrc || i.src)));
+    els.sort((a, b) => {
+      const wa = a.getBoundingClientRect().width, wb = b.getBoundingClientRect().width;
+      if (Math.abs(wa - wb) > 20) return wb - wa;
+      return (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
+    });
+    return els[0] || null;
+  }
+
+  async function dataImageLooksFinal(src, cfg) {
+    if (!/^data:image/.test(src || "")) return true;
+    const minLen = Number(cfg?.grokImageMinDataUrlLength) || 160000;
+    if (src.length < minLen) return false;
+
+    const img = new Image();
+    img.decoding = "async";
+    img.src = src;
+    try {
+      if (img.decode) await img.decode();
+      else await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+    } catch (_e) {
+      return false;
+    }
+    if (img.naturalWidth < 400 || img.naturalHeight < 300) return false;
+
+    const w = 96, h = 96;
+    const c = document.createElement("canvas");
+    c.width = w; c.height = h;
+    const ctx = c.getContext("2d", { willReadFrequently: true });
+    if (!ctx) return false;
+    ctx.drawImage(img, 0, 0, w, h);
+    let data;
+    try { data = ctx.getImageData(0, 0, w, h).data; } catch (_e) { return false; }
+
+    // Placeholder de Grok = grano multicolor: mucha diferencia pixel-a-pixel en casi toda la imagen.
+    let diff = 0, n = 0;
+    for (let y = 0; y < h; y++) {
+      for (let x = 1; x < w; x++) {
+        const a = (y * w + x) * 4, b = a - 4;
+        diff += Math.abs(data[a] - data[b]) + Math.abs(data[a + 1] - data[b + 1]) + Math.abs(data[a + 2] - data[b + 2]);
+        n += 3;
+      }
+    }
+    const avgDiff = diff / Math.max(1, n);
+    const maxAvgDiff = Number(cfg?.grokImageMaxNoiseAvgDiff) || 34;
+    return avgDiff <= maxAvgDiff;
+  }
 
   // Videos de resultado (excluye banners gstatic). Grok sirve el video desde assets.grok.com.
   function resultVideos() {
@@ -233,24 +283,21 @@
     if (found.type) return found; // parada dura
     // Elige UNA imagen nueva de forma DETERMINISTA: la mas GRANDE (full-res; en /post hay miniatura + grande
     // del mismo generado), desempate por orden DOM (en el grid sin-ref: izquierda->derecha = 1a variacion).
-    const pickFresh = () => {
-      const els = resultImageEls().filter((i) => !before.has(genId(i.src)));
-      els.sort((a, b) => {
-        const wa = a.getBoundingClientRect().width, wb = b.getBoundingClientRect().width;
-        if (Math.abs(wa - wb) > 20) return wb - wa;
-        return (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
-      });
-      return els[0] || null;
-    };
+    const pickFresh = () => pickResultImage(before);
     // CRITICO: Grok muestra un PLACEHOLDER de RUIDO mientras genera, y SOLO al final aparece la imagen real.
     // El placeholder de ruido es ESTATICO (su `data:` src NO muta) y CHICO (~77KB) vs la imagen final GRANDE
     // (~200-400KB). "Esperar a que el src se estabilice" NO basta: el ruido fijo ya esta estable -> se descargaba
     // ruido (scene_15, scene_30). Senal robusta: el TAMANO del dato (largo del data: url) CRECE de ruido->final.
-    // Aceptamos cuando: el largo CRECIO al menos una vez (ruido->detalle) Y luego se estabilizo QUIET_MS. Para
-    // URLs de servidor (/generated/, ya finales, sin ruido in-place) basta estabilidad. Re-consultamos el nodo
-    // por si Grok lo reemplaza. isData = data: url (grid sin-ref); el resto = URL de servidor.
+    // Aceptamos cuando: el largo CRECIO al menos una vez (ruido->detalle) Y luego se estabilizo QUIET_DATA_MS. Para
+    // URLs de servidor (/generated/) tambien esperamos estabilidad larga: Grok puede exponer un asset intermedio.
+    // Re-consultamos el
+    // nodo por si Grok lo reemplaza. isData = data: url (grid sin-ref); el resto = URL de servidor.
+    // OJO: la difusion data: NO es ruido->final atomico; muestra frames PROGRESIVOS (ruido->medio->nitido). Si hace
+    // una PAUSA a media difusion mas larga que el settle, se descargaba un frame medio (todavia con grano, ej. b41).
+    // Por eso el settle del caso data: es mayor (QUIET_DATA_MS): que la pausa tenga que durar mas para colarse.
     const isData = (s) => /^data:/.test(s || "");
-    const QUIET_MS = 2000, MAX_MS = 180000, IDLE_DONE = 20000, t0 = Date.now();
+    const QUIET_SERVER_MS = Number(cfg?.grokImageServerQuietMs) || 10000;
+    const QUIET_DATA_MS = 10000, MAX_MS = 180000, IDLE_DONE = 20000, t0 = Date.now();
     let maxLen = -1, lastGrow = Date.now(), grew = false;
     while (Date.now() - t0 < MAX_MS) {
       const hs = detectHardStop(); if (hs) return hs;
@@ -258,9 +305,9 @@
       const cur = el ? (el.currentSrc || el.src || "") : "";
       if (cur.length > maxLen) { if (maxLen >= 0) grew = true; maxLen = cur.length; lastGrow = Date.now(); }
       const idle = Date.now() - lastGrow;
-      if (cur && !isData(cur) && idle >= QUIET_MS) break;            // URL de servidor = ya es la final
-      else if (cur && isData(cur) && grew && idle >= QUIET_MS) break; // data: crecio (ruido->final) y se estabilizo
-      else if (cur && isData(cur) && !grew && idle >= IDLE_DONE) break; // nunca crecio = ya estaba lista al empezar
+      if (cur && !isData(cur) && idle >= QUIET_SERVER_MS) break;     // URL de servidor estable el tiempo suficiente
+      else if (cur && isData(cur) && grew && idle >= QUIET_DATA_MS && await dataImageLooksFinal(cur, cfg)) break; // data: crecio, se estabilizo y ya no parece ruido
+      else if (cur && isData(cur) && !grew && idle >= IDLE_DONE && await dataImageLooksFinal(cur, cfg)) break; // nunca crecio = ya estaba lista al empezar
       await sleep(400);
     }
     const freshEls = resultImageEls().filter((i) => !before.has(genId(i.src)));
@@ -272,6 +319,27 @@
     try { postUrl = await waitFor(() => /\/imagine\/post\/[^/]+/.test(location.href) ? location.href : null, { timeout: 8000 }); }
     catch (_e) { /* no navego a /post: el SW derivara del genId como fallback */ }
     return { ok: true, data: { imageUrl: chosen.currentSrc || chosen.src, postUrl, variantCount: freshEls.length } };
+  }
+
+  async function collectImage({ timeoutMs = 45000, requirePost = false } = {}) {
+    const found = await waitFor(() => {
+      const hs = detectHardStop(); if (hs) return hs;
+      if (requirePost && !/\/imagine\/post\//.test(location.href)) return null;
+      const el = pickResultImage();
+      return el ? { hit: true } : null;
+    }, { timeout: timeoutMs });
+    if (found.type) return found;
+    const chosen = pickResultImage();
+    if (!chosen) return { ok: false, error: "no encontre imagen generada actual en Grok" };
+    return {
+      ok: true,
+      data: {
+        imageUrl: chosen.currentSrc || chosen.src,
+        postUrl: /\/imagine\/post\//.test(location.href) ? location.href : null,
+        variantCount: resultImageEls().length,
+        recovered: true,
+      },
+    };
   }
 
   // Toggle a modo VIDEO del composer: texto "Video" (composer /imagine) o aria-label "Video" (icono
@@ -286,7 +354,7 @@
   // generar imagen; el clic sintetico de Enviar es flaky). Grok navega al /post del video y genera en
   // sitio; el video lo recoge ANIMATE_COLLECT tras re-inyectar. El SW adjunta el debugger SOLO para este
   // clic y lo suelta antes de la espera larga (evita el congelamiento).
-  async function animateFire({ prompt, cfg } = {}) {
+  async function animateFire({ prompt, cfg, expectImage } = {}) {
     const hs0 = detectHardStop(); if (hs0) return hs0;
     await waitFor(() => videoToggle(), { timeout: 20000 });
     await rsleep(500, 1200);
@@ -306,7 +374,20 @@
     if (prompt) await setPrompt(prompt, cfg);   // mismo tipeo (humano/instantaneo segun config) que en imagen
     await rsleep(cfg?.reviewMinMs ?? 1200, cfg?.reviewMaxMs ?? 3500);   // pausa de "revision" (config.reviewPause)
     const preUrl = location.href;
-    const send = await waitFor(() => videoSubmitButton() || sendButton(), { timeout: 8000 });
+    // HANDOFF (imagen subida por CDP): si "Crear video" se clickea ANTES de que la imagen se adjunte/procese,
+    // Grok NO-OPEA el clic (no arma la generacion) y ninguna senal de arranque aparece -> fallaba 4/4
+    // determinista ("el clic no registro"). Esperamos el chip "Remove image" (= imagen adjunta) antes de disparar.
+    if (expectImage) {
+      const attached = await waitFor(() => document.querySelector('button[aria-label="Remove image"]'), { timeout: 15000 }).catch(() => null);
+      if (!attached) throw new Error("la imagen subida no se adjunto al composer de Grok (handoff); reintenta");
+      await sleep(800);   // settle del preview antes de armar el video
+    }
+    // Espera a que el boton EXISTA y este ARMABLE (no aria-disabled/disabled): un boton presente pero inerte
+    // mientras la imagen procesa hace que el clic no registre.
+    const send = await waitFor(() => {
+      const b = videoSubmitButton() || sendButton();
+      return (b && b.getAttribute("aria-disabled") !== "true" && !b.disabled) ? b : null;
+    }, { timeout: 12000 });
     await trustedClickEl(send);       // trusted: el "Crear video"/Enviar sintetico a veces no registra
     // Confirma que la generacion ARRANCO: Grok navega al /post del video (o muestra "Generando %"/<video>).
     // Si NADA pasa en ~14s, el clic no registro -> fallar CLARO (reintentable) en vez de dejar a ANIMATE_COLLECT
@@ -359,6 +440,7 @@
         if (type === ACT.PING) return { ok: true, data: { pong: true, driver: "grok", url: location.href } };
         if (type === ACT.INSPECT_DOM) return inspect();
         if (type === ACT.GENERATE_IMAGE) return await generateImage(message);
+        if (type === ACT.COLLECT_IMAGE) return await collectImage(message);
         if (type === ACT.ANIMATE || type === ACT.ANIMATE_FIRE) return await animateFire(message);
         if (type === ACT.ANIMATE_COLLECT) return await animateCollect(message);
         if (type === ACT.CLEAR_REFS) return await clearRefs();

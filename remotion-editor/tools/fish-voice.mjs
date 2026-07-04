@@ -113,7 +113,7 @@ for (const s of proj.scenes || []) {
 // historias VOZ-CONTINUA: una sola generacion desde tts_export.full_script (NO 1 mp3 por escena). El editor
 // mapea cada imagen a su ventana via los timestamps de Fish -> la narracion no tiene costura entre cortes.
 // Sale full.mp3 + full.words.json. Otros presets: intacto (1 mp3 por escena/hook como siempre).
-const isHistorias = (proj.project?.preset === "historias")
+const isHistorias = /^(historias|criptoclaro|habitos|pov-historias)/.test(proj.project?.preset || "")   // historias* / criptoclaro* / habitos* / pov-historias
   || (proj.pipeline?.tts?.mode === "single_file_from_full_script");
 const fullScript = proj.tts_export?.full_script;
 if (isHistorias && typeof fullScript === "string" && fullScript.trim()) {

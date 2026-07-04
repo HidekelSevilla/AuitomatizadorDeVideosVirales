@@ -43,6 +43,9 @@ const HIST_ZOOM = 1.07;      // overscale por defecto en historias (recorta ~3% 
 const HIST_MUSIC_VOL = 0.15; // musica por defecto en historias (mas baja)
 const HIST_VOICE_RATE = 1.0; // playbackRate por defecto en historias = 1.0 (NO baja el tono). La lentitud va en Fish (voice_speed 0.95). voice_rate del JSON sigue mandando si se pone.
 const HIST_XFADE_S = 0;      // historias: edicion estatica -> corte duro entre imagenes (sin disolvencia). El JSON puede subirlo con project.crossfade_s.
+const HIST_CAPTION_SIZE = 72; // historias: karaoke un poco mas chico que el de costumbre (esqueletos ~128). El JSON puede sobreescribir con render_export.caption_style.size.
+const CAPTION_GAP_HOLD_S = 0.16; // evita que la ultima palabra se quede pegada durante pausas largas.
+const WAKE_INTRO_S = 1.3; // pov-historias: duracion del fundido de negro -> primera imagen al arranque ("despertar"). Fija.
 
 // ---------- helpers ----------
 
@@ -147,12 +150,25 @@ const labelNarrated = (
 const xport = (p: ViralProps) => p.render_export ?? p.capcut_export;
 const sceneId = (s: SceneData) => s.id ?? s.scene_id ?? "";
 const sceneMotion = (s: SceneData) => s.visual?.motion ?? s.motion;
+// HIBRIDO criptoclaro_reel: una escena con render_mode "animated" se dibuja como CLIP de video (no still + Ken Burns).
+const isAnimatedScene = (s: SceneData) => s.render_mode === "animated";
+const isManhwa = (p: ViralProps) => p.project.preset === "manhwa";
+const isNarrativeCard = (s: SceneData) => s.type === "narrative_card";
+const isEditorNarrativeCard = (s: SceneData) => isNarrativeCard(s) && (s.card?.mode ?? "editor") !== "generated";
+const captionStyle = (p: ViralProps) => isManhwa(p) ? (p.editing?.caption_style ?? xport(p)?.caption_style) : xport(p)?.caption_style;
+const captionsEnabled = (p: ViralProps, preset: Preset) =>
+  isManhwa(p) ? (captionStyle(p)?.enabled !== false) : (!preset.stills || !!preset.captions);
+const SceneClip: React.FC<{ slug: string; id: string }> = ({ slug, id }) => (
+  <AbsoluteFill style={{ backgroundColor: "black" }}>
+    <OffthreadVideo src={staticFile(`${slug}/clips/${id}.mp4`)} muted style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+  </AbsoluteFill>
+);
 
 export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({ props }) => {
   const fps = props.project.fps ?? 24;
   // historias es documental HORIZONTAL: si el JSON no declara aspect_ratio, default 16:9 (no vertical en
   // silencio). Un aspect_ratio explicito sigue mandando (ej. reels 9:16 derivados). Otros presets: 9:16.
-  const defaultAspect = props.project.preset === "historias" ? "16:9" : "9:16";
+  const defaultAspect = (props.project.preset === "historias" || props.project.preset === "criptoclaro") ? "16:9" : "9:16";
   const [width, height] = dimsFromAspect(props.project.aspect_ratio ?? defaultAspect);
   const slug = getSlug(props);
   const preset = getPreset(props.project.preset);
@@ -304,11 +320,11 @@ const Karaoke: React.FC<{
     const audioT = (frame / fps) * voiceRate; // posicion real dentro del mp3 (esta ralentizado)
     idx = list.findIndex((w) => audioT >= w.start && audioT < w.end);
     if (idx < 0) {
-      // En un HUECO entre palabras (pausa) o fuera de rango: mostrar la ULTIMA palabra que YA empezo.
-      // BUG anterior: saltaba a la palabra FINAL de la escena -> la resaltada (amarilla) aparecia ANTES
-      // de tiempo en cada pausa. Ahora se queda en la palabra mas reciente -> sincronizado.
-      idx = 0;
-      for (let i = 0; i < list.length; i++) { if (list[i].start <= audioT) idx = i; else break; }
+      // En pausas cortas sostiene la ultima palabra; en pausas largas desaparece para no sentirse atrasado.
+      let lastIdx = -1;
+      for (let i = 0; i < list.length; i++) { if (list[i].start <= audioT) lastIdx = i; else break; }
+      if (lastIdx < 0 || audioT > list[lastIdx].end + CAPTION_GAP_HOLD_S) return null;
+      idx = lastIdx;
     }
     wordStartFrame = (list[idx].start / voiceRate) * fps;
   } else {
@@ -378,6 +394,67 @@ const LabelCard: React.FC<{ label?: string; preset: Preset }> = ({ label, preset
   );
 };
 
+const WEBTOON_CARD_FONT = '"Comic Sans MS", "Segoe Print", "Comic Neue", "Trebuchet MS", sans-serif';
+
+const splitNarrativeCardLines = (text: string, maxLines: number): string[] => {
+  const manual = text.split(/\n+/).map((line) => line.trim()).filter(Boolean);
+  if (manual.length > 1) return manual.slice(0, maxLines);
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return [""];
+  const lineCount = Math.min(maxLines, Math.max(1, Math.ceil(words.length / 3)));
+  const lines: string[] = [];
+  for (let i = 0; i < lineCount; i++) {
+    const remainingWords = words.length;
+    const remainingLines = lineCount - i;
+    const take = Math.ceil(remainingWords / remainingLines);
+    lines.push(words.splice(0, take).join(" "));
+  }
+  return lines.filter(Boolean);
+};
+
+const narrativeCardFontSize = (base: number, lines: string[], width: number, height: number): number => {
+  const longest = Math.max(1, ...lines.map((line) => line.length));
+  const byWidth = (width * 0.64) / longest;
+  const byHeight = (height * 0.18) / Math.max(1, lines.length);
+  return Math.round(Math.max(42, Math.min(base, byWidth, byHeight)));
+};
+
+const NarrativeCard: React.FC<{ text?: string; preset: Preset; frames: number; props: ViralProps }> = ({ text, preset, frames, props }) => {
+  const frame = useCurrentFrame();
+  const { fps, width, height } = useVideoConfig();
+  const fade = Math.min(Math.round(0.28 * fps), Math.max(1, Math.floor(frames / 2)));
+  const fadeIn = interpolate(frame, [0, fade], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const fadeOut = interpolate(frame, [Math.max(0, frames - fade - 1), Math.max(1, frames - 1)], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const style = isManhwa(props) ? undefined : props.editing?.narrative_card_style;
+  const lines = splitNarrativeCardLines(text ?? "", style?.max_lines ?? 4);
+  const fontSize = narrativeCardFontSize(style?.size ?? 96, lines, width, height);
+  return (
+    <AbsoluteFill style={{ backgroundColor: "black", justifyContent: "center", alignItems: "center", opacity: Math.min(fadeIn, fadeOut) }}>
+      <div
+        style={{
+          fontFamily: style?.font || preset.narrativeCardFont || WEBTOON_CARD_FONT,
+          fontWeight: 800,
+          fontSize,
+          lineHeight: 1.08,
+          letterSpacing: 0,
+          color: preset.labelCardColor,
+          textAlign: "center",
+          width: style?.max_width ?? "72%",
+          maxWidth: "900px",
+          whiteSpace: "pre-wrap",
+          textTransform: "uppercase",
+          textWrap: "balance",
+          overflowWrap: "break-word",
+          transform: "translateY(-2%)",
+          textShadow: "0 2px 0 rgba(255,255,255,0.08)",
+        }}
+      >
+        {lines.join("\n")}
+      </div>
+    </AbsoluteFill>
+  );
+};
+
 // ---------- destello blanco rapido (sincronizado con el flash de cada corte del hook) ----------
 
 const FlashOverlay: React.FC = () => {
@@ -385,6 +462,22 @@ const FlashOverlay: React.FC = () => {
   const op = interpolate(frame, [0, 5], [0.9, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   if (op <= 0) return null;
   return <AbsoluteFill style={{ backgroundColor: "white", opacity: op }} />;
+};
+
+// ---------- fundido de negro -> imagen al ARRANQUE del video (pov-historias: efecto "despertar") ----------
+// Capa negra a pantalla completa cuya opacidad va de 1 -> 0 en los primeros WAKE_INTRO_S. Puramente visual:
+// no retrasa audio ni el inicio real de la escena 1, solo la tapa durante el fundido. Gateado por preset.wakeIntro.
+
+const WakeIntroOverlay: React.FC = () => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const op = interpolate(frame, [0, Math.round(WAKE_INTRO_S * fps)], [1, 0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.out(Easing.ease),
+  });
+  if (op <= 0) return null;
+  return <AbsoluteFill style={{ backgroundColor: "black", opacity: op }} />;
 };
 
 // ---------- Ken Burns: MOVIMIENTO DE CAMARA sobre un still (preset historias) ----------
@@ -402,8 +495,16 @@ const kenBurnsTransform = (motion: string | undefined, p: number, pan: number = 
     case "pan_lr": case "pan_left_right": x = interpolate(p, [0, 1], [pan, -pan]); break;
     case "pan_rl": case "pan_right_left": x = interpolate(p, [0, 1], [-pan, pan]); break;
     case "tilt_down": y = interpolate(p, [0, 1], [-pan, pan]); break;
+    case "bottom_to_top": y = interpolate(p, [0, 1], [pan, -pan]); break;
+    case "top_to_bottom": y = interpolate(p, [0, 1], [-pan, pan]); break;
+    case "bottom_left_to_top_right": x = interpolate(p, [0, 1], [pan, -pan]); y = interpolate(p, [0, 1], [pan, -pan]); break;
+    case "bottom_right_to_top_left": x = interpolate(p, [0, 1], [-pan, pan]); y = interpolate(p, [0, 1], [pan, -pan]); break;
+    case "top_left_to_bottom_right": x = interpolate(p, [0, 1], [pan, -pan]); y = interpolate(p, [0, 1], [-pan, pan]); break;
+    case "top_right_to_bottom_left": x = interpolate(p, [0, 1], [-pan, pan]); y = interpolate(p, [0, 1], [-pan, pan]); break;
     case "static": case "static_hold": scale = 1; break; // FIJO: sin movimiento ni zoom (frame quieto)
+    case "slow_pull_out":
     case "pull_out": scale = interpolate(p, [0, 1], [zoom + 0.05, 1.0]); break; // compat v1 (zoom out)
+    case "slow_push_in":
     case "push_in": scale = interpolate(p, [0, 1], [1.0, zoom]); break;         // compat v1 (zoom in)
     default: x = interpolate(p, [0, 1], [pan, -pan]); break; // sin motion -> pan_lr (v2 nunca usa zoom)
   }
@@ -415,6 +516,13 @@ const kenBurnsTransform = (motion: string | undefined, p: number, pan: number = 
 //  - project.no_static: cualquier static/sin-motion pasa a un ciclo de paneo (pan_lr/pan_rl/tilt_down) -> sin frames muertos.
 // Ausentes -> devuelve el motion tal cual (comportamiento actual). Otros presets nunca llaman aqui.
 const MOTION_CYCLE = ["pan_lr", "pan_rl", "tilt_down"];
+const MANHWA_EDITOR_MOTION_CYCLE = [
+  "bottom_to_top",
+  "top_to_bottom",
+  "bottom_left_to_top_right",
+  "top_right_to_bottom_left",
+  "slow_push_in",
+];
 const resolveMotion = (
   motion: string | undefined,
   index: number,
@@ -422,6 +530,7 @@ const resolveMotion = (
   stills = false // historias: edicion estatica por defecto (sin Ken Burns). Otros presets: false.
 ): string | undefined => {
   if (project.force_motion) return project.force_motion;
+  if (project.preset === "manhwa") return motion || "static";
   // historias: TODO estatico por defecto (ignora el motion de la escena). El JSON re-activa el Ken Burns con project.ken_motion:true.
   if (stills && !project.ken_motion) return "static";
   const noStatic = project.no_static ?? false;
@@ -429,6 +538,52 @@ const resolveMotion = (
     return MOTION_CYCLE[index % MOTION_CYCLE.length];
   }
   return motion;
+};
+
+type PanelMotionRuntime = { enabled: boolean; preset: string; pan: number; zoom: number };
+
+const panelMotionFor = (
+  props: ViralProps,
+  scene: SceneData,
+  index: number,
+  animated: boolean
+): PanelMotionRuntime | null => {
+  if (!isManhwa(props) || isNarrativeCard(scene)) return null;
+  const global = props.editing?.panel_motion;
+  const local = scene.editor_motion || scene.edition_motion;
+  const enabled = local?.enabled ?? global?.enabled ?? true;
+  const applyTo = global?.apply_to ?? "all_panels";
+  const applies = applyTo === "all_panels" || (applyTo === "static_only" && !animated) || (applyTo === "animated_only" && animated);
+  if (!enabled || (!local && !applies)) return { enabled: false, preset: "static", pan: 0, zoom: 1 };
+  const cycle = global?.cycle?.length ? global.cycle : MANHWA_EDITOR_MOTION_CYCLE;
+  const preset = local?.preset || cycle[index % cycle.length] || "bottom_to_top";
+  const pan = local?.pan ?? (animated ? global?.animated_pan : global?.static_pan) ?? (animated ? 2 : 4);
+  const zoom = local?.zoom ?? (animated ? global?.animated_zoom : global?.static_zoom) ?? (animated ? 1.02 : 1.04);
+  return { enabled: true, preset, pan, zoom };
+};
+
+const motionNameFor = (
+  props: ViralProps,
+  scene: SceneData,
+  index: number,
+  animated: boolean,
+  preset: Preset
+): string | undefined => {
+  const pm = panelMotionFor(props, scene, index, animated);
+  if (pm) return pm.enabled ? pm.preset : "static";
+  return resolveMotion(sceneMotion(scene), index, props.project, preset.stills);
+};
+
+const motionPanFor = (props: ViralProps, scene: SceneData, index: number, animated: boolean, fallback?: number): number | undefined => {
+  const pm = panelMotionFor(props, scene, index, animated);
+  if (pm) return pm.pan;
+  return fallback;
+};
+
+const motionZoomFor = (props: ViralProps, scene: SceneData, index: number, animated: boolean, fallback?: number): number | undefined => {
+  const pm = panelMotionFor(props, scene, index, animated);
+  if (pm) return pm.zoom;
+  return fallback;
 };
 
 const KenBurnsImage: React.FC<{ src: string; motion?: string; windowFrames: number; pan?: number; zoom?: number }> = ({
@@ -456,6 +611,33 @@ const KenBurnsImage: React.FC<{ src: string; motion?: string; windowFrames: numb
           transformOrigin: "50% 50%",
         }}
       />
+    </AbsoluteFill>
+  );
+};
+
+const EditorMotionFrame: React.FC<{
+  motion?: string;
+  windowFrames: number;
+  pan?: number;
+  zoom?: number;
+  children: React.ReactNode;
+}> = ({ motion, windowFrames, pan, zoom, children }) => {
+  const frame = useCurrentFrame();
+  const p = interpolate(frame, [0, Math.max(1, windowFrames - 1)], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.ease),
+  });
+  return (
+    <AbsoluteFill style={{ overflow: "hidden" }}>
+      <AbsoluteFill
+        style={{
+          transform: kenBurnsTransform(motion, p, pan, zoom),
+          transformOrigin: "50% 50%",
+        }}
+      >
+        {children}
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };
@@ -496,7 +678,7 @@ const Hook: React.FC<{ props: ViralProps; preset: Preset }> = ({ props, preset }
   const { height: vh } = useVideoConfig();
   // historias (16:9): subtitulo lower-third mas chico, respeta caption_style.size. Otros presets: VALORES
   // EXACTOS de antes (no leemos caption_style para no cambiar el look de esqueletos/novela ya en produccion).
-  const capSize = preset.stills ? (xport(props)?.caption_style?.size ?? 84) : 120;
+  const capSize = preset.stills ? (captionStyle(props)?.size ?? HIST_CAPTION_SIZE) : 120;
   const capBottom = preset.stills ? Math.round(vh * 0.08) : 360;
 
   return (
@@ -538,8 +720,8 @@ const Hook: React.FC<{ props: ViralProps; preset: Preset }> = ({ props, preset }
           });
         })()}
       <Audio src={staticFile(`${slug}/voice/hook.mp3`)} playbackRate={voiceRate} />
-      {/* historias: NADA de texto desde Remotion (todo el texto va horneado en la imagen por la IA). */}
-      {!preset.stills && (
+      {/* preset.captions (historias): SI dibuja karaoke (sin texto horneado). criptoclaro/habitos: off (texto baked). */}
+      {captionsEnabled(props, preset) && (
         <Karaoke
           text={props.hook?.voiceover}
           words={dedupeWords(props.hook?.words)}
@@ -580,7 +762,7 @@ const Scene: React.FC<{
     (!!scene.text_overlay || (xport(props)?.static_punch_scenes ?? []).includes(sceneId(scene)));
   // historias (16:9): subtitulo lower-third mas chico, respeta caption_style.size. Otros presets: VALORES
   // EXACTOS de antes (no leemos caption_style para no cambiar el look de esqueletos/novela ya en produccion).
-  const capSize = preset.stills ? (xport(props)?.caption_style?.size ?? 88) : 128;
+  const capSize = preset.stills ? (captionStyle(props)?.size ?? HIST_CAPTION_SIZE) : 128;
   const capBottom = preset.stills ? Math.round(vh * 0.08) : 380;
   const { cardFrames, sceneFrames, clipWindow, playbackRate, introFrames } = timing;
   const contentFrames = sceneFrames - introFrames;
@@ -628,13 +810,24 @@ const Scene: React.FC<{
               (escenas encimadas que se disuelven), para que NO se sienta el corte entre imagenes. */}
           {!continuous && (
             <Sequence from={cardFrames} durationInFrames={clipWindow}>
-              {preset.stills ? (
+              {isEditorNarrativeCard(scene) ? (
+                <NarrativeCard text={scene.card?.text} preset={preset} frames={clipWindow} props={props} />
+              ) : preset.stills && isAnimatedScene(scene) ? (
+                <EditorMotionFrame
+                  motion={motionNameFor(props, scene, sceneIndex, true, preset)}
+                  windowFrames={clipWindow}
+                  pan={motionPanFor(props, scene, sceneIndex, true, 2)}
+                  zoom={motionZoomFor(props, scene, sceneIndex, true, 1.02)}
+                >
+                  <SceneClip slug={slug} id={sceneId(scene)} />
+                </EditorMotionFrame>
+              ) : preset.stills ? (
                 <KenBurnsImage
                   src={staticFile(`${slug}/images/${sceneId(scene)}.jpg`)}
-                  motion={resolveMotion(sceneMotion(scene), sceneIndex, props.project, preset.stills)}
+                  motion={motionNameFor(props, scene, sceneIndex, false, preset)}
                   windowFrames={clipWindow}
-                  pan={props.project.ken_pan ?? (preset.stills ? HIST_PAN : undefined)}
-                  zoom={props.project.ken_zoom ?? (preset.stills ? HIST_ZOOM : undefined)}
+                  pan={motionPanFor(props, scene, sceneIndex, false, props.project.ken_pan ?? (preset.stills ? HIST_PAN : undefined))}
+                  zoom={motionZoomFor(props, scene, sceneIndex, false, props.project.ken_zoom ?? (preset.stills ? HIST_ZOOM : undefined))}
                 />
               ) : (
                 <AbsoluteFill style={{ transform: `scale(${CLIP_ZOOM})`, transformOrigin: "50% 0%" }}>
@@ -649,8 +842,8 @@ const Scene: React.FC<{
             </Sequence>
           )}
 
-          {/* karaoke sobre el contenido. historias: SIN texto (todo horneado en la imagen por la IA). */}
-          {!preset.stills && (
+          {/* karaoke sobre el contenido. preset.captions (historias): SI se dibuja (whisperx). criptoclaro/habitos: off (baked). */}
+          {captionsEnabled(props, preset) && !isNarrativeCard(scene) && (
             <Karaoke
               text={sub.text}
               words={sub.words}
@@ -702,7 +895,7 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
   });
 
   // historias voz-continua: imagenes con crossfade (disolvencia) en vez de corte duro entre escenas.
-  const continuous = preset.stills && !!props.audio?._continuous && !!props.audio?._master;
+  const continuous = !!preset.stills && !!props.audio?._continuous && !!props.audio?._master;
   const xfadeFrames = Math.max(0, Math.round((props.project.crossfade_s ?? HIST_XFADE_S) * t.fps));
 
   return (
@@ -743,13 +936,26 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
         return (
           <Sequence key={`img-${st.id}`} from={at} durationInFrames={dur}>
             <FadeIn frames={xfadeFrames}>
-              <KenBurnsImage
-                src={staticFile(`${slug}/images/${sceneId(scene)}.jpg`)}
-                motion={resolveMotion(sceneMotion(scene), i, props.project, true)}
-                windowFrames={dur}
-                pan={props.project.ken_pan ?? HIST_PAN}
-                zoom={props.project.ken_zoom ?? HIST_ZOOM}
-              />
+              {isEditorNarrativeCard(scene) ? (
+                <NarrativeCard text={scene.card?.text} preset={preset} frames={dur} props={props} />
+              ) : isAnimatedScene(scene) ? (
+                <EditorMotionFrame
+                  motion={motionNameFor(props, scene, i, true, preset)}
+                  windowFrames={dur}
+                  pan={motionPanFor(props, scene, i, true, 2)}
+                  zoom={motionZoomFor(props, scene, i, true, 1.02)}
+                >
+                  <SceneClip slug={slug} id={sceneId(scene)} />
+                </EditorMotionFrame>
+              ) : (
+                <KenBurnsImage
+                  src={staticFile(`${slug}/images/${sceneId(scene)}.jpg`)}
+                  motion={motionNameFor(props, scene, i, false, preset)}
+                  windowFrames={dur}
+                  pan={motionPanFor(props, scene, i, false, props.project.ken_pan ?? HIST_PAN)}
+                  zoom={motionZoomFor(props, scene, i, false, props.project.ken_zoom ?? HIST_ZOOM)}
+                />
+              )}
             </FadeIn>
           </Sequence>
         );
@@ -778,6 +984,10 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
           </Sequence>
         );
       })}
+
+      {/* pov-historias: fundido de negro -> imagen al arranque ("despertar"). Encima de todo (ultimo hijo).
+          Gateado por preset.wakeIntro -> otros presets no lo montan. */}
+      {preset.wakeIntro && <WakeIntroOverlay />}
     </AbsoluteFill>
   );
 };

@@ -200,6 +200,7 @@ select:focus { outline: none; border-color: var(--accent); }
 }
 
 /* Lista de escenas */
+.section-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .scene-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .scene-item {
   display: flex;
@@ -213,8 +214,11 @@ select:focus { outline: none; border-color: var(--accent); }
 }
 .scene-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .scene-id { font-weight: 600; }
+.scene-meta { color: var(--muted); font-size: 11px; word-break: break-word; }
 .scene-error { color: var(--danger); font-size: 11px; word-break: break-word; }
 .scene-actions { display: flex; flex-wrap: wrap; gap: 4px; flex: 0 0 auto; justify-content: flex-end; }
+.ingredient-item { align-items: flex-start; }
+.ingredient-thumb { text-transform: uppercase; font-size: 10px; color: var(--muted); }
 
 /* Badges de estado */
 .badge {
@@ -234,7 +238,8 @@ select:focus { outline: none; border-color: var(--accent); }
   color: var(--warn);
   border-color: var(--warn);
 }
-.badge.status-done { color: var(--ok); border-color: var(--ok); }
+.badge.status-done,
+.badge.status-image_done { color: var(--ok); border-color: var(--ok); }
 .badge.status-error { color: var(--danger); border-color: var(--danger); }
 
 /* Log */
@@ -385,7 +390,10 @@ select:focus { outline: none; border-color: var(--accent); }
   padding: 6px 8px; font-size: 12px;
 }
 .queue-item .q-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.queue-item .muted { max-width: 170px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .queue-item.done { opacity: .55; }
+.queue-item.invalid { border-color: rgba(229,72,77,.55); }
+.queue-item.invalid .muted { color: var(--danger); }
 .queue-empty { color: var(--muted); font-size: 12px; padding: 4px 2px; }
 .q-prov { font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 999px; border: 1px solid var(--accent); color: var(--accent); }
 .q-prov.grok { color: #e2895c; border-color: #e2895c; }

@@ -23,7 +23,12 @@ export interface SfxCue {
 export interface SceneData {
   id: string;
   scene_id?: string; // schema nuevo historias: alias de id (el render usa id ?? scene_id)
+  type?: "panel" | "narrative_card";
+  card?: { text?: string; mode?: "editor" | "generated" };
+  editor_motion?: EditorMotion;
+  edition_motion?: EditorMotion; // alias tolerante; recomendado: editor_motion
   motion?: string;   // schema nuevo historias: motion top-level (alias de visual.motion)
+  render_mode?: "static" | "animated"; // HIBRIDO criptoclaro_reel: "animated" = clip de video por escena; si falta/"static" = still + Ken Burns
   time_label?: string;
   intro_card?: string; // OPT-IN: cartel negro extra ANTES del contenido de la escena (excepciones a mano)
   intro_card_voice?: string; // OPT: mp3 en public/<slug>/voice/ que NARRA el cartel intro (ej "parte2.mp3"); dura lo que la voz
@@ -92,6 +97,30 @@ export interface CaptionStyle {
   font?: string;
   size?: number;
   position?: string;
+  enabled?: boolean;
+}
+
+export interface EditingData {
+  caption_style?: CaptionStyle;
+  narrative_card_style?: { font?: string; size?: number; max_width?: string; max_lines?: number };
+  panel_motion?: PanelMotionStyle;
+}
+
+export interface EditorMotion {
+  enabled?: boolean;
+  preset?: string;
+  zoom?: number;
+  pan?: number;
+}
+
+export interface PanelMotionStyle {
+  enabled?: boolean;
+  apply_to?: "all_panels" | "static_only" | "animated_only";
+  static_zoom?: number;
+  static_pan?: number;
+  animated_zoom?: number;
+  animated_pan?: number;
+  cycle?: string[];
 }
 
 export interface CapcutExport {
@@ -137,11 +166,13 @@ export interface OpeningData {
 }
 
 export interface ViralProps {
+  [key: string]: unknown;
   project: ProjectMeta;
   hook?: HookData;
   opening?: OpeningData;
   scenes: SceneData[];
   audio?: AudioData;
+  editing?: EditingData;
   capcut_export?: CapcutExport;
   render_export?: CapcutExport; // schema nuevo historias: renombrado de capcut_export (mismo shape; el render usa render_export ?? capcut_export)
   _timeline?: ComputedTimeline; // lo inyecta calculateMetadata

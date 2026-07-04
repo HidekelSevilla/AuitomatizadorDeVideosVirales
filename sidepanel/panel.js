@@ -71,6 +71,9 @@ const el = {
   providerSelect: $('providerSelect'),
   btnAudioTest: $('btnAudioTest'),
   btnAudioAll: $('btnAudioAll'),
+  ingredientsCard: $('ingredientsCard'),
+  ingredientsSummary: $('ingredientsSummary'),
+  ingredientList: $('ingredientList'),
   sceneList: $('sceneList'),
   log: $('log'),
 };
@@ -167,6 +170,7 @@ function render(state) {
   el.providerChip.classList.toggle('grok', prov === 'grok');
 
   lastScenes = state.scenes || [];
+  renderIngredients(state.project?.ingredients || [], state.queue || {});
   renderScenes(lastScenes);
   renderQueueButtons(state.queue || { running: false, paused: false }, lastScenes);
   renderProgress(lastScenes);
@@ -181,19 +185,25 @@ function renderHero(state) {
   const q = state.queue || {};
   const scenes = state.scenes || [];
   const errs = scenes.filter((s) => s.status === SCENE_STATUS.ERROR);
+  const ingredientErrs = (state.project?.ingredients || []).filter((ing) => ing.status === SCENE_STATUS.ERROR);
   const done = scenes.filter((s) => s.status === SCENE_STATUS.DONE).length;
   const phaseLabel = (q.phase === 'animation') ? 'Animando' : 'Generando imagenes';
 
   // Banner de recuperacion: visible cuando NO corre y hay un fallo pendiente (errorSceneId o escenas en error).
-  const blocked = !q.running && (!!q.errorSceneId || errs.length > 0);
-  if (blocked && scenes.length) {
+  const blocked = !q.running && (!!q.errorSceneId || errs.length > 0 || ingredientErrs.length > 0);
+  if (blocked && (scenes.length || ingredientErrs.length)) {
     const who = q.errorSceneId || errs[0]?.id || '';
     const errScene = scenes.find((s) => s.id === who);
-    el.errorBannerMsg.textContent = who ? ` ${who}: ${errScene?.error || 'fallo'}` : ` ${errs.length} escena(s) en error.`;
+    const errIngredient = !who && ingredientErrs[0];
+    el.errorBannerMsg.textContent = errIngredient
+      ? ` ingrediente ${errIngredient.id}: ${errIngredient.error || 'fallo'}`
+      : who ? ` ${who}: ${errScene?.error || 'fallo'}` : ` ${errs.length} escena(s) en error.`;
     el.errorBanner.classList.remove('hidden');
     el.btnErrSkip.dataset.sceneId = who;
+    el.btnErrSkip.classList.toggle('hidden', !!errIngredient);
   } else {
     el.errorBanner.classList.add('hidden');
+    el.btnErrSkip?.classList.remove('hidden');
   }
 
   // Hero de estado.
@@ -292,9 +302,9 @@ async function refreshQueue(force = false) {
   if (jobs === null) return empty('Dev-server no responde (corre "flowbot start").');
   if (!Array.isArray(jobs) || !jobs.length) return empty('Cola vacia. Suelta JSON en remotion-editor/queue/.');
   for (const j of jobs) {
-    const prov = j?.json?.pipeline?.image_generation?.tool;
+    const prov = j?.provider || j?.json?.pipeline?.image_generation?.tool;
     const li = document.createElement('li');
-    li.className = 'queue-item' + (j.mediaComplete ? ' done' : '');
+    li.className = 'queue-item' + (j.mediaComplete ? ' done' : '') + (j.valid === false ? ' invalid' : '');
     const name = document.createElement('span'); name.className = 'q-name'; name.textContent = j.name;
     li.append(name);
     if (prov === 'grok' || prov === 'flow') {
@@ -302,6 +312,11 @@ async function refreshQueue(force = false) {
       li.append(chip);
     }
     const st = document.createElement('span'); st.className = 'muted'; st.textContent = j.mediaComplete ? '✓ hecho' : 'pendiente';
+    const firstError = Array.isArray(j.errors) && j.errors.length ? j.errors[0] : '';
+    st.textContent = j.valid === false ? `invalido: ${firstError || 'JSON invalido'}`
+      : j.mediaComplete ? 'hecho'
+      : Array.isArray(j.missingMedia) ? `${j.missingMedia.length} faltan`
+      : 'pendiente';
     li.append(st);
     el.queueList.append(li);
   }
@@ -358,6 +373,88 @@ function renderVoiceHint(state, cfg) {
   else if (preset) txt = `Preset "${preset}" sin voz -> usa voz DEFAULT (${DEFAULT_VOICE_ID.slice(0, 10)}...).`;
   else txt = `Tu JSON no trae "preset" -> usa voz DEFAULT (${DEFAULT_VOICE_ID.slice(0, 10)}...). Para otra, pega un reference_id o agrega "preset":"esqueletos".`;
   el.voiceHint.textContent = txt;
+}
+
+function ingredientReady(ing) {
+  return ing?.status === SCENE_STATUS.DONE || !!(ing?.imageFilePath || ing?.imageUrl);
+}
+
+function ingredientStatus(ing) {
+  if (ing?.status === SCENE_STATUS.GENERATING_IMAGE) return { key: 'generating_image', text: 'Generando imagen' };
+  if (ing?.status === SCENE_STATUS.ERROR) return { key: 'error', text: 'Error' };
+  if (ing?.status === SCENE_STATUS.DONE) return { key: 'done', text: 'Listo' };
+  if (ing?.imageFilePath) return { key: 'done', text: 'Archivo listo' };
+  if (ing?.imageUrl) return { key: 'image_done', text: 'Imagen lista' };
+  return { key: 'pending', text: 'Pendiente' };
+}
+
+function renderIngredients(ingredients, queue = {}) {
+  const items = ingredients || [];
+  el.ingredientsCard?.classList.toggle('hidden', items.length === 0);
+  if (!el.ingredientList || !el.ingredientsSummary) return;
+  el.ingredientList.replaceChildren();
+  const ready = items.filter(ingredientReady).length;
+  el.ingredientsSummary.textContent = `${ready} / ${items.length}`;
+  const busy = !!queue.running && !queue.paused;
+
+  for (const ing of items) {
+    const st = ingredientStatus(ing);
+    const li = document.createElement('li');
+    li.className = 'scene-item ingredient-item' + (st.key === 'generating_image' ? ' active' : '');
+    li.dataset.id = ing.id || '';
+
+    const thumb = document.createElement(ing.imageUrl ? 'img' : 'div');
+    thumb.className = 'scene-thumb ingredient-thumb';
+    if (ing.imageUrl) {
+      thumb.src = ing.imageUrl;
+      thumb.alt = ing.id || 'ingrediente';
+      thumb.addEventListener('error', () => {
+        const ph = document.createElement('div');
+        ph.className = 'scene-thumb ingredient-thumb';
+        ph.textContent = ing.imageFilePath ? 'file' : '-';
+        thumb.replaceWith(ph);
+      });
+    } else {
+      thumb.textContent = ing.imageFilePath ? 'file' : '-';
+    }
+
+    const info = document.createElement('div');
+    info.className = 'scene-info';
+
+    const title = document.createElement('span');
+    title.className = 'scene-id';
+    title.textContent = ing.id || '(sin id)';
+
+    const badge = document.createElement('span');
+    badge.className = `badge status-${st.key}`;
+    badge.textContent = st.text;
+    info.append(title, badge);
+
+    if (ing.error) {
+      const err = document.createElement('span');
+      err.className = 'scene-error';
+      err.textContent = ing.error;
+      info.append(err);
+    }
+
+    const meta = document.createElement('span');
+    meta.className = 'scene-meta';
+    meta.textContent = [ing.type, ing.outputFile].filter(Boolean).join(' -> ');
+    if (meta.textContent) info.append(meta);
+
+    const actions = document.createElement('div');
+    actions.className = 'scene-actions';
+    const retry = document.createElement('button');
+    retry.className = 'btn small';
+    retry.textContent = 'Rehacer';
+    retry.title = 'Regenera solo este ingrediente y sobrescribe el asset si aplica.';
+    retry.disabled = busy || st.key === 'generating_image';
+    retry.addEventListener('click', () => send(msg(CMD.RETRY_INGREDIENT, { ingredientId: ing.id })));
+    actions.append(retry);
+
+    li.append(thumb, info, actions);
+    el.ingredientList.append(li);
+  }
 }
 
 function renderScenes(scenes) {
@@ -793,6 +890,7 @@ function wireRuntime() {
         setActiveScene(null);
         if (el.errorBannerMsg) el.errorBannerMsg.textContent = message.sceneId ? ` ${message.sceneId}: ${message.error || 'fallo'}` : ` ${message.error || 'fallo'}`;
         if (el.btnErrSkip) el.btnErrSkip.dataset.sceneId = message.sceneId || '';
+        el.btnErrSkip?.classList.toggle('hidden', !message.sceneId);
         el.errorBanner?.classList.remove('hidden');
         break;
       default:

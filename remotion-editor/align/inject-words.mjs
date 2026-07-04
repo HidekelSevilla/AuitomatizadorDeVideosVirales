@@ -58,6 +58,11 @@ const _stripTags = (s) => (s || "").replace(/\[[^\]]*\]/g, " ").replace(/<[^>]*>
 const _normWord = (s) => (s || "").toLowerCase().normalize("NFD").replace(/\p{M}/gu, "").replace(/[^\p{L}\p{N}]/gu, "");
 // token "limpio" para MOSTRAR en el karaoke (conserva acentos/ñ, quita puntuacion de borde).
 const _displayWord = (s) => (s || "").replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "");
+const continuousLeadS = (p) => {
+  const raw = p.render_export?.caption_lead_s ?? p.editing?.caption_lead_s ?? p.project?.caption_lead_s ?? p.audio?.caption_lead_s;
+  if (typeof raw === "number" && Number.isFinite(raw)) return Math.max(0, Math.min(0.5, raw));
+  return p.project?.preset === "manhwa" ? 0.16 : 0;
+};
 
 // Fish (stream with-timestamp) manda VENTANAS DESLIZANTES SOLAPADAS: cada chunk reenvia palabras recientes
 // con su timestamp ABSOLUTO, asi que la misma palabra aparece repetida con identico start/end. Se reconstruye
@@ -85,6 +90,14 @@ function buildTiming(p, fishRaw, realDur = 0) {
     const k = realDur / alignMax;
     for (const w of fish) { w.start *= k; w.end *= k; }
     console.log(`  · timestamps reescalados x${k.toFixed(4)} (alineacion ${alignMax.toFixed(2)}s -> audio real ${realDur.toFixed(2)}s)`);
+  }
+  const lead = continuousLeadS(p);
+  if (lead > 0) {
+    for (const w of fish) {
+      w.start = Math.max(0, w.start - lead);
+      w.end = Math.max(w.start + 0.02, w.end - lead);
+    }
+    console.log(`  · karaoke adelantado ${lead.toFixed(2)}s (${p.project?.preset})`);
   }
   // schema nuevo historias: orden en render_export.clip_order; escenas con scene_id (alias de id).
   const sid = (s) => s.id ?? s.scene_id;
@@ -158,7 +171,7 @@ const openingVoiceDir = p.opening?.assets_slug ? path.join(ROOT, "public", p.ope
 
 // historias VOZ-CONTINUA: si existe el audio maestro (full.words.json), construir ventanas por escena y salir.
 // No se inyecta palabra por escena desde sidecars per-escena (no los hay en este modo).
-const _isHistorias = p.project?.preset === "historias" || p.pipeline?.tts?.mode === "single_file_from_full_script";
+const _isHistorias = /^(historias|criptoclaro|habitos|pov-historias|manhwa)/.test(p.project?.preset || "") || p.pipeline?.tts?.mode === "single_file_from_full_script";  // voz continua
 if (_isHistorias) {
   const fullWords = readWords(voiceDir, "full");
   if (fullWords && fullWords.length) {

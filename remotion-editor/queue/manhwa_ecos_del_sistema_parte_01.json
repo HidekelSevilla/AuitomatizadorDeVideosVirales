@@ -1,0 +1,1486 @@
+{
+  "project": {
+    "title": "Ecos del Sistema - Parte 1: El día que me eligió",
+    "preset": "manhwa",
+    "serie": "manhwa_ecos_del_sistema",
+    "slug": "manhwa_ecos_del_sistema_parte_01",
+    "language": "es-419",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "part": 1
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "elevenlabs",
+      "voice_id": "452WrNT9o8dphaYW5YGU",
+      "language": "es-419"
+    },
+    "editing": {
+      "tool": "capcut"
+    }
+  },
+  "characters": {
+    "han_jin": {
+      "display_name": "Han Jin",
+      "poses": {
+        "base_estudiante": {
+          "mode": "generate",
+          "asset": "assets/characters/manhwa_ecos_del_sistema/han_jin_base_estudiante.png",
+          "prompt": "Full body character sheet of Han Jin, a 19-year-old Korean male protagonist with a deliberately ordinary, clean and readable design. Neat short black hair, tidy natural fringe, forehead clear and BOTH eyes fully visible, tired dark-brown eyes, fair skin, clean-shaven face, average build and average height, quiet exhausted expression but not edgy. Wearing a plain white dress shirt, loosened dark charcoal tie, charcoal-gray school-style blazer, dark slim trousers, plain black shoes, and one signature accessory WORN: a scratched worn silver wristwatch on his LEFT wrist. EMPTY HANDS, relaxed at his sides, NOT holding anything. No phone, no bags, no headphones, no scars, no aura, no glowing eyes, no extra jewelry. Neutral standing pose, full body, no scenery, no text, no speech bubbles. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, plain neutral light-gray studio background, vertical 9:16 webtoon character sheet, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "uniforme_konbini": {
+          "mode": "generate",
+          "asset": "assets/characters/manhwa_ecos_del_sistema/han_jin_uniforme_konbini.png",
+          "reference_pose": "base_estudiante",
+          "prompt": "Same character Han Jin, same face, same neat short black hair with BOTH eyes visible, same tired dark-brown eyes, same average build, same scratched worn silver wristwatch on his LEFT wrist. Work shift outfit: blue-gray convenience store employee vest worn over the plain white dress shirt and loosened charcoal tie, blazer removed, dark trousers, plain black shoes. Clean but overworked expression, EMPTY HANDS, relaxed at his sides, NOT holding anything. Full body, neutral pose, no scenery, no text, no speech bubbles. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, plain neutral light-gray studio background, vertical 9:16 webtoon character sheet, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "konbini_empapado": {
+          "mode": "generate",
+          "asset": "assets/characters/manhwa_ecos_del_sistema/han_jin_konbini_empapado.png",
+          "reference_pose": "uniforme_konbini",
+          "prompt": "Same character Han Jin, same face, same neat short black hair still keeping BOTH eyes visible, same tired dark-brown eyes, same blue-gray convenience store vest over white shirt and loose charcoal tie, same dark trousers and black shoes, same worn silver wristwatch on LEFT wrist. Rain-soaked state after sprinting straight from work: vest and shirt drenched and clinging, hair wet but not covering the eyes, water dripping from sleeves and trouser hems, anxious breathless expression. EMPTY HANDS, not holding anything. Full body, neutral gray studio background, no wound, no gore, no text, no speech bubbles. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, plain neutral light-gray studio background, vertical 9:16 webtoon character sheet, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "konbini_herido": {
+          "mode": "generate",
+          "asset": "assets/characters/manhwa_ecos_del_sistema/han_jin_konbini_herido.png",
+          "reference_pose": "konbini_empapado",
+          "prompt": "Same character Han Jin, same face, same neat short black wet hair with BOTH eyes visible, same dark-brown eyes, same soaked blue-gray convenience store vest over white shirt and loose charcoal tie, same dark trousers and black shoes, same worn silver wristwatch on LEFT wrist. Injured state after a claw slash: fabric torn at the right side of the vest and shirt, stylized dark red scratch marks and damp shadows only, no open gore, no exposed organs, no blood pool. He leans forward in pain with one hand hovering near his side and the other bracing downward, frightened but conscious. Full body, neutral gray studio background, no text, no speech bubbles. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, plain neutral light-gray studio background, vertical 9:16 webtoon character sheet, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "casual_recuerdo": {
+          "mode": "generate",
+          "asset": "assets/characters/manhwa_ecos_del_sistema/han_jin_casual_recuerdo.png",
+          "reference_pose": "base_estudiante",
+          "prompt": "Same character Han Jin, same face, same neat short black hair with BOTH eyes visible, same dark-brown tired eyes, same average build, same worn silver wristwatch on LEFT wrist. Warm memory outfit: simple soft beige-gray sweater, dark casual pants, plain shoes, no blazer, no tie. Softer younger expression, protective but exhausted, EMPTY HANDS, not holding anything. Full body, neutral studio background, no scenery, no text, no speech bubbles. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, plain neutral light-gray studio background, vertical 9:16 webtoon character sheet, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        }
+      }
+    },
+    "han_sora": {
+      "display_name": "Han Sora",
+      "poses": {
+        "hospital": {
+          "mode": "generate",
+          "asset": "assets/characters/manhwa_ecos_del_sistema/han_sora_hospital.png",
+          "prompt": "Full body character sheet of Han Sora, a 15-year-old Korean girl, hospitalized younger sister, non-sexualized, fragile and gentle. Pale skin, soft round face, shoulder-length straight black hair tucked behind both ears, clear dark-brown eyes, faint tired shadows under the eyes, small warm smile. Wearing a simple pale hospital gown with a loose light cardigan, hospital slippers, thin patient wristband, no jewelry. EMPTY HANDS, relaxed on her lap or at her sides, NOT holding anything. Delicate posture, kind expression, no injury, no gore, no text, no speech bubbles. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, plain neutral light-gray studio background, vertical 9:16 webtoon character sheet, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        }
+      }
+    },
+    "silueta_encapuchada": {
+      "display_name": "Silueta encapuchada",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/manhwa_ecos_del_sistema/silueta_encapuchada_base.png",
+          "prompt": "Full body character sheet of a mysterious hooded silhouette, gender and age unreadable, identity completely hidden. Wearing a long matte black rain cloak with a deep hood; the face is total shadow with no visible eyes, no mouth, no skin, no features. Hands hidden inside sleeves or under the cloak, NOT holding anything, no weapons, no jewelry, no symbols. Upright still posture, silent observer presence, unsettling but not attacking. Full body, neutral gray studio background, no scenery, no text, no speech bubbles. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, plain neutral light-gray studio background, vertical 9:16 webtoon character sheet, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        }
+      }
+    },
+    "monstruo_sombra_humeda": {
+      "display_name": "Masa de sombra húmeda",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/manhwa_ecos_del_sistema/monstruo_sombra_humeda_base.png",
+          "prompt": "Full body creature design sheet of an ORIGINAL wet shadow monster, the size of a large dog, non-human and faceless. Body made of glossy black wet smoke and tar-like shadow, hunched low to the ground, four limbs with incorrect backward-bent joints, elongated clawed forelimbs, no recognizable eyes, no mouth, no skull, no copied creature design. Thin reddish fissures glowing inside its shadow mass like cracks in hot coal, damp vapor dripping from the body. Menacing animal posture, no gore, no blood, no text, no speech bubbles. Full body, neutral dark-gray studio background. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, plain neutral light-gray studio background, vertical 9:16 webtoon character sheet, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        }
+      }
+    }
+  },
+  "escenarios": {
+    "callejon_sin_salida": {
+      "display_name": "Callejón sin salida bajo la lluvia",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/callejon_sin_salida_base.png",
+          "prompt": "Empty narrow dead-end alley in contemporary Seoul at rainy night: wet asphalt reflecting sodium-orange streetlight from far behind, tall stained brick walls on both sides, dented metal trash bins, torn plastic bags, puddles, drain grates, electrical cables overhead, a high brick wall closing the alley at the far end. Cold blue rain shadows and warm orange reflections only, no green-cyan light. Wide establishing view with layered depth from foreground puddles to the dead-end wall. EMPTY: no people, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "boca_desde_fondo": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/callejon_sin_salida_boca_desde_fondo.png",
+          "reference_view": "base",
+          "prompt": "Same rainy dead-end alley, same wet asphalt, brick walls, trash bins, puddles, cables and sodium-orange reflections. NEW SHOT: camera placed near the dead-end wall looking outward toward the alley mouth, the entrance framed as a narrow dark rectangle in the distance, rain streaking diagonally toward the lens. Cold blue rain shadows and warm orange backlight only, no green-cyan light. EMPTY: no people, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "muro_sin_salida": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/callejon_sin_salida_muro_sin_salida.png",
+          "reference_view": "base",
+          "prompt": "Same rainy dead-end alley, same brick walls, wet asphalt, trash bins and overhead cables. NEW SHOT: low-angle view from the alley mouth looking toward the high brick dead-end wall, foreground puddles stretching like black mirrors, the closed wall towering vertically, no escape route visible. Cold blue rain and sodium-orange reflections only, no green-cyan light. EMPTY: no people, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "suelo_ui": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/callejon_sin_salida_suelo_ui.png",
+          "reference_view": "base",
+          "prompt": "Same rainy dead-end alley, same wet asphalt, brick walls and trash bins. NEW SHOT: extreme low-angle ground-level view from the wet asphalt, puddles in sharp foreground, the dead-end wall looming blurred in the upper background, rain splashing close to the lens. Natural alley colors only: cold blue rain shadows and sodium-orange reflections, no green-cyan light in the empty plate. EMPTY: no people, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        }
+      }
+    },
+    "aula_medicina": {
+      "display_name": "Aula de medicina",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/aula_medicina_base.png",
+          "prompt": "Empty modern Korean university medical lecture hall in the morning: tiered wooden desks, clean whiteboard with no readable writing, anatomy posters turned too far to read, tall windows letting in bright natural daylight, pale walls, neat fluorescent ceiling lights, projector screen rolled up, warm ordinary academic atmosphere. Wide establishing view from the front looking toward the rows. EMPTY: no people, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "fila_trasera": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/aula_medicina_fila_trasera.png",
+          "reference_view": "base",
+          "prompt": "Same medical lecture hall, same tiered desks, whiteboard, tall windows, pale walls and morning daylight. NEW SHOT: camera from the back row looking down over several empty desk rows toward the front whiteboard, a notebook area in the lower foreground, bright ordinary palette, no green-cyan system color. EMPTY: no people, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "reloj_apuntes": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/aula_medicina_reloj_apuntes.png",
+          "reference_view": "base",
+          "prompt": "Same medical lecture hall, same desks and morning daylight. NEW SHOT: close desk-level view of a wooden lecture desk surface, blank notebooks and pens placed naturally in foreground, blurred lecture hall rows behind, bright window glow from the side, no readable notes, no green-cyan system color. EMPTY: no people, no text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        }
+      }
+    },
+    "campus_exterior": {
+      "display_name": "Campus universitario de Seúl",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/campus_exterior_base.png",
+          "prompt": "Sunny modern Korean university campus at morning: wide stone walkway lined with ginkgo trees, clean pale buildings with glass windows reflecting blue sky, benches, bicycles parked near rails, spring leaves, soft natural shadows, ordinary bright day. Wide establishing view with layered depth from foreground path to distant faculty building. EMPTY: no people, no readable text, no green-cyan system color. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "patio_pantallas": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/campus_exterior_patio_pantallas.png",
+          "reference_view": "base",
+          "prompt": "Same sunny university campus, same stone walkway, ginkgo trees, benches and pale glass buildings. NEW SHOT: side-angle view beside a campus notice area with several generic digital screens and poster boards turned toward the walkway; screens are blank or abstract, no readable text in the plate. Bright natural daylight, fresh colors, no green-cyan system color. EMPTY: no people, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        }
+      }
+    },
+    "konbini": {
+      "display_name": "Konbini de barrio",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/konbini_base.png",
+          "prompt": "Empty small Korean neighborhood convenience store interior at evening: clean aisles with snack shelves, refrigerators with white-blue glass reflections, checkout counter, ceiling fluorescent lights, warm practical indoor palette, rain-dark window near the entrance, generic signage with no readable brand names. Wide view from the entrance toward the counter. EMPTY: no people, no logos, no readable text, no green-cyan system color. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "vestuario_mostrador": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/konbini_vestuario_mostrador.png",
+          "reference_view": "base",
+          "prompt": "Same convenience store, same aisles, refrigerators, checkout counter and fluorescent evening light. NEW SHOT: behind-the-counter angle showing a small employee cubby, folded work vest area, barcode scanner, cash register with blank display, shelves receding behind. Warm indoor light, no brand logos, no readable text, no green-cyan system color. EMPTY: no people. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "mostrador_facturas": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/konbini_mostrador_facturas.png",
+          "reference_view": "base",
+          "prompt": "Same convenience store checkout counter, same fluorescent light and snack aisles. NEW SHOT: close counter-level view from the cashier side, smooth counter surface in the foreground, generic receipt paper roll and small medicine box area visible, cash register blurred behind with blank display. Warm practical indoor palette, no logos, no readable text, no green-cyan system color. EMPTY: no people. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "tv_alerta": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/konbini_tv_alerta.png",
+          "reference_view": "base",
+          "prompt": "Same convenience store, same shelves and checkout counter. NEW SHOT: upward angle from the counter toward a small wall-mounted TV above the refrigerators, screen blank in the plate, fluorescent lights reflecting on the plastic bezel, snack shelves below, rainy dark window to one side. Warm indoor palette with white fluorescents, no green-cyan system color. EMPTY: no people, no logos, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "salida_lluvia": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/konbini_salida_lluvia.png",
+          "reference_view": "base",
+          "prompt": "Same convenience store entrance, same shelves and checkout counter visible behind. NEW SHOT: low angle from just inside the automatic glass doors looking out to a rainy Seoul sidewalk at night, wet threshold reflecting warm store light, door frame on both sides, rain outside in cold blue tones, no green-cyan system color. EMPTY: no people, no logos, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        }
+      }
+    },
+    "avenida_residencial": {
+      "display_name": "Avenida residencial bajo alerta",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/avenida_residencial_base.png",
+          "prompt": "Empty contemporary Seoul residential avenue at rainy night: apartment blocks, small storefronts with generic non-readable signs, zebra crossing, streetlights casting sodium-orange reflections on wet asphalt, parked scooters, bus stop glass, distant emergency vehicle glow in red and white, cold blue rain atmosphere. Wide street establishing view with depth down the road. EMPTY: no people, no logos, no readable text, no green-cyan system color. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "cruce_bloqueado": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/avenida_residencial_cruce_bloqueado.png",
+          "reference_view": "base",
+          "prompt": "Same rainy residential avenue, same apartment blocks, wet asphalt, storefronts, zebra crossing and sodium-orange reflections. NEW SHOT: diagonal view from the corner of a narrow shortcut entrance, with a dark side path opening at midground and the main road receding behind; puddles in foreground catch red-white emergency reflections. No green-cyan system color. EMPTY: no people, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "entre_autos": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/avenida_residencial_entre_autos.png",
+          "reference_view": "base",
+          "prompt": "Same rainy residential avenue, same wet asphalt, apartment blocks and streetlights. NEW SHOT: low street-level view between stopped cars with blurred headlights on both sides, narrow gap leading forward, rain splashing on the road, red and white emergency reflections streaking across puddles. No green-cyan system color. EMPTY: no people, no logos, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "calle_lateral": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/avenida_residencial_calle_lateral.png",
+          "reference_view": "base",
+          "prompt": "Same rainy residential district, same apartment blocks, wet ground and sodium-orange streetlights. NEW SHOT: view down a narrower side street leading toward a dark alley opening, walls closer together, parked delivery bikes, trash bags at the curb, heavy rain lines, cold blue shadows with warm orange pools of light. No green-cyan system color. EMPTY: no people, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        }
+      }
+    },
+    "hospital_memoria": {
+      "display_name": "Habitación de hospital en recuerdo",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/hospital_memoria_base.png",
+          "prompt": "Empty small hospital room seen as a warm desaturated memory: white bed with pale blanket, IV stand beside it, soft beige curtains, bedside table with a plastic water cup, muted sunlight through the window, slightly blurred glowing edges like a remembered moment, gentle amber-gray palette, no green-cyan system color. Wide view from the doorway toward the bed. EMPTY: no people, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        },
+        "manos_close": {
+          "mode": "generate",
+          "asset": "assets/escenarios/manhwa_ecos_del_sistema/hospital_memoria_manos_close.png",
+          "reference_view": "base",
+          "prompt": "Same hospital memory room, same pale bed, beige curtains, IV stand and warm desaturated sunlight. NEW SHOT: close bedside angle focused on the blanket edge and small bedside table, enough space in foreground for two hands to meet, background softly blurred, gentle amber-gray palette, no green-cyan system color. EMPTY: no people, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+        }
+      }
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "panel",
+      "render_mode": "static",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.03,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_empapado"
+          },
+          {
+            "id": "silueta_encapuchada",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "callejon_sin_salida",
+          "view": "boca_desde_fondo"
+        }
+      },
+      "visual": {
+        "image_prompt": "Flash-forward hook panel in the rainy dead-end alley: Han Jin in soaked convenience-store uniform stands trapped near the brick dead-end wall in the lower foreground, shoulders hunched, LEFT wristwatch catching a dull orange reflection; the hooded silhouette is already waiting at the alley mouth far behind him, perfectly still, hands hidden, NOT touching anyone. In front of Jin, a hair-thin vertical green-cyan tear begins to wrinkle the air, the ONLY green-cyan source in the panel; everything else stays cold blue rain and sodium-orange reflections. Low angle from wet asphalt, deep perspective, rain streaks, tense negative space, no extra named characters, no speech bubbles, no other text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Este chico va a morir en un callejón. Nadie lo salvará."
+      }
+    },
+    {
+      "id": "scene_02",
+      "type": "panel",
+      "render_mode": "animated",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_empapado"
+          },
+          {
+            "id": "silueta_encapuchada",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "callejon_sin_salida",
+          "view": "muro_sin_salida"
+        }
+      },
+      "visual": {
+        "image_prompt": "Rainy alley flash-forward: Han Jin is backed against the dead-end wall, RIGHT foot sliding in a puddle, LEFT hand half-raised defensively, face terrified with both eyes visible. The hooded silhouette blocks the alley mouth in the distant background, immobile and silent, not touching anyone. Directly before Jin, the vertical rift tears wider with faint translucent green-cyan light, the ONLY green-cyan source; wet bricks and puddles remain blue-orange. Dutch tilt, hard rim light from the rift, rain particles, no speech bubbles, no other text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon.",
+        "animation_prompt": "KEY ACTION (first 2s): the air in front of Han Jin RIPS open from a thin seam into a jagged vertical rift while Jin recoils and plants his RIGHT foot. BEATS (2-4s): (1) his LEFT hand rises toward the rift but stops short; (2) the green-cyan crack pulses once and reflects in the puddle; (3) the hooded silhouette remains absolutely still at the alley mouth. CAMERA: quick tremble on the rip, then slow push toward Jin's frightened face. SECONDARY: rain streaks bend toward the tear, puddle reflections shimmer. final 2s: holding on Jin trapped between rift and silhouette, nothing new happens. ~5-6s. Korean manhwa animation feel, no gore."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Ese chico… soy yo. Déjenme contarles cómo terminé encerrado ahí, bajo esa lluvia."
+      }
+    },
+    {
+      "id": "scene_03",
+      "type": "narrative_card",
+      "card": {
+        "text": "El día que me eligió",
+        "mode": "editor"
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "El día que me eligió"
+      }
+    },
+    {
+      "id": "scene_04",
+      "type": "narrative_card",
+      "card": {
+        "text": "Seis horas antes",
+        "mode": "editor"
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Seis horas antes"
+      }
+    },
+    {
+      "id": "scene_05",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "base_estudiante"
+          }
+        ],
+        "escenario": {
+          "id": "campus_exterior",
+          "view": "base"
+        }
+      },
+      "visual": {
+        "image_prompt": "Bright morning campus panel: Han Jin walks along the sunny university path in his charcoal blazer and loose tie, silver wristwatch visible on his LEFT wrist, ordinary tired posture. Around him, blurred anonymous students cross the walkway and sit on benches, generic silhouettes with soft unreadable faces. Fresh daylight, ginkgo trees, pale buildings and bicycles; no green-cyan system color anywhere. Wide vertical establishing shot from slightly above, calm ordinary mood, no speech bubbles, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "La mañana todavía parecía normal, casi cruelmente luminosa, cuando llegué al campus."
+      }
+    },
+    {
+      "id": "scene_06",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "base_estudiante"
+          }
+        ],
+        "escenario": {
+          "id": "aula_medicina",
+          "view": "fila_trasera"
+        }
+      },
+      "visual": {
+        "image_prompt": "Morning medical lecture hall panel: Han Jin sits near the back row taking notes, shoulders slightly rounded from fatigue, both eyes visible, silver wristwatch on LEFT wrist near an open notebook with no readable writing. Blurred anonymous students fill surrounding seats, generic faces soft and unreadable; an anonymous professor stands out of focus at the front. Warm natural daylight through tall windows, ordinary academic palette, no green-cyan system color, no speech bubbles, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Me llamo Han Jin. Diecinueve años. Estudio medicina en Seúl."
+      }
+    },
+    {
+      "id": "scene_07",
+      "type": "panel",
+      "render_mode": "static",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "base_estudiante"
+          }
+        ],
+        "escenario": {
+          "id": "aula_medicina",
+          "view": "reloj_apuntes"
+        }
+      },
+      "visual": {
+        "image_prompt": "Desk-level close-up panel: Han Jin's LEFT wrist rests beside blank lecture notes, the scratched worn silver wristwatch clearly visible and slightly loose; his RIGHT hand holds a pen just above the page, not writing readable text. Background rows and anonymous students are softly blurred, bright morning light falling across the desk. Clean ordinary colors, no green-cyan system color, no speech bubbles, no extra hands, no readable text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Mi reloj valía poco, pero era lo único que no empeñé."
+      }
+    },
+    {
+      "id": "scene_08",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "base_estudiante"
+          }
+        ],
+        "escenario": {
+          "id": "campus_exterior",
+          "view": "patio_pantallas"
+        }
+      },
+      "visual": {
+        "image_prompt": "Campus notice-area panel in bright daylight: Han Jin passes a row of generic digital screens showing abstract news footage of public portals rendered in muted violet-white and blue-gray, never green-cyan. Blurred anonymous students gather around the screens, faces unreadable, some pointing. Han Jin stays at the edge, distant from the excitement. No logos, no readable long text, no speech bubbles, no green-cyan system color. Over-the-shoulder angle from behind Jin toward the screens. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Deben saber algo: los portales existen desde hace siete años."
+      }
+    },
+    {
+      "id": "scene_09",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "base_estudiante"
+          }
+        ],
+        "escenario": {
+          "id": "campus_exterior",
+          "view": "patio_pantallas"
+        }
+      },
+      "visual": {
+        "image_prompt": "Static webtoon collage-style panel on the campus notice area: three stacked mini-compositions over black gutter space—top, blurred celebrity hunter silhouettes on generic screens; middle, anonymous students excitedly watching; bottom, Han Jin small in the corner checking his worn watch. Floating ghost lettering is abstract and unreadable, no real logos, no long text. Palette is daylight whites, golds and muted violets, no green-cyan system color. No speech bubbles. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Cazadores, guilds, licencias… todo eso era lujo de gente lejana."
+      }
+    },
+    {
+      "id": "scene_10",
+      "type": "panel",
+      "render_mode": "animated",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "top_to_bottom",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "uniforme_konbini"
+          }
+        ],
+        "escenario": {
+          "id": "konbini",
+          "view": "vestuario_mostrador"
+        }
+      },
+      "visual": {
+        "image_prompt": "Evening convenience-store counter panel: Han Jin stands behind the register wearing the blue-gray employee vest over his white shirt and loose tie, blazer gone, LEFT wristwatch visible. His RIGHT hand pulls the vest hem straight while his LEFT hand rests near the counter edge; shelves and refrigerators recede behind him. A few blurred anonymous customers move in the aisle background, faces unreadable. Warm fluorescent indoor light, no brand logos, no readable text, no green-cyan system color, no speech bubbles. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon.",
+        "animation_prompt": "KEY ACTION (first 2s): Han Jin PULLS the blue-gray employee vest down over his shirt and exhales, shoulders dropping into work mode. BEATS (2-4s): (1) his LEFT hand checks the worn wristwatch; (2) he turns toward the register; (3) a blurred customer shape passes behind the shelf. CAMERA: gentle top-to-bottom webtoon drift following the vest to the watch. SECONDARY: fluorescent light flickers softly, refrigerator reflections slide. final 2s: holding on Jin behind the counter, nothing new happens. ~5-6s. Korean manhwa animation feel."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Al caer la tarde, cambié el blazer por el chaleco del turno."
+      }
+    },
+    {
+      "id": "scene_11",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "uniforme_konbini"
+          }
+        ],
+        "escenario": {
+          "id": "konbini",
+          "view": "base"
+        }
+      },
+      "visual": {
+        "image_prompt": "Routine convenience-store panel: Han Jin scans items at the checkout, tired but polite, LEFT wristwatch visible as his hand moves near the register. Two blurred anonymous customers wait in line, generic faces soft and unreadable; snack shelves and refrigerators create layered depth. Warm fluorescent light, ordinary evening mood, no logos, no readable text, no green-cyan system color, no speech bubbles. Slight high angle from above the counter. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "De noche trabajaba en un konbini, una tienda veinticuatro horas."
+      }
+    },
+    {
+      "id": "scene_12",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "uniforme_konbini"
+          }
+        ],
+        "escenario": {
+          "id": "konbini",
+          "view": "mostrador_facturas"
+        }
+      },
+      "visual": {
+        "image_prompt": "Close counter-level panel: Han Jin's LEFT hand with the worn silver wristwatch presses flat beside a generic medical receipt showing exactly '₩300,000' as the only readable price; his RIGHT hand hovers over a small medicine box with no readable label. His face is cropped at the top edge, eyes tired and focused downward. Warm fluorescent counter light, no logos, no long text, no green-cyan system color, no speech bubbles, no extra hands. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "¿Qué harías tú por trescientos mil wones semanales de tratamiento?"
+      }
+    },
+    {
+      "id": "scene_13",
+      "type": "panel",
+      "render_mode": "animated",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_to_top",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "uniforme_konbini"
+          }
+        ],
+        "escenario": {
+          "id": "konbini",
+          "view": "tv_alerta"
+        }
+      },
+      "visual": {
+        "image_prompt": "Breaking-news impact panel inside the convenience store: the wall-mounted TV above the refrigerators shows a red-and-white emergency layout with only two short readable fragments, exactly 'ANOMALIA' and 'GRIETAS', no logos and no other text. Han Jin stands below it in the lower frame, looking up sharply, customers blurred behind him turning their heads. Fluorescent store light with red alert reflection, no green-cyan system color, no speech bubbles. Low upward angle toward the TV. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon.",
+        "animation_prompt": "KEY ACTION (first 2s): Han Jin's head SNAPS upward toward the TV as the red alert screen flashes once with the words 'ANOMALIA' and 'GRIETAS'. BEATS (2-4s): (1) his RIGHT hand freezes above the counter; (2) blurred customers turn toward the TV; (3) the TV reflection shakes across the refrigerator doors. CAMERA: fast upward tilt from Jin's face to the TV, then a small impact push-in. SECONDARY: fluorescent lights buzz, red-white alert flicker ripples. final 2s: holding on the TV and Jin's stunned upward stare, nothing new happens. ~5-6s. Korean manhwa animation feel."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[stunned] Entonces la televisión gritó: grietas no registradas; la Asociación estaba rebasada, en vivo."
+      }
+    },
+    {
+      "id": "scene_14",
+      "type": "panel",
+      "render_mode": "animated",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_right_to_top_left",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "uniforme_konbini"
+          }
+        ],
+        "escenario": {
+          "id": "konbini",
+          "view": "base"
+        }
+      },
+      "visual": {
+        "image_prompt": "Convenience-store panic panel: several customers and a delivery worker, all blurred anonymous figures with unreadable faces, hold phones that light up with generic red emergency icons and no readable text. Han Jin is behind the counter, eyes wide, his own phone vibrating near his RIGHT hand. Warm store light mixed with red alert reflections, no logos, no speech bubbles, no green-cyan system color. Dutch angle, crowded foreground phones and shelves for depth. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon.",
+        "animation_prompt": "KEY ACTION (first 2s): multiple phones VIBRATE at once on counters and in customers' hands while Han Jin jerks his RIGHT hand toward his own phone. BEATS (2-4s): (1) customers flinch and look down; (2) a delivery worker steps backward; (3) Jin's eyes widen as the red glow hits his face. CAMERA: small handheld shake, then diagonal drift across the phones toward Jin. SECONDARY: phone screens pulse red, refrigerator reflections tremble. final 2s: holding on Jin surrounded by alarms, nothing new happens. ~5-6s. Korean manhwa animation feel."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Los celulares vibraron juntos; clientes y repartidores miraron la misma alarma, sin hablar."
+      }
+    },
+    {
+      "id": "scene_15",
+      "type": "panel",
+      "render_mode": "static",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.03,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "uniforme_konbini"
+          }
+        ],
+        "escenario": {
+          "id": "konbini",
+          "view": "tv_alerta"
+        }
+      },
+      "visual": {
+        "image_prompt": "Tight upward TV panel: Han Jin stands under the wall-mounted TV, face pale and fully visible, both eyes fixed on the screen. The TV shows a simplified map silhouette and exactly two readable fragments: 'HANEUL' and 'ALERTA'; no logos, no other readable text. A blurred customer in the side background covers their mouth. Red-white alert glow and warm store fluorescent light, no green-cyan system color, no speech bubbles. Extreme low angle from behind the counter. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[stunned] Cuando vi Haneul, dejé de respirar: mi hermana está internada ahí."
+      }
+    },
+    {
+      "id": "scene_16",
+      "type": "panel",
+      "render_mode": "animated",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_left_to_top_right",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_empapado"
+          }
+        ],
+        "escenario": {
+          "id": "konbini",
+          "view": "salida_lluvia"
+        }
+      },
+      "visual": {
+        "image_prompt": "Action panel at the convenience-store entrance: Han Jin bursts through the automatic glass doors into the rainy night, soaked blue-gray vest flaring, LEFT wristwatch visible. In the lower foreground, a small medicine box and a receipt slip fall from his RIGHT hand onto the wet threshold; the store interior glows warm behind him, rain outside cold blue. Blurred anonymous customers stare from inside, faces unreadable. No logos, no readable text, no green-cyan system color, no speech bubbles. Diagonal motion composition toward the sidewalk. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon.",
+        "animation_prompt": "KEY ACTION (first 2s): Han Jin BURSTS through the glass doors into the rain as the medicine box slips from his RIGHT hand and bounces once on the wet threshold. BEATS (2-4s): (1) his shoes splash into a puddle; (2) the receipt skids behind him; (3) blurred customers recoil inside the store. CAMERA: diagonal chase move from counter level toward the door. SECONDARY: rain sheets across the doorway, warm reflections smear on the glass. final 2s: holding on Jin sprinting away into the rain, nothing new happens. ~5-6s. Korean manhwa animation feel."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[breathless] Solté la caja de medicamentos y corrí directo hacia la lluvia fría."
+      }
+    },
+    {
+      "id": "scene_17",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_empapado"
+          }
+        ],
+        "escenario": {
+          "id": "avenida_residencial",
+          "view": "base"
+        }
+      },
+      "visual": {
+        "image_prompt": "Rainy residential avenue panel: Han Jin runs through the crowd in his soaked convenience-store uniform, face tense, both eyes visible, LEFT wristwatch catching orange streetlight. Blurred anonymous pedestrians fill the sidewalk and crosswalk, generic faces unreadable, some running, some looking at phones. Wet road, apartment blocks, red-white emergency reflections in the distance, no green-cyan system color, no speech bubbles, no readable text. Wide tracking shot from street level. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "La avenida estaba llena de gente; yo solo veía el hospital."
+      }
+    },
+    {
+      "id": "scene_18",
+      "type": "panel",
+      "render_mode": "animated",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_right_to_top_left",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_empapado"
+          },
+          {
+            "id": "silueta_encapuchada",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "avenida_residencial",
+          "view": "cruce_bloqueado"
+        }
+      },
+      "visual": {
+        "image_prompt": "Shortcut-blocking panel: Han Jin skids at the mouth of a narrow shortcut, RIGHT foot splashing forward, shoulders twisted from the sudden stop. The hooded silhouette is already standing in the shortcut ahead, perfectly centered, hands hidden, face total shadow, not moving and not touching anyone. Blurred anonymous pedestrians and car lights streak in the background, rain heavy, sodium-orange and red-white reflections only, no green-cyan system color, no speech bubbles. Low diagonal angle from the puddle. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon.",
+        "animation_prompt": "KEY ACTION (first 2s): Han Jin SKIDS to a stop, his RIGHT shoe cutting a fan of water across the puddle when he sees the hooded silhouette already blocking the shortcut. BEATS (2-4s): (1) Jin's arms lift for balance; (2) his face tightens with confusion; (3) the silhouette remains motionless, cloak edges barely moving in rain. CAMERA: sharp diagonal slide following Jin's skid, then a locked push toward the silhouette. SECONDARY: puddle spray freezes then falls, headlights smear behind them. final 2s: holding on the impossible distance between them, nothing new happens. ~5-6s. Korean manhwa animation feel."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Giré por el atajo de siempre. Una figura encapuchada ya esperaba ahí."
+      }
+    },
+    {
+      "id": "scene_19",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_empapado"
+          },
+          {
+            "id": "silueta_encapuchada",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "avenida_residencial",
+          "view": "cruce_bloqueado"
+        }
+      },
+      "visual": {
+        "image_prompt": "Close-up panel of the hooded silhouette blocking the shortcut entrance: the deep black hood fills most of the vertical frame, the face completely featureless with no eyes, no mouth, no skin, rain running down matte fabric; both hands stay hidden inside the sleeves, no weapon, no movement. Han Jin appears only as a small blurred rain-soaked figure in the lower background keeping distance. Natural rain palette with orange streetlight and red-white emergency glints only, no green-cyan system color, no speech bubbles, no text. a worn silver wristwatch faintly glinting at the edge of one hidden sleeve, subtle background detail, not emphasized. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "No habló. No levantó las manos. Solo ocupó el camino."
+      }
+    },
+    {
+      "id": "scene_20",
+      "type": "panel",
+      "render_mode": "animated",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_left_to_top_right",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_empapado"
+          }
+        ],
+        "escenario": {
+          "id": "avenida_residencial",
+          "view": "entre_autos"
+        }
+      },
+      "visual": {
+        "image_prompt": "Running-between-cars panel: Han Jin bolts through a narrow gap between stopped cars, soaked vest trailing, RIGHT hand pushing off a car hood, LEFT wristwatch visible as his arm swings. Blurred anonymous drivers and pedestrians are vague silhouettes through wet windows, faces unreadable. Headlights white-yellow, emergency red reflections, blue rain shadows, no green-cyan system color, no speech bubbles, no logos. Low street-level perspective with speed lines along the cars. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon.",
+        "animation_prompt": "KEY ACTION (first 2s): Han Jin DARTS between stopped cars, RIGHT palm slapping a wet hood for balance as he squeezes through the gap. BEATS (2-4s): (1) his shoulder brushes a side mirror; (2) water splashes from his shoes; (3) he twists his head back once in panic. CAMERA: fast low tracking move through the car gap behind him. SECONDARY: headlights smear, rain beads streak across windows, speed lines flash. final 2s: holding on Jin exiting the gap into darkness, nothing new happens. ~5-6s. Korean manhwa animation feel."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[fast, panicked] Retrocedí y crucé entre autos frenados, tragando lluvia, sirenas y miedo puro."
+      }
+    },
+    {
+      "id": "scene_21",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_empapado"
+          },
+          {
+            "id": "silueta_encapuchada",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "avenida_residencial",
+          "view": "calle_lateral"
+        }
+      },
+      "visual": {
+        "image_prompt": "Second blocked route panel: at the far end of the narrow side street, the hooded silhouette is already waiting under a sodium-orange streetlight, face still total shadow, hands hidden, not touching anything. Han Jin stands in the foreground, back half-turned, rain dripping from his hair but both eyes visible in profile. Parked delivery bikes and trash bags frame the path; no pedestrians here, deliberate isolation. Cold blue rain and orange light only, no green-cyan system color, no speech bubbles, no text. Long telephoto compression. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "En la segunda salida, la misma sombra ya estaba esperándome."
+      }
+    },
+    {
+      "id": "scene_22",
+      "type": "panel",
+      "render_mode": "animated",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "top_to_bottom",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_empapado"
+          },
+          {
+            "id": "silueta_encapuchada",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "avenida_residencial",
+          "view": "calle_lateral"
+        }
+      },
+      "visual": {
+        "image_prompt": "Pastoral terror panel: Han Jin backs away down the side street, RIGHT hand pressed against a wet wall, eyes locked on the hooded silhouette in the distance. The silhouette remains immobile, centered in the only visible way out, hands hidden. The street narrows toward a dark alley opening behind Jin, trash bags and delivery bikes framing him like walls. No pedestrians, no green-cyan system color, no speech bubbles, no text. Tilted high angle to make the street feel like a trap. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon.",
+        "animation_prompt": "KEY ACTION (first 2s): Han Jin BACKS away from the hooded silhouette, RIGHT hand scraping along the wet wall as he realizes the side street is guiding him backward. BEATS (2-4s): (1) his heel bumps a trash bag; (2) he turns his head toward the dark alley behind him; (3) the silhouette stays completely still in the exit. CAMERA: slow top-to-bottom drift that narrows the frame around Jin. SECONDARY: rain falls harder, orange reflections shiver in puddles. final 2s: holding on Jin trapped between wall and alley mouth, nothing new happens. ~5-6s. Korean manhwa animation feel."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[shaken] Entonces entendí lo peor: no me perseguía. Me estaba encerrando sin tocarme."
+      }
+    },
+    {
+      "id": "scene_23",
+      "type": "panel",
+      "render_mode": "static",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_pull_out",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_empapado"
+          }
+        ],
+        "escenario": {
+          "id": "callejon_sin_salida",
+          "view": "muro_sin_salida"
+        }
+      },
+      "visual": {
+        "image_prompt": "Dead-end reveal panel: Han Jin stumbles into the rainy alley and stops before the high brick wall, his soaked uniform dark against the wet asphalt, both hands spread slightly as if searching for another exit. Trash bins and torn plastic bags line the sides, puddles reflect orange streetlight, the dead-end wall dominates the upper frame. No other people visible in this shot, deliberate isolation, no green-cyan system color, no speech bubbles, no text. Slow pull-out composition emphasizing the closed wall. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "El callejón no tenía salida; solo ladrillo húmedo y basura volteada."
+      }
+    },
+    {
+      "id": "scene_24",
+      "type": "panel",
+      "render_mode": "animated",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_empapado"
+          },
+          {
+            "id": "silueta_encapuchada",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "callejon_sin_salida",
+          "view": "boca_desde_fondo"
+        }
+      },
+      "visual": {
+        "image_prompt": "Alley mouth sealed panel: from near the dead-end wall looking outward, Han Jin turns sharply in the midground, rain flying from his soaked hair, while the hooded silhouette stands at the alley entrance far behind, already blocking the only exit, perfectly still, hands hidden, face black, not touching anyone. The distance between them is long and claustrophobic. Blue rain shadows and sodium-orange backlight only, no green-cyan system color, no speech bubbles, no text. Deep perspective with vertical walls squeezing the frame. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon.",
+        "animation_prompt": "KEY ACTION (first 2s): Han Jin WHIPS around toward the alley mouth and freezes when he sees the hooded silhouette already sealing the exit. BEATS (2-4s): (1) his LEFT foot slides back in a puddle; (2) his shoulders tense; (3) the silhouette remains a fixed black shape, cloak barely stirring. CAMERA: rapid turn with Jin, then long push down the alley toward the silhouette. SECONDARY: rain streaks, orange backlight flickers, puddles ripple from Jin's step. final 2s: holding on the sealed alley mouth, nothing new happens. ~5-6s. Korean manhwa animation feel."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "A mis espaldas, la silueta selló la boca del callejón y quedó inmóvil."
+      }
+    },
+    {
+      "id": "scene_25",
+      "type": "panel",
+      "render_mode": "animated",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_empapado"
+          },
+          {
+            "id": "silueta_encapuchada",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "callejon_sin_salida",
+          "view": "muro_sin_salida"
+        }
+      },
+      "visual": {
+        "image_prompt": "Rift-opening panel at the dead end: Han Jin is trapped against the brick wall, LEFT hand raised near his chest, RIGHT hand reaching back toward the wet wall. In front of him, the air tears open into a thin jagged green-cyan rift, faint and translucent; it and its puddle reflection are the ONLY green-cyan sources. The hooded silhouette is a distant black shape at the alley mouth, still watching. Environment remains cold blue rain and sodium-orange reflections, no speech bubbles, no other text, no extra figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon.",
+        "animation_prompt": "KEY ACTION (first 2s): the air in front of Han Jin SPLITS with a jagged green-cyan line while he flinches backward and plants his RIGHT hand on the brick wall. BEATS (2-4s): (1) the rift widens just enough to breathe vapor; (2) green-cyan light ripples once across the nearest puddle; (3) Jin's eyes track the tear in disbelief. CAMERA: slow push from Jin's hand on the wall to the rift. SECONDARY: rain bends toward the opening, brick dust shakes loose. final 2s: holding on the rift half-open, nothing new happens. ~5-6s. Korean manhwa animation feel, no gore."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Frente a mí, el aire se rasgó con una luz verde, imposible."
+      }
+    },
+    {
+      "id": "scene_26",
+      "type": "panel",
+      "render_mode": "animated",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_to_top",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_empapado"
+          },
+          {
+            "id": "monstruo_sombra_humeda",
+            "pose": "base"
+          },
+          {
+            "id": "silueta_encapuchada",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "callejon_sin_salida",
+          "view": "muro_sin_salida"
+        }
+      },
+      "visual": {
+        "image_prompt": "Monster emergence panel: the wet shadow monster crawls out of the green-cyan rift in front of Han Jin, first appearing dog-sized, then unfolding wrong backward-bent limbs from its glossy black body. Reddish fissures glow inside the creature like hot coal; no face, no mouth, no gore. Han Jin recoils against the wall, soaked uniform clinging, eyes wide. The hooded silhouette stays far at the alley mouth, motionless observer, not touching anyone. Green-cyan comes ONLY from the rift; the monster glow is reddish. No speech bubbles, no other text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon.",
+        "animation_prompt": "KEY ACTION (first 2s): the wet shadow monster CRAWLS out of the rift on two front limbs, then its rear joints unfold with an unnatural snap while Han Jin recoils. BEATS (2-4s): (1) reddish fissures flare across the creature's body; (2) its limbs stretch from small to large-dog height; (3) Jin's back hits the brick wall. CAMERA: low-angle push from the puddle toward the creature's unfolding limbs. SECONDARY: black vapor drips, rain hisses through the rift light, puddles tremble. final 2s: holding on the fully unfolded creature between Jin and the rift, nothing new happens. ~5-6s. Korean manhwa animation feel, no gore."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[horrified] De la grieta salió algo pequeño… hasta que sus patas se desplegaron."
+      }
+    },
+    {
+      "id": "scene_27",
+      "type": "panel",
+      "render_mode": "static",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.03,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_empapado"
+          }
+        ]
+      },
+      "visual": {
+        "image_prompt": "Extreme close-up voice panel with NO scenery: Han Jin's rain-soaked mouth and tense jaw are cropped diagonally against a solid black background with faint vertical speed lines; lips parted mid-whisper, one rain-sweat drop sliding from the chin, both no speech bubbles and no visible environment. The edge of his wet white collar and blue-gray vest enters the lower frame, silver watch not visible in this crop. No green-cyan system color, no other characters, no text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[whispers, terrified] —No… no puede ser real —susurré, sin poder moverme."
+      }
+    },
+    {
+      "id": "scene_28",
+      "type": "panel",
+      "render_mode": "animated",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "top_left_to_bottom_right",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_empapado"
+          },
+          {
+            "id": "monstruo_sombra_humeda",
+            "pose": "base"
+          },
+          {
+            "id": "silueta_encapuchada",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "callejon_sin_salida",
+          "view": "base"
+        }
+      },
+      "visual": {
+        "image_prompt": "Claw-lunge panel: the wet shadow monster launches from the midground toward Han Jin's right side, elongated front limb arcing diagonally, reddish fissures flaring along the claw. Han Jin twists away too late, soaked vest stretched, LEFT wristwatch visible as his arm lifts. In the far background, the hooded silhouette stands immobile at the alley mouth, observing silently and not touching anyone. The rift glow is out of frame; no green-cyan system color in this panel. Red-black impact mood, rain, speed lines, no gore, no speech bubbles, no text. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon.",
+        "animation_prompt": "KEY ACTION (first 2s): the wet shadow monster LEAPS and swings one elongated claw diagonally toward Han Jin's right side while Jin twists away too late. BEATS (2-4s): (1) the claw grazes across the uniform fabric; (2) reddish fissures flare on the monster's limb; (3) Jin's body folds sideways from the force. CAMERA: hard diagonal shake following the claw path. SECONDARY: rain explodes off the monster's limb, speed lines slash across the frame, the silhouette remains still in the background. final 2s: holding on Jin losing balance, no gore and nothing new happens. ~5-6s. Korean manhwa animation feel."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[panting, terrified] La masa húmeda arqueó sus articulaciones incorrectas y saltó hacia mi costado."
+      }
+    },
+    {
+      "id": "scene_29",
+      "type": "panel",
+      "render_mode": "static",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "top_left_to_bottom_right",
+        "zoom": 1.04,
+        "pan": 4
+      },
+      "visual": {
+        "image_prompt": "Pure onomatopoeia impact panel: full vertical frame filled with giant jagged stylized comic lettering 'RAAS' in white with dark red outline and subtle red glow, letters slashing diagonally from upper left to lower right over a black-and-gray vertical speed-line background with small rain streak cuts. No characters, no scenery, no other text, no green-cyan color, no speech bubbles. Korean manhwa webtoon style typography panel, vertical 9:16, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[impact] RAAS. El golpe me arrancó el suelo de encima."
+      }
+    },
+    {
+      "id": "scene_30",
+      "type": "panel",
+      "render_mode": "static",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_pull_out",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_herido"
+          },
+          {
+            "id": "silueta_encapuchada",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "callejon_sin_salida",
+          "view": "base"
+        }
+      },
+      "visual": {
+        "image_prompt": "After-slash panel: Han Jin lies on his right side on wet asphalt in the foreground, soaked uniform torn at the side with stylized dark red scratches only, no gore and no blood pool; his LEFT wristwatch glints beside a puddle, RIGHT hand pressed weakly to the ground. The hooded silhouette stands at the alley mouth in the far background, perfectly still, observing the attack, hands hidden, not touching anyone. Cold blue rain and sodium-orange reflections only, no green-cyan system color, no speech bubbles, no text. Slow, heavy composition from ground level. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[strained] Caí de lado. La figura seguía inmóvil, mirando como si nada."
+      }
+    },
+    {
+      "id": "scene_31",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "casual_recuerdo"
+          },
+          {
+            "id": "han_sora",
+            "pose": "hospital"
+          }
+        ],
+        "escenario": {
+          "id": "hospital_memoria",
+          "view": "base"
+        }
+      },
+      "visual": {
+        "image_prompt": "Warm desaturated hospital memory panel: Han Sora sits in the hospital bed under a pale blanket, hospital gown and light cardigan visible, smiling softly despite her tired eyes. Han Jin in a simple sweater sits beside the bed, younger and protective, both eyes visible, silver wristwatch on LEFT wrist. The room glows with muted amber sunlight, edges slightly blurred like memory, no green-cyan system color, no speech bubbles, no readable text, no medical gore. Gentle medium shot from doorway height. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[sorrowful] En mi cabeza, mi hermana Sora sonrió desde su cama blanca."
+      }
+    },
+    {
+      "id": "scene_32",
+      "type": "panel",
+      "render_mode": "static",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.03,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "casual_recuerdo"
+          },
+          {
+            "id": "han_sora",
+            "pose": "hospital"
+          }
+        ],
+        "escenario": {
+          "id": "hospital_memoria",
+          "view": "manos_close"
+        }
+      },
+      "visual": {
+        "image_prompt": "Hospital memory close-up: Han Jin's LEFT hand with the worn silver wristwatch gently wraps around Han Sora's smaller pale hand on the blanket edge; Sora's hospital sleeve and patient wristband are visible, Jin's sweater cuff enters from the opposite side. Their faces are softly blurred in the upper background, Sora smiling faintly. Warm desaturated amber-gray memory light, no green-cyan system color, no speech bubbles, no readable text, no extra hands. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "—Voy a pagar todo —le prometí—. Solo resiste un poco más."
+      }
+    },
+    {
+      "id": "scene_33",
+      "type": "panel",
+      "render_mode": "animated",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.03,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_herido"
+          },
+          {
+            "id": "monstruo_sombra_humeda",
+            "pose": "base"
+          },
+          {
+            "id": "silueta_encapuchada",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "callejon_sin_salida",
+          "view": "suelo_ui"
+        }
+      },
+      "visual": {
+        "image_prompt": "Return-from-memory danger panel: Han Jin lies wounded on the wet asphalt in the lower foreground, RIGHT hand pressing flat against the ground, LEFT arm clutching his torn side, both eyes opening in terror. Above him, the wet shadow monster raises one elongated wet claw directly over his throat, reddish fissures glowing; no gore. In the far background, the hooded silhouette remains fixed at the alley mouth, silently observing. Natural blue rain and sodium-orange reflections only, no green-cyan yet, no speech bubbles, no text. Extreme low-angle from the puddle beside Jin's hand. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon.",
+        "animation_prompt": "KEY ACTION (first 2s): Han Jin's eyes SNAP open as he plants his RIGHT hand flat on the wet asphalt and the monster raises its claw over his throat. BEATS (2-4s): (1) Jin drags his LEFT arm tight against his torn side; (2) the monster's claw pauses at the highest point; (3) the hooded silhouette remains motionless at the alley mouth. CAMERA: ground-level push-in from Jin's hand to his eyes. SECONDARY: rain splashes around his fingers, reddish fissures flicker on the claw. final 2s: holding on the claw suspended above him, nothing new happens. ~5-6s. Korean manhwa animation feel, no gore."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[terrified] Abrí los ojos. El monstruo levantaba una garra mojada sobre mi garganta."
+      }
+    },
+    {
+      "id": "scene_34",
+      "type": "panel",
+      "render_mode": "animated",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.03,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_herido"
+          },
+          {
+            "id": "monstruo_sombra_humeda",
+            "pose": "base"
+          },
+          {
+            "id": "silueta_encapuchada",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "callejon_sin_salida",
+          "view": "suelo_ui"
+        }
+      },
+      "visual": {
+        "image_prompt": "Awakening-system assembly panel: Han Jin lies wounded on the wet asphalt, RIGHT hand splayed in the lower foreground, LEFT arm guarding his side, eyes wide and reflecting a newly forming translucent green-cyan system window above his chest. The window assembles from thin geometric shards and must show the countdown reading exactly '59:00' plus two short UI fragments exactly 'REGISTRO' and 'NIVEL 0'; no long sentences, no other readable text. The monster's raised claw is halted in the upper background, reddish fissures visible, and the hooded silhouette remains far behind, immobile. The window and its puddle reflection are the ONLY green-cyan sources; alley remains blue-rain and sodium-orange. No speech bubbles, no extra limbs, no floating hands, no gore. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon.",
+        "animation_prompt": "KEY ACTION (first 2s): translucent green-cyan UI shards ASSEMBLE above Han Jin's chest into a system window while his RIGHT fingers claw into the wet asphalt. BEATS (2-4s): (1) the digits lock into exactly '59:00'; (2) the fragments 'REGISTRO' and 'NIVEL 0' snap into place; (3) the monster's raised claw freezes just behind the window. CAMERA: slow push-in from Jin's hand to the completed timer. SECONDARY: green-cyan reflection ripples once in the puddle, rain streaks catch the window glow, the silhouette stays still. final 2s: holding on the complete window at '59:00', nothing new happens. ~5-6s. Korean manhwa animation feel, no gore."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[awe, breathless] Y es aquí donde todo cambia: algo imposible se ensambló sobre mí."
+      }
+    },
+    {
+      "id": "scene_35",
+      "type": "panel",
+      "render_mode": "static",
+      "editor_motion": {
+        "enabled": false
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "han_jin",
+            "pose": "konbini_herido"
+          }
+        ],
+        "escenario": {
+          "id": "callejon_sin_salida",
+          "view": "suelo_ui"
+        }
+      },
+      "visual": {
+        "image_prompt": "Final cliffhanger UI panel: Han Jin lies wounded on the wet asphalt in the lower third, RIGHT hand pressing flat against the ground in the foreground, LEFT arm clutching his torn side; both eyes reflect the system light. Above him, a translucent green-cyan interface window floats at chest height, tilted toward the viewer, with the countdown reading exactly '59:00' and only two short UI fragments exactly 'REGISTRO' and 'NIVEL 0'; no long readable sentences, no other text. The window and its puddle reflection are the ONLY green-cyan sources; the alley stays blue-rain and sodium-orange. No monster in frame, no silhouette in frame, no floating hands, no extra limbs, no speech bubbles, no gore. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "voiceover": {
+        "speaker": "sistema",
+        "text": "[cold] Registro completado. Nivel cero. Tiempo restante: cincuenta y nueve minutos."
+      }
+    }
+  ],
+  "editing": {
+    "caption_style": {
+      "enabled": true,
+      "font": "Montserrat ExtraBold",
+      "size": 64,
+      "position": "center_lower"
+    },
+    "narrative_card_style": {
+      "font": "Montserrat",
+      "size": 72
+    },
+    "panel_motion": {
+      "enabled": true,
+      "apply_to": "all_panels",
+      "static_zoom": 1.04,
+      "static_pan": 4,
+      "animated_zoom": 1.02,
+      "animated_pan": 2,
+      "cycle": [
+        "bottom_to_top",
+        "top_to_bottom",
+        "bottom_left_to_top_right",
+        "bottom_right_to_top_left",
+        "top_left_to_bottom_right",
+        "top_right_to_bottom_left",
+        "slow_push_in",
+        "slow_pull_out"
+      ]
+    }
+  },
+  "tts_export": {
+    "language": "es-419",
+    "mode": "dialogue",
+    "model_id": "eleven_v3",
+    "elevenlabs_speed": 1.0,
+    "edit_speed": 1.35,
+    "voices": {
+      "narrador": "452WrNT9o8dphaYW5YGU",
+      "sistema": "iOeCMakiJ4CctfQaM9yd"
+    },
+    "dialogue": [
+      {
+        "scene_id": "scene_01",
+        "speaker": "narrador",
+        "text": "Este chico va a morir en un callejón. Nadie lo salvará."
+      },
+      {
+        "scene_id": "scene_02",
+        "speaker": "narrador",
+        "text": "Ese chico… soy yo. Déjenme contarles cómo terminé encerrado ahí, bajo esa lluvia."
+      },
+      {
+        "scene_id": "scene_03",
+        "speaker": "narrador",
+        "text": "El día que me eligió"
+      },
+      {
+        "scene_id": "scene_04",
+        "speaker": "narrador",
+        "text": "Seis horas antes"
+      },
+      {
+        "scene_id": "scene_05",
+        "speaker": "narrador",
+        "text": "La mañana todavía parecía normal, casi cruelmente luminosa, cuando llegué al campus."
+      },
+      {
+        "scene_id": "scene_06",
+        "speaker": "narrador",
+        "text": "Me llamo Han Jin. Diecinueve años. Estudio medicina en Seúl."
+      },
+      {
+        "scene_id": "scene_07",
+        "speaker": "narrador",
+        "text": "Mi reloj valía poco, pero era lo único que no empeñé."
+      },
+      {
+        "scene_id": "scene_08",
+        "speaker": "narrador",
+        "text": "Deben saber algo: los portales existen desde hace siete años."
+      },
+      {
+        "scene_id": "scene_09",
+        "speaker": "narrador",
+        "text": "Cazadores, guilds, licencias… todo eso era lujo de gente lejana."
+      },
+      {
+        "scene_id": "scene_10",
+        "speaker": "narrador",
+        "text": "Al caer la tarde, cambié el blazer por el chaleco del turno."
+      },
+      {
+        "scene_id": "scene_11",
+        "speaker": "narrador",
+        "text": "De noche trabajaba en un konbini, una tienda veinticuatro horas."
+      },
+      {
+        "scene_id": "scene_12",
+        "speaker": "narrador",
+        "text": "¿Qué harías tú por trescientos mil wones semanales de tratamiento?"
+      },
+      {
+        "scene_id": "scene_13",
+        "speaker": "narrador",
+        "text": "[stunned] Entonces la televisión gritó: grietas no registradas; la Asociación estaba rebasada, en vivo."
+      },
+      {
+        "scene_id": "scene_14",
+        "speaker": "narrador",
+        "text": "Los celulares vibraron juntos; clientes y repartidores miraron la misma alarma, sin hablar."
+      },
+      {
+        "scene_id": "scene_15",
+        "speaker": "narrador",
+        "text": "[stunned] Cuando vi Haneul, dejé de respirar: mi hermana está internada ahí."
+      },
+      {
+        "scene_id": "scene_16",
+        "speaker": "narrador",
+        "text": "[breathless] Solté la caja de medicamentos y corrí directo hacia la lluvia fría."
+      },
+      {
+        "scene_id": "scene_17",
+        "speaker": "narrador",
+        "text": "La avenida estaba llena de gente; yo solo veía el hospital."
+      },
+      {
+        "scene_id": "scene_18",
+        "speaker": "narrador",
+        "text": "Giré por el atajo de siempre. Una figura encapuchada ya esperaba ahí."
+      },
+      {
+        "scene_id": "scene_19",
+        "speaker": "narrador",
+        "text": "No habló. No levantó las manos. Solo ocupó el camino."
+      },
+      {
+        "scene_id": "scene_20",
+        "speaker": "narrador",
+        "text": "[fast, panicked] Retrocedí y crucé entre autos frenados, tragando lluvia, sirenas y miedo puro."
+      },
+      {
+        "scene_id": "scene_21",
+        "speaker": "narrador",
+        "text": "En la segunda salida, la misma sombra ya estaba esperándome."
+      },
+      {
+        "scene_id": "scene_22",
+        "speaker": "narrador",
+        "text": "[shaken] Entonces entendí lo peor: no me perseguía. Me estaba encerrando sin tocarme."
+      },
+      {
+        "scene_id": "scene_23",
+        "speaker": "narrador",
+        "text": "El callejón no tenía salida; solo ladrillo húmedo y basura volteada."
+      },
+      {
+        "scene_id": "scene_24",
+        "speaker": "narrador",
+        "text": "A mis espaldas, la silueta selló la boca del callejón y quedó inmóvil."
+      },
+      {
+        "scene_id": "scene_25",
+        "speaker": "narrador",
+        "text": "Frente a mí, el aire se rasgó con una luz verde, imposible."
+      },
+      {
+        "scene_id": "scene_26",
+        "speaker": "narrador",
+        "text": "[horrified] De la grieta salió algo pequeño… hasta que sus patas se desplegaron."
+      },
+      {
+        "scene_id": "scene_27",
+        "speaker": "narrador",
+        "text": "[whispers, terrified] —No… no puede ser real —susurré, sin poder moverme."
+      },
+      {
+        "scene_id": "scene_28",
+        "speaker": "narrador",
+        "text": "[panting, terrified] La masa húmeda arqueó sus articulaciones incorrectas y saltó hacia mi costado."
+      },
+      {
+        "scene_id": "scene_29",
+        "speaker": "narrador",
+        "text": "[impact] RAAS. El golpe me arrancó el suelo de encima."
+      },
+      {
+        "scene_id": "scene_30",
+        "speaker": "narrador",
+        "text": "[strained] Caí de lado. La figura seguía inmóvil, mirando como si nada."
+      },
+      {
+        "scene_id": "scene_31",
+        "speaker": "narrador",
+        "text": "[sorrowful] En mi cabeza, mi hermana Sora sonrió desde su cama blanca."
+      },
+      {
+        "scene_id": "scene_32",
+        "speaker": "narrador",
+        "text": "—Voy a pagar todo —le prometí—. Solo resiste un poco más."
+      },
+      {
+        "scene_id": "scene_33",
+        "speaker": "narrador",
+        "text": "[terrified] Abrí los ojos. El monstruo levantaba una garra mojada sobre mi garganta."
+      },
+      {
+        "scene_id": "scene_34",
+        "speaker": "narrador",
+        "text": "[awe, breathless] Y es aquí donde todo cambia: algo imposible se ensambló sobre mí."
+      },
+      {
+        "scene_id": "scene_35",
+        "speaker": "sistema",
+        "text": "[cold] Registro completado. Nivel cero. Tiempo restante: cincuenta y nueve minutos."
+      }
+    ],
+    "full_script": "Este chico va a morir en un callejón. Nadie lo salvará.\nEse chico… soy yo. Déjenme contarles cómo terminé encerrado ahí, bajo esa lluvia.\nEl día que me eligió\nSeis horas antes\nLa mañana todavía parecía normal, casi cruelmente luminosa, cuando llegué al campus.\nMe llamo Han Jin. Diecinueve años. Estudio medicina en Seúl.\nMi reloj valía poco, pero era lo único que no empeñé.\nDeben saber algo: los portales existen desde hace siete años.\nCazadores, guilds, licencias… todo eso era lujo de gente lejana.\nAl caer la tarde, cambié el blazer por el chaleco del turno.\nDe noche trabajaba en un konbini, una tienda veinticuatro horas.\n¿Qué harías tú por trescientos mil wones semanales de tratamiento?\n[stunned] Entonces la televisión gritó: grietas no registradas; la Asociación estaba rebasada, en vivo.\nLos celulares vibraron juntos; clientes y repartidores miraron la misma alarma, sin hablar.\n[stunned] Cuando vi Haneul, dejé de respirar: mi hermana está internada ahí.\n[breathless] Solté la caja de medicamentos y corrí directo hacia la lluvia fría.\nLa avenida estaba llena de gente; yo solo veía el hospital.\nGiré por el atajo de siempre. Una figura encapuchada ya esperaba ahí.\nNo habló. No levantó las manos. Solo ocupó el camino.\n[fast, panicked] Retrocedí y crucé entre autos frenados, tragando lluvia, sirenas y miedo puro.\nEn la segunda salida, la misma sombra ya estaba esperándome.\n[shaken] Entonces entendí lo peor: no me perseguía. Me estaba encerrando sin tocarme.\nEl callejón no tenía salida; solo ladrillo húmedo y basura volteada.\nA mis espaldas, la silueta selló la boca del callejón y quedó inmóvil.\nFrente a mí, el aire se rasgó con una luz verde, imposible.\n[horrified] De la grieta salió algo pequeño… hasta que sus patas se desplegaron.\n[whispers, terrified] —No… no puede ser real —susurré, sin poder moverme.\n[panting, terrified] La masa húmeda arqueó sus articulaciones incorrectas y saltó hacia mi costado.\n[impact] RAAS. El golpe me arrancó el suelo de encima.\n[strained] Caí de lado. La figura seguía inmóvil, mirando como si nada.\n[sorrowful] En mi cabeza, mi hermana Sora sonrió desde su cama blanca.\n—Voy a pagar todo —le prometí—. Solo resiste un poco más.\n[terrified] Abrí los ojos. El monstruo levantaba una garra mojada sobre mi garganta.\n[awe, breathless] Y es aquí donde todo cambia: algo imposible se ensambló sobre mí.\n[cold] Registro completado. Nivel cero. Tiempo restante: cincuenta y nueve minutos."
+  }
+}

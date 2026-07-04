@@ -1,0 +1,138 @@
+{
+  "project": {
+    "title": "Manhwa Test Parte 1",
+    "preset": "manhwa",
+    "serie": "serie_test",
+    "slug": "manhwa_test",
+    "language": "es-419",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "part": 1
+  },
+  "pipeline": {
+    "image_generation": { "tool": "grok" },
+    "animation": { "tool": "grok" },
+    "tts": { "tool": "elevenlabs", "language": "es-419" },
+    "editing": { "tool": "capcut" }
+  },
+  "characters": {
+    "kael": {
+      "display_name": "Kael",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/serie_test/kael_base.png"
+        },
+        "espada": {
+          "mode": "existing",
+          "asset": "assets/characters/serie_test/kael_espada.png"
+        },
+        "herido": {
+          "mode": "generate",
+          "asset": "assets/characters/serie_test/kael_herido.png",
+          "reference_pose": "base",
+          "prompt": "Kael wounded but recognizable, same Korean manhwa character design, torn school uniform, dramatic shadows."
+        }
+      }
+    }
+  },
+  "escenarios": {
+    "salon": {
+      "display_name": "Salon de clases",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/serie_test/salon_clases.png"
+        },
+        "contrapicado": {
+          "mode": "generate",
+          "asset": "assets/escenarios/serie_test/salon_contrapicado.png",
+          "reference_view": "base",
+          "prompt": "Same classroom identity, low angle from the back row, Korean manhwa background art, empty desks, cold blue light."
+        }
+      }
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [{ "id": "kael", "pose": "base" }],
+        "escenario": { "id": "salon", "view": "base" }
+      },
+      "visual": {
+        "image_prompt": "Korean manhwa webtoon panel, Kael in a classroom, low angle, dramatic shadows, no dialogue bubbles."
+      },
+      "voiceover": { "text": "Kael miro la ventana. Nada de ese dia parecia real." },
+      "captions": { "text": "Nada parecia real", "highlight_words": ["real"] }
+    },
+    {
+      "id": "scene_02",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [{ "id": "kael", "pose": "base" }],
+        "escenario": { "id": "salon", "view": "base" }
+      },
+      "visual": {
+        "image_prompt": "Korean manhwa webtoon panel, over the shoulder classroom view, cold blue light, drawn onomatopoeia FUUU in the window reflection."
+      },
+      "voiceover": { "text": "El aire se congelo antes de que alguien pudiera gritar." },
+      "captions": { "text": "El aire se congelo", "highlight_words": ["congelo"] }
+    },
+    {
+      "id": "scene_03",
+      "type": "narrative_card",
+      "card": { "text": "El dia que todo termino", "mode": "editor" },
+      "voiceover": { "text": "El dia que todo termino." }
+    },
+    {
+      "id": "scene_04",
+      "type": "panel",
+      "render_mode": "animated",
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_left_to_top_right",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [{ "id": "kael", "pose": "herido" }],
+        "escenario": { "id": "salon", "view": "contrapicado" }
+      },
+      "visual": {
+        "image_prompt": "Korean manhwa webtoon impact panel, Kael draws a sword, giant glowing red onomatopoeia lettering CRAC integrated in the panel.",
+        "animation_prompt": "KEY ACTION first 2s: camera shake, sword flare, CRAC letters pulse once, then hold on Kael."
+      },
+      "voiceover": { "text": "Y entonces, el cielo se partio en dos." },
+      "captions": { "text": "El cielo se partio", "highlight_words": ["partio"] }
+    }
+  ],
+  "editing": {
+    "caption_style": { "enabled": true, "font": "Montserrat ExtraBold", "size": 64, "position": "center_lower", "max_words_on_screen": 5 },
+    "narrative_card_style": { "size": 96, "max_width": "72%", "max_lines": 4 },
+    "panel_motion": {
+      "enabled": true,
+      "apply_to": "all_panels",
+      "static_zoom": 1.04,
+      "static_pan": 4,
+      "animated_zoom": 1.02,
+      "animated_pan": 2,
+      "cycle": [
+        "bottom_to_top",
+        "top_to_bottom",
+        "bottom_left_to_top_right",
+        "top_right_to_bottom_left",
+        "slow_push_in"
+      ]
+    },
+    "music_notes": "ambient oscuro epico de fondo",
+    "sfx_notes": "impactos y whooshes en las escenas animadas"
+  },
+  "tts_export": {
+    "language": "es-419",
+    "full_script": "Kael miro la ventana. Nada de ese dia parecia real.\nEl aire se congelo antes de que alguien pudiera gritar.\nEl dia que todo termino.\nY entonces, el cielo se partio en dos."
+  }
+}

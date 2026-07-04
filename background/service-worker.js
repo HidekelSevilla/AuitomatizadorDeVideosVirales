@@ -15,7 +15,7 @@ import {
   makeInitialState, msg, jitterDelay,
 } from "../lib/messaging.js";
 
-import { parseProject } from "../lib/json-loader.js";
+import { validateQueueProject } from "../lib/queue-validator.js";
 import { createOrchestrator } from "../lib/orchestrator.js";
 import { planScene, nextSceneIndex, nextSceneIndexByStatus } from "../lib/queue.js";
 
@@ -32,6 +32,7 @@ if (!("update_url" in chrome.runtime.getManifest())) {
 let state = null;          // cache de AppState; se rehidrata bajo demanda
 let loopRunning = false;   // guarda anti-reentrada del bucle de ESCENAS en este worker vivo
 let autopilotBusy = false; // guarda anti-reentrada de la CORRIDA COMPLETA (onRunAll: ingredientes + fases)
+let ingredientsRunning = false; // guarda anti-reentrada de la fase/boton de INGREDIENTES
 
 // ---------------------------------------------------------------------------
 // Persistencia
@@ -59,7 +60,7 @@ async function loadState() {
   state.config.longBreakMaxMs = 30000;
   state.config.humanTyping = false;   // siempre pegar (los drivers ya pegan en fragmentos rapidos)
   // Migracion: campos nuevos de queue/pacing sin pisar lo guardado.
-  state.queue = { running: false, paused: false, currentIndex: 0, phase: "images", errorSceneId: null, heartbeatAt: 0, ...(state.queue || {}) };
+  state.queue = { running: false, paused: false, currentIndex: 0, phase: "images", errorSceneId: null, heartbeatAt: 0, doneJobs: [], ...(state.queue || {}) };
   // Carriles: al (re)cargar el SW NINGUN carril corre todavia -> running forzado a false (evita carriles
   // "vivos" fantasma tras morir el SW; el heartbeat previo se conserva solo como referencia).
   {
@@ -69,7 +70,7 @@ async function loadState() {
       animation: { running: false, heartbeatAt: _pl.animation?.heartbeatAt || 0 },
     };
   }
-  state.pacing = { windowStart: 0, windowCount: 0, sessionGen: 0, cooldownUntil: 0, cooldownStep: 0, ...(state.pacing || {}) };
+  state.pacing = { windowStart: 0, windowCount: 0, sessionGen: 0, cooldownUntil: 0, cooldownStep: 0, grokGenCount: 0, ...(state.pacing || {}) };
   state.metrics = { generations: 0, errors: 0, cooldownMs: 0, since: Date.now(), ...(state.metrics || {}) };
   // Rehidrata el ring de logs (clave separada) para que el historial sobreviva al sueno del SW.
   try { const lr = await chrome.storage.local.get(LOG_RING_KEY); if (Array.isArray(lr[LOG_RING_KEY])) logRing = lr[LOG_RING_KEY]; } catch (_e) { /* noop */ }
@@ -211,6 +212,7 @@ async function resumeIfInterrupted() {
   await saveState();
   log(LOG_LEVEL.INFO, "Reanudando corrida tras reinicio del service worker.");
   emitState();
+  if (!(await ensureIngredientsBeforeSceneLoop("reinicio del service worker"))) return;
   // Si la corrida era PARALELA (murio el SW durante la espera de Grok), reanuda en paralelo (idempotente
   // por status, no re-gasta) en vez del bucle secuencial; si no, el bucle unico de siempre.
   if (state.queue.mode === "parallel" && state.config.parallelPipeline) runPhasesParallel().catch((e) => log(LOG_LEVEL.ERROR, `Reanudacion paralela fallo: ${e?.message ?? e}`));
@@ -234,7 +236,10 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
   // GET_STATE necesita respuesta sincrona -> retornamos true y respondemos async.
   if (type === CMD.GET_STATE) {
-    ensureState().then(() => sendResponse(state));
+    ensureState().then(async () => {
+      await hydrateExistingIngredientFiles().catch(() => false);
+      sendResponse(state);
+    });
     return true;
   }
 
@@ -280,6 +285,8 @@ async function handleMessage(message) {
       return onStop();
     case CMD.RETRY_SCENE:
       return onRetryScene(message);
+    case CMD.RETRY_INGREDIENT:
+      return onRetryIngredient(message);
     case CMD.RETRY_ALL_ERRORS:
       return onRetryAllErrors();
     case CMD.SKIP_SCENE:
@@ -319,33 +326,49 @@ async function handleMessage(message) {
 // ---------------------------------------------------------------------------
 
 async function onLoadJson(message) {
-  const result = parseProject(message.json);
-  if (!result.ok) {
-    for (const err of result.errors) log(LOG_LEVEL.ERROR, `JSON invalido: ${err}`);
+  const checked = validateQueueProject(message.json);
+  if (!checked.ok) {
+    for (const err of checked.errors) log(LOG_LEVEL.ERROR, `JSON invalido: ${err}`);
     return;
   }
+  const result = checked.parsed;
   // Avisos no fatales (ej. referencia a un personaje/escena que no existe): se surfacean ANTES de
   // gastar puntos, no se tiran a la basura. El dato ya lo calcula parseProject.
   for (const w of result.warnings || []) log(LOG_LEVEL.WARN, `Aviso del JSON: ${w}`);
   // Preserva el characterRef ya cargado (el JSON nuevo no lo trae).
   const prevRef = state.project?.characterRef ?? null;
+  const prevQueue = state.queue || {};
   state.project = { ...result.project, characterRef: prevRef };
   state.scenes = result.scenes;
-  state.queue = { running: false, paused: false, currentIndex: 0 };
+  state.queue = { running: false, paused: false, currentIndex: 0, doneJobs: prevQueue.doneJobs || [], jobName: prevQueue.jobName || null };  // preserva cola/doneJobs/lock
   // Reinicia el RITMO al cargar un JSON nuevo: cada video arranca "fresco". Antes solo se reseteaba queue,
   // asi que un 2o video en la misma hora HEREDABA windowCount/sessionGen/cooldown del anterior y disparaba
   // "Tope 50/hora: pausa 20 min" (o un descanso largo) de la nada. El tope/hora pasa a ser por-video.
-  state.pacing = { windowStart: 0, windowCount: 0, sessionGen: 0, cooldownUntil: 0, cooldownStep: 0 };
+  state.pacing = { windowStart: 0, windowCount: 0, sessionGen: 0, cooldownUntil: 0, cooldownStep: 0, grokGenCount: 0 };
   // El JSON manda el proveedor (pipeline.image_generation.tool). Si lo declara, enruta a Flow o Grok;
   // si no, respeta el del panel. Asi la cola automatica mezcla JSON de Flow y Grok sin tocar nada.
   if (result.project.provider && result.project.provider !== state.config.provider) {
     state.config.provider = result.project.provider;
     log(LOG_LEVEL.INFO, `Proveedor segun JSON: ${result.project.provider}.`);
   }
+  await prepareProjectMedia(message.json).catch((e) => log(LOG_LEVEL.WARN, `No pude preparar medios del slug (${e?.message ?? e}); continuo.`));
+  await hydrateExistingIngredientFiles({ emit: false }).catch(() => false);
   await saveState();
   log(LOG_LEVEL.INFO, `Proyecto cargado: "${state.project.title}" (${state.scenes.length} escenas).`);
   emitState();
   emitProgress();
+}
+
+async function prepareProjectMedia(projectJson) {
+  const base = (state.config.audioWriterUrl || DEFAULT_CONFIG.audioWriterUrl).replace(/\/save$/, "");
+  const res = await fetch(`${base}/project/prepare-media`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(projectJson),
+  });
+  const j = await res.json().catch(() => null);
+  if (!res.ok || !j?.ok) throw new Error(j?.error || res.statusText);
+  if (j.archived) log(LOG_LEVEL.WARN, `Slug ${j.slug}: medios anteriores archivados por JSON distinto -> ${j.archive}`);
 }
 
 async function onLoadCharacterRef(message) {
@@ -439,6 +462,42 @@ async function onRetryScene(message) {
   emitState();
 }
 
+// Reintento por ingrediente. No arranca escenas: solo regenera ese ingrediente y actualiza el estado
+// para que luego las escenas usen el asset nuevo.
+async function onRetryIngredient(message) {
+  const ingredientId = message.ingredientId || message.id;
+  const ing = (state.project?.ingredients || []).find((g) => g.id === ingredientId);
+  if (!ing) {
+    log(LOG_LEVEL.WARN, `RETRY: ingrediente no encontrado: ${ingredientId}`);
+    return;
+  }
+  const activeIngredient = (state.project?.ingredients || []).some((g) => g.status === SCENE_STATUS.GENERATING_IMAGE);
+  const ingredientPhaseActive = ingredientsRunning || ((autopilotBusy || state.queue.running) && activeIngredient);
+  if (ingredientPhaseActive && !state.queue.paused) {
+    log(LOG_LEVEL.WARN, `Ingrediente ${ingredientId}: hay otra generacion de ingredientes activa; espera a que termine o detenla antes de rehacer.`);
+    emitState();
+    return;
+  }
+  if ((autopilotBusy || loopRunning || state.queue.running) && !state.queue.paused) {
+    log(LOG_LEVEL.WARN, `Ingrediente ${ingredientId}: espera a que termine o pausa la corrida antes de rehacerlo.`);
+    emitState();
+    return;
+  }
+
+  ing.imageUrl = null;
+  ing.imageFilePath = null;
+  ing.status = SCENE_STATUS.PENDING;
+  ing.error = null;
+  state.queue.errorSceneId = null;
+  await saveState();
+  emitState();
+
+  log(LOG_LEVEL.INFO, `Ingrediente ${ingredientId}: reintentando generacion manual.`);
+  await runIngredientsPhase({ forceIds: [ingredientId], ignorePaused: true });
+  await ensureState();
+  emitState();
+}
+
 // Arranca la fase de animacion para recoger/animar las escenas que YA estan en estado animable
 // (IMAGE_DONE / ANIMATING+videoUrl). A diferencia de onStartPhase, NO reactiva las escenas en ERROR:
 // asi un reintento por escena toca solo la que el usuario pidio.
@@ -497,7 +556,7 @@ async function onResetScenes() {
     s.clipFilename = null;
     s.lastFrameFilename = null;
   }
-  state.queue = { running: false, paused: false, currentIndex: 0, phase: "images", errorSceneId: null, heartbeatAt: 0 };
+  state.queue = { running: false, paused: false, currentIndex: 0, phase: "images", errorSceneId: null, heartbeatAt: 0, doneJobs: state.queue?.doneJobs || [] };
   for (const s of state.scenes) s.skipped = false;
   lastFrames.clear();
   detachDebuggers();
@@ -572,6 +631,7 @@ async function resumeAfterCooldown() {
   await saveState();
   log(LOG_LEVEL.INFO, "Cooldown de rate-limit terminado: reanudando la cola.");
   emitState();
+  if (!(await ensureIngredientsBeforeSceneLoop("cooldown"))) return;
   if (state.queue.mode === "parallel" && state.config.parallelPipeline) runPhasesParallel().catch((e) => log(LOG_LEVEL.ERROR, `Reanudacion paralela fallo: ${e?.message ?? e}`));
   else launchLoop();
 }
@@ -601,6 +661,7 @@ async function onStartOrResume() {
   if (!state.queue.phase) state.queue.phase = "images";
   await saveState();
   emitState();
+  if (!(await ensureIngredientsBeforeSceneLoop("reanudar"))) return;
   launchLoop();
 }
 
@@ -653,6 +714,9 @@ const orchestrator = createOrchestrator({
           : runRealImage(scene, prevSceneId, refName);
     },
     animation: (scene) => {
+      // HIBRIDO criptoclaro_reel: una escena estatica NO se anima (su still es el asset final) -> DONE sin gastar.
+      // Defensa; normalmente runPhaseToEnd ya las marco DONE antes del bucle (no llegan aqui como IMAGE_DONE).
+      if (state.project?.perSceneRender && scene.renderMode !== "animated") return markStaticSceneDone(scene);
       const animProv = state.project?.animationProvider || state.config.provider;
       return state.config.dryRun ? runDryRunAnimation(scene)
         : animProv === "grok" ? runGrokAnimation(scene)
@@ -824,7 +888,10 @@ async function runRealImage(scene, prevSceneId, refName) {
       scene.savedOk = moved.via === "server";
       if (moved.via === "server") log(LOG_LEVEL.INFO, `${scene.id}: still movido a public/${slug}/images/ (image-only).`);
       else log(LOG_LEVEL.WARN, `${scene.id}: still en Descargas (dev-server no responde); muevelo a public/${slug}/images/.`);
-    } catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no pude guardar/mover el still (${e?.message ?? e}).`); }
+    } catch (e) {
+      if (isRejectedStillError(e)) throw e;
+      log(LOG_LEVEL.WARN, `${scene.id}: no pude guardar/mover el still (${e?.message ?? e}).`);
+    }
   } else if (animProv !== "flow" && scene.imageUrl) {
     // HANDOFF cross-proveedor: imagen de Flow a disco para subirla en el otro proveedor (Flow->Flow no paga esto).
     try {
@@ -929,6 +996,21 @@ async function resolveCharFile(rel) {
   return res.abspath;
 }
 
+async function resolveCharFileFlexible(rel) {
+  const candidates = [rel];
+  const m = String(rel || "").match(/^(.*)\.(png|jpg|jpeg|webp)$/i);
+  if (m) {
+    for (const ext of ["png", "jpg", "jpeg", "webp"]) {
+      const alt = `${m[1]}.${ext}`;
+      if (!candidates.includes(alt)) candidates.push(alt);
+    }
+  }
+  for (const candidate of candidates) {
+    try { return await resolveCharFile(candidate); } catch (_e) {}
+  }
+  throw new Error(`no encuentro ${rel} ni variante png/jpg/jpeg/webp`);
+}
+
 // Descarga la imagen generada por Grok a Descargas/<slug>/images/<id>.jpg y devuelve su ruta ABSOLUTA
 // (chrome.downloads manda cookies; assets.grok.com las exige). Esa ruta se reusa como REFERENCIA por
 // CDP en escenas siguientes (continuidad). No se mueve a public/ (no la necesita el render).
@@ -951,16 +1033,55 @@ async function moveStillToProject(absFrom, slug, id) {
   const base = (state.config.audioWriterUrl || DEFAULT_CONFIG.audioWriterUrl).replace(/\/save$/, "");
   try {
     const res = await fetch(`${base}/move?from=${encodeURIComponent(absFrom)}&to=${encodeURIComponent(to)}`, { method: "POST" });
-    const j = await res.json().catch(() => null);
+    const body = await res.text().catch(() => "");
+    const j = body ? (() => { try { return JSON.parse(body); } catch (_e) { return null; } })() : null;
     if (res.ok && j && j.ok) return { via: "server", path: to };
-  } catch (_e) { /* dev-server no corre: queda en Descargas */ }
+    if (res.status === 422) throw new Error(`still rechazado por dev-server: ${body || res.statusText}`);
+  } catch (e) {
+    if (isRejectedStillError(e)) throw e;
+    /* dev-server no corre: queda en Descargas */
+  }
   return { via: "downloads", path: absFrom };
 }
 
+async function moveGeneratedAssetToProject(absFrom, relAssetPath) {
+  const base = (state.config.audioWriterUrl || DEFAULT_CONFIG.audioWriterUrl).replace(/\/save$/, "");
+  const res = await fetch(`${base}/asset/move?from=${encodeURIComponent(absFrom)}&to=${encodeURIComponent(relAssetPath)}`, { method: "POST" });
+  const body = await res.text().catch(() => "");
+  const j = body ? (() => { try { return JSON.parse(body); } catch (_e) { return null; } })() : null;
+  if (!res.ok || !j?.ok) throw new Error(`no pude guardar asset ${relAssetPath}: ${body || res.statusText}`);
+  return { via: "server", path: j.path || relAssetPath, abspath: j.abspath || null };
+}
+
+function isRejectedStillError(e) {
+  return /still rechazado|archivo demasiado pequeno|posible corrupto|incompleto/i.test(String(e?.message ?? e));
+}
+
 // FASE 1 (Grok): sube referencias (personaje + escenas previas) por CDP -> genera imagen (modo Imagen).
+// HIBRIDO criptoclaro_reel: marca una escena ESTATICA como terminada (su still ya es el asset final, no se
+// anima). DONE limpio (no IMAGE_DONE) para que el bucle no la vuelva a elegir. No gasta puntos.
+async function markStaticSceneDone(scene) {
+  scene.status = SCENE_STATUS.DONE; scene.error = null;
+  await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.DONE); emitState(); emitProgress();
+  log(LOG_LEVEL.INFO, `${scene.id}: escena estatica (render_mode != animated) -> lista sin animar.`);
+}
+
 async function runGrokImage(scene) {
+  if (scene.skipImageGeneration) {
+    scene.status = SCENE_STATUS.DONE; scene.error = null;
+    await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.DONE); emitState(); emitProgress();
+    log(LOG_LEVEL.INFO, `${scene.id}: narrative_card editor -> sin generacion de imagen.`);
+    return;
+  }
   const tab = await findFlowTab("grok");
   if (!tab) throw new Error("No hay pestana de Grok abierta (grok.com/imagine). Abrela y reintenta.");
+  // Cada GROK_RELOAD_EVERY imagenes recarga la pestana de cero (anti-cuelgue por acumulacion en el renderer).
+  if ((state.pacing?.grokGenCount || 0) >= GROK_RELOAD_EVERY) {
+    log(LOG_LEVEL.INFO, `Grok: recargando la pestana de cero tras ${GROK_RELOAD_EVERY} imagenes (anti-cuelgue).`);
+    try { await hardReloadGrok(tab.id); } catch (e) { log(LOG_LEVEL.WARN, `Grok: recarga anti-cuelgue fallo (${e?.message ?? e}); sigo sin recargar.`); }
+    state.pacing.grokGenCount = 0;
+    await saveState();
+  }
   await ensureGrokCompositor(tab.id); // vuelve al composer fresco (tras la escena previa quedo en /imagine/post/<id>)
   await ensureContentScript(tab.id, "grok");
   await ensureDebugger(tab.id);
@@ -979,14 +1100,14 @@ async function runGrokImage(scene) {
       const nm = (scene.characterRefs || [])[i];
       const entry = Object.values(chars).find((c) => c && c.display_name === nm);
       if (entry?.reference_asset) {
-        try { const p = await resolveCharFile(entry.reference_asset); if (p) refPaths.push(p); }
+        try { const p = await resolveCharFileFlexible(entry.reference_asset); if (p) refPaths.push(p); }
         catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no resolvi ref de personaje "${nm}": ${e?.message ?? e}`); }
       }
     }
   }
   if (!refPaths.length && !refIds.length) { // compat: sin refs declaradas, usa el 1er personaje del mapa
     const first = Object.values(chars)[0];
-    if (first?.reference_asset) { try { const p = await resolveCharFile(first.reference_asset); if (p) refPaths.push(p); } catch (_e) {} }
+    if (first?.reference_asset) { try { const p = await resolveCharFileFlexible(first.reference_asset); if (p) refPaths.push(p); } catch (_e) {} }
   }
   // INGREDIENTES de escena (entity/location_plate): subir su PNG en disco.
   for (const rid of (scene.ingredientRefs || [])) {
@@ -999,6 +1120,10 @@ async function runGrokImage(scene) {
     if (ref?.imageFilePath) refPaths.push(ref.imageFilePath);
     else log(LOG_LEVEL.WARN, `${scene.id}: ref a escena '${sr.sceneId}' sin imagen en disco; se omite.`);
   }
+  for (const rel of (scene.referenceAssets || [])) {
+    try { const p = await resolveCharFileFlexible(rel); if (p) refPaths.push(p); }
+    catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no resolvi asset de referencia "${rel}": ${e?.message ?? e}`); }
+  }
 
   scene.status = SCENE_STATUS.GENERATING_IMAGE;
   await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.GENERATING_IMAGE); emitState();
@@ -1009,8 +1134,8 @@ async function runGrokImage(scene) {
     catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no pude subir referencias (${e?.message ?? e}); genero sin ellas.`); }
   }
   // Aspecto: del JSON (project.aspect_ratio). historias sin aspect_ratio -> 16:9 (documental horizontal).
-  const aspectRatio = state.project?.aspectRatio || (state.project?.preset === "historias" ? "16:9" : "9:16");
-  const img = await sendActOrFail(tab.id, ACT.GENERATE_IMAGE, { prompt: scene.imagePrompt, aspectRatio, cfg: driverCfg() });
+  const aspectRatio = state.project?.aspectRatio || ((state.project?.preset === "historias" || state.project?.preset === "criptoclaro") ? "16:9" : "9:16");
+  const img = await sendGrokGenerateImage(tab.id, { prompt: scene.imagePrompt, aspectRatio, cfg: driverCfg() });
   const imageUrl = img?.imageUrl;
   if (!imageUrl) throw new Error("Grok no devolvio URL de imagen");
   if (img?.variantCount > 1) log(LOG_LEVEL.INFO, `${scene.id}: Grok genero ${img.variantCount} variaciones; uso la 1a (determinista).`);
@@ -1027,7 +1152,11 @@ async function runGrokImage(scene) {
       if (moved.via === "server") log(LOG_LEVEL.INFO, `${scene.id}: still movido a public/${slug}/images/ (image-only).`);
       else log(LOG_LEVEL.WARN, `${scene.id}: still en Descargas (dev-server no responde); muevelo a public/${slug}/images/ o corre flowbot.`);
     }
-  } catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no pude guardar/mover la imagen (${e?.message ?? e}).`); }
+  } catch (e) {
+    if (isRejectedStillError(e)) throw e;
+    log(LOG_LEVEL.WARN, `${scene.id}: no pude guardar/mover la imagen (${e?.message ?? e}).`);
+  }
+  if (state.pacing) state.pacing.grokGenCount = (state.pacing.grokGenCount || 0) + 1;   // contador anti-cuelgue (recarga cada N imagenes)
   scene.status = SCENE_STATUS.IMAGE_DONE; scene.error = null;
   await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.IMAGE_DONE); emitState(); emitProgress();
   log(LOG_LEVEL.INFO, `Imagen Grok lista (${scene.id}).`);
@@ -1044,16 +1173,31 @@ async function runGrokAnimation(scene) {
   // tras un disparo exitoso; si un reintento entra con grokFired (o con scene.videoUrl ya recogido), NO
   // re-disparamos: recogemos en el /post del video (scene.grokVideoPostUrl) o re-descargamos.
   if (!scene.videoUrl && !scene.grokFired) {
+    const preset = state.project?.preset || "";
+    const shouldReloadBeforeAnim = state.project?.perSceneRender || /^(historias|criptoclaro|habitos|pov-historias|manhwa)/.test(preset);
+    if (shouldReloadBeforeAnim) {
+      log(LOG_LEVEL.INFO, `Grok: recarga limpia antes de animar ${scene.id} (evita estado residual de imagenes).`);
+      try { await hardReloadGrok(tab.id); }
+      catch (e) {
+        log(LOG_LEVEL.WARN, `Grok: recarga previa a animacion fallo (${e?.message ?? e}); intento con composer fresco.`);
+        await ensureGrokCompositor(tab.id);
+      }
+    }
     // HANDOFF cross-proveedor: si la imagen NO se genero en Grok (imageProvider != "grok") no hay /post que
     // abrir -> composer fresco + subir la imagen de disco por CDP (Grok SI anima imagenes subidas, spike OK).
     const imgProv = state.project?.imageProvider || state.config.provider;   // proveedor EFECTIVO (igual que el dispatch)
-    const uploadedImage = imgProv !== "grok";
+    // Imagen generada en Grok -> normalmente se anima navegando a su /imagine/post. Pero si Grok DIFUNDIO la
+    // imagen IN-PLACE (sale como data URL, sin navegar a /post) NO hay post que abrir; si tenemos el still
+    // (data URL o ruta en disco) animamos SUBIENDOLO como el handoff cross-proveedor (no necesita post).
+    const canNavigatePost = !!scene.grokPostUrl || /generated\//.test(scene.imageUrl || "");
+    const uploadedImage = imgProv !== "grok" || (!canNavigatePost && (!!scene.imageFilePath || !!scene.imageUrl));
     if (uploadedImage) {
-      if (!scene.imageFilePath && scene.imageUrl) {
-        // imageFilePath se perdio (p.ej. reinicio del SW): re-baja la imagen a disco antes de rendirse.
-        try { const slug = state.project?.slug || "proyecto"; const saved = await downloadImageForRef(scene.imageUrl, slug, scene.id); scene.imageFilePath = saved.abspath || null; } catch (_e) {}
+      // (Re)baja el still a disco si falta la ruta (reinicio del SW) O si la imagen es un data URL (Grok in-place:
+      // la ruta previa pudo moverse a public/ y quedar obsoleta). downloadImageForRef sirve para data: y assets.grok.com.
+      if (scene.imageUrl && (!scene.imageFilePath || /^data:/.test(scene.imageUrl))) {
+        try { const slug = state.project?.slug || "proyecto"; const saved = await downloadImageForRef(scene.imageUrl, slug, scene.id); scene.imageFilePath = saved.abspath || scene.imageFilePath; } catch (_e) {}
       }
-      if (!scene.imageFilePath) throw new Error("falta la imagen en disco para subir a Grok (handoff); regenera la imagen");
+      if (!scene.imageFilePath) throw new Error("falta la imagen en disco para subir a Grok; regenera la imagen");
       await ensureGrokCompositor(tab.id);          // composer fresco (sin /post)
       await ensureContentScript(tab.id, "grok");
       await ensureDebugger(tab.id);                // CDP para subir el archivo + el clic TRUSTED
@@ -1089,7 +1233,7 @@ async function runGrokAnimation(scene) {
     // La navegacion puede matar el content script ANTES de responder: eso NO es fallo (el disparo ocurrio),
     // seguimos a recolectar. Los errores REALES (no encuentro toggle/Enviar) si se relanzan.
     try {
-      await sendActOrFail(tab.id, ACT.ANIMATE_FIRE, { prompt: scene.animationPrompt, cfg: driverCfg() });
+      await sendActOrFail(tab.id, ACT.ANIMATE_FIRE, { prompt: scene.animationPrompt, cfg: driverCfg(), expectImage: uploadedImage });
     } catch (e) {
       const msg = e?.message ?? String(e);
       if (/no respondio|message port|closed|sin respuesta/i.test(msg)) log(LOG_LEVEL.WARN, `${scene.id}: fire sin respuesta (navegacion); continuo a recolectar.`);
@@ -1388,6 +1532,83 @@ async function saveVoiceFile(slug, filename, body, mime) {
   return { via: "downloads", path: `Descargas/${slug}/voice/${filename}` };
 }
 
+async function cleanupV3VoiceFile(slug, filename, outputFormat) {
+  const relPath = `remotion-editor/public/${slug}/voice/${filename}`;
+  const writerUrl = state.config.audioWriterUrl || DEFAULT_CONFIG.audioWriterUrl;
+  let base = "http://localhost:35729";
+  try { base = new URL(writerUrl).origin; } catch (_e) { /* fallback */ }
+  try {
+    const res = await fetch(`${base}/audio/cleanup-v3?path=${encodeURIComponent(relPath)}&output_format=${encodeURIComponent(outputFormat || "mp3_44100_192")}`, {
+      method: "POST",
+    });
+    if (!res.ok) throw new Error(await res.text().catch(() => `HTTP ${res.status}`));
+    const j = await res.json().catch(() => null);
+    if (!j?.ok) throw new Error("respuesta invalida");
+    log(LOG_LEVEL.INFO, `ElevenLabs V3: limpieza de ruido aplicada -> ${j.path}`);
+    return true;
+  } catch (e) {
+    log(LOG_LEVEL.WARN, `ElevenLabs V3: no pude aplicar limpieza de ruido (${e?.message ?? e}); sigo con audio crudo.`);
+    return false;
+  }
+}
+
+function currentProjectAsElevenJson() {
+  const p = state.project || {};
+  const tts = p.ttsExport || {};
+  const scenes = (state.scenes || []).map((s) => ({
+    id: s.id,
+    type: s.sceneType || "panel",
+    card: s.sceneType === "narrative_card" ? { mode: s.cardMode || "editor", text: s.cardText || "" } : undefined,
+    render_mode: s.renderMode || "static",
+    visual: { image_prompt: s.imagePrompt || "" },
+    animation_prompt: s.animationPrompt || "",
+    timeline: { clip_duration_s: s.clipDurationS || p.defaultClipDurationS || 4 },
+    voiceover: { text: s.voiceoverText || "", ...(s.voiceoverSpeaker ? { speaker: s.voiceoverSpeaker } : {}) },
+    captions: s.captionsText ? { text: s.captionsText } : undefined,
+  }));
+  return {
+    project: {
+      title: p.title || "proyecto",
+      preset: p.preset || "",
+      slug: p.slug || "proyecto",
+      language: p.language || tts.language || "es-419",
+      aspect_ratio: p.aspectRatio || "9:16",
+      fps: p.fps || 30,
+      default_clip_duration_s: p.defaultClipDurationS || 4,
+    },
+    pipeline: {
+      image_generation: { tool: p.imageProvider || p.provider || state.config.provider || "grok" },
+      animation: { tool: p.animationProvider || "grok" },
+      tts: { tool: "elevenlabs", voice_id: tts.voice_id, language: tts.language || p.language || "es-419" },
+      editing: { tool: "remotion" },
+    },
+    scenes,
+    render_export: { clip_order: scenes.map((s) => s.id).filter(Boolean) },
+    tts_export: { ...tts, engine: "elevenlabs" },
+  };
+}
+
+async function generateElevenViaNode(payload) {
+  const bodyPayload = typeof payload === "string" ? { jobName: payload } : (payload || {});
+  if (!bodyPayload.jobName && !bodyPayload.projectJson) return false;
+  const writerUrl = state.config.audioWriterUrl || DEFAULT_CONFIG.audioWriterUrl;
+  let base = "http://localhost:35729";
+  try { base = new URL(writerUrl).origin; } catch (_e) { /* fallback */ }
+  const res = await fetch(`${base}/audio/generate-eleven`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(bodyPayload),
+  });
+  const body = await res.text().catch(() => "");
+  const j = body ? (() => { try { return JSON.parse(body); } catch (_e) { return null; } })() : null;
+  if (!res.ok || !j?.ok) throw new Error(j?.error || j?.stderr || body || `HTTP ${res.status}`);
+  if (j.stdout) {
+    const line = String(j.stdout).split(/\r?\n/).filter(Boolean).slice(-1)[0];
+    if (line) log(LOG_LEVEL.INFO, `ElevenLabs Node: ${line.slice(0, 220)}`);
+  }
+  return true;
+}
+
 // Guarda el diagnostico de tiles fallidos (capturado por el driver cuando faltan videos) en
 // public/debug/, para mapear despues el "Reintentar" propio de Flow. Loguea un resumen al panel.
 async function saveFailedDiag(diag) {
@@ -1407,14 +1628,16 @@ async function saveFailedDiag(diag) {
 }
 
 // ---------------------------------------------------------------------------
-// ElevenLabs V3 (TTS, SOLO preset historias en modo Creative). El SW llama api.elevenlabs.io DIRECTO.
+// ElevenLabs V3 (TTS, preset historias en modo Natural). El SW llama api.elevenlabs.io DIRECTO.
 // Produce los MISMOS archivos que Fish (full.mp3 + full.words.json) -> el resto del pipeline no cambia.
 // V3 NO tiene request stitching: si full_script > ~3000 chars se parte por escena y se concatenan los mp3.
 // ---------------------------------------------------------------------------
 // V3 admite hasta 5000 chars/request -> cortamos a 4800 (margen): asi MUCHOS guiones caben en 1 bloque = sin seam.
 // OJO: previous_text/next_text NO estan soportados en eleven_v3 (la API responde 400 unsupported_model). Para el
-// seam cuando se parte: chunking balanceado + mismo seed + concat limpio; si se nota, subir a stability 0.5 (Natural).
-const ELEVEN_MAX_CHARS = 4800, ELEVEN_MIN_CHARS = 250, ELEVEN_DEFAULT_VOICE = "7UB6WMKyZDj19XRGC8Sb";
+// seam cuando se parte: chunking balanceado + mismo seed + concat limpio.
+const ELEVEN_MAX_CHARS = 4800, ELEVEN_MIN_CHARS = 250, ELEVEN_DEFAULT_VOICE = "8mBRP99B2Ng2QwsJMFQl";
+const ELEVEN_MANHWA_VOICE = "452WrNT9o8dphaYW5YGU";
+const ELEVEN_MANHWA_V3_SPEED = 1.3;
 
 function stripTags(s) { return String(s || "").replace(/\[[^\]]*\]/g, "").replace(/<[^>]*>/g, ""); }  // [tags] v3 y <break/> SSML v2 (el texto a la API SÍ los conserva; esto es solo para alinear/contar palabras)
 
@@ -1521,15 +1744,30 @@ async function elevenTTSWithTimestamps(text, o) {
 // historias: genera full.mp3 + full.words.json con ElevenLabs V3 desde tts_export (voice/seed/settings del JSON).
 async function generateHistoriasEleven(fullScript, sceneTexts, slug, tts, apiKey) {
   const vs = tts.voice_settings || {};
+  const modelId = tts.model_id || "eleven_v3";
+  const preset = state.project?.preset || "";
+  const forceChannelVoice = /^(historias|criptoclaro|habitos|pov-historias)/.test(preset);
+  const defaultVoice = preset === "manhwa" ? ELEVEN_MANHWA_VOICE : ELEVEN_DEFAULT_VOICE;
   const o = {
     apiKey,
-    voiceId: (tts.voice_id || "").trim() || ELEVEN_DEFAULT_VOICE,
-    modelId: tts.model_id || "eleven_v3",
+    voiceId: preset === "manhwa" ? ELEVEN_MANHWA_VOICE : forceChannelVoice ? ELEVEN_DEFAULT_VOICE : ((tts.voice_id || "").trim() || defaultVoice),
+    modelId,
     languageCode: tts.language_code || "es",
     outputFormat: tts.output_format || "mp3_44100_192",
     seed: Number.isInteger(tts.seed) ? tts.seed : 42,
-    voiceSettings: { stability: vs.stability ?? 0, similarity_boost: vs.similarity_boost ?? 0.75, style: vs.style ?? 0, use_speaker_boost: vs.use_speaker_boost ?? true },
+    voiceSettings: { stability: vs.stability ?? (modelId === "eleven_v3" ? 0 : 0.45), similarity_boost: vs.similarity_boost ?? 0.75, style: vs.style ?? (modelId === "eleven_v3" ? 0 : 0.25), use_speaker_boost: vs.use_speaker_boost ?? true },
   };
+  if (forceChannelVoice) {
+    if (modelId === "eleven_v3") {
+      o.voiceSettings = { stability: 0, similarity_boost: 0.75, style: 0, use_speaker_boost: true, speed: 1.2 };
+    } else {
+      o.voiceSettings.speed = 1.15;
+    }
+  } else if (preset === "manhwa" && o.voiceId === ELEVEN_MANHWA_VOICE && modelId === "eleven_v3" && typeof vs.speed !== "number") {
+    o.voiceSettings.speed = ELEVEN_MANHWA_V3_SPEED;
+  } else if (typeof vs.speed === "number") {
+    o.voiceSettings.speed = vs.speed;
+  }
   // v3 NO soporta stitching y se desestabiliza con texto largo -> tope 4800 y el seam (si parte) es inevitable.
   // v2 (y turbo/flash) SI soportan previous_text/next_text y aceptan ~10000 chars/request -> tope 9000; si se
   // parte, cada bloque recibe el contexto vecino para que el seam sea CONTINUO. El orquestador elige el modelo
@@ -1554,6 +1792,10 @@ async function generateHistoriasEleven(fullScript, sceneTexts, slug, tts, apiKey
   if (!total) throw new Error("ElevenLabs no devolvio audio");
   const audio = new Uint8Array(total); let p = 0; for (const a of audioParts) { audio.set(a, p); p += a.length; }
   const savedMp3 = await saveVoiceFile(slug, "full.mp3", audio, "audio/mpeg");
+  if (isV3) {
+    if (savedMp3.via === "server") await cleanupV3VoiceFile(slug, "full.mp3", o.outputFormat);
+    else log(LOG_LEVEL.WARN, "ElevenLabs V3: limpieza de ruido requiere dev-server; el MP3 quedo en Descargas sin postproceso.");
+  }
   const savedWords = await saveVoiceFile(slug, "full.words.json", JSON.stringify(words), "application/json");
   log(LOG_LEVEL.INFO, `voz V3 lista: full.mp3 (${Math.round(audio.length / 1024)} KB, ${words.length} palabras) -> ${savedMp3.path}`);
   if (savedMp3.via === "downloads" || savedWords.via === "downloads") {
@@ -1571,13 +1813,29 @@ async function onGenerateAudio(message) {
   {
     const _tts = state.project?.ttsExport || {};
     const _fs = _tts.full_script;
-    if (state.project?.preset === "historias" && _tts.engine === "elevenlabs" && typeof _fs === "string" && _fs.trim()) {
+    const _preset = state.project?.preset || "";
+    const _wantsEleven = (/^(historias|criptoclaro|habitos|pov-historias)/.test(_preset) && _tts.engine === "elevenlabs")
+      || (_preset === "manhwa" && _tts.engine === "elevenlabs");
+    if (_wantsEleven && typeof _fs === "string" && _fs.trim()) {
       const elevenKey = (state.config.elevenApiKey || "").trim();
       if (!elevenKey) { log(LOG_LEVEL.ERROR, "ElevenLabs: el JSON pide engine \"elevenlabs\" pero falta elevenApiKey en secrets.local.json."); return; }
       const _slug = state.project?.slug || "proyecto";
       const _texts = (state.scenes || []).filter((s) => (s.voiceoverText || "").trim()).map((s) => s.voiceoverText.trim());
-      try { await generateHistoriasEleven(_fs.trim(), _texts, _slug, _tts, elevenKey); }
-      catch (e) { log(LOG_LEVEL.ERROR, `ElevenLabs V3 fallo: ${e.message}`); }
+      try {
+        const payload = state.queue?.jobName
+          ? { jobName: state.queue.jobName }
+          : { projectJson: currentProjectAsElevenJson() };
+        const label = state.queue?.jobName || `${_slug} (manual)`;
+        log(LOG_LEVEL.INFO, `ElevenLabs: delegando voz a Node local (${label}) para evitar perdida por service worker.`);
+        await generateElevenViaNode(payload);
+        log(LOG_LEVEL.INFO, `ElevenLabs Node listo -> ${_slug}/voice/full.mp3`);
+      } catch (e) {
+        log(LOG_LEVEL.ERROR, `ElevenLabs Node fallo: ${e?.message ?? e}`);
+      }
+      return;
+    }
+    if (_preset === "manhwa") {
+      log(LOG_LEVEL.ERROR, "manhwa requiere tts_export.full_script y pipeline.tts.tool \"elevenlabs\".");
       return;
     }
   }
@@ -1616,7 +1874,7 @@ async function onGenerateAudio(message) {
   // (NO 1 mp3 por escena). La narracion suena continua, sin costura entre cortes. El editor mapea cada imagen
   // a su ventana con align/inject-words.mjs (de los timestamps de Fish). Otros presets: 1 mp3 por escena (igual).
   const fullScript = state.project?.ttsExport?.full_script;
-  if (preset === "historias" && typeof fullScript === "string" && fullScript.trim()) {
+  if (/^(historias|criptoclaro|habitos|pov-historias)/.test(preset || "") && typeof fullScript === "string" && fullScript.trim()) {
     items.splice(0, items.length, { id: "full", text: fullScript.trim() });
     log(LOG_LEVEL.INFO, "historias: 1 voz continua desde tts_export.full_script -> full.mp3 + full.words.json (sin costura entre escenas).");
   }
@@ -1747,6 +2005,43 @@ async function sendActOrFail(tabId, action, payload) {
   return resp.data ?? resp;
 }
 
+function isClosedImageChannelError(e) {
+  return /content no respondio a act:generate_image|message channel closed|message port closed|Extension context invalidated|Receiving end does not exist/i
+    .test(e?.message ?? String(e));
+}
+
+function isNoNewGrokImageError(e) {
+  return /no aparecio imagen nueva en Grok tras generar/i.test(e?.message ?? String(e));
+}
+
+async function sendGrokGenerateImage(tabId, payload) {
+  try {
+    return await sendActOrFail(tabId, ACT.GENERATE_IMAGE, payload);
+  } catch (e) {
+    const closedChannel = isClosedImageChannelError(e);
+    const noNewImage = isNoNewGrokImageError(e);
+    if (!closedChannel && !noNewImage) throw e;
+    const reason = closedChannel ? "cerro el canal durante generate_image" : "no reporto imagen nueva tras generar";
+    log(LOG_LEVEL.WARN, `Grok ${reason}; intento recuperar la imagen ya generada (${e?.message ?? e}).`);
+    await delay(closedChannel ? 5000 : 2000);
+    try {
+      await ensureContentScript(tabId, "grok");
+      const recovered = await sendActOrFail(tabId, ACT.COLLECT_IMAGE, {
+        cfg: payload?.cfg,
+        requirePost: true,
+        timeoutMs: 45000,
+      });
+      if (recovered?.imageUrl) {
+        log(LOG_LEVEL.INFO, "Grok: imagen recuperada desde /post tras fallo de deteccion.");
+        return recovered;
+      }
+    } catch (recoverErr) {
+      log(LOG_LEVEL.WARN, `Grok: no pude recuperar imagen tras fallo de deteccion (${recoverErr?.message ?? recoverErr}).`);
+    }
+    throw e;
+  }
+}
+
 // Promesa sobre chrome.tabs.sendMessage.
 function sendToTab(tabId, message) {
   return new Promise((resolve, reject) => {
@@ -1820,6 +2115,32 @@ async function ensureGrokCompositor(tabId) {
     await delay(300);
   }
   await delay(1200); // hidratacion React del composer
+}
+
+// Anti-cuelgue: recarga la pestana de Grok DESDE CERO cada N imagenes. Tras muchas generaciones el heap del
+// renderer acumula data: urls de los resultados (cada una cientos de KB) y la pagina se pone lenta/se cuelga.
+// Navega a /imagine (documento nuevo = heap limpio) y luego fuerza un reload con bypass de cache (assets
+// frescos). El debugger se auto-detacha al navegar (onDetach limpia attachedTabs) y el caller reinyecta
+// content script + debugger despues. NO se llama en el poll loop de animacion (alli congela, ver
+// memoria flow-tab-freeze): solo entre generaciones de imagen, que es donde se acumulan.
+async function hardReloadGrok(tabId) {
+  const waitComplete = async (ms) => {
+    const t0 = Date.now();
+    while (Date.now() - t0 < ms) {
+      let t = null; try { t = await chrome.tabs.get(tabId); } catch (_e) {}
+      if (t && t.status === "complete" && /grok\.com\/imagine/.test(t.url || "")) return;
+      await delay(300);
+    }
+  };
+  await new Promise((resolve, reject) => {
+    chrome.tabs.update(tabId, { url: "https://grok.com/imagine" }, () => {
+      const e = chrome.runtime.lastError; if (e) return reject(new Error(e.message)); resolve();
+    });
+  });
+  await waitComplete(25000);
+  await new Promise((resolve) => chrome.tabs.reload(tabId, { bypassCache: true }, () => { void chrome.runtime.lastError; resolve(); }));
+  await waitComplete(25000);
+  await delay(1500); // hidratacion React del composer
 }
 
 // ---------------------------------------------------------------------------
@@ -1936,9 +2257,23 @@ async function runPhaseToEnd(phase) {
   await ensureState();
   // image-only (historias): no hay paso de animacion; los stills SON el asset final. Saltar la fase la
   // invoque quien la invoque (autopiloto, fallback del paralelo, reanudacion). Gateado -> otros presets intactos.
-  if (phase === "animation" && state.project?.imageOnly) {
-    log(LOG_LEVEL.INFO, "Fase de animacion omitida (preset image-only / historias).");
-    return true;
+  if (phase === "animation") {
+    const hasAnimated = state.scenes.some((s) => s.renderMode === "animated");
+    if (state.project?.imageOnly && !hasAnimated) {
+      log(LOG_LEVEL.INFO, "Fase de animacion omitida (preset image-only / historias).");
+      return true;
+    }
+    // HIBRIDO criptoclaro_reel: las escenas estaticas (su still es el asset final) pasan a DONE para que el
+    // bucle SOLO anime las "animated" -> sin gasto de video ni ritmo perdido en no-ops.
+    if (state.project?.perSceneRender) {
+      for (const s of state.scenes) {
+        if (s.renderMode !== "animated" && s.status === SCENE_STATUS.IMAGE_DONE) {
+          s.status = SCENE_STATUS.DONE; s.error = null;
+          if (state.project?.preset === "manhwa") log(LOG_LEVEL.INFO, `${s.id}: manhwa static -> sin job de animacion.`);
+        }
+      }
+      await saveState(); emitState();
+    }
   }
   state.queue.phase = phase;
   // Reactiva ERROR SOLO en imagenes (gratis). En animacion NO (evita re-gasto silencioso de puntos).
@@ -2049,9 +2384,26 @@ async function ensureFlowReady() {
   }
 }
 
+async function ensureProviderReady(provider) {
+  if (provider === "grok") {
+    const tab = await findFlowTab("grok");
+    if (!tab) throw new Error("abre Grok (grok.com/imagine) en una pestana y reintenta");
+    await ensureGrokCompositor(tab.id);
+    await ensureContentScript(tab.id, "grok");
+    log(LOG_LEVEL.INFO, "AUTOPILOTO: Grok listo.");
+    return;
+  }
+  await ensureFlowReady();
+}
+
 // Sube la imagen del personaje a Flow (CDP) y crea el Personaje con su nombre.
 async function createCharacterInFlow(tabId, id, c, name) {
   const rel = (c && c.reference_asset) || `assets/characters/${id}_ref.png`;
+  const absPath = await resolveCharFileFlexible(rel);
+  await sendActOrFail(tabId, ACT.REVEAL_UPLOAD_INPUT, {});
+  await cdpSetFileInput(tabId, absPath);
+  await sendActOrFail(tabId, ACT.CREATE_CHARACTER, { name });
+  return;
   const base = (state.config.charFileUrl || DEFAULT_CONFIG.charFileUrl);
   const fileRes = await fetch(`${base}?path=${encodeURIComponent(rel)}`).then((r) => r.json()).catch(() => null);
   if (!fileRes?.ok) throw new Error(`no encuentro ${rel} (¿corre el dev-server y existe el png?)`);
@@ -2078,7 +2430,10 @@ async function cdpSetFileInput(tabId, absPath) {
 function driverCfg() {
   const c = state.config || {};
   return {
-    humanTyping: c.humanTyping !== false,
+    // SIEMPRE pegar el prompt (decision del usuario). Fijo en false para que NINGUN reset de estado (clear,
+    // makeInitialState, 2a iteracion) reviva el tipeo lento: el default de config.humanTyping es true y antes
+    // se colaba como `!== false` -> true -> tipeo. Esto lo hace inmune.
+    humanTyping: false,
     reviewMinMs: c.reviewPauseMinMs ?? DEFAULT_CONFIG.reviewPauseMinMs,
     reviewMaxMs: c.reviewPauseMaxMs ?? DEFAULT_CONFIG.reviewPauseMaxMs,
   };
@@ -2090,11 +2445,78 @@ function driverCfg() {
 // imageFilePath = PNG en disco reutilizable por CDP). Idempotente: salta los que ya tienen imagen (sobrevive
 // pausa/reinicio del SW). Las imagenes NO gastan puntos (solo la animacion) -> fase barata. JSON sin
 // 'ingredients' = no-op (flujo actual intacto). Devuelve false si hubo parada dura / pausa.
-async function runIngredientsPhase() {
+async function ensureIngredientsBeforeSceneLoop(reason = "arrancar escenas") {
+  await ensureState();
+  if (!state.project?.ingredients?.length) return true;
+  const ok = await runIngredientsPhase().catch((e) => {
+    log(LOG_LEVEL.ERROR, `Ingredientes antes de ${reason}: ${e?.message ?? e}`);
+    return false;
+  });
+  if (!ok) {
+    log(LOG_LEVEL.ERROR, `No arranco escenas: ingredientes incompletos (${reason}).`);
+    await ensureState();
+    emitState();
+    return false;
+  }
+  return true;
+}
+
+async function hydrateExistingIngredientFiles(options = {}) {
+  await ensureState();
+  const ings = state.project?.ingredients || [];
+  const provider = state.project?.imageProvider || state.config.provider;
+  const forceIds = new Set(options.forceIds || []);
+  if (provider !== "grok" || !ings.length) return false;
+
+  let changed = false;
+  for (const ing of ings) {
+    if (forceIds.has(ing.id)) {
+      if (ing.imageFilePath || ing.imageUrl || ing.status || ing.error) {
+        ing.imageFilePath = null;
+        ing.imageUrl = null;
+        ing.status = SCENE_STATUS.PENDING;
+        ing.error = null;
+        changed = true;
+      }
+      continue;
+    }
+    if (ing.type !== "manhwa_asset" || !ing.outputFile) continue;
+    try {
+      const imageFilePath = await resolveCharFileFlexible(ing.outputFile);
+      if (ing.imageFilePath !== imageFilePath || ing.status !== SCENE_STATUS.DONE || ing.error) {
+        ing.imageFilePath = imageFilePath;
+        ing.status = SCENE_STATUS.DONE;
+        ing.error = null;
+        changed = true;
+        log(LOG_LEVEL.INFO, `Asset de grafo existente: ${ing.outputFile} -> no se regenera.`);
+      }
+    } catch (_e) {
+      if (ing.imageFilePath || ing.status === SCENE_STATUS.DONE) {
+        ing.imageFilePath = null;
+        if (!ing.imageUrl) ing.status = SCENE_STATUS.PENDING;
+        changed = true;
+      }
+    }
+  }
+  if (changed) {
+    await saveState();
+    if (options.emit !== false) emitState();
+  }
+  return changed;
+}
+
+async function runIngredientsPhase(options = {}) {
+  if (ingredientsRunning) {
+    log(LOG_LEVEL.WARN, "Ingredientes: ya hay una fase activa; ignoro la reentrada.");
+    return false;
+  }
+  ingredientsRunning = true;
+  try {
   await ensureState();
   const ings = state.project?.ingredients || [];
   if (!ings.length) return true;                       // sin ingredientes -> no-op
   const provider = state.project?.imageProvider || state.config.provider;
+  const forceIds = new Set(options.forceIds || []);
 
   if (state.config.dryRun) {
     for (const ing of ings) log(LOG_LEVEL.INFO, `[dry-run] ingrediente ${ing.id} (${ing.type}) -> ${ing.outputFile}`);
@@ -2103,8 +2525,9 @@ async function runIngredientsPhase() {
 
   // Idempotencia: ya generado = tiene imageUrl (Flow) o imageFilePath (Grok). Saga: la imagen persiste en
   // state; entre videos distintos se re-genera (las imagenes son gratis) -> reuso en-disco entre Partes pendiente.
+  if (provider === "grok") await hydrateExistingIngredientFiles({ forceIds });
   const hasImg = (g) => (provider === "grok" ? !!g.imageFilePath : !!g.imageUrl);
-  const pending = ings.filter((g) => !hasImg(g));
+  const pending = forceIds.size ? ings.filter((g) => forceIds.has(g.id)) : ings.filter((g) => !hasImg(g));
   if (!pending.length) { log(LOG_LEVEL.INFO, `Ingredientes: ${ings.length} ya generados; no re-genero.`); return true; }
   log(LOG_LEVEL.INFO, `FASE INGREDIENTES (${provider}): generando ${pending.length}/${ings.length}...`);
 
@@ -2121,31 +2544,65 @@ async function runIngredientsPhase() {
   // meter encima el interSceneDelay+warmup hacia la fase eterna (~8 min para 10) y parecia congelada. El
   // ritmo configurado SIGUE aplicando entre ESCENAS (produccion sostenida); aqui no hace falta. La red de
   // seguridad reactiva (onRateLimit / "actividad inusual") cubre cualquier rafaga.
-  for (const ing of pending) {
+  for (let ingIndex = 0; ingIndex < pending.length; ingIndex++) {
+    const ing = pending[ingIndex];
+    const isLastIngredient = ings.length > 1 && ing.id === ings[ings.length - 1]?.id;
     await ensureState();
-    if (state.queue.paused) return false;
+    if (state.queue.paused && !options.ignorePaused) return false;
     try {
+      ing.status = SCENE_STATUS.GENERATING_IMAGE;
+      ing.error = null;
+      ing.imageUrl = forceIds.has(ing.id) ? null : ing.imageUrl;
+      ing.imageFilePath = forceIds.has(ing.id) ? null : ing.imageFilePath;
+      await saveState();
+      emitState();
+
       if (provider === "grok") {
+        const reloadByCount = (state.pacing?.grokGenCount || 0) >= GROK_RELOAD_EVERY;
+        if (reloadByCount || isLastIngredient) {
+          const reason = isLastIngredient ? "antes del ultimo ingrediente" : `tras ${GROK_RELOAD_EVERY} generaciones`;
+          log(LOG_LEVEL.INFO, `Grok: recargando la pestana de cero ${reason} (anti-cuelgue).`);
+          try { await hardReloadGrok(tab.id); } catch (e) { log(LOG_LEVEL.WARN, `Grok: recarga anti-cuelgue fallo (${e?.message ?? e}); sigo sin recargar.`); }
+          state.pacing.grokGenCount = 0;
+          await saveState();
+        }
         await ensureGrokCompositor(tab.id);              // composer fresco (la generacion previa dejo /post)
         await ensureContentScript(tab.id, "grok");
         await ensureDebugger(tab.id);
         try { await sendActOrFail(tab.id, ACT.CLEAR_REFS, {}); } catch (_e) {}
+        const refPaths = [];
         // character_edited: subir el PNG base como referencia para "vestirlo" con edit_prompt.
         if (ing.type === "character_edited" && ing.base) {
           const entry = chars[ing.base];
           if (entry?.reference_asset) {
-            const p = await resolveCharFile(entry.reference_asset);
-            await cdpSetFileInput(tab.id, [p]);
+            const p = await resolveCharFileFlexible(entry.reference_asset);
+            refPaths.push(p);
             log(LOG_LEVEL.INFO, `Ingrediente ${ing.id}: base '${ing.base}' subido a Grok para vestirlo.`);
           } else log(LOG_LEVEL.WARN, `Ingrediente ${ing.id}: base '${ing.base}' sin reference_asset; genero sin referencia.`);
         }
-        const img = await sendActOrFail(tab.id, ACT.GENERATE_IMAGE, { prompt: ing.prompt, cfg: driverCfg() });
+        for (const rel of (ing.referenceAssets || [])) {
+          try {
+            const p = await resolveCharFileFlexible(rel);
+            refPaths.push(p);
+          } catch (e) {
+            log(LOG_LEVEL.WARN, `Ingrediente ${ing.id}: no resolvi referencia "${rel}" (${e?.message ?? e}); sigo sin ella.`);
+          }
+        }
+        if (refPaths.length) await cdpSetFileInput(tab.id, refPaths);
+        const img = await sendGrokGenerateImage(tab.id, { prompt: ing.prompt, cfg: driverCfg() });
         if (!img?.imageUrl) throw new Error("Grok no devolvio URL de imagen");
         if (img?.variantCount > 1) log(LOG_LEVEL.INFO, `Ingrediente ${ing.id}: Grok genero ${img.variantCount} variaciones; uso la 1a (determinista).`);
         ing.imageUrl = img.imageUrl;
         const saved = await downloadImageForRef(img.imageUrl, slug, `ingredient_${ing.id}`);
-        ing.imageFilePath = saved.abspath || null;
+        if (ing.type === "manhwa_asset" && ing.outputFile) {
+          const moved = await moveGeneratedAssetToProject(saved.abspath, ing.outputFile);
+          ing.imageFilePath = moved.abspath || await resolveCharFileFlexible(ing.outputFile);
+          log(LOG_LEVEL.INFO, `Asset de grafo guardado: ${moved.path}.`);
+        } else {
+          ing.imageFilePath = saved.abspath || null;
+        }
         detachDebugger(tab.id);
+        if (state.pacing) state.pacing.grokGenCount = (state.pacing.grokGenCount || 0) + 1;
       } else {
         // Flow: character_edited usa el Personaje base como referencia "+"; entity/plate sin referencia.
         const characterNames = (ing.type === "character_edited" && ing.base && chars[ing.base]?.display_name)
@@ -2154,10 +2611,19 @@ async function runIngredientsPhase() {
         if (!img?.imageUrl) throw new Error("Flow no devolvio URL de imagen");
         ing.imageUrl = img.imageUrl;   // tile en la grilla de Flow (se adjunta luego en las escenas via ⋮)
       }
+      ing.status = SCENE_STATUS.DONE;
+      ing.error = null;
       await saveState();
+      emitState();
       log(LOG_LEVEL.INFO, `Ingrediente listo: ${ing.id} (${ing.type}).`);
     } catch (e) {
       detachDebugger(tab.id);
+      ing.imageUrl = null;
+      ing.imageFilePath = null;
+      ing.status = SCENE_STATUS.ERROR;
+      ing.error = e?.message ?? String(e);
+      await saveState();
+      emitState();
       if (e?.hardStop) { await onHardStop(e.hardStop, e?.message); return false; }
       log(LOG_LEVEL.ERROR, `Ingrediente ${ing.id} fallo: ${e?.message ?? e}`);
       await pauseForError(`ingrediente ${ing.id}: ${e?.message ?? e}`, null);
@@ -2167,6 +2633,9 @@ async function runIngredientsPhase() {
   if (provider !== "grok") detachDebugger(tab.id);
   log(LOG_LEVEL.INFO, "FASE INGREDIENTES completa.");
   return true;
+  } finally {
+    ingredientsRunning = false;
+  }
 }
 
 async function onRunAll() {
@@ -2180,9 +2649,10 @@ async function onRunAll() {
   await applySecrets();
   await ensureState();
   if (!state.project || !state.scenes?.length) { log(LOG_LEVEL.WARN, "AUTOPILOTO: no hay proyecto cargado."); return; }
-  log(LOG_LEVEL.INFO, `AUTOPILOTO: "${state.project.title}" — preparando Flow...`);
+  const provider = state.project?.imageProvider || state.config.provider || DEFAULT_CONFIG.provider;
+  log(LOG_LEVEL.INFO, `AUTOPILOTO: "${state.project.title}" - preparando ${provider === "grok" ? "Grok" : "Flow"}...`);
 
-  try { await ensureFlowReady(); }
+  try { await ensureProviderReady(provider); }
   catch (e) { log(LOG_LEVEL.ERROR, `AUTOPILOTO detenido: ${e?.message ?? e}`); return; }
 
   // FASE 0: ingredientes (si el JSON los trae). Antes de imagenes; no-op si no hay. Parada dura -> detener.
@@ -2197,7 +2667,7 @@ async function onRunAll() {
     log(LOG_LEVEL.INFO, "AUTOPILOTO: generando imagenes...");
     if (!(await runPhaseToEnd("images"))) { log(LOG_LEVEL.ERROR, "AUTOPILOTO detenido en imagenes (parada dura)."); return; }
 
-    if (state.project?.imageOnly) {
+    if (state.project?.imageOnly && !state.scenes.some((s) => s.renderMode === "animated")) {
       log(LOG_LEVEL.INFO, "AUTOPILOTO: preset image-only (historias) -> sin animacion.");
     } else {
       log(LOG_LEVEL.INFO, "AUTOPILOTO: animando...");
@@ -2233,6 +2703,7 @@ async function onRunAll() {
   }
 
   log(LOG_LEVEL.INFO, "AUTOPILOTO: medios listos en remotion-editor/public/. El orquestador (build.mjs --watch) renderiza el video.");
+  return true;   // corrida COMPLETA OK -> la cola marca el job como hecho (no re-tomarlo aunque el SW se duerma). Los `return` previos (fallos) devuelven undefined.
   } finally { autopilotBusy = false; }
 }
 
@@ -2241,6 +2712,34 @@ async function onRunAll() {
 // ---------------------------------------------------------------------------
 
 const processedJobs = new Set();   // nombres ya tomados en esta vida del SW (evita repetir)
+const GROK_RELOAD_EVERY = 3;       // recarga frecuente: Grok acumula estado y se traba tras varias imagenes
+
+function queueJobUsesGrok(job) {
+  const p = job?.json?.project || {};
+  const pipeline = job?.json?.pipeline || {};
+  const preset = p.preset || "";
+  const provider = p.provider || p.image_provider || p.imageProvider || pipeline.image_generation?.tool || "";
+  const animProvider = p.animation_provider || p.animationProvider || pipeline.animation?.tool || "";
+  return /^(historias|criptoclaro|habitos|pov-historias|manhwa)/.test(preset)
+    || /^grok/i.test(provider)
+    || /^grok/i.test(animProvider);
+}
+
+async function resetGrokForQueueJob(job) {
+  if (!queueJobUsesGrok(job)) return;
+  const tab = await findFlowTab("grok");
+  if (!tab) { log(LOG_LEVEL.WARN, `Cola: "${job.name}" usa Grok pero no hay pestana abierta para reiniciar.`); return; }
+  log(LOG_LEVEL.INFO, `Cola: reinicio limpio de Grok antes de "${job.name}".`);
+  try {
+    detachDebugger(tab.id);
+    await hardReloadGrok(tab.id);
+    if (state.pacing) state.pacing.grokGenCount = 0;
+    await saveState();
+  } catch (e) {
+    log(LOG_LEVEL.WARN, `Cola: reinicio de Grok fallo (${e?.message ?? e}); sigo con composer fresco.`);
+    try { await ensureGrokCompositor(tab.id); } catch (_e) {}
+  }
+}
 
 async function pollQueue() {
   await ensureState();
@@ -2258,7 +2757,11 @@ async function pollQueue() {
   let jobs;
   try { jobs = await fetch(state.config.queueUrl || DEFAULT_CONFIG.queueUrl).then((r) => r.json()); }
   catch (_e) { return; }                              // dev-server caido
-  const job = (jobs || []).find((j) => j && !j.mediaComplete && !processedJobs.has(j.name));
+  // doneJobs (PERSISTENTE en storage) = jobs ya completados por el autopiloto; processedJobs (en memoria) = guard
+  // de esta vida del SW. Al dormir el SW se borra processedJobs, pero doneJobs sobrevive -> NO se re-toma un job
+  // ya hecho aunque su media aun no este "complete" (el render local va aparte y tarda).
+  const doneJobs = state.queue.doneJobs || [];
+  const job = (jobs || []).find((j) => j && j.valid !== false && j.runnable !== false && !j.mediaComplete && !processedJobs.has(j.name) && !doneJobs.includes(j.name));
   if (!job) return;
   processedJobs.add(job.name);
   // Reclama el trabajo (crea <json>.lock en disco) para que NO se repita aunque el SW reinicie.
@@ -2269,8 +2772,16 @@ async function pollQueue() {
   log(LOG_LEVEL.INFO, `AUTOPILOTO: tomando "${job.name}" de la cola.`);
   state.queue.jobName = job.name;   // para heartbeat del lock (SCALE-02) y diagnostico
   await saveState();
+  await resetGrokForQueueJob(job);
   await onLoadJson({ json: job.json });
-  await onRunAll();
+  const ok = await onRunAll();
+  // Solo si la corrida COMPLETO bien lo marcamos como hecho (persistente). Si fallo/se pauso (parada dura),
+  // NO se marca -> se puede reintentar tras arreglar el problema. Evita re-tomar lo ya terminado.
+  if (ok) {
+    state.queue.doneJobs = state.queue.doneJobs || [];
+    if (!state.queue.doneJobs.includes(job.name)) state.queue.doneJobs.push(job.name);
+    log(LOG_LEVEL.INFO, `AUTOPILOTO: "${job.name}" completado; no se re-tomara.`);
+  }
   state.queue.jobName = null;       // corrida terminada/pausada: deja de latir el lock
   await saveState();
 }

@@ -60,7 +60,7 @@ def test_validate_tags():
 
 
 def test_A_chunking():
-    doc, full_script = _make_historias_doc(n_scenes=10, reps=6)
+    doc, full_script = _make_historias_doc(n_scenes=12, reps=10)
     chunks = tts.split_into_chunks(doc)
     assert len(chunks) >= 2, f"esperaba >=2 bloques, hubo {len(chunks)}"
     # 1) concatenacion == full_script TAL CUAL (con tags, sin perder nada)

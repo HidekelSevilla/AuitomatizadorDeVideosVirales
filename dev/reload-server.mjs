@@ -12,7 +12,10 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { spawnSync } from "node:child_process";
 import { slugify } from "../shared/slug.mjs";   // FUENTE UNICA del slug (debe coincidir con la extension y el render)
+import { getMediaRequirements, projectMediaSignature } from "../shared/media-requirements.mjs";
+import { validateQueueProject } from "../lib/queue-validator.js";
 
 const PORT = Number(process.env.FLOW_DEV_PORT) || 35729;
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -24,6 +27,11 @@ const IGNORE = [/[\\/]dev[\\/]/, /[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/, /[
 
 // Solo se permite escribir dentro de esta carpeta via POST /save (sink de medios de la extension).
 const PUBLIC_DIR = path.join(ROOT, "remotion-editor", "public");
+const V3_AUDIO_CLEANUP_FILTER = process.env.ELEVENLABS_V3_AUDIO_CLEANUP_FILTER
+  || "highpass=f=80,lowpass=f=12000,afftdn=nr=10:nf=-45:tn=1:gs=8,"
+  + "deesser=i=0.25:m=0.5:f=0.45,"
+  + "acompressor=threshold=0.08:ratio=1.6:attack=8:release=120,"
+  + "alimiter=limit=0.95";
 
 const clients = new Set();
 
@@ -58,7 +66,7 @@ function broadcast(text) {
 
 function cors(res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 }
 
@@ -95,6 +103,136 @@ const server = http.createServer((req, res) => {
       }
     });
     req.on("error", () => { try { res.writeHead(400); res.end("bad request"); } catch { /* noop */ } });
+    return;
+  }
+
+  // POST /audio/cleanup-v3?path=<rel>&output_format=mp3_44100_192
+  // Aplica el mismo filtro suave que tts/tts_elevenlabs.py al MP3 V3 guardado por la extension.
+  if (req.method === "POST" && u.pathname === "/audio/cleanup-v3") {
+    const rel = u.searchParams.get("path") || "";
+    const outputFormat = u.searchParams.get("output_format") || "mp3_44100_192";
+    const target = path.resolve(ROOT, rel);
+    if (target !== PUBLIC_DIR && !target.startsWith(PUBLIC_DIR + path.sep)) {
+      res.writeHead(403, { "content-type": "text/plain" });
+      res.end("ruta no permitida");
+      log(`RECHAZADO cleanup-v3 (fuera de public): ${rel}`);
+      return;
+    }
+    if (!fs.existsSync(target) || path.extname(target).toLowerCase() !== ".mp3") {
+      res.writeHead(404, { "content-type": "text/plain" });
+      res.end("mp3 no existe");
+      return;
+    }
+    const m = /^mp3_(\d+)_(\d+)$/i.exec(outputFormat);
+    const ar = m ? m[1] : "44100";
+    const br = m ? `${m[2]}k` : "192k";
+    const parsed = path.parse(target);
+    const raw = path.join(parsed.dir, `${parsed.name}.raw-v3${parsed.ext}`);
+    const tmp = path.join(parsed.dir, `${parsed.name}.cleaning${parsed.ext}`);
+    try {
+      fs.copyFileSync(target, raw);
+      const r = spawnSync("ffmpeg", ["-y", "-i", raw, "-af", V3_AUDIO_CLEANUP_FILTER,
+        "-ar", ar, "-c:a", "libmp3lame", "-b:a", br, tmp], { encoding: "utf8" });
+      if (r.status !== 0) throw new Error((r.stderr || r.stdout || `ffmpeg ${r.status}`).trim());
+      fs.renameSync(tmp, target);
+      res.writeHead(200, { "content-type": "application/json" });
+      res.end(JSON.stringify({ ok: true, path: path.relative(ROOT, target), backup: path.relative(ROOT, raw) }));
+      log(`cleanup-v3 ${path.relative(ROOT, target)} -> ${ar}Hz/${br}`);
+    } catch (e) {
+      try { fs.rmSync(tmp, { force: true }); } catch { /* noop */ }
+      res.writeHead(500, { "content-type": "text/plain" });
+      res.end(String(e?.message || e));
+      log(`ERROR cleanup-v3 ${rel}: ${e?.message || e}`);
+    }
+    return;
+  }
+
+  // POST /audio/generate-eleven : genera/recupera public/<slug>/voice/full.mp3 desde Node, no desde
+  // el service worker. Esto evita que Chrome MV3 mate la extension despues de gastar ElevenLabs.
+  if (req.method === "POST" && u.pathname === "/audio/generate-eleven") {
+    const chunks = [];
+    req.on("data", (c) => chunks.push(c));
+    req.on("end", () => {
+      try {
+        const body = JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}");
+        const jobName = String(body.jobName || "").trim();
+        const remotionRoot = path.join(ROOT, "remotion-editor");
+        let jsonPath = jobName ? queueJsonPath(jobName) : null;
+        let label = jobName;
+        if (body.projectJson && typeof body.projectJson === "object" && !Array.isArray(body.projectJson)) {
+          const slug = slugify(body.projectJson?.project?.slug || body.projectJson?.project?.title || "manual");
+          const tmpDir = path.join(remotionRoot, "tmp", "eleven-manual");
+          fs.mkdirSync(tmpDir, { recursive: true });
+          jsonPath = path.join(tmpDir, `${slug}.json`);
+          fs.writeFileSync(jsonPath, JSON.stringify(body.projectJson, null, 2), "utf8");
+          label = `manual:${slug}`;
+        }
+        if (!jsonPath || !fs.existsSync(jsonPath)) {
+          res.writeHead(404, { "content-type": "application/json" });
+          res.end(JSON.stringify({ ok: false, error: `job no encontrado: ${jobName || "(vacio)"}` }));
+          return;
+        }
+        let secrets = {};
+        try { secrets = JSON.parse(fs.readFileSync(path.join(ROOT, "secrets.local.json"), "utf8").replace(/^ï»¿/, "")); } catch { /* noop */ }
+        const key = String(secrets.elevenApiKey || "").trim();
+        if (!key) {
+          res.writeHead(400, { "content-type": "application/json" });
+          res.end(JSON.stringify({ ok: false, error: "falta elevenApiKey en secrets.local.json" }));
+          return;
+        }
+        const py = fs.existsSync(path.join(remotionRoot, ".venv-eleven", "Scripts", "python.exe"))
+          ? path.join(remotionRoot, ".venv-eleven", "Scripts", "python.exe")
+          : "python";
+        const relJson = path.relative(remotionRoot, jsonPath);
+        log(`audio/generate-eleven: ${label} -> ${relJson}`);
+        const r = spawnSync(py, ["tts/tts_elevenlabs.py", relJson], {
+          cwd: remotionRoot,
+          encoding: "utf8",
+          maxBuffer: 64 * 1024 * 1024,
+          windowsHide: true,
+          timeout: Number(process.env.ELEVENLABS_NODE_TIMEOUT_MS || 20 * 60_000),
+          env: {
+            ...process.env,
+            ELEVENLABS_API_KEY: key,
+            ELEVENLABS_MAX_CONCURRENCY: process.env.ELEVENLABS_MAX_CONCURRENCY || "1",
+          },
+        });
+        const ok = r.status === 0;
+        if (!ok) log(`ERROR audio/generate-eleven ${label}: exit ${r.status ?? "error"}`);
+        res.writeHead(ok ? 200 : 500, { "content-type": "application/json" });
+        res.end(JSON.stringify({
+          ok,
+          exitCode: r.status,
+          error: r.error?.message || null,
+          stdout: (r.stdout || "").slice(-4000),
+          stderr: (r.stderr || "").slice(-4000),
+        }));
+      } catch (e) {
+        res.writeHead(500, { "content-type": "application/json" });
+        res.end(JSON.stringify({ ok: false, error: String(e?.message || e) }));
+      }
+    });
+    req.on("error", () => { try { res.writeHead(400); res.end(JSON.stringify({ ok: false, error: "bad request" })); } catch { /* noop */ } });
+    return;
+  }
+
+  // POST /project/prepare-media : si el mismo slug se reutiliza con un JSON distinto,
+  // archiva medios generados anteriores para no mezclar clips/stills/voz viejos con la corrida nueva.
+  if (req.method === "POST" && u.pathname === "/project/prepare-media") {
+    const chunks = [];
+    req.on("data", (c) => chunks.push(c));
+    req.on("end", () => {
+      try {
+        const p = JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}");
+        const out = prepareProjectMedia(p);
+        res.writeHead(200, { "content-type": "application/json" });
+        res.end(JSON.stringify({ ok: true, ...out }));
+      } catch (e) {
+        res.writeHead(500, { "content-type": "application/json" });
+        res.end(JSON.stringify({ ok: false, error: String(e?.message || e) }));
+      }
+    });
+    req.on("error", () => { try { res.writeHead(400); res.end(JSON.stringify({ ok: false, error: "bad request" })); } catch { /* noop */ } });
     return;
   }
 
@@ -140,6 +278,52 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // POST /asset/move?from=<abs>&to=<rel> : guarda una imagen generada como asset recurrente.
+  // Solo permite escribir dentro de assets/. Si Grok entrega .jpg y el JSON pedia .png, guarda
+  // el mismo basename como .jpg; el pipeline resuelve variantes de extension al consumirlo.
+  if (req.method === "POST" && u.pathname === "/asset/move") {
+    const from = u.searchParams.get("from") || "";
+    const rel = u.searchParams.get("to") || "";
+    const requested = path.resolve(ROOT, rel);
+    const ASSETS = path.join(ROOT, "assets");
+    const requestedExt = path.extname(requested).toLowerCase();
+    if (requested === ASSETS || !requested.startsWith(ASSETS + path.sep) || ![".png", ".jpg", ".jpeg", ".webp"].includes(requestedExt)) {
+      res.writeHead(403, { "content-type": "text/plain" });
+      res.end("destino asset no permitido");
+      log(`RECHAZADO asset/move: ${rel}`);
+      return;
+    }
+    try {
+      if (!from || !fs.existsSync(from)) {
+        res.writeHead(404, { "content-type": "text/plain" });
+        res.end("origen no existe");
+        return;
+      }
+      const sourceExt = path.extname(from).toLowerCase();
+      const finalExt = [".png", ".jpg", ".jpeg", ".webp"].includes(sourceExt) ? sourceExt : requestedExt;
+      const dest = path.join(path.dirname(requested), path.basename(requested, requestedExt) + finalExt);
+      fs.mkdirSync(path.dirname(dest), { recursive: true });
+      fs.copyFileSync(from, dest);
+      if (!fileOk(dest)) {
+        const sz = (() => { try { return fs.statSync(dest).size; } catch { return 0; } })();
+        try { fs.rmSync(dest, { force: true }); } catch { /* noop */ }
+        res.writeHead(422, { "content-type": "text/plain" });
+        res.end("asset demasiado pequeno (posible corrupto/incompleto)");
+        log(`RECHAZADO asset/move (${sz}B < minimo): ${path.relative(ROOT, dest)}`);
+        return;
+      }
+      try { fs.unlinkSync(from); } catch { /* no critico */ }
+      res.writeHead(200, { "content-type": "application/json" });
+      res.end(JSON.stringify({ ok: true, path: path.relative(ROOT, dest), abspath: dest }));
+      log(`asset guardado ${path.relative(ROOT, dest)}`);
+    } catch (e) {
+      res.writeHead(500, { "content-type": "text/plain" });
+      res.end(String(e?.message || e));
+      log(`ERROR asset/move ${rel}: ${e?.message || e}`);
+    }
+    return;
+  }
+
   // GET /secrets : la extension carga aqui la API key de Fish (y lo que pongas) desde
   // secrets.local.json en la raiz. NO se versiona. Si no existe, devuelve {}.
   if (req.method === "GET" && u.pathname === "/secrets") {
@@ -173,6 +357,11 @@ const server = http.createServer((req, res) => {
     if (!jp) { res.end(JSON.stringify({ ok: false, error: "no existe en la cola" })); return; }
     const lock = jp + ".lock";
     if (fs.existsSync(lock)) { res.end(JSON.stringify({ ok: false, error: "ya tomado" })); return; }
+    const checked = readQueueJob(name, jp);
+    if (!checked.valid) {
+      res.end(JSON.stringify({ ok: false, error: "JSON invalido", errors: checked.errors }));
+      return;
+    }
     try { fs.writeFileSync(lock, new Date().toISOString()); log(`cola: ${name} reclamado por la extension`); }
     catch (e) { res.end(JSON.stringify({ ok: false, error: String(e?.message || e) })); return; }
     res.end(JSON.stringify({ ok: true }));
@@ -255,6 +444,8 @@ const server = http.createServer((req, res) => {
 
 const QUEUE_DIR = path.join(ROOT, "remotion-editor", "queue");
 const PUBLIC_SLUGS = path.join(ROOT, "remotion-editor", "public");
+const ASSETS_DIR = path.join(ROOT, "assets");
+const invalidQueueLog = new Map();
 // Un lock sin heartbeat por mas de esto = corrida muerta (SW murio / onRunAll aborto) -> se relista
 // el trabajo en vez de quedar invisible para siempre. Holgado para no relistar uno legitimamente lento.
 const LOCK_STALE_MS = 15 * 60 * 1000;
@@ -266,19 +457,81 @@ function minBytesFor(p) {
   const ext = path.extname(p).toLowerCase();
   if (ext === ".mp4") return 50 * 1024;   // clip de video
   if (ext === ".mp3") return 2 * 1024;     // voz
-  if ([".jpg", ".jpeg", ".png", ".webp"].includes(ext)) return 4 * 1024;
+  // Grok a veces descarga un placeholder de ruido de ~70-88KB antes del still real.
+  // 90KB mantiene ese bloqueo sin rechazar assets validos que quedan apenas debajo de 100KB.
+  if ([".jpg", ".jpeg", ".png", ".webp"].includes(ext)) return 90 * 1024;
   return 1;
 }
 function fileOk(p) {
   try { return fs.statSync(p).size >= minBytesFor(p); } catch { return false; }
 }
 
+const GENERATED_DIRS = ["images", "clips", "clips_raw", "voice"];
+
+function mediaSignaturePath(slug) {
+  return path.join(PUBLIC_SLUGS, slug, ".media-signature.json");
+}
+
+function readMediaSignature(slug) {
+  try { return JSON.parse(fs.readFileSync(mediaSignaturePath(slug), "utf8")); } catch { return null; }
+}
+
+function writeMediaSignature(slug, signature, reason = "prepare") {
+  const dir = path.join(PUBLIC_SLUGS, slug);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(mediaSignaturePath(slug), JSON.stringify({
+    signature,
+    reason,
+    updatedAt: new Date().toISOString(),
+  }, null, 2), "utf8");
+}
+
+function generatedMediaExists(slug) {
+  const base = path.join(PUBLIC_SLUGS, slug);
+  return GENERATED_DIRS.some((d) => {
+    const dir = path.join(base, d);
+    try { return fs.existsSync(dir) && fs.readdirSync(dir).length > 0; } catch { return false; }
+  });
+}
+
+function mediaSignatureMatches(p) {
+  const slug = p.project?.slug || slugify(p.project?.title || "project");
+  const signature = projectMediaSignature(p);
+  const current = readMediaSignature(slug);
+  return !!current && current.signature === signature;
+}
+
+function prepareProjectMedia(p) {
+  const slug = p.project?.slug || slugify(p.project?.title || "project");
+  const signature = projectMediaSignature(p);
+  const current = readMediaSignature(slug);
+  const base = path.join(PUBLIC_SLUGS, slug);
+  let archived = false;
+  let archiveRel = null;
+  if ((!current || current.signature !== signature) && generatedMediaExists(slug)) {
+    const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const archive = path.join(base, "_media_archive", stamp);
+    fs.mkdirSync(archive, { recursive: true });
+    for (const d of GENERATED_DIRS) {
+      const src = path.join(base, d);
+      if (!fs.existsSync(src)) continue;
+      fs.renameSync(src, path.join(archive, d));
+    }
+    archived = true;
+    archiveRel = path.relative(ROOT, archive);
+    log(`media reset ${slug}: ${current ? "firma distinta" : "sin firma previa"} -> ${archiveRel}`);
+  }
+  writeMediaSignature(slug, signature, archived ? "archived-old-media" : "matched-or-empty");
+  return { slug, signature, archived, archive: archiveRel };
+}
+
 function mediaComplete(p) {
   const slug = p.project?.slug || slugify(p.project?.title);
+  if (generatedMediaExists(slug) && !mediaSignatureMatches(p)) return false;
   const base = path.join(PUBLIC_SLUGS, slug);
   // schema nuevo historias: render_export.clip_order + scene_id. historias = image-only (images/<id>.jpg)
   // + voz continua (voice/full.mp3); otros presets = clips/<id>.mp4 + voz por escena (igual que antes).
-  const stills = p.project?.preset === "historias";
+  const stills = /^(historias|criptoclaro|habitos|pov-historias|manhwa)/.test(p.project?.preset || "");
   const order = p.render_export?.clip_order || p.capcut_export?.clip_order || (p.scenes || []).map((s) => s.id ?? s.scene_id);
   const need = [];
   for (const id of order) {
@@ -288,6 +541,68 @@ function mediaComplete(p) {
   if (stills) need.push(path.join(base, "voice", "full.mp3"));
   if (p.hook) need.push(path.join(base, "voice", "hook.mp3"));
   return [...new Set(need)].every(fileOk);   // existe Y tamano plausible (no 0-byte/truncado)
+}
+
+function mediaStatus(p, name) {
+  const { slug, requirements } = getMediaRequirements(p, { fallbackName: name });
+  const missingMedia = requirements.filter((r) => !fileOk(path.join(PUBLIC_SLUGS, r.path))).map((r) => r.path);
+  if (generatedMediaExists(slug) && !mediaSignatureMatches(p)) missingMedia.unshift(`${slug}/.media-signature.json`);
+  return { slug, mediaComplete: missingMedia.length === 0, missingMedia };
+}
+
+function queueAssetExists(rel) {
+  const abs = path.resolve(ROOT, rel || "");
+  if (!(abs === ASSETS_DIR || abs.startsWith(ASSETS_DIR + path.sep))) return false;
+  try { return fs.statSync(abs).isFile(); } catch { return false; }
+}
+
+function logInvalidQueueJob(name, jsonPath, errors) {
+  let mtime = 0;
+  try { mtime = fs.statSync(jsonPath).mtimeMs; } catch { /* noop */ }
+  const sig = `${mtime}:${errors.join("|")}`;
+  if (invalidQueueLog.get(name) === sig) return;
+  invalidQueueLog.set(name, sig);
+  log(`cola: "${name}" INVALIDO -> ${errors.slice(0, 3).join(" | ")}`);
+}
+
+function readQueueJob(name, jsonPath) {
+  let p = null;
+  try {
+    p = JSON.parse(fs.readFileSync(jsonPath, "utf8").replace(/^\uFEFF/, "").replace(/^ï»¿/, ""));
+  } catch (e) {
+    const errors = [`JSON parse error: ${e?.message || e}`];
+    logInvalidQueueJob(name, jsonPath, errors);
+    return { name, valid: false, runnable: false, errors, warnings: [], mediaComplete: false };
+  }
+  const checked = validateQueueProject(p, { fileExists: queueAssetExists });
+  if (!checked.ok) {
+    logInvalidQueueJob(name, jsonPath, checked.errors);
+    return {
+      name,
+      slug: p.project?.slug || slugify(p.project?.title || name),
+      valid: false,
+      runnable: false,
+      errors: checked.errors,
+      warnings: checked.warnings,
+      mediaComplete: false,
+      provider: "grok",
+      preset: p.project?.preset || "",
+    };
+  }
+  const media = mediaStatus(p, name);
+  return {
+    name,
+    slug: media.slug,
+    json: p,
+    valid: true,
+    runnable: !media.mediaComplete,
+    errors: [],
+    warnings: checked.warnings,
+    mediaComplete: media.mediaComplete,
+    missingMedia: media.missingMedia,
+    provider: "grok",
+    preset: checked.preset,
+  };
 }
 
 // Resuelve un nombre de trabajo a la ruta de su JSON (suelto o <carpeta>/project.json).
@@ -328,6 +643,34 @@ function listQueue() {
   }
   return jobs;
 }
+
+function listQueueValidated() {
+  const jobs = [];
+  if (!fs.existsSync(QUEUE_DIR)) return jobs;
+  for (const entry of fs.readdirSync(QUEUE_DIR, { withFileTypes: true })) {
+    let name = null, jsonPath = null;
+    if (entry.isDirectory()) {
+      const pj = path.join(QUEUE_DIR, entry.name, "project.json");
+      if (fs.existsSync(pj)) { name = entry.name; jsonPath = pj; }
+    } else if (entry.name.endsWith(".json")) {
+      name = entry.name.replace(/\.json$/, ""); jsonPath = path.join(QUEUE_DIR, entry.name);
+    }
+    if (!jsonPath) continue;
+    const lock = jsonPath + ".lock";
+    if (fs.existsSync(lock)) {
+      try {
+        const age = Date.now() - fs.statSync(lock).mtimeMs;
+        if (age < LOCK_STALE_MS) continue;
+        fs.rmSync(lock, { force: true });
+        log(`cola: lock rancio de "${name}" (${Math.round(age / 60000)} min) -> relistado`);
+      } catch { continue; }
+    }
+    jobs.push(readQueueJob(name, jsonPath));
+  }
+  return jobs;
+}
+
+listQueue = listQueueValidated;
 
 server.on("upgrade", (req, socket) => {
   const key = req.headers["sec-websocket-key"];

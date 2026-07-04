@@ -1,7 +1,7 @@
-"""Motor de voz ElevenLabs V3 (modo Creative) para el preset `historias`.
+"""Motor de voz ElevenLabs para presets de voz continua.
 
-SOLO actua sobre JSON con project.preset == "historias". Cualquier otro preset -> no hace nada
-(Huesito y demas siguen con Fish Audio, intactos). Este modulo NO renderiza video: produce
+Actua sobre JSON con presets `historias*`, `criptoclaro*`, `habitos*` o modo
+`single_file_from_full_script`. Este modulo NO renderiza video: produce
   audio/{slug}_narracion.mp3      -> un mp3 continuo con la voz V3 leyendo tts_export.full_script
   audio/{slug}_timestamps.json    -> alineamiento char-level global + mapa por escena {scene_id, start_s, end_s}
 que consume el script de Remotion + ffmpeg para colocar cada imagen en su ventana de narracion.
@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import hashlib
 import io
 import json
 import logging
@@ -29,6 +30,9 @@ import shutil
 import subprocess
 import tempfile
 import time
+import urllib.parse
+import urllib.request
+import urllib.error
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
@@ -36,16 +40,22 @@ from typing import Any, Optional
 
 from config import (
     CHUNK_MAX_CHARS, CHUNK_MIN_CHARS, ENV_API_KEY, LANGUAGE_CODE,
-    MAX_CONCURRENCY, MAX_RETRIES, MODEL_ID, OUTPUT_FORMAT, PUBLIC_DIR,
+    CHANNEL_V2_SPEED, CHANNEL_V3_SPEED, MANHWA_DIALOGUE_EDIT_SPEED, MANHWA_DIALOGUE_V3_SPEED,
+    MANHWA_SYSTEM_VOICE_ID, MANHWA_V3_SPEED,
+    MANHWA_VOICE_ID, MAX_CONCURRENCY, MAX_RETRIES, MODEL_ID, OUTPUT_FORMAT, PUBLIC_DIR,
     RETRY_BASE_SECONDS, SEED, SIMILARITY_BOOST, STABILITY, STYLE,
-    USD_PER_1000_CREDITS, VOICE_ID,
+    SPEED, USD_PER_1000_CREDITS, V3_AUDIO_CLEANUP, V3_AUDIO_CLEANUP_FILTER,
+    VOICE_ID,
 )
 
 log = logging.getLogger("tts_elevenlabs")
 
 _TAG_RE = re.compile(r"\[[^\]]*\]")
-# tag "valido V3": 1-2 palabras simples dentro de corchetes (ej. [whispers], [sigh], [long pause]).
-_V3_TAG_OK = re.compile(r"^\[[a-zA-Z][a-zA-Z]*(?: [a-zA-Z]+)?\]$")
+# tag V3 valido: simple ([whispers]), frase corta ([long pause]) o compuesto corto ([cold, flat]).
+_V3_TAG_OK = re.compile(r"^\[(?:[a-zA-Z]+(?: [a-zA-Z]+)?|[a-zA-Z]+(?:,\s*[a-zA-Z]+){1,2})\]$")
+HISTORY_RECOVERY = os.environ.get("ELEVENLABS_HISTORY_RECOVERY", "1") != "0"
+HISTORY_LOOKBACK_SECONDS = int(os.environ.get("ELEVENLABS_HISTORY_LOOKBACK_SECONDS", str(6 * 60 * 60)))
+DIALOGUE_MAX_CHARS = int(os.environ.get("ELEVENLABS_DIALOGUE_MAX_CHARS", "4800"))
 
 
 # --------------------------------------------------------------------------- #
@@ -81,16 +91,37 @@ class ChunkAudio:
     path_used: str                  # "with_timestamps" | "forced_alignment"
 
 
+@dataclass
+class DialogueItem:
+    idx: int
+    scene_id: str
+    speaker: str
+    voice_id: str
+    text: str       # texto fuente del JSON
+    api_text: str   # texto enviado a ElevenLabs (puede agregar [cold] al sistema)
+
+
 # --------------------------------------------------------------------------- #
 # 1. Deteccion de preset / tags
 # --------------------------------------------------------------------------- #
 def is_historias(doc: dict) -> bool:
-    """True solo si el JSON es del preset historias (o pide el modo single_file_from_full_script)."""
+    """True si el JSON usa voz continua desde tts_export.full_script."""
     proj = doc.get("project") or {}
-    if proj.get("preset") == "historias":
+    preset = str(proj.get("preset") or "")
+    if re.match(r"^(historias|criptoclaro|habitos|pov-historias|manhwa)", preset):
         return True
     return (((doc.get("pipeline") or {}).get("tts") or {}).get("mode")
             == "single_file_from_full_script")
+
+
+def uses_channel_voice(doc: dict) -> bool:
+    """Presets del canal que fuerzan la voz oficial aunque el JSON traiga otra."""
+    preset = str(((doc.get("project") or {}).get("preset")) or "")
+    return bool(re.match(r"^(historias|criptoclaro|habitos|pov-historias)", preset))
+
+
+def is_manhwa(doc: dict) -> bool:
+    return str(((doc.get("project") or {}).get("preset")) or "") == "manhwa"
 
 
 def validate_tags(text: str) -> list[str]:
@@ -141,6 +172,126 @@ def _scene_texts(doc: dict) -> list[tuple[str, str]]:
         if isinstance(t, str) and t.strip():
             out.append((sid(s) or f"scene_{len(out)+1}", t.strip()))
     return out
+
+
+def _scene_speakers(doc: dict) -> dict[str, str]:
+    scenes = doc.get("scenes") or []
+    out: dict[str, str] = {}
+    for s in scenes:
+        sid = s.get("id") or s.get("scene_id")
+        voiceover = s.get("voiceover") or {}
+        speaker = voiceover.get("speaker")
+        if isinstance(sid, str) and isinstance(speaker, str) and speaker.strip():
+            out[sid] = speaker.strip()
+    return out
+
+
+def is_dialogue_mode(doc: dict) -> bool:
+    tx = doc.get("tts_export") or {}
+    return str(tx.get("mode") or "").strip().lower() == "dialogue" or isinstance(tx.get("dialogue"), list)
+
+
+def _merge_voice_settings(base: dict, tx: dict) -> dict:
+    """Acepta tanto tts_export.voice_settings como tts_export.settings."""
+    out = dict(base)
+    for src in (tx.get("voice_settings"), tx.get("settings")):
+        if not isinstance(src, dict):
+            continue
+        for k in ("stability", "similarity_boost", "style", "use_speaker_boost", "speed"):
+            if k in src:
+                out[k] = src[k]
+    return out
+
+
+def _dialogue_settings(doc: dict, voice_id_override: Optional[str] = None) -> dict:
+    tx = doc.get("tts_export") or {}
+    s = _resolve_settings(doc, voice_id_override)
+    s["voice_settings"] = _merge_voice_settings(s.get("voice_settings") or {}, tx)
+    explicit_speed = any(
+        isinstance(src, dict) and "speed" in src
+        for src in (tx.get("voice_settings"), tx.get("settings"))
+    ) or "elevenlabs_speed" in tx
+    if s.get("model_id") == "eleven_v3" and not explicit_speed:
+        s["voice_settings"]["speed"] = MANHWA_DIALOGUE_V3_SPEED if is_manhwa(doc) else 1.0
+    elif "elevenlabs_speed" in tx:
+        try:
+            s["voice_settings"]["speed"] = float(tx["elevenlabs_speed"])
+        except (TypeError, ValueError):
+            pass
+    return s
+
+
+def _speaker_voice_map(doc: dict, narrador_override: Optional[str] = None) -> dict[str, str]:
+    tx = doc.get("tts_export") or {}
+    voices = tx.get("voices") if isinstance(tx.get("voices"), dict) else {}
+    out = {
+        "narrador": MANHWA_VOICE_ID if is_manhwa(doc) else VOICE_ID,
+        "voz_general": MANHWA_VOICE_ID if is_manhwa(doc) else VOICE_ID,
+        "general": MANHWA_VOICE_ID if is_manhwa(doc) else VOICE_ID,
+        "sistema": MANHWA_SYSTEM_VOICE_ID,
+        "system": MANHWA_SYSTEM_VOICE_ID,
+        "ia": MANHWA_SYSTEM_VOICE_ID,
+        "ai": MANHWA_SYSTEM_VOICE_ID,
+    }
+    for k, v in voices.items():
+        if isinstance(k, str) and isinstance(v, str) and k.strip() and v.strip():
+            out[k.strip()] = v.strip()
+    if narrador_override:
+        out["narrador"] = narrador_override
+        out["voz_general"] = narrador_override
+        out["general"] = narrador_override
+    return out
+
+
+def _is_system_speaker(speaker: str, voice_id: str = "") -> bool:
+    s = (speaker or "").strip().lower()
+    return s in {"sistema", "system", "ia", "ai"} or voice_id == MANHWA_SYSTEM_VOICE_ID
+
+
+def _ensure_cold_tag(text: str) -> str:
+    text = text.strip()
+    if not text:
+        return text
+    m = re.match(r"^\[([^\]]+)\]\s*", text)
+    if not m:
+        return f"[cold] {text}"
+    parts = [p.strip() for p in m.group(1).split(",") if p.strip()]
+    if any(p.lower() == "cold" for p in parts):
+        return text
+    tag = "[cold" + (", " + ", ".join(parts) if parts else "") + "]"
+    return tag + " " + text[m.end(0):]
+
+
+def build_dialogue_items(doc: dict, voice_id_override: Optional[str] = None) -> tuple[str, list[DialogueItem]]:
+    tx = doc.get("tts_export") or {}
+    voices = _speaker_voice_map(doc, voice_id_override)
+    scene_speakers = _scene_speakers(doc)
+    full_script = (tx.get("full_script") or "").strip()
+    items: list[DialogueItem] = []
+
+    raw_dialogue = tx.get("dialogue")
+    if isinstance(raw_dialogue, list) and raw_dialogue:
+        for idx, row in enumerate(raw_dialogue):
+            if not isinstance(row, dict):
+                continue
+            text = str(row.get("text") or "").strip()
+            if not text:
+                continue
+            scene_id = str(row.get("scene_id") or row.get("id") or f"dialogue_{idx+1}").strip()
+            speaker = str(row.get("speaker") or scene_speakers.get(scene_id) or "narrador").strip()
+            voice_id = str(row.get("voice_id") or voices.get(speaker) or voices.get("narrador") or MANHWA_VOICE_ID).strip()
+            api_text = _ensure_cold_tag(text) if _is_system_speaker(speaker, voice_id) else text
+            items.append(DialogueItem(idx, scene_id, speaker, voice_id, text, api_text))
+    else:
+        for idx, (scene_id, text) in enumerate(_scene_texts(doc)):
+            speaker = scene_speakers.get(scene_id, "narrador")
+            voice_id = voices.get(speaker) or voices.get("narrador") or MANHWA_VOICE_ID
+            api_text = _ensure_cold_tag(text) if _is_system_speaker(speaker, voice_id) else text
+            items.append(DialogueItem(idx, scene_id, speaker, voice_id, text, api_text))
+
+    if not full_script and items:
+        full_script = "\n".join(i.text for i in items)
+    return full_script, items
 
 
 def build_scene_spans(doc: dict) -> tuple[str, list[SceneSpan]]:
@@ -297,6 +448,29 @@ def concat_audio(paths: list[Path], out_path: Path, output_format: str = OUTPUT_
     return out_path
 
 
+def postprocess_v3_audio(mp3_path: Path, output_format: str = OUTPUT_FORMAT) -> bool:
+    """Limpieza suave para V3/PVC: reduce hiss/aspereza sin cambiar velocidad ni timestamps."""
+    if not V3_AUDIO_CLEANUP:
+        return False
+    ar, br = _audio_params(output_format)
+    raw_path = mp3_path.with_name(f"{mp3_path.stem}.raw-v3{mp3_path.suffix}")
+    tmp_path = mp3_path.with_name(f"{mp3_path.stem}.cleaning{mp3_path.suffix}")
+    shutil.copy2(mp3_path, raw_path)
+    try:
+        subprocess.run(
+            ["ffmpeg", "-y", "-i", str(raw_path), "-af", V3_AUDIO_CLEANUP_FILTER,
+             "-ar", ar, "-c:a", "libmp3lame", "-b:a", br, str(tmp_path)],
+            capture_output=True, text=True, check=True,
+        )
+        tmp_path.replace(mp3_path)
+        return True
+    except subprocess.CalledProcessError as e:
+        tmp_path.unlink(missing_ok=True)
+        log.warning("limpieza V3 falló; se conserva audio crudo (%s)", e.returncode)
+        shutil.copy2(raw_path, mp3_path)
+        return False
+
+
 # --------------------------------------------------------------------------- #
 # 4. Generacion de un bloque (API; import perezoso)
 # --------------------------------------------------------------------------- #
@@ -342,7 +516,25 @@ def _raw_audio_bytes(raw) -> bytes:
     data = getattr(raw, "data", raw)
     if isinstance(data, (bytes, bytearray)):
         return bytes(data)
-    return b"".join(part for part in data)  # iterador de bytes (streaming)
+    if isinstance(data, str):
+        return data.encode("utf-8")
+    for attr in ("content", "_content"):
+        val = getattr(data, attr, None)
+        if isinstance(val, (bytes, bytearray)):
+            return bytes(val)
+    if hasattr(data, "read"):
+        out = data.read()
+        return bytes(out) if isinstance(out, (bytes, bytearray)) else b""
+    if hasattr(data, "iter_bytes"):
+        return b"".join(data.iter_bytes())
+    parts = []
+    for part in data:  # iterador de bytes/chunks
+        if isinstance(part, int):
+            return bytes(data)
+        if isinstance(part, str):
+            part = part.encode("utf-8")
+        parts.append(bytes(part))
+    return b"".join(parts)
 
 
 def _alignment_to_times(alignment) -> list[tuple[float, float]]:
@@ -380,14 +572,18 @@ def _default_settings(voice_id: str = VOICE_ID) -> dict:
     """Params de la llamada a la API desde config (kwargs de convert/convert_with_timestamps)."""
     return dict(voice_id=voice_id, model_id=MODEL_ID, output_format=OUTPUT_FORMAT,
                 language_code=LANGUAGE_CODE, seed=SEED,
-                voice_settings={"stability": STABILITY, "similarity_boost": SIMILARITY_BOOST, "style": STYLE})
+                voice_settings={"stability": STABILITY, "similarity_boost": SIMILARITY_BOOST,
+                                "style": STYLE, "speed": SPEED})
 
 
 def _resolve_settings(doc: dict, voice_id_override: Optional[str] = None) -> dict:
-    """tts_export del JSON MANDA sobre el config (voice_id, seed, voice_settings, output_format, model_id,
-    language_code). --voice (CLI) gana sobre todo. Lo ausente cae al default de config.py."""
+    """Resuelve settings. Manhwa usa su voz fija aunque el JSON declare otra."""
     tx = doc.get("tts_export") or {}
-    s = _default_settings(voice_id_override or tx.get("voice_id") or VOICE_ID)
+    pt = (doc.get("pipeline") or {}).get("tts") or {}
+    force_channel_voice = uses_channel_voice(doc) and not voice_id_override
+    default_voice_id = MANHWA_VOICE_ID if is_manhwa(doc) else VOICE_ID
+    resolved_voice_id = MANHWA_VOICE_ID if is_manhwa(doc) else (VOICE_ID if force_channel_voice else (voice_id_override or tx.get("voice_id") or pt.get("voice_id") or default_voice_id))
+    s = _default_settings(resolved_voice_id)
     if tx.get("model_id"):
         s["model_id"] = tx["model_id"]
     if tx.get("output_format"):
@@ -397,12 +593,24 @@ def _resolve_settings(doc: dict, voice_id_override: Optional[str] = None) -> dic
     if isinstance(tx.get("seed"), int):
         s["seed"] = tx["seed"]
     vs = tx.get("voice_settings") or {}
+    manhwa_default_voice = is_manhwa(doc) and resolved_voice_id == MANHWA_VOICE_ID
+    if resolved_voice_id != VOICE_ID and not manhwa_default_voice and not (isinstance(vs, dict) and "speed" in vs):
+        s["voice_settings"].pop("speed", None)
     if vs:
-        s["voice_settings"] = {
-            "stability": vs.get("stability", STABILITY),
-            "similarity_boost": vs.get("similarity_boost", SIMILARITY_BOOST),
-            "style": vs.get("style", STYLE),
-        }
+        allowed = ("stability", "similarity_boost", "style", "use_speaker_boost", "speed")
+        merged = dict(s["voice_settings"])
+        merged.update({k: vs[k] for k in allowed if k in vs})
+        s["voice_settings"] = merged
+    if force_channel_voice:
+        if s.get("model_id") == "eleven_v3":
+            s["voice_settings"]["stability"] = STABILITY
+            s["voice_settings"]["similarity_boost"] = SIMILARITY_BOOST
+            s["voice_settings"]["style"] = STYLE
+            s["voice_settings"]["speed"] = CHANNEL_V3_SPEED
+        else:
+            s["voice_settings"]["speed"] = CHANNEL_V2_SPEED
+    elif manhwa_default_voice and s.get("model_id") == "eleven_v3" and not (isinstance(vs, dict) and "speed" in vs):
+        s["voice_settings"]["speed"] = MANHWA_V3_SPEED
     return s
 
 
@@ -423,8 +631,8 @@ def generate_chunk(text: str, idx: int, *, client=None, settings: Optional[dict]
                 raw = client.text_to_speech.with_raw_response.convert_with_timestamps(text=text, **common)
                 data = getattr(raw, "data", raw)
                 headers = _headers_of(raw)
-                audio_b64 = _get(data, "audio_base64")
-                alignment = _get(data, "alignment")
+                audio_b64 = _get(data, "audio_base64") or _get(data, "audio_base_64")
+                alignment = _get(data, "alignment") or _get(data, "normalized_alignment")
                 if audio_b64 and alignment:
                     audio = base64.b64decode(audio_b64)
                     char_times = _alignment_to_times(alignment)
@@ -449,6 +657,10 @@ def generate_chunk(text: str, idx: int, *, client=None, settings: Optional[dict]
         except Exception as e:  # red / 429 / etc.
             last_err = e
             status = getattr(e, "status_code", None)
+            if status in (401, 402, 403):
+                break
+            if isinstance(e, (TypeError, ValueError, KeyError)):
+                break
             if attempt < MAX_RETRIES - 1:
                 # NO loggear str(e): algunos SDK incluyen la request (y la key) en el repr del error.
                 log.warning("bloque %d intento %d fallo (%s%s) -> reintento", idx, attempt + 1,
@@ -461,6 +673,241 @@ def generate_chunk(text: str, idx: int, *, client=None, settings: Optional[dict]
     raise RuntimeError(f"bloque {idx} fallo tras {MAX_RETRIES} intentos ({detail})")
 
 
+def _dialogue_payload(items: list[DialogueItem], settings: dict) -> dict:
+    return {
+        "model_id": settings.get("model_id") or MODEL_ID,
+        "language_code": settings.get("language_code") or LANGUAGE_CODE,
+        "seed": settings.get("seed") if isinstance(settings.get("seed"), int) else SEED,
+        "settings": settings.get("voice_settings") or {},
+        "inputs": [{"text": it.api_text, "voice_id": it.voice_id} for it in items],
+    }
+
+
+def _post_dialogue_with_timestamps(items: list[DialogueItem], settings: dict) -> tuple[bytes, dict, int, Optional[str], str]:
+    """ElevenLabs V3 Text to Dialogue en una sola peticion."""
+    key = os.environ.get(ENV_API_KEY, "").strip()
+    if not key:
+        raise RuntimeError(f"Falta la variable de entorno {ENV_API_KEY}.")
+    output_format = settings.get("output_format") or OUTPUT_FORMAT
+    url = f"https://api.elevenlabs.io/v1/text-to-dialogue/with-timestamps?output_format={urllib.parse.quote(output_format)}"
+    payload = _dialogue_payload(items, settings)
+    data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+    last_err: Exception | None = None
+    for attempt in range(MAX_RETRIES):
+        req = urllib.request.Request(
+            url,
+            data=data,
+            headers={
+                "xi-api-key": key,
+                "content-type": "application/json; charset=utf-8",
+                "accept": "application/json",
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=180) as r:
+                body = json.loads(r.read().decode("utf-8"))
+                audio_b64 = body.get("audio_base64") or body.get("audio_base_64")
+                if not audio_b64:
+                    raise RuntimeError("Text to Dialogue no devolvio audio_base64")
+                headers = {str(k).lower(): v for k, v in dict(r.headers).items()}
+                cost, rid = _cost_and_id(headers, billable=sum(len(i.api_text) for i in items))
+                return base64.b64decode(audio_b64), body, cost, rid, "text_to_dialogue+with_timestamps"
+        except urllib.error.HTTPError as e:
+            last_err = e
+            if e.code in (401, 402, 403):
+                break
+            if attempt < MAX_RETRIES - 1:
+                log.warning("dialogue intento %d fallo (HTTP %s) -> reintento", attempt + 1, e.code)
+                _retry_sleep(attempt, e.headers)
+                continue
+            break
+        except Exception as e:
+            last_err = e
+            if isinstance(e, (TypeError, ValueError, KeyError)):
+                break
+            if attempt < MAX_RETRIES - 1:
+                log.warning("dialogue intento %d fallo (%s) -> reintento", attempt + 1, type(e).__name__)
+                _retry_sleep(attempt, None)
+                continue
+            break
+    st = getattr(last_err, "code", None) or getattr(last_err, "status_code", None)
+    detail = f"{type(last_err).__name__}" + (f" {st}" if st else "")
+    raise RuntimeError(f"dialogue fallo tras {MAX_RETRIES} intentos ({detail})")
+
+
+def split_dialogue_items(items: list[DialogueItem], max_chars: int = DIALOGUE_MAX_CHARS) -> list[list[DialogueItem]]:
+    """Parte Text-to-Dialogue por escena para mantener requests estables; nunca corta una linea."""
+    chunks: list[list[DialogueItem]] = []
+    cur: list[DialogueItem] = []
+    cur_len = 0
+    for it in items:
+        n = len(it.api_text) + 1
+        if cur and cur_len + n > max_chars:
+            chunks.append(cur)
+            cur = []
+            cur_len = 0
+        cur.append(it)
+        cur_len += n
+    if cur:
+        chunks.append(cur)
+    return chunks
+
+
+def words_from_dialogue_alignment(alignment: dict) -> list[dict]:
+    chars = alignment.get("characters") or []
+    starts = alignment.get("character_start_times_seconds") or []
+    ends = alignment.get("character_end_times_seconds") or []
+    if not chars or not starts or not ends:
+        return []
+    text = "".join(chars)
+    is_tag = [False] * len(chars)
+    for m in _TAG_RE.finditer(text):
+        for i in range(m.start(), min(m.end(), len(is_tag))):
+            is_tag[i] = True
+    words, buf = [], []
+    def flush():
+        nonlocal buf
+        if not buf:
+            return
+        spoken = [i for i in buf if i < len(starts) and i < len(ends) and not is_tag[i]]
+        token = _TAG_RE.sub("", "".join(chars[i] for i in buf)).strip()
+        if spoken and token:
+            words.append({
+                "word": token,
+                "start": round(float(starts[spoken[0]]), 3),
+                "end": round(float(ends[spoken[-1]]), 3),
+            })
+        buf = []
+    for i, ch in enumerate(chars):
+        if ch.isspace():
+            flush()
+        else:
+            buf.append(i)
+    flush()
+    return words
+
+
+def synthesize_dialogue(json_path: Path, doc: dict, *, voice_id: Optional[str] = None) -> dict:
+    slug = (doc.get("project") or {}).get("slug") or json_path.stem
+    full_script, items = build_dialogue_items(doc, voice_id)
+    if not items:
+        raise RuntimeError("tts_export.mode dialogue sin lineas de dialogue/voiceover.")
+    if not full_script:
+        raise RuntimeError("tts_export.full_script vacio: nada que sintetizar.")
+
+    warnings = validate_tags(full_script)
+    for it in items:
+        if it.api_text != it.text:
+            log.info("dialogue: %s usa tag cold automatico para speaker '%s'", it.scene_id, it.speaker)
+        warnings.extend(validate_tags(it.api_text))
+    for w in sorted(set(warnings)):
+        log.warning("TAGS: %s", w)
+
+    settings = _dialogue_settings(doc, voice_id)
+    if settings.get("model_id") != "eleven_v3":
+        raise RuntimeError("Text to Dialogue requiere model_id eleven_v3.")
+
+    voice_dir = PUBLIC_DIR / slug / "voice"
+    voice_dir.mkdir(parents=True, exist_ok=True)
+    mp3_out = voice_dir / "full.mp3"
+    tmp_dir = voice_dir / ".dialogue_chunks"
+    if tmp_dir.exists():
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+    tmp_dir.mkdir(parents=True, exist_ok=True)
+
+    unique_voices = sorted({it.voice_id for it in items})
+    chunks = split_dialogue_items(items)
+    log.info("%s: dialogue ElevenLabs V3 -> %d linea(s), %d voz/voces, %d request(s) (%s).",
+             slug, len(items), len(unique_voices), len(chunks), ", ".join(unique_voices))
+
+    total_credits = 0
+    request_ids: list[str] = []
+    responses: list[dict] = []
+    chunk_paths: list[Path] = []
+    fallback_words: list[dict] = []
+    offset = 0.0
+    try:
+        for idx, chunk_items in enumerate(chunks):
+            audio, response, cost, rid, path_used = _post_dialogue_with_timestamps(chunk_items, settings)
+            chunk_path = tmp_dir / f"dialogue_{idx:03d}.mp3"
+            chunk_path.write_bytes(audio)
+            duration = _ffprobe_duration(chunk_path)
+            chunk_paths.append(chunk_path)
+            responses.append(response)
+            total_credits += cost
+            if rid:
+                request_ids.append(rid)
+            local_words = words_from_dialogue_alignment(response.get("alignment") or response.get("normalized_alignment") or {})
+            for w in local_words:
+                fallback_words.append({
+                    "word": w["word"],
+                    "start": round(w["start"] + offset, 3),
+                    "end": round(w["end"] + offset, 3),
+                })
+            offset += duration
+            log.info("dialogue bloque %d/%d: %d linea(s), %d chars, %.2fs, costo %d",
+                     idx + 1, len(chunks), len(chunk_items), sum(len(i.api_text) for i in chunk_items), duration, cost)
+        concat_audio(chunk_paths, mp3_out, output_format=settings["output_format"])
+    except Exception:
+        log.error("ABORTADO: fallo dialogue; no se escribe mp3 final. Bloques temp en %s", tmp_dir)
+        raise
+    cleaned_v3_audio = postprocess_v3_audio(mp3_out, output_format=settings["output_format"])
+
+    client = _make_client()
+    final_words, duration_s, final_alignment_ok = align_final_audio_words(client, mp3_out, full_script)
+    if final_alignment_ok:
+        words = final_words
+        alignment_source = "final_audio+forced_alignment"
+    else:
+        words = fallback_words
+        duration_s = _ffprobe_duration(mp3_out)
+        alignment_source = "dialogue_timestamps"
+
+    words_out = voice_dir / "full.words.json"
+    words_out.write_text(json.dumps(words, ensure_ascii=False), encoding="utf-8")
+    (voice_dir / "full.eleven.words.json").write_text(json.dumps(words, ensure_ascii=False), encoding="utf-8")
+    (voice_dir / "full.tts-meta.json").write_text(json.dumps({
+        "source": "elevenlabs",
+        "mode": "dialogue",
+        "voice_id": settings["voice_id"],
+        "voices": {it.speaker: it.voice_id for it in items},
+        "model_id": settings["model_id"],
+        "voice_settings": settings.get("voice_settings"),
+        "seed": settings["seed"],
+        "output_format": settings["output_format"],
+        "script_sha256": hashlib.sha256(full_script.encode("utf-8")).hexdigest(),
+        "alignment_source": alignment_source,
+        "duration_s": duration_s,
+        "words": len(words),
+        "v3_audio_cleanup": cleaned_v3_audio,
+        "paths_used": ["text_to_dialogue+with_timestamps", alignment_source],
+        "dialogue": [{"scene_id": it.scene_id, "speaker": it.speaker, "voice_id": it.voice_id, "text": it.text, "api_text": it.api_text} for it in items],
+        "voice_segments": [r.get("voice_segments") for r in responses],
+        "dialogue_chunks": [
+            {"idx": i, "scene_ids": [it.scene_id for it in chunk], "chars": sum(len(it.api_text) for it in chunk)}
+            for i, chunk in enumerate(chunks)
+        ],
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    usd = total_credits * USD_PER_1000_CREDITS / 1000.0
+    report = {
+        "slug": slug, "mp3": str(mp3_out), "words_json": str(words_out),
+        "mode": "dialogue", "voices": unique_voices,
+        "seed": settings["seed"], "output_format": settings["output_format"],
+        "v3_audio_cleanup": cleaned_v3_audio,
+        "blocks": len(chunks), "words": len(words), "duration_s": duration_s,
+        "total_credits": total_credits, "usd_estimate": round(usd, 4),
+        "request_ids": request_ids,
+        "paths_used": ["text_to_dialogue+with_timestamps", alignment_source], "warnings": sorted(set(warnings)),
+        "next_step": f"node align/inject-words.mjs {json_path}",
+    }
+    log.info("LISTO %s: dialogue full.mp3 (%.3fs, %d palabras) | %d creditos ~ $%.4f USD",
+             slug, duration_s, len(words), total_credits, usd)
+    shutil.rmtree(tmp_dir, ignore_errors=True)
+    return report
+
+
 def _persist_chunk(idx, text, audio, char_times, mode, path_used, cost, rid,
                    tmp_dir, fs_start, fs_end) -> ChunkAudio:
     if len(audio) < 100:  # mp3 valido minimo; evita pasar un stream drenado/truncado silenciosamente
@@ -471,6 +918,108 @@ def _persist_chunk(idx, text, audio, char_times, mode, path_used, cost, rid,
     log.info("bloque %d: %d chars, %.2fs, costo %d, via %s, req %s",
              idx, len(text), dur, cost, path_used, rid)
     return ChunkAudio(idx, fs_start, fs_end, p, dur, cost, rid, mode, char_times, path_used)
+
+
+def _history_json(path: str, params: Optional[dict] = None) -> Optional[dict]:
+    key = os.environ.get(ENV_API_KEY, "").strip()
+    if not key:
+        return None
+    qs = urllib.parse.urlencode({k: v for k, v in (params or {}).items() if v not in (None, "")})
+    url = f"https://api.elevenlabs.io/v1{path}" + (f"?{qs}" if qs else "")
+    req = urllib.request.Request(url, headers={"xi-api-key": key, "Accept": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return json.loads(r.read().decode("utf-8"))
+    except Exception as e:
+        log.warning("historial ElevenLabs: no pude consultar (%s)", type(e).__name__)
+        return None
+
+
+def _history_audio(history_item_id: str) -> Optional[bytes]:
+    key = os.environ.get(ENV_API_KEY, "").strip()
+    if not key:
+        return None
+    url = f"https://api.elevenlabs.io/v1/history/{urllib.parse.quote(history_item_id)}/audio"
+    req = urllib.request.Request(url, headers={"xi-api-key": key})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            audio = r.read()
+            return audio if len(audio) >= 1024 else None
+    except Exception as e:
+        log.warning("historial ElevenLabs: no pude descargar %s (%s)", history_item_id, type(e).__name__)
+        return None
+
+
+def _same_text(a: str, b: str) -> bool:
+    return (a or "").strip() == (b or "").strip()
+
+
+def _history_item_texts(item: dict) -> list[str]:
+    out = []
+    if isinstance(item.get("text"), str) and item["text"].strip():
+        out.append(item["text"].strip())
+    dialogue = item.get("dialogue")
+    if isinstance(dialogue, list):
+        for row in dialogue:
+            if isinstance(row, dict) and isinstance(row.get("text"), str) and row["text"].strip():
+                out.append(row["text"].strip())
+    return out
+
+
+def _history_item_voice(item: dict) -> str:
+    if isinstance(item.get("voice_id"), str) and item["voice_id"]:
+        return item["voice_id"]
+    dialogue = item.get("dialogue")
+    if isinstance(dialogue, list):
+        for row in dialogue:
+            if isinstance(row, dict) and isinstance(row.get("voice_id"), str) and row["voice_id"]:
+                return row["voice_id"]
+    return ""
+
+
+def recover_chunk_from_history(text: str, idx: int, *, client, settings: dict,
+                               tmp_dir: Path, fs_start: int, fs_end: int) -> Optional[ChunkAudio]:
+    """Recupera audio ya cobrado en ElevenLabs History. No genera TTS nuevo.
+    Oficial: GET /v1/history lista items y GET /v1/history/:id/audio descarga el audio."""
+    if not HISTORY_RECOVERY:
+        return None
+    date_after = int(time.time()) - max(60, HISTORY_LOOKBACK_SECONDS)
+    data = _history_json("/history", {
+        "page_size": 100,
+        "voice_id": settings.get("voice_id"),
+        "source": "TTS",
+        "date_after_unix": date_after,
+        "sort_direction": "desc",
+    })
+    for item in data.get("history", []) if data else []:
+        hid = item.get("history_item_id")
+        if not hid:
+            continue
+        detail = item
+        if not _history_item_texts(detail) or not _history_item_voice(detail):
+            detail = _history_json(f"/history/{hid}") or item
+        item_voice = _history_item_voice(detail)
+        if item_voice and item_voice != settings.get("voice_id"):
+            continue
+        item_model = detail.get("model_id") or item.get("model_id")
+        if item_model and item_model != settings.get("model_id"):
+            continue
+        if not any(_same_text(t, text) for t in _history_item_texts(detail)):
+            continue
+        audio = _history_audio(hid)
+        if not audio:
+            continue
+        try:
+            fa = client.forced_alignment.create(file=io.BytesIO(audio), text=strip_tags(text))
+            char_times = _forced_chars_to_times(fa)
+            log.info("bloque %d: recuperado desde historial ElevenLabs (%s), sin regenerar TTS", idx, hid)
+            return _persist_chunk(idx, text, audio, char_times, "spoken",
+                                  "history+forced_alignment", 0, f"history:{hid}",
+                                  tmp_dir, fs_start, fs_end)
+        except Exception as e:
+            log.warning("historial ElevenLabs: audio %s recuperado pero alignment fallo (%s)", hid, type(e).__name__)
+            return None
+    return None
 
 
 # --------------------------------------------------------------------------- #
@@ -533,6 +1082,25 @@ def build_full_words(full_script: str, spoken_time: dict[int, tuple[float, float
     return words
 
 
+def align_final_audio_words(client, mp3_path: Path, full_script: str) -> tuple[list[dict], float, bool]:
+    """Fuente oficial para captions: alinea el MP3 final ya limpiado contra el guion real."""
+    duration_s = _ffprobe_duration(mp3_path)
+    try:
+        fa = client.forced_alignment.create(file=io.BytesIO(mp3_path.read_bytes()), text=strip_tags(full_script))
+        ct = _forced_chars_to_times(fa)
+        chunk = Chunk(0, full_script, 0, len(full_script), [])
+        au = ChunkAudio(0, 0, len(full_script), mp3_path, duration_s, 0,
+                        "final_audio_forced_alignment", "spoken", ct,
+                        "final_audio+forced_alignment")
+        spoken_time, _ = compute_spoken_time(full_script, [chunk], [au])
+        words = build_full_words(full_script, spoken_time)
+        if words:
+            return words, duration_s, True
+    except Exception as e:
+        log.warning("forced alignment del MP3 final fallo (%s); uso timestamps de TTS", type(e).__name__)
+    return [], duration_s, False
+
+
 def _proportional(spoken_idx, duration_s, offset, out) -> None:
     """Fallback: reparte la duracion del bloque de forma uniforme entre sus chars hablados."""
     n = len(spoken_idx)
@@ -557,6 +1125,9 @@ def synthesize_historias(json_path: str | Path, *, voice_id: Optional[str] = Non
         return None
 
     slug = (doc.get("project") or {}).get("slug") or json_path.stem
+    if is_dialogue_mode(doc):
+        return synthesize_dialogue(json_path, doc, voice_id=voice_id)
+
     full_script, spans = build_scene_spans(doc)
     if not full_script:
         raise RuntimeError("tts_export.full_script vacio: nada que sintetizar.")
@@ -586,17 +1157,29 @@ def synthesize_historias(json_path: str | Path, *, voice_id: Optional[str] = Non
     voice_dir = PUBLIC_DIR / slug / "voice"
     voice_dir.mkdir(parents=True, exist_ok=True)
 
-    # generar bloques EN PARALELO (independientes), conservando el orden al recolectar
+    # generar bloques EN PARALELO (independientes), conservando el orden al recolectar.
+    # Antes intenta recuperar desde ElevenLabs History: si Chrome ya gasto creditos pero murio antes
+    # de guardar full.mp3, reutilizamos ese audio y evitamos cobrar otra TTS.
     audios: list[ChunkAudio] = [None] * len(chunks)  # type: ignore
     tmp_dir = voice_dir / ".chunks"
     if tmp_dir.exists():
         shutil.rmtree(tmp_dir, ignore_errors=True)
     tmp_dir.mkdir(parents=True, exist_ok=True)
     try:
+        recovered = 0
+        for c in chunks:
+            au = recover_chunk_from_history(c.text, c.idx, client=client, settings=settings,
+                                            tmp_dir=tmp_dir, fs_start=c.fs_start, fs_end=c.fs_end)
+            if au:
+                audios[au.idx] = au
+                recovered += 1
+        if recovered:
+            log.info("historial ElevenLabs: %d/%d bloque(s) recuperados sin regenerar TTS.", recovered, len(chunks))
+
         with ThreadPoolExecutor(max_workers=min(MAX_CONCURRENCY, len(chunks))) as ex:
             futs = {ex.submit(generate_chunk, c.text, c.idx, client=client, settings=settings,
                               tmp_dir=tmp_dir, fs_start=c.fs_start, fs_end=c.fs_end): c.idx
-                    for c in chunks}
+                    for c in chunks if audios[c.idx] is None}
             for fut in as_completed(futs):
                 au = fut.result()  # propaga la excepcion -> aborta (no deja mp3 a medias)
                 audios[au.idx] = au
@@ -606,11 +1189,32 @@ def synthesize_historias(json_path: str | Path, *, voice_id: Optional[str] = Non
 
     mp3_out = voice_dir / "full.mp3"
     concat_audio([au.audio_path for au in audios], mp3_out, output_format=settings["output_format"])
+    cleaned_v3_audio = False
+    if settings.get("model_id") == "eleven_v3":
+        cleaned_v3_audio = postprocess_v3_audio(mp3_out, output_format=settings["output_format"])
 
     spoken_time, duration_s = compute_spoken_time(full_script, chunks, audios)
     words = build_full_words(full_script, spoken_time)
+    final_words, final_duration_s, final_alignment_ok = align_final_audio_words(client, mp3_out, full_script)
+    if final_alignment_ok:
+        words = final_words
+        duration_s = final_duration_s
     words_out = voice_dir / "full.words.json"
     words_out.write_text(json.dumps(words, ensure_ascii=False), encoding="utf-8")
+    (voice_dir / "full.eleven.words.json").write_text(json.dumps(words, ensure_ascii=False), encoding="utf-8")
+    (voice_dir / "full.tts-meta.json").write_text(json.dumps({
+        "source": "elevenlabs",
+        "voice_id": settings["voice_id"],
+        "model_id": settings["model_id"],
+        "voice_settings": settings.get("voice_settings"),
+        "seed": settings["seed"],
+        "output_format": settings["output_format"],
+        "script_sha256": hashlib.sha256(full_script.encode("utf-8")).hexdigest(),
+        "alignment_source": "final_audio+forced_alignment" if final_alignment_ok else "tts_timestamps",
+        "duration_s": duration_s,
+        "words": len(words),
+        "paths_used": sorted({au.path_used for au in audios}),
+    }, ensure_ascii=False, indent=2), encoding="utf-8")
 
     total_credits = sum(au.char_cost for au in audios)
     usd = total_credits * USD_PER_1000_CREDITS / 1000.0
@@ -618,6 +1222,7 @@ def synthesize_historias(json_path: str | Path, *, voice_id: Optional[str] = Non
         "slug": slug, "mp3": str(mp3_out), "words_json": str(words_out),
         "voice_id": settings["voice_id"], "seed": settings["seed"],
         "output_format": settings["output_format"],
+        "v3_audio_cleanup": cleaned_v3_audio,
         "blocks": len(chunks), "words": len(words), "duration_s": duration_s,
         "total_credits": total_credits, "usd_estimate": round(usd, 4),
         "request_ids": [au.request_id for au in audios],

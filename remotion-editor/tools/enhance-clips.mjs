@@ -13,18 +13,22 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 const RE = path.join(ROOT, "tools", "realesrgan", "realesrgan-ncnn-vulkan.exe");
 const RIFE = path.join(ROOT, "tools", "rife", "rife-ncnn-vulkan-20221029-windows", "rife-ncnn-vulkan.exe");
-const WORK = path.join(ROOT, "tools", "work");
+const WORK_ROOT = path.join(ROOT, "tools", "work");
+const LOG_DIR = path.join(ROOT, "logs", "enhance");
 
 const SCALE = Number(process.argv[3]) || 2; // 2 -> 1440, 4 -> 2880 (arg opcional)
 const MODEL_RE = "realesr-animevideov3"; // ideal para video/animacion
 const MODEL_RIFE = "rife-v4.6";
 const OUT_FPS = 48; // 24 -> 48 (interpolado)
+const STEP_TIMEOUT_MS = Math.max(60_000, Number(process.env.ENHANCE_STEP_TIMEOUT_MS || 15 * 60_000) || 15 * 60_000);
 
 const slug = process.argv[2];
 if (!slug) {
   console.error("Uso: node tools/enhance-clips.mjs <slug>");
   process.exit(1);
 }
+const safeSlug = slug.replace(/[^a-zA-Z0-9_.-]/g, "_");
+const WORK = path.join(WORK_ROOT, safeSlug);
 const clipsDir = path.join(ROOT, "public", slug, "clips");
 const rawDir = path.join(ROOT, "public", slug, "clips_raw");
 if (!fs.existsSync(clipsDir)) {
@@ -32,16 +36,43 @@ if (!fs.existsSync(clipsDir)) {
   process.exit(1);
 }
 fs.mkdirSync(rawDir, { recursive: true });
+fs.mkdirSync(LOG_DIR, { recursive: true });
+
+const LOG_FILE = path.join(LOG_DIR, `${slug}.log`);
+fs.writeFileSync(LOG_FILE, `Mejorando clips de ${slug}\n`, "utf8");
+
+const log = (message) => {
+  console.log(message);
+  fs.appendFileSync(LOG_FILE, `${message}\n`, "utf8");
+};
 
 const run = (cmd, args) => {
-  const r = spawnSync(cmd, args, { cwd: ROOT, stdio: ["ignore", "ignore", "inherit"] });
-  if (r.status !== 0) throw new Error(`fallo: ${path.basename(cmd)} (${r.status})`);
+  fs.appendFileSync(LOG_FILE, `\n$ "${cmd}" ${args.map((a) => `"${a}"`).join(" ")}\n`, "utf8");
+  const logFd = fs.openSync(LOG_FILE, "a");
+  let r;
+  try {
+    r = spawnSync(cmd, args, {
+      cwd: ROOT,
+      stdio: ["ignore", logFd, logFd],
+      windowsHide: true,
+      timeout: STEP_TIMEOUT_MS,
+      killSignal: "SIGKILL",
+    });
+  } finally {
+    fs.closeSync(logFd);
+  }
+  if (r.error?.code === "ETIMEDOUT") {
+    throw new Error(`timeout: ${path.basename(cmd)} (${Math.round(STEP_TIMEOUT_MS / 60000)} min). Log: ${path.relative(ROOT, LOG_FILE)}`);
+  }
+  if (r.status !== 0) throw new Error(`fallo: ${path.basename(cmd)} (${r.status}). Log: ${path.relative(ROOT, LOG_FILE)}`);
 };
 
 const resetWork = () => {
   fs.rmSync(WORK, { recursive: true, force: true });
   for (const d of ["f", "up", "out"]) fs.mkdirSync(path.join(WORK, d), { recursive: true });
 };
+
+const hasPngFrames = (dir) => fs.existsSync(dir) && fs.readdirSync(dir).some((f) => /\.png$/i.test(f));
 
 const clipFps = (f) => {
   const r = spawnSync(
@@ -53,25 +84,28 @@ const clipFps = (f) => {
 };
 
 const clips = fs.readdirSync(clipsDir).filter((f) => /\.mp4$/i.test(f)).sort();
-console.log(`Mejorando clips de ${slug} (Real-ESRGAN x${SCALE} + RIFE -> ${OUT_FPS}fps)`);
+log(`Mejorando clips de ${slug} (Real-ESRGAN x${SCALE} + RIFE -> ${OUT_FPS}fps). Log: ${path.relative(ROOT, LOG_FILE)}`);
 
 for (const name of clips) {
   const raw = path.join(rawDir, name);
   const cur = path.join(clipsDir, name);
   // idempotente: si ya esta a 48fps (y respaldado), saltar
   if (fs.existsSync(raw) && clipFps(cur).startsWith(String(OUT_FPS))) {
-    console.log(`  ${name}: ya mejorado, salto`);
+    log(`  ${name}: ya mejorado, salto`);
     continue;
   }
   if (!fs.existsSync(raw)) fs.copyFileSync(cur, raw); // backup 1 vez (el original)
   resetWork();
-  process.stdout.write(`  ${name}: extraer`);
+  log(`  ${name}: extraer`);
   run("ffmpeg", ["-y", "-loglevel", "error", "-i", raw, path.join(WORK, "f", "%08d.png")]);
-  process.stdout.write(" -> upscale");
+  if (!hasPngFrames(path.join(WORK, "f"))) throw new Error(`${name}: ffmpeg no extrajo frames`);
+  log(`  ${name}: upscale`);
   run(RE, ["-i", path.join(WORK, "f"), "-o", path.join(WORK, "up"), "-n", MODEL_RE, "-s", String(SCALE), "-f", "png"]);
-  process.stdout.write(" -> interpolar");
+  if (!hasPngFrames(path.join(WORK, "up"))) throw new Error(`${name}: Real-ESRGAN no produjo frames`);
+  log(`  ${name}: interpolar`);
   run(RIFE, ["-i", path.join(WORK, "up"), "-o", path.join(WORK, "out"), "-m", MODEL_RIFE]);
-  process.stdout.write(" -> encode");
+  if (!hasPngFrames(path.join(WORK, "out"))) throw new Error(`${name}: RIFE no produjo frames`);
+  log(`  ${name}: encode`);
   run("ffmpeg", [
     "-y", "-loglevel", "error",
     "-framerate", String(OUT_FPS),
@@ -81,8 +115,8 @@ for (const name of clips) {
     "-c:v", "libx264", "-crf", "16", "-pix_fmt", "yuv420p", "-shortest",
     path.join(clipsDir, name),
   ]);
-  console.log(" OK");
+  log(`  ${name}: OK`);
 }
 
 fs.rmSync(WORK, { recursive: true, force: true });
-console.log("Listo. Originales respaldados en", path.relative(ROOT, rawDir));
+log(`Listo. Originales respaldados en ${path.relative(ROOT, rawDir)}`);

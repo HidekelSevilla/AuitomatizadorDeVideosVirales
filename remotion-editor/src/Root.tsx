@@ -9,7 +9,6 @@ import type { ViralProps } from "./viral/types";
 const viralDefaults: ViralProps = {
   project: { title: "Demo", slug: "test", preset: "esqueletos", aspect_ratio: "9:16", fps: 24 },
   scenes: [{ id: "scene_01", time_label: "Demo", captions: { text: "Demo", highlight_words: [] } }],
-  capcut_export: { clip_order: ["scene_01"], label_card_duration_s: 0.6 },
 };
 
 export const RemotionRoot: React.FC = () => {

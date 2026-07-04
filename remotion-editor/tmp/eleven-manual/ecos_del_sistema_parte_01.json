@@ -1,0 +1,395 @@
+{
+  "project": {
+    "title": "Ecos del Sistema - Parte 1: El día que me eligió",
+    "preset": "manhwa",
+    "slug": "ecos_del_sistema_parte_01",
+    "language": "es-419",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "default_clip_duration_s": 4
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "elevenlabs",
+      "voice_id": "452WrNT9o8dphaYW5YGU",
+      "language": "es-419"
+    },
+    "editing": {
+      "tool": "remotion"
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Continuation from the previous cliffhanger in the rainy Seoul alley: Han Jin lies collapsed on slick asphalt at ground level, his right hand spread palm-down in a puddle near the storm drain, his left hand pressed against his injured ribs, the worn silver wristwatch on his left wrist visible. A translucent green-cyan system window hovers twenty centimeters above his face, the countdown reading exactly '59:00', its glow the only green source. The alley palette stays cold blue rain and orange sodium reflections, no gore, no speech bubbles, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Jin seguía vivo. Apenas. La ventana flotaba sobre sangre."
+      }
+    },
+    {
+      "id": "scene_02",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Extreme low close panel in the rainy alley: Han Jin's face is half reflected in the puddle, his right fingers clawing the wet asphalt while his left hand stays locked over his side. The translucent green-cyan system window floats above the puddle, the countdown reading exactly '58:43', with minimal UI blocks and cold mechanical framing. Natural blue-black alley shadows and orange streetlight reflections dominate; no long text except the timer, no speech bubbles, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "KEY ACTION (first 2s): Han Jin drags himself three centimeters across the flooded asphalt while the system window pulses once and stabilizes above him. BEATS: (1) his right fingers curl and scrape against the ground; (2) his face lifts toward the timer through rainwater; (3) the UI borders lock into place with a hard green-cyan blink. CAMERA: slow push-in from puddle reflection to Jin's eye and the countdown. SECONDARY: rain rings spread, tiny UI particles flicker, orange reflections tremble. ~6s, ends on Jin staring at '58:43'. Korean manhwa animation feel, tense and precise, no gore.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La ventana dijo: \"Condición crítica. Sobrevive. Elimina amenazas. Absorbe esencia. Extiende tiempo\"."
+      }
+    },
+    {
+      "id": "scene_03",
+      "type": "narrative_card",
+      "card": {
+        "mode": "editor",
+        "text": "EL DÍA QUE ME ELIGIÓ"
+      },
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": ""
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "EL DÍA QUE ME ELIGIÓ."
+      }
+    },
+    {
+      "id": "scene_04",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Voice close-up panel with no scenery reference: hard-edged vertical black panel, solid black background with soft gray speed lines behind Han Jin's rain-wet face. Tight crop from brow to mouth only, both eyes visible, his right cheek pressed near the lower panel edge, lips parted in pain, no visible hands, no visible UI, no scenery, no speech bubbles, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[nervous] —No voy a morir —jadeó, forzando sus brazos a responder."
+      }
+    },
+    {
+      "id": "scene_05",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Medium survival panel in the rainy alley: Han Jin pushes up from the asphalt, his right palm planted flat under his shoulder, his left hand gripping his injured ribs, left knee bent under him, right leg dragging behind. The translucent green-cyan system window hangs behind his shoulder, the countdown reading exactly '57:55'. Blue rain and orange sodium light dominate; the UI and Jin's tiny reflection are the only green sources, no gore, no speech bubbles, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Su brazo derecho cedió; el izquierdo sostuvo la herida."
+      }
+    },
+    {
+      "id": "scene_06",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "High-angle panel over split asphalt in the same rainy alley: Han Jin is on the left side of frame, elbows scraping backward, right heel digging into the puddled ground, left hand still tight over his ribs. The asphalt opens into a narrow minor rift at center frame, faint pale-green light leaking from inside as one system-color source. Jagged crack lines spider through puddles; no visible UI, no speech bubbles, no gore, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "KEY ACTION (first 2s): The asphalt splits wider with a sharp upward jolt as Han Jin recoils on both elbows. BEATS: (1) rainwater rushes into the opening; (2) crack lines race outward beneath his dragging heels; (3) Jin kicks backward and pulls his body away from the fissure. CAMERA: vertical rise from the crack toward Jin to emphasize the tear opening. SECONDARY: pale-green rift light leaks upward, puddles quiver, loose gravel bounces. ~5s, ends with the rift fully open beside him. Korean manhwa animation feel, thriller tension.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Entonces el asfalto se abrió, respondiendo al olor tibio de su sangre."
+      }
+    },
+    {
+      "id": "scene_07",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Collage-like emergence panel in the rainy alley: the minor rift splits the lower frame, pale-green glow contained inside the crack, while the original shadow monster hauls itself out with wrong-bending forelimbs and wet black mass. Its inner fissures glow faint reddish, not green. Environmental lettering 'KRRR' snakes around the broken asphalt in jagged white-gray typography with rusty red outline, integrated into the panel. Blue rain and orange reflections remain dominant, no speech bubbles, no extra readable text, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Algo húmedo salió primero: patas torcidas, sombra y hambre."
+      }
+    },
+    {
+      "id": "scene_08",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Impactful emergence panel: the rift monster finishes climbing from the split asphalt, low and crooked over Han Jin, wet shadow dripping from its body, dim reddish cracks pulsing inside the black mass. Han Jin braces with his right forearm on the ground, left hand locked over his ribs, both legs bent awkwardly as he scoots away. The only green comes from the open rift beneath them; no visible UI, no speech bubbles, no readable text, no gore, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "KEY ACTION (first 2s): The monster hauls its torso out of the fissure and snaps its split maw open toward Han Jin. BEATS: (1) its front limbs plant on the asphalt with wrong-jointed force; (2) its back arches and shadow-slime strings break away; (3) Han Jin scoots backward, right shoe slipping in a puddle. CAMERA: diagonal upward move following the creature's rise. SECONDARY: reddish inner cracks pulse faintly, pale-green rift light spills upward, rain scatters off both bodies. ~6s, ends with the creature crouched to attack. Korean manhwa animation feel, predatory and tense.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[whispers] —No… no puede ser —susurró, mientras la cosa respiraba contra él, cerca."
+      }
+    },
+    {
+      "id": "scene_09",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Voice close-up panel with no scenery reference: hard black background with soft gray radial speed lines, tight crop on Han Jin's right eye, wet brow, trembling mouth, and rain-dark hairline. No body below the collar, no hands visible, no visible UI, no monster, no scenery, no speech bubbles, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "¿Cómo peleas cuando tu propio cuerpo ya eligió temblar?"
+      }
+    },
+    {
+      "id": "scene_10",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Desperate fight panel in the rainy alley: the rift monster lunges low from the right side across puddled ground, dim reddish cracks glowing inside its wet shadow body. Han Jin throws his left forearm across his chest to block while his right palm slips behind him, torso twisting away from the impact. Strong diagonal composition, blue-orange alley palette, faint distant pale-green rift glow only, no visible UI, no speech bubbles, no gore, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "KEY ACTION (first 2s): The monster slams forward in a low leap and Han Jin blocks with his left forearm while falling sideways. BEATS: (1) his shoulder whips back from the hit; (2) his legs slide through the puddle as he rolls; (3) the creature skids past him and spins to turn again. CAMERA: diagonal shake matching the lunge, then a short follow-through pan with Jin's roll. SECONDARY: puddles splash, red crack-glow flickers inside the creature, rain streaks slash across frame. ~6s, ends with Jin on the ground and the monster wheeling back. Korean manhwa animation feel, rough survival motion.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La bestia embistió. Jin bloqueó, cayó mal, y rodó sobre el charco."
+      }
+    },
+    {
+      "id": "scene_11",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Ground-level recovery panel: Han Jin lies half-turned beside the storm drain, his right hand gripping a puddle edge, his left forearm folded against his ribs, both knees drawn unevenly under him as his body fails. The monster is off-frame, only its shadow stretches across the wet asphalt. Natural blue-orange lighting, no visible UI, no green, no speech bubbles, no gore, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Su costilla gritó; sus piernas no obedecieron del todo."
+      }
+    },
+    {
+      "id": "scene_12",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Ground-level object panel beside the drain: a jagged broken iron rod lies diagonally in the foreground, ten centimeters from Han Jin's right hand; his right fingers stretch toward it, palm scraping asphalt, while his left hand stays over his ribs. The rift monster crouches in the blurred background, ready to leap. A distant translucent green-cyan system window near the wall shows the countdown reading exactly '54:12', small and secondary. Blue rain and orange reflections dominate; no speech bubbles, no gore, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "KEY ACTION (first 2s): Han Jin reaches his right hand across the wet ground and hooks two fingers around the broken iron rod. BEATS: (1) his fingertips slip once on the metal; (2) the monster lowers its body to spring; (3) Jin drags the rod into his palm and tightens his grip. CAMERA: low push-in along the rod toward Jin's hand. SECONDARY: water beads slide off the metal, the distant timer flickers at '54:12', rain splashes around his knuckles. ~5s, ends with his right hand gripping the rod. Korean manhwa animation feel, tense and tactile.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Jin vio el fierro junto al drenaje y estiró la mano derecha."
+      }
+    },
+    {
+      "id": "scene_13",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Instinctive counterattack panel at ground level: Han Jin grips the broken iron rod in his right hand and thrusts upward from his knees, left hand finally leaving his ribs for balance, fingers splayed against the puddle. The rift monster dives down from the upper left, split maw open, dim reddish cracks flaring. Extreme low angle, blue-orange alley palette, no green except a faint rift glow far behind, no speech bubbles, no readable text, no gore, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "KEY ACTION (first 2s): Han Jin snatches the broken iron rod up and thrusts it into the diving monster with both shoulders. BEATS: (1) his right arm drives forward from pure reflex; (2) the rod meets the creature's split maw; (3) his body folds around the impact as rain bursts upward. CAMERA: hard diagonal follow from Jin's grip to the creature's face, ending tight on the collision point. SECONDARY: drain water splashes, red fissures flare once, speed lines converge. ~6s, ends on the exact instant of contact. Korean manhwa animation feel, desperate and visceral without gore.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[angry] —¡Muévete! —se ordenó, y clavó el fierro cuando la sombra saltó encima."
+      }
+    },
+    {
+      "id": "scene_14",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure manhwa impact typography panel with no character or scenery references: giant jagged stylized onomatopoeia lettering 'KRAK' explodes across a black rain-textured background, fractured white letters with dark red outline and splintered debris motifs, speed-line burst from the center, raw physical impact only. No speech bubbles, no additional text, no visible UI, no green system color, no hands, no figures, no extra limbs. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "El sonido llegó primero; el dolor vino después."
+      }
+    },
+    {
+      "id": "scene_15",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Frozen aftermath panel: Han Jin kneels in the lower right, right hand still locked around the iron rod, left hand braced flat on the wet asphalt; the rift monster is pinned low in the left foreground, its wet black mass sagging inward, reddish cracks dimming. Rain hangs in hard white streaks; blue-orange reflections dominate; no visible UI, no green, no gore, no speech bubbles, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Por un segundo, ninguno de los dos se movió."
+      }
+    },
+    {
+      "id": "scene_16",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "After-kill panel at ground level: the shadow creature collapses inward around the embedded iron rod, black wet mass folding like smoke-soaked cloth, reddish crack fragments extinguishing. Han Jin recoils backward on his left hand while his right hand releases the rod. A ribbon of pale-green essence rises from the creature toward Jin as the only vivid green source. Blue rain and orange reflections dominate, no visible UI, no speech bubbles, no gore, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "KEY ACTION (first 2s): The monster buckles and caves inward around the iron rod as pale-green essence bursts out toward Han Jin. BEATS: (1) black shadow mass peels away into smoke-like fragments; (2) the green essence stream whips into Jin's chest and side; (3) Jin jerks from the transfer and drops to one hand again. CAMERA: slow push-in from collapsing creature to essence entering Jin. SECONDARY: red crack embers extinguish, rain hisses through the smoke, puddles reflect the green stream once. ~6s, ends with the last essence thread sinking into Jin. Korean manhwa animation feel, eerie and controlled.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La criatura se dobló hacia adentro, y la esencia verde lo buscó."
+      }
+    },
+    {
+      "id": "scene_17",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Awakening survival panel in the rainy alley: Han Jin rises unsteadily from one knee, right hand lifted from the asphalt with fingers shaking, left hand hovering near his side as the injury partially closes. Both eyes glow pale green, faint green essence vapor streaming from his wound and shoulders, silver wristwatch wet with rain. The alley remains cold blue and orange, with green limited to his eyes and essence; no visible UI, no speech bubbles, no readable text, no gore, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "KEY ACTION (first 2s): Han Jin pushes himself upright from one knee as both eyes ignite pale green and essence vapor lifts off his body. BEATS: (1) his right hand leaves the ground and his spine straightens; (2) the wound area tightens as green motes circulate once around him; (3) he raises his face and locks his gaze forward. CAMERA: slow push-in from chest level to his eyes. SECONDARY: vapor curls upward, rain slides off his hair and blazer, green particles fade around the wound. ~6s, ends holding on his glowing stare. Korean manhwa animation feel, restrained but iconic.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[awe] Sus ojos ardieron verde pálido; la herida dejó de vaciarlo por fin."
+      }
+    },
+    {
+      "id": "scene_18",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Mid-shot system confirmation panel: Han Jin stands shakily under the orange sodium lamp, breathing hard, pale-green eyes still lit and faint essence vapor lifting from his shoulders. A translucent green-cyan system window hovers beside his right shoulder, the countdown reading exactly '51:58', with short UI blocks indicating level status. The window and Jin's eyes are the only green sources; blue rain and orange reflections dominate, no speech bubbles, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La ventana dijo: \"Esencia absorbida. Curación parcial. Nivel uno\"."
+      }
+    },
+    {
+      "id": "scene_19",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Breathing bridge panel in the alley: Han Jin stands alone in three-quarter profile, right hand open at his side, left hand hovering over the healed wound, shoulders trembling from shock. The dead monster has dissolved into faint black residue near his shoes, no green essence remaining, no visible UI. Blue rain and orange streetlight rule the frame, no speech bubbles, no gore, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Jin no sonrió. Solo entendió que había sobrevivido."
+      }
+    },
+    {
+      "id": "scene_20",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Long-lens suspense panel down the rainy alley: Han Jin stands in the near foreground with pale-green eyes fading, right shoulder turned toward the alley mouth; far back under the orange streetlamp, the hooded silhouette is visible, still and watching. The distance between them is emphasized by wet asphalt reflections and blue rain. No visible UI, no speech bubbles, no readable text, no floating hands, no extra limbs, no additional figures beyond the two referenced characters. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Y entonces sintió una mirada al final del callejón."
+      }
+    },
+    {
+      "id": "scene_21",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Cliffhanger targeting panel in the rainy alley: Han Jin half-turns in the foreground, both pale-green eyes visible, fading essence vapor around his shoulders; the hooded silhouette stands under the far orange sodium light, face hidden, calm and unreadable. A translucent green-cyan system window slides between them and brackets the silhouette, the countdown reading exactly '50:31', with target UI lines and minimal status text. Green is limited to Jin's eyes and the system window; the alley remains blue-orange, no speech bubbles, no gore, no floating hands, no extra limbs, no additional figures. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "KEY ACTION (first 2s): Han Jin snaps his head toward the alley mouth as the green-cyan system window shifts and brackets the hooded silhouette. BEATS: (1) the silhouette remains eerily still under the rain; (2) the UI reticle tightens around the figure while the countdown holds at '50:31'; (3) Jin's glowing eyes narrow as he realizes the new target. CAMERA: slow push-in across the distance toward the silhouette and targeting window. SECONDARY: rain falls in dense streaks, the sodium lamp flickers softly, faint essence vapor trails off Jin's shoulders. ~6s, ends with the target lock holding on the hooded figure. Korean manhwa animation feel, ominous and clean.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[awe] La ventana cambió: \"Presa humana. Recompensa: cinco niveles\". Cinco. La silueta seguía allí."
+      }
+    },
+    {
+      "id": "scene_22",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Dry-cut final panel: the hooded silhouette alone at the alley mouth under the orange sodium lamp, face completely hidden, arms relaxed at the sides, rain running off the matte-black hooded coat. No visible UI, no green light, no other people, no speech bubbles, no readable text, no floating hands, no extra limbs, no additional figures. Hard black negative space around the figure for a sudden ending. Korean manhwa webtoon digital art style, clean sharp lineart, cel shading, dramatic rim lighting, high contrast, detailed painted background, vertical 9:16 webtoon panel composition, NOT photorealistic, NOT 3D render, NOT western cartoon."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La silueta no huyó. Se quedó a mirar."
+      }
+    }
+  ],
+  "render_export": {
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18",
+      "scene_19",
+      "scene_20",
+      "scene_21",
+      "scene_22"
+    ]
+  },
+  "tts_export": {
+    "language": "es-419",
+    "full_script": "Jin seguía vivo. Apenas. La ventana flotaba sobre sangre.\nLa ventana dijo: \"Condición crítica. Sobrevive. Elimina amenazas. Absorbe esencia. Extiende tiempo\".\nEL DÍA QUE ME ELIGIÓ.\n[nervous] —No voy a morir —jadeó, forzando sus brazos a responder.\nSu brazo derecho cedió; el izquierdo sostuvo la herida.\nEntonces el asfalto se abrió, respondiendo al olor tibio de su sangre.\nAlgo húmedo salió primero: patas torcidas, sombra y hambre.\n[whispers] —No… no puede ser —susurró, mientras la cosa respiraba contra él, cerca.\n¿Cómo peleas cuando tu propio cuerpo ya eligió temblar?\nLa bestia embistió. Jin bloqueó, cayó mal, y rodó sobre el charco.\nSu costilla gritó; sus piernas no obedecieron del todo.\nJin vio el fierro junto al drenaje y estiró la mano derecha.\n[angry] —¡Muévete! —se ordenó, y clavó el fierro cuando la sombra saltó encima.\nEl sonido llegó primero; el dolor vino después.\nPor un segundo, ninguno de los dos se movió.\nLa criatura se dobló hacia adentro, y la esencia verde lo buscó.\n[awe] Sus ojos ardieron verde pálido; la herida dejó de vaciarlo por fin.\nLa ventana dijo: \"Esencia absorbida. Curación parcial. Nivel uno\".\nJin no sonrió. Solo entendió que había sobrevivido.\nY entonces sintió una mirada al final del callejón.\n[awe] La ventana cambió: \"Presa humana. Recompensa: cinco niveles\". Cinco. La silueta seguía allí.\nLa silueta no huyó. Se quedó a mirar.",
+    "engine": "elevenlabs",
+    "voice_id": "452WrNT9o8dphaYW5YGU"
+  }
+}
