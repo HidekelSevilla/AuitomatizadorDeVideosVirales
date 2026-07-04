@@ -101,6 +101,15 @@ class DialogueItem:
     api_text: str   # texto enviado a ElevenLabs (puede agregar [cold] al sistema)
 
 
+@dataclass
+class DialogueApiBlock:
+    idx: int
+    speaker: str
+    voice_id: str
+    api_text: str
+    items: list[DialogueItem]  # escenas originales cubiertas por este input de API
+
+
 # --------------------------------------------------------------------------- #
 # 1. Deteccion de preset / tags
 # --------------------------------------------------------------------------- #
@@ -673,24 +682,63 @@ def generate_chunk(text: str, idx: int, *, client=None, settings: Optional[dict]
     raise RuntimeError(f"bloque {idx} fallo tras {MAX_RETRIES} intentos ({detail})")
 
 
-def _dialogue_payload(items: list[DialogueItem], settings: dict) -> dict:
+def build_dialogue_api_blocks(items: list[DialogueItem], max_chars: int = DIALOGUE_MAX_CHARS) -> list[DialogueApiBlock]:
+    """Agrupa escenas consecutivas del mismo speaker/voice en un solo input de Text-to-Dialogue.
+
+    `tts_export.dialogue[]` sigue siendo 1 entrada por escena para mapear subtitulos; este agrupado
+    existe solo para la API, evitando que v3 interprete cada escena como turno conversacional.
+    Si un bloque excede el limite, se parte en limite de escena.
+    """
+    blocks: list[DialogueApiBlock] = []
+    cur: list[DialogueItem] = []
+    cur_speaker = ""
+    cur_voice = ""
+    cur_len = 0
+
+    def flush() -> None:
+        nonlocal cur, cur_speaker, cur_voice, cur_len
+        if not cur:
+            return
+        blocks.append(DialogueApiBlock(
+            idx=len(blocks),
+            speaker=cur_speaker,
+            voice_id=cur_voice,
+            api_text="\n".join(it.api_text for it in cur),
+            items=cur,
+        ))
+        cur, cur_speaker, cur_voice, cur_len = [], "", "", 0
+
+    for it in items:
+        same_turn = cur and it.speaker == cur_speaker and it.voice_id == cur_voice
+        add_len = len(it.api_text) + (1 if cur else 0)  # \n entre escenas dentro del input
+        if cur and (not same_turn or (cur_len + add_len > max_chars)):
+            flush()
+        if not cur:
+            cur_speaker, cur_voice, cur_len = it.speaker, it.voice_id, 0
+        cur.append(it)
+        cur_len += len(it.api_text) + (1 if len(cur) > 1 else 0)
+    flush()
+    return blocks
+
+
+def _dialogue_payload(blocks: list[DialogueApiBlock], settings: dict) -> dict:
     return {
         "model_id": settings.get("model_id") or MODEL_ID,
         "language_code": settings.get("language_code") or LANGUAGE_CODE,
         "seed": settings.get("seed") if isinstance(settings.get("seed"), int) else SEED,
         "settings": settings.get("voice_settings") or {},
-        "inputs": [{"text": it.api_text, "voice_id": it.voice_id} for it in items],
+        "inputs": [{"text": b.api_text, "voice_id": b.voice_id} for b in blocks],
     }
 
 
-def _post_dialogue_with_timestamps(items: list[DialogueItem], settings: dict) -> tuple[bytes, dict, int, Optional[str], str]:
+def _post_dialogue_with_timestamps(blocks: list[DialogueApiBlock], settings: dict) -> tuple[bytes, dict, int, Optional[str], str]:
     """ElevenLabs V3 Text to Dialogue en una sola peticion."""
     key = os.environ.get(ENV_API_KEY, "").strip()
     if not key:
         raise RuntimeError(f"Falta la variable de entorno {ENV_API_KEY}.")
     output_format = settings.get("output_format") or OUTPUT_FORMAT
     url = f"https://api.elevenlabs.io/v1/text-to-dialogue/with-timestamps?output_format={urllib.parse.quote(output_format)}"
-    payload = _dialogue_payload(items, settings)
+    payload = _dialogue_payload(blocks, settings)
     data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     last_err: Exception | None = None
     for attempt in range(MAX_RETRIES):
@@ -711,7 +759,7 @@ def _post_dialogue_with_timestamps(items: list[DialogueItem], settings: dict) ->
                 if not audio_b64:
                     raise RuntimeError("Text to Dialogue no devolvio audio_base64")
                 headers = {str(k).lower(): v for k, v in dict(r.headers).items()}
-                cost, rid = _cost_and_id(headers, billable=sum(len(i.api_text) for i in items))
+                cost, rid = _cost_and_id(headers, billable=sum(len(b.api_text) for b in blocks))
                 return base64.b64decode(audio_b64), body, cost, rid, "text_to_dialogue+with_timestamps"
         except urllib.error.HTTPError as e:
             last_err = e
@@ -736,8 +784,26 @@ def _post_dialogue_with_timestamps(items: list[DialogueItem], settings: dict) ->
     raise RuntimeError(f"dialogue fallo tras {MAX_RETRIES} intentos ({detail})")
 
 
+def split_dialogue_blocks(blocks: list[DialogueApiBlock], max_chars: int = DIALOGUE_MAX_CHARS) -> list[list[DialogueApiBlock]]:
+    """Parte requests por input agrupado; nunca corta un input de API."""
+    chunks: list[list[DialogueApiBlock]] = []
+    cur: list[DialogueApiBlock] = []
+    cur_len = 0
+    for block in blocks:
+        n = len(block.api_text) + 1
+        if cur and cur_len + n > max_chars:
+            chunks.append(cur)
+            cur = []
+            cur_len = 0
+        cur.append(block)
+        cur_len += n
+    if cur:
+        chunks.append(cur)
+    return chunks
+
+
 def split_dialogue_items(items: list[DialogueItem], max_chars: int = DIALOGUE_MAX_CHARS) -> list[list[DialogueItem]]:
-    """Parte Text-to-Dialogue por escena para mantener requests estables; nunca corta una linea."""
+    """Compat tests/legacy: parte items por escena. La API nueva usa split_dialogue_blocks()."""
     chunks: list[list[DialogueItem]] = []
     cur: list[DialogueItem] = []
     cur_len = 0
@@ -817,9 +883,10 @@ def synthesize_dialogue(json_path: Path, doc: dict, *, voice_id: Optional[str] =
     tmp_dir.mkdir(parents=True, exist_ok=True)
 
     unique_voices = sorted({it.voice_id for it in items})
-    chunks = split_dialogue_items(items)
-    log.info("%s: dialogue ElevenLabs V3 -> %d linea(s), %d voz/voces, %d request(s) (%s).",
-             slug, len(items), len(unique_voices), len(chunks), ", ".join(unique_voices))
+    api_blocks = build_dialogue_api_blocks(items)
+    chunks = split_dialogue_blocks(api_blocks)
+    log.info("%s: dialogue ElevenLabs V3 -> %d escena(s), %d input(s) API, %d voz/voces, %d request(s) (%s).",
+             slug, len(items), len(api_blocks), len(unique_voices), len(chunks), ", ".join(unique_voices))
 
     total_credits = 0
     request_ids: list[str] = []
@@ -828,8 +895,8 @@ def synthesize_dialogue(json_path: Path, doc: dict, *, voice_id: Optional[str] =
     fallback_words: list[dict] = []
     offset = 0.0
     try:
-        for idx, chunk_items in enumerate(chunks):
-            audio, response, cost, rid, path_used = _post_dialogue_with_timestamps(chunk_items, settings)
+        for idx, chunk_blocks in enumerate(chunks):
+            audio, response, cost, rid, path_used = _post_dialogue_with_timestamps(chunk_blocks, settings)
             chunk_path = tmp_dir / f"dialogue_{idx:03d}.mp3"
             chunk_path.write_bytes(audio)
             duration = _ffprobe_duration(chunk_path)
@@ -846,8 +913,10 @@ def synthesize_dialogue(json_path: Path, doc: dict, *, voice_id: Optional[str] =
                     "end": round(w["end"] + offset, 3),
                 })
             offset += duration
-            log.info("dialogue bloque %d/%d: %d linea(s), %d chars, %.2fs, costo %d",
-                     idx + 1, len(chunks), len(chunk_items), sum(len(i.api_text) for i in chunk_items), duration, cost)
+            scene_count = sum(len(b.items) for b in chunk_blocks)
+            char_count = sum(len(b.api_text) for b in chunk_blocks)
+            log.info("dialogue bloque %d/%d: %d input(s), %d escena(s), %d chars, %.2fs, costo %d",
+                     idx + 1, len(chunks), len(chunk_blocks), scene_count, char_count, duration, cost)
         concat_audio(chunk_paths, mp3_out, output_format=settings["output_format"])
     except Exception:
         log.error("ABORTADO: fallo dialogue; no se escribe mp3 final. Bloques temp en %s", tmp_dir)
@@ -884,8 +953,23 @@ def synthesize_dialogue(json_path: Path, doc: dict, *, voice_id: Optional[str] =
         "paths_used": ["text_to_dialogue+with_timestamps", alignment_source],
         "dialogue": [{"scene_id": it.scene_id, "speaker": it.speaker, "voice_id": it.voice_id, "text": it.text, "api_text": it.api_text} for it in items],
         "voice_segments": [r.get("voice_segments") for r in responses],
+        "dialogue_api_blocks": [
+            {
+                "idx": b.idx,
+                "speaker": b.speaker,
+                "voice_id": b.voice_id,
+                "scene_ids": [it.scene_id for it in b.items],
+                "chars": len(b.api_text),
+            }
+            for b in api_blocks
+        ],
         "dialogue_chunks": [
-            {"idx": i, "scene_ids": [it.scene_id for it in chunk], "chars": sum(len(it.api_text) for it in chunk)}
+            {
+                "idx": i,
+                "api_block_ids": [b.idx for b in chunk],
+                "scene_ids": [it.scene_id for b in chunk for it in b.items],
+                "chars": sum(len(b.api_text) for b in chunk),
+            }
             for i, chunk in enumerate(chunks)
         ],
     }, ensure_ascii=False, indent=2), encoding="utf-8")

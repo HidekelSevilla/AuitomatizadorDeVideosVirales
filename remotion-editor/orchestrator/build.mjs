@@ -461,7 +461,7 @@ function videoSpeed(job) {
     if (typeof ov === "number") return ov;                                        // override explicito por video (speed o speed_final)
     const ttsSpeed = p.tts_export?.edit_speed ?? p.tts_export?.video_speed;
     if (typeof ttsSpeed === "number") return ttsSpeed;
-    if (p.project?.preset === "manhwa" && p.tts_export?.mode === "dialogue") return 1.35;
+    if (p.project?.preset === "manhwa" && p.tts_export?.mode === "dialogue") return 1.30;
     return 1;
   } catch { return 1; }
 }

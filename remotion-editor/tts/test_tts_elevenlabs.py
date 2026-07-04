@@ -149,6 +149,26 @@ def test_D_other_preset_noop():
     print("  ok Test D (otro preset = no-op, sin tocar nada)")
 
 
+def test_dialogue_grouping_consecutive_speakers():
+    items = [
+        tts.DialogueItem(0, "scene_01", "narrador", "voice_a", "Uno.", "Uno."),
+        tts.DialogueItem(1, "scene_02", "narrador", "voice_a", "Dos.", "Dos."),
+        tts.DialogueItem(2, "scene_03", "sistema", "voice_b", "[cold] Tres.", "[cold] Tres."),
+        tts.DialogueItem(3, "scene_04", "narrador", "voice_a", "Cuatro.", "Cuatro."),
+    ]
+    blocks = tts.build_dialogue_api_blocks(items)
+    assert len(blocks) == 3, blocks
+    assert blocks[0].speaker == "narrador"
+    assert blocks[0].api_text == "Uno.\nDos."
+    assert [it.scene_id for it in blocks[0].items] == ["scene_01", "scene_02"]
+    assert blocks[1].speaker == "sistema"
+    assert blocks[2].speaker == "narrador"
+
+    chunks = tts.split_dialogue_blocks(blocks, max_chars=999)
+    assert len(chunks) == 1 and len(chunks[0]) == 3
+    print("  ok dialogue grouping (mismo speaker consecutivo = un input API)")
+
+
 def test_C_real_jsons_chunking():
     """Sin red: valida que los JSON reales producen bloques validos y mapeo de escenas correcto."""
     for name in ["done/se_drogaban_los_aztecas_palitos_codice.json", "queue/la_atlantida_sin_marco.json"]:
@@ -201,7 +221,8 @@ def _run_real_api_tests():
 def main():
     offline = [test_spoken_mask, test_validate_tags, test_A_chunking, test_A_merge_short_tail,
                test_offsets, test_words_skip_tags, test_new_schema_render_export,
-               test_D_other_preset_noop, test_C_real_jsons_chunking]
+               test_D_other_preset_noop, test_dialogue_grouping_consecutive_speakers,
+               test_C_real_jsons_chunking]
     failed = 0
     print("== Tests offline ==")
     for t in offline:
