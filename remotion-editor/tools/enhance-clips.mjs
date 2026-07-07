@@ -83,18 +83,29 @@ const clipFps = (f) => {
   return (r.stdout || "").trim();
 };
 
-const clips = fs.readdirSync(clipsDir).filter((f) => /\.mp4$/i.test(f)).sort();
+const clipFilter = new Set((process.env.ENHANCE_CLIP_FILTER || "")
+  .split(/[;,]/)
+  .map((s) => s.trim().toLowerCase())
+  .filter(Boolean));
+const clips = fs.readdirSync(clipsDir)
+  .filter((f) => /\.mp4$/i.test(f))
+  .filter((f) => clipFilter.size === 0 || clipFilter.has(f.toLowerCase()))
+  .sort();
 log(`Mejorando clips de ${slug} (Real-ESRGAN x${SCALE} + RIFE -> ${OUT_FPS}fps). Log: ${path.relative(ROOT, LOG_FILE)}`);
 
 for (const name of clips) {
   const raw = path.join(rawDir, name);
   const cur = path.join(clipsDir, name);
+  const currentFps = clipFps(cur);
   // idempotente: si ya esta a 48fps (y respaldado), saltar
-  if (fs.existsSync(raw) && clipFps(cur).startsWith(String(OUT_FPS))) {
+  if (fs.existsSync(raw) && currentFps.startsWith(String(OUT_FPS))) {
     log(`  ${name}: ya mejorado, salto`);
     continue;
   }
-  if (!fs.existsSync(raw)) fs.copyFileSync(cur, raw); // backup 1 vez (el original)
+  // Si el clip actual es mas reciente que el raw, el raw pertenece a otra corrida: reemplazarlo.
+  if (!fs.existsSync(raw) || fs.statSync(cur).mtimeMs > fs.statSync(raw).mtimeMs) {
+    fs.copyFileSync(cur, raw);
+  }
   resetWork();
   log(`  ${name}: extraer`);
   run("ffmpeg", ["-y", "-loglevel", "error", "-i", raw, path.join(WORK, "f", "%08d.png")]);

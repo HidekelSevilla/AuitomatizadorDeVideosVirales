@@ -1,0 +1,1373 @@
+{
+  "project": {
+    "title": "Sesenta minutos, nivel cero - Parte 4: El cuarto vacío",
+    "preset": "manhwa",
+    "slug": "sesenta_minutos_nivel_cero_parte_04",
+    "language": "es-419",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "default_clip_duration_s": 4
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "elevenlabs",
+      "voice_id": "452WrNT9o8dphaYW5YGU",
+      "language": "es-419"
+    },
+    "editing": {
+      "tool": "remotion"
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Low-angle telephoto corridor shot: Lee Han grips the system dagger handle with his right hand in a sealed hospital hallway, torn konbini vest damp and ragged, jaw clenched. A rift lizard-beast collapses into black smoke before him, cold ceiling lights reflecting on the steel blade. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "The rift lizard-beast dissolves rapidly into black smoke around the dagger point as Lee Han holds the weapon steady. Static low-angle telephoto camera with one subtle smoke ripple. Maintain character consistency, keep all subjects inside the frame. Final second holds still.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[low, strained] En un pasillo sellado del Hospital Saebyeok, Lee Han apretaba el mango",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_02",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Extreme close-up insert: Lee Han's right hand wraps tightly around the worn cord handle of a straight steel dagger, knuckles scraped, blade angled across the frame. The creature's smoke drifts behind the blade in soft black ribbons under cold hospital lighting. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "de una daga mientras la criatura frente a él",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_03",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "High-angle corridor shot looking down: black smoke spreads across the glossy hospital floor beneath a trembling fluorescent ceiling light, the sealed hallway receding toward a sterile turn. Lee Han stands partly cropped at frame edge, dagger lowered after the strike. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "se deshacía en humo negro bajo la luz fría del techo. [pause]",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_04",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga panel on pure white background: a single rectangular panel with a bold black border, inside it an extreme close-up of Lee Han's tired face in three-quarter view, dark-brown eyes unfocused, bruised cheek, torn collar visible, a faint memory of cold hospital light across his jaw. White margin around the frame is clean, with controlled screentone texture inside the panel only. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[breathless] Una hora antes, yo ni siquiera sabía que esa daga existía.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_05",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Over-the-shoulder corridor shot: Lee Han walks deeper into the sealed Saebyeok Hospital interior, his torn green konbini vest hanging open as he moves toward distant patient-room doors. The corridor is bare, spotless, and lit by hard white ceiling strips. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Había entrado a este hospital buscando a mi hermana… y terminé",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_06",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Long-lens hallway view: Lee Han's small silhouette moves through a sterile corridor toward a distant open doorway, the floor polished and silent. The composition centers the empty destination ahead, giving the hallway a tunnel-like pull toward absence. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "abriéndome paso hacia un cuarto donde ella ya no estaba. [pause]",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_07",
+      "type": "narrative_card",
+      "card": {
+        "mode": "editor",
+        "text": "El cuarto vacío"
+      },
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": ""
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "El cuarto vacío.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_08",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga page layout on pure white background, three stacked rectangular panels with bold black borders, read top to bottom: top panel — the jade two-sided essence gauge floating in black space; middle panel — Lee Han's dark-brown eye narrowing; bottom panel — his worn shoe stepping into a white hospital corridor. Clean white margins, minimal color accents only where described. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[shaken] Después del medidor de dos lados, seguí avanzando por el hospital",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_09",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "High three-quarter tracking shot: Lee Han advances through the hospital, shoulders low, one hand near his ribs, his whole body clearly upright and balanced above the floor plane. The corridor's white surfaces feel clinical rather than safe. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "como si caminar fuera la única forma de no caer otra vez.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_10",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Static frontal wide shot: an intact white corridor stretches forward with tightly arranged camillas along one wall, ceiling lights reflected in the polished floor, and Lee Han centered small within the clean geometry. The stillness feels like surveillance. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "El corredor blanco estaba intacto de una manera que no parecía calma, sino vigilancia.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_11",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Dutch-angle medium shot: Lee Han pauses mid-step in the silent hallway, dark-brown eyes angled toward an unseen sound, torn vest edges hanging. Cold light carves a hard rim along his cheek and shoulder. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[nervous] Afuera el desastre hacía ruido. Adentro, cada paso sonaba demasiado fuerte.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_12",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Low-angle establishing shot: a sealed hospital floor entrance fills the frame, with the Association emblem mounted above reinforced doors and a guarded checkpoint posture implied by barricade placement. The corridor is sterile, sign-free, and controlled. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Un piso entero estaba sellado con el emblema de la Asociación,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_13",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Overhead security-camera angle: Lee Han stands before the sealed Association floor, small below the emblem, with orderly barriers and locked doors arranged like a containment site rather than a ward. Cold white light pools around him. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "y la seguridad no parecía proteger pacientes, sino algo que nadie quería nombrar.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_14",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga page layout on pure white background, three stacked rectangular panels with bold black borders, read top to bottom: top panel — the Association emblem above a sealed hospital door; middle panel — Lee Han's dark-brown eye studying the lock; bottom panel — his blue wristwatch resting heavy against his sleeve. Clean white margins, minimal color accents only where described. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Yo seguía pensando lo mismo: ¿por qué tanto ejército para un hospital? [pause]",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_15",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga panel on pure white background: a single rectangular panel with a bold black border, inside it Lee Han's right hand swiping a translucent jade interface panel while his dark-brown eyes remain focused below the panel's glow, the jade light touching his cheekbone and fingertips. White margin around the frame is clean, with controlled screentone texture inside the panel only. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[stunned] Entonces abrí la interfaz otra vez. No por confianza.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_16",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Close-up UI shot: the system essence gauge floats beside Lee Han's raised left wrist, the blue watch visible below it. The jade interface displays glyph-only markings, with its glow washing his fingers and jawline while his dark-brown eyes stay natural. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Por miedo. Si el sistema podía mostrarme un medidor que no entendía,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_17",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga page layout on pure white background, three stacked rectangular panels with bold black borders, read top to bottom: top panel — the two-pole jade gauge hovering above a black field; middle panel — Lee Han's brow furrowed in analysis; bottom panel — his index finger hesitating near an unread tab. Clean white margins, minimal color accents only where described. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "tal vez también tenía reglas que yo todavía no sabía leer.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_18",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Tight interface shot: Lee Han's right index finger touches a translucent jade tab displaying only 'EQUIPO' in bold uppercase UI lettering. His left wrist with the blue watch hangs lower, and the corridor remains cold white around the small green panel. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[awe, breathless] Moví la pantalla con los dedos y encontré una pestaña nueva. Equipo.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_19",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Static UI reveal: a single jade-green system window floats above Lee Han's open palm, displaying only 'EQUIPO INICIAL' and 'DAGA BÁSICA' in clean uppercase lettering. Thin scan-lines cross the glass, and the panel glow is the only jade source. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[cold] Equipo inicial disponible. Daga básica registrada.",
+        "speaker": "sistema"
+      }
+    },
+    {
+      "id": "scene_20",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga panel on pure white background: a single rectangular panel with a bold black border, inside it a shoulder-up close-up of Lee Han frozen in shock, dark-brown eyes wide, damp hair on his forehead, jade glow from the off-frame interface lighting his lower cheek and jaw. White margin around the frame is clean, with controlled screentone texture inside the panel only. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[low] Se me enfrió la nuca. Una daga apareció en mi mano,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_21",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Medium close-up: the system dagger materializes in Lee Han's right hand, a simple steel blade with a worn cord handle and a faint jade line along the edge. His left hand stays open near his chest, fingers tense. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "simple, pesada, con el filo marcado por un brillo verde muy tenue.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_22",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Product-like insert shot: the simple utilitarian dagger floats upright inside a faint jade interface frame, straight double-edged blade, dark cord-wrapped handle, green edge glow contained along the metal. Bare white hospital wall behind it. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "No era un premio nuevo. Era equipo inicial.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_23",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga panel on pure white background: a single rectangular panel with a bold black border, inside it Lee Han looking down at the dagger in his hand, dark-brown eyes shadowed by disbelief, torn green vest collar framing his face, the jade blade-edge lighting his knuckles. White margin around the frame is clean, with controlled screentone texture inside the panel only. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[strained] Eso significaba que pude haberla usado antes.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_24",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Flash-memory panel: Lee Han in his torn konbini vest braces himself in a hospital corridor, one hand lowered as if remembering improvised weapons from earlier fights, while the actual dagger gleams in his other hand. Cold sterile light. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Casi morí peleando con lo que encontraba en el suelo,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_25",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Close-up interface panel: a jade item slot hovers near Lee Han's hand, the dagger icon seated inside a clean rectangular inventory frame. The screen shows only 'DAGA' in uppercase letters, with fine scan-lines and steady glow. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "mientras una herramienta real esperaba dentro de una pestaña que nunca abrí.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_26",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga page layout on pure white background, three stacked rectangular panels with bold black borders, read top to bottom: top panel — Lee Han's fingertip hovering over the inventory tab; middle panel — the dagger icon inside a jade frame; bottom panel — Han's mouth tightening as he understands. Clean white margins, minimal color accents only where described. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "No parecía una trampa. Parecía algo más frío: el sistema registraba",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_27",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Medium profile shot: Lee Han lowers the interface and stares down the corridor with a colder expression, dagger at his side, both hands visible and controlled. The sealed hallway stretches behind him in clean perspective. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "lo disponible, pero aprender a mirar era problema mío. [pause]",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_28",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Wide corridor shock shot: the sealed hospital hallway bends ahead as dark shapes gather at the far end, Lee Han in the foreground turning toward the threat. Cold ceiling lights create hard pools along the floor. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[terrified] Entonces los monstruos llegaron al pasillo.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_29",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Low tracking shot along the polished floor: Rift lizard-beast: a low crouching quadruped shadow-creature the size of a large dog, built like a lean reptile — elongated angular skull with a narrow snout, a serrated ridge down its spine, four clawed legs bent for lunging, and a long whip-like tail. Its body is dense black smoke-flesh with a matte charcoal surface, cracked by thin glowing reddish fissures that pulse along its ribs, spine and jaw. Faint red ember-glow leaks from the seams of its mouth. A purely bestial four-legged wingless ground creature, fast, twitchy, ground-hugging. Stylized bloodless manhwa monster. It skims beneath the lights toward Lee Han. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "The rift lizard-beast darts forward sharply along the corridor floor, body low and tail whipping behind it. Low tracking camera glides beside the creature with one red ember flicker. Maintain character consistency, keep all subjects inside the frame. Final second holds still.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Un lagarto de sombra se deslizó desde la esquina con el vientre",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_30",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Dutch-angle rear corridor shot: behind the lizard, the humanoid tunnel creature emerges from the corner, bent and wrong-shaped, its smoky body occupying the narrow hospital passage. Lee Han stands between both threats and the distant wing entrance. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "casi pegado al suelo, y detrás apareció una criatura del túnel,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_31",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Telephoto compression shot: the twisted tunnel creature fills the back of the sealed corridor, head tilted, elongated limbs pressed under the ceiling light. The path toward Rin's wing narrows to a bright strip behind its silhouette. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "torcida como una mala copia de un cuerpo humano. Me cortaron",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_32",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "High-angle hallway map shot: Lee Han stands at the intersection with the lizard low in front and the tunnel creature behind, a clean visual trap formed by sterile walls and locked ward doors. His dagger hand stays visible at his side. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "el camino hacia el ala de Rin, y por primera vez",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_33",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Medium close-up: Lee Han tightens both hands into fighting posture, right hand gripping the dagger, left hand raised near his chest, dark-brown eyes focused. Jade Lectura lines graze the floor ahead rather than his eyes. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "no busqué una salida rota. [panting] Apreté la daga.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_34",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga page layout on pure white background, three stacked rectangular panels with bold black borders, read top to bottom: top panel — the lizard's crouched foot about to pivot; middle panel — a thin jade Lectura line on the floor; bottom panel — Lee Han's dagger hand tightening. Clean white margins, minimal color accents only where described. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Lectura me marcó el instante en que el lagarto iba a girar.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_35",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga panel on pure white background: a single rectangular panel with a bold black border, inside it Lee Han's dark-brown eye tracking the lizard's movement, eyebrow lowered in concentration, a thin jade line lighting his cheek from below, speed-line hatching inside the panel. White margin around the frame is clean, with controlled screentone texture inside the panel only. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "No era una debilidad secreta. Era movimiento puro,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_36",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Tight action-read panel: the lizard-beast's path is traced by one faint jade Lectura line across the hospital floor, ending at the precise pivot point where its body will turn. The corridor colors remain cold white and gray. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "el segundo exacto donde su velocidad dejaba una grieta.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_37",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Dynamic three-quarter action shot: the lizard-beast leaps across the frame while Lee Han steps into the opening and drives the system dagger toward the faint jade pivot mark. Stylized 'KRAK' lettering sits behind the strike in black and white impact strokes. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "Lee Han drives the dagger forward decisively into the lizard-beast at the marked pivot point. Dynamic three-quarter camera snaps in with one hard shake at impact. Maintain character consistency, keep all subjects inside the frame. Final second holds still.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[dramatic tone] Cuando saltó, yo también me moví. Clavé el filo donde la marca tembló,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_38",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Close-up impact aftermath: Lee Han's right arm is extended with the dagger buried in black smoke-flesh, jaw clenched as the force travels up his arm. The jade blade edge glows along steel, away from his dark-brown eyes. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "y el impacto me subió por el brazo hasta la mandíbula.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_39",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga panel on pure white background: a single rectangular panel with a bold black border, inside it a tight close-up of Lee Han's mouth and jaw after the close kill, teeth pressed together, sweat on bruised skin, dagger hilt shadow crossing the lower panel. White margin around the frame is clean, with controlled screentone texture inside the panel only. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Matar de cerca tenía otra textura. Ya no era provocar un accidente",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_40",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga page layout on pure white background, three stacked rectangular panels with bold black borders, read top to bottom: top panel — the dagger point hovering over a jade mark; middle panel — Lee Han's right hand forcing the blade down; bottom panel — black smoke curling around the steel. Clean white margins, minimal color accents only where described. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "y sobrevivir al resultado. Era elegir el punto, acercarme, y hundir la mano. [pause]",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_41",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Pivot action shot: the humanoid tunnel creature rushes behind Lee Han as he rotates with new strength, dagger cutting through the foreground arc. His torn vest swings, both feet planted on the clean floor. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "Lee Han pivots powerfully and slashes the dagger across the tunnel creature's smoky body. Static side camera holds the corridor line with one cloth flutter. Maintain character consistency, keep all subjects inside the frame. Final second holds still.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[desperate] La criatura del túnel vino detrás. Giré con la fuerza nueva,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_42",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Follow-through panel: Lee Han finishes the turn with the dagger held low, shoulders uneven but stable, while the tunnel creature recoils into a smear of shadow behind him. The cut reads as stylized black smoke. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "torpe pero real, y por primera vez el golpe no se sintió prestado.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_43",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Wide corridor aftermath: black shadow opens around the dagger slash as Lee Han creates a narrow path forward, the sealed ward doors stretching beyond him. Cold lights form a line toward Rin's wing. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La daga abrió sombra. Yo abrí camino.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_44",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Forward-running shot: Lee Han runs down the hospital corridor, chest heaving, dagger in right hand, blue watch on left wrist visible near his torn sleeve. The background blurs into sterile white lines. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[breathless] Corrí hacia el ala de Rin con el pecho ardiendo y la promesa",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_45",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Close wrist-and-chest panel: the blue watch sits heavy on Lee Han's left wrist as he clutches his ribs and keeps moving, the promise carried in his posture rather than words. Cold hospital light hits the metal rim. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "pesándome en la muñeca. Esta vez estaba cerca. Más cerca que nunca.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_46",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Security-door shot: Lee Han passes through an open reinforced hospital door, shoulders brushing the frame, dagger lowered safely by his thigh. The next corridor beyond is narrower and quieter, with clean bare walls. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Pasé una puerta de seguridad, luego el corredor cambió.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_47",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Atmospheric corridor shot: the hospital passage changes character, becoming a long pale tunnel with still air and a closed-room feel. Lee Han stands at the threshold, small against the sterile geometry. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "El aire dejó de sentirse como hospital y empezó a sentirse",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_48",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Long static shot: a quiet corridor ahead feels sealed by time, with a faint shadow line under each patient-room door and cold light filtering from the far end. Lee Han moves toward the last door. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "como una habitación cerrada desde hace años. [pause]",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_49",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Over-the-shoulder doorway shot: Lee Han reaches Rin's patient room, the door slightly open before him, his dagger hand lowered and his shoulders suddenly still. Pale daylight leaks through the crack. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[sorrowful] Llegué al cuarto de Rin. La puerta estaba entreabierta.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_50",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Slow push-in doorway shot: Lee Han's left hand presses the patient-room door open, fingers spread against painted wood, while the made bed appears inside through the widening gap. His right hand keeps the dagger lowered outside the frame. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "The patient-room door opens slowly inward under Lee Han's left hand, revealing the empty made bed beyond. Slow push-in camera follows the widening gap with one soft hinge movement. Maintain character consistency, keep all subjects inside the frame. Final second holds still.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[low, horrified] La empujé despacio… y adentro no había nadie. La cama estaba tendida",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_51",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Frontal empty-room shot: the made bed dominates the center of Rin's patient room, sheets smooth and pillow plumped, pale daylight cutting through blinds. The room is unoccupied, spotless, and unnaturally still. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "con una precisión insoportable. La almohada seguía en su lugar.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_52",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Side-room detail: switched-off monitoring machines rest pushed to one side of the bed, their screens dark and clean, cables arranged neatly against the stand. Pale daylight and flat silence fill the room. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Las máquinas estaban apagadas a un lado, limpias, quietas,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_53",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Still-life bedside shot: the vacant chair, smooth bed edge, and quiet machine cart form a calm arrangement that feels staged by absence. Clean bare surfaces reflect pale daylight from the blinds. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "como objetos que jamás hubieran esperado a una paciente.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_54",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Medium room search shot: Lee Han steps inside the empty room and looks around, dagger lowered, dark-brown eyes stunned. Both hands are visible, his left near the watch, his right loose around the handle. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Entré y busqué una señal de lo que había pasado ahí. No encontré ninguna.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_55",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga panel on pure white background: a single rectangular panel with a bold black border, inside it Lee Han standing at the foot of the empty bed, dark-brown eyes blank, shoulders collapsing slightly, pale hospital light flattening his face inside the black-bordered panel. White margin around the frame is clean, with controlled screentone texture inside the panel only. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[flat] Nada. Mi cabeza intentó trabajar, como siempre.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_56",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Close emotional portrait: Lee Han stares at the spotless room, dark-brown eyes trying to focus, his face framed by cold daylight rather than jade light. The empty bed blurs behind him. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Quiso armar una explicación con lo poco que veía, pero lo poco era cero.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_57",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Analytical failure panel: Lee Han's gaze passes over the empty bed and dark machines, searching for a usable detail. The composition leaves clean, blank surfaces where evidence should be. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "El cuarto no ofrecía una grieta, una marca,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_58",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga page layout on pure white background, three stacked rectangular panels with bold black borders, read top to bottom: top panel — the smooth untouched bedsheet; middle panel — Lee Han's right hand hovering above the blanket; bottom panel — the dark machine screen reflecting his small silhouette. Clean white margins, minimal color accents only where described. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "ni una contradicción donde meter los dedos.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_59",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Close-up wrist panel: Lee Han's left hand hangs near his torn vest, the blue watch heavy against his wrist, while the empty room stays pale and unfurnished in the soft background. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[low] El reloj pesaba en mi muñeca. Yo había prometido",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_60",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Final still panel: Lee Han stands alone beside the made hospital bed, the room pristine and silent around him, dagger lowered, shoulders hollowed by the absence. Pale daylight through blinds closes the frame in a quiet vertical composition. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "devolvérselo cuando despertara. Y Rin… ya no estaba allí. ¿Dónde estás?…",
+        "speaker": "narrador"
+      }
+    }
+  ],
+  "render_export": {
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18",
+      "scene_19",
+      "scene_20",
+      "scene_21",
+      "scene_22",
+      "scene_23",
+      "scene_24",
+      "scene_25",
+      "scene_26",
+      "scene_27",
+      "scene_28",
+      "scene_29",
+      "scene_30",
+      "scene_31",
+      "scene_32",
+      "scene_33",
+      "scene_34",
+      "scene_35",
+      "scene_36",
+      "scene_37",
+      "scene_38",
+      "scene_39",
+      "scene_40",
+      "scene_41",
+      "scene_42",
+      "scene_43",
+      "scene_44",
+      "scene_45",
+      "scene_46",
+      "scene_47",
+      "scene_48",
+      "scene_49",
+      "scene_50",
+      "scene_51",
+      "scene_52",
+      "scene_53",
+      "scene_54",
+      "scene_55",
+      "scene_56",
+      "scene_57",
+      "scene_58",
+      "scene_59",
+      "scene_60"
+    ]
+  },
+  "tts_export": {
+    "language": "es-419",
+    "mode": "dialogue",
+    "model_id": "eleven_v3",
+    "elevenlabs_speed": 1,
+    "edit_speed": 1.35,
+    "voices": {
+      "narrador": "452WrNT9o8dphaYW5YGU",
+      "sistema": "iOeCMakiJ4CctfQaM9yd"
+    },
+    "dialogue": [
+      {
+        "scene_id": "scene_01",
+        "speaker": "narrador",
+        "text": "[low, strained] En un pasillo sellado del Hospital Saebyeok, Lee Han apretaba el mango"
+      },
+      {
+        "scene_id": "scene_02",
+        "speaker": "narrador",
+        "text": "de una daga mientras la criatura frente a él"
+      },
+      {
+        "scene_id": "scene_03",
+        "speaker": "narrador",
+        "text": "se deshacía en humo negro bajo la luz fría del techo. [pause]"
+      },
+      {
+        "scene_id": "scene_04",
+        "speaker": "narrador",
+        "text": "[breathless] Una hora antes, yo ni siquiera sabía que esa daga existía."
+      },
+      {
+        "scene_id": "scene_05",
+        "speaker": "narrador",
+        "text": "Había entrado a este hospital buscando a mi hermana… y terminé"
+      },
+      {
+        "scene_id": "scene_06",
+        "speaker": "narrador",
+        "text": "abriéndome paso hacia un cuarto donde ella ya no estaba. [pause]"
+      },
+      {
+        "scene_id": "scene_07",
+        "speaker": "narrador",
+        "text": "El cuarto vacío."
+      },
+      {
+        "scene_id": "scene_08",
+        "speaker": "narrador",
+        "text": "[shaken] Después del medidor de dos lados, seguí avanzando por el hospital"
+      },
+      {
+        "scene_id": "scene_09",
+        "speaker": "narrador",
+        "text": "como si caminar fuera la única forma de no caer otra vez."
+      },
+      {
+        "scene_id": "scene_10",
+        "speaker": "narrador",
+        "text": "El corredor blanco estaba intacto de una manera que no parecía calma, sino vigilancia."
+      },
+      {
+        "scene_id": "scene_11",
+        "speaker": "narrador",
+        "text": "[nervous] Afuera el desastre hacía ruido. Adentro, cada paso sonaba demasiado fuerte."
+      },
+      {
+        "scene_id": "scene_12",
+        "speaker": "narrador",
+        "text": "Un piso entero estaba sellado con el emblema de la Asociación,"
+      },
+      {
+        "scene_id": "scene_13",
+        "speaker": "narrador",
+        "text": "y la seguridad no parecía proteger pacientes, sino algo que nadie quería nombrar."
+      },
+      {
+        "scene_id": "scene_14",
+        "speaker": "narrador",
+        "text": "Yo seguía pensando lo mismo: ¿por qué tanto ejército para un hospital? [pause]"
+      },
+      {
+        "scene_id": "scene_15",
+        "speaker": "narrador",
+        "text": "[stunned] Entonces abrí la interfaz otra vez. No por confianza."
+      },
+      {
+        "scene_id": "scene_16",
+        "speaker": "narrador",
+        "text": "Por miedo. Si el sistema podía mostrarme un medidor que no entendía,"
+      },
+      {
+        "scene_id": "scene_17",
+        "speaker": "narrador",
+        "text": "tal vez también tenía reglas que yo todavía no sabía leer."
+      },
+      {
+        "scene_id": "scene_18",
+        "speaker": "narrador",
+        "text": "[awe, breathless] Moví la pantalla con los dedos y encontré una pestaña nueva. Equipo."
+      },
+      {
+        "scene_id": "scene_19",
+        "speaker": "sistema",
+        "text": "[cold] Equipo inicial disponible. Daga básica registrada."
+      },
+      {
+        "scene_id": "scene_20",
+        "speaker": "narrador",
+        "text": "[low] Se me enfrió la nuca. Una daga apareció en mi mano,"
+      },
+      {
+        "scene_id": "scene_21",
+        "speaker": "narrador",
+        "text": "simple, pesada, con el filo marcado por un brillo verde muy tenue."
+      },
+      {
+        "scene_id": "scene_22",
+        "speaker": "narrador",
+        "text": "No era un premio nuevo. Era equipo inicial."
+      },
+      {
+        "scene_id": "scene_23",
+        "speaker": "narrador",
+        "text": "[strained] Eso significaba que pude haberla usado antes."
+      },
+      {
+        "scene_id": "scene_24",
+        "speaker": "narrador",
+        "text": "Casi morí peleando con lo que encontraba en el suelo,"
+      },
+      {
+        "scene_id": "scene_25",
+        "speaker": "narrador",
+        "text": "mientras una herramienta real esperaba dentro de una pestaña que nunca abrí."
+      },
+      {
+        "scene_id": "scene_26",
+        "speaker": "narrador",
+        "text": "No parecía una trampa. Parecía algo más frío: el sistema registraba"
+      },
+      {
+        "scene_id": "scene_27",
+        "speaker": "narrador",
+        "text": "lo disponible, pero aprender a mirar era problema mío. [pause]"
+      },
+      {
+        "scene_id": "scene_28",
+        "speaker": "narrador",
+        "text": "[terrified] Entonces los monstruos llegaron al pasillo."
+      },
+      {
+        "scene_id": "scene_29",
+        "speaker": "narrador",
+        "text": "Un lagarto de sombra se deslizó desde la esquina con el vientre"
+      },
+      {
+        "scene_id": "scene_30",
+        "speaker": "narrador",
+        "text": "casi pegado al suelo, y detrás apareció una criatura del túnel,"
+      },
+      {
+        "scene_id": "scene_31",
+        "speaker": "narrador",
+        "text": "torcida como una mala copia de un cuerpo humano. Me cortaron"
+      },
+      {
+        "scene_id": "scene_32",
+        "speaker": "narrador",
+        "text": "el camino hacia el ala de Rin, y por primera vez"
+      },
+      {
+        "scene_id": "scene_33",
+        "speaker": "narrador",
+        "text": "no busqué una salida rota. [panting] Apreté la daga."
+      },
+      {
+        "scene_id": "scene_34",
+        "speaker": "narrador",
+        "text": "Lectura me marcó el instante en que el lagarto iba a girar."
+      },
+      {
+        "scene_id": "scene_35",
+        "speaker": "narrador",
+        "text": "No era una debilidad secreta. Era movimiento puro,"
+      },
+      {
+        "scene_id": "scene_36",
+        "speaker": "narrador",
+        "text": "el segundo exacto donde su velocidad dejaba una grieta."
+      },
+      {
+        "scene_id": "scene_37",
+        "speaker": "narrador",
+        "text": "[dramatic tone] Cuando saltó, yo también me moví. Clavé el filo donde la marca tembló,"
+      },
+      {
+        "scene_id": "scene_38",
+        "speaker": "narrador",
+        "text": "y el impacto me subió por el brazo hasta la mandíbula."
+      },
+      {
+        "scene_id": "scene_39",
+        "speaker": "narrador",
+        "text": "Matar de cerca tenía otra textura. Ya no era provocar un accidente"
+      },
+      {
+        "scene_id": "scene_40",
+        "speaker": "narrador",
+        "text": "y sobrevivir al resultado. Era elegir el punto, acercarme, y hundir la mano. [pause]"
+      },
+      {
+        "scene_id": "scene_41",
+        "speaker": "narrador",
+        "text": "[desperate] La criatura del túnel vino detrás. Giré con la fuerza nueva,"
+      },
+      {
+        "scene_id": "scene_42",
+        "speaker": "narrador",
+        "text": "torpe pero real, y por primera vez el golpe no se sintió prestado."
+      },
+      {
+        "scene_id": "scene_43",
+        "speaker": "narrador",
+        "text": "La daga abrió sombra. Yo abrí camino."
+      },
+      {
+        "scene_id": "scene_44",
+        "speaker": "narrador",
+        "text": "[breathless] Corrí hacia el ala de Rin con el pecho ardiendo y la promesa"
+      },
+      {
+        "scene_id": "scene_45",
+        "speaker": "narrador",
+        "text": "pesándome en la muñeca. Esta vez estaba cerca. Más cerca que nunca."
+      },
+      {
+        "scene_id": "scene_46",
+        "speaker": "narrador",
+        "text": "Pasé una puerta de seguridad, luego el corredor cambió."
+      },
+      {
+        "scene_id": "scene_47",
+        "speaker": "narrador",
+        "text": "El aire dejó de sentirse como hospital y empezó a sentirse"
+      },
+      {
+        "scene_id": "scene_48",
+        "speaker": "narrador",
+        "text": "como una habitación cerrada desde hace años. [pause]"
+      },
+      {
+        "scene_id": "scene_49",
+        "speaker": "narrador",
+        "text": "[sorrowful] Llegué al cuarto de Rin. La puerta estaba entreabierta."
+      },
+      {
+        "scene_id": "scene_50",
+        "speaker": "narrador",
+        "text": "[low, horrified] La empujé despacio… y adentro no había nadie. La cama estaba tendida"
+      },
+      {
+        "scene_id": "scene_51",
+        "speaker": "narrador",
+        "text": "con una precisión insoportable. La almohada seguía en su lugar."
+      },
+      {
+        "scene_id": "scene_52",
+        "speaker": "narrador",
+        "text": "Las máquinas estaban apagadas a un lado, limpias, quietas,"
+      },
+      {
+        "scene_id": "scene_53",
+        "speaker": "narrador",
+        "text": "como objetos que jamás hubieran esperado a una paciente."
+      },
+      {
+        "scene_id": "scene_54",
+        "speaker": "narrador",
+        "text": "Entré y busqué una señal de lo que había pasado ahí. No encontré ninguna."
+      },
+      {
+        "scene_id": "scene_55",
+        "speaker": "narrador",
+        "text": "[flat] Nada. Mi cabeza intentó trabajar, como siempre."
+      },
+      {
+        "scene_id": "scene_56",
+        "speaker": "narrador",
+        "text": "Quiso armar una explicación con lo poco que veía, pero lo poco era cero."
+      },
+      {
+        "scene_id": "scene_57",
+        "speaker": "narrador",
+        "text": "El cuarto no ofrecía una grieta, una marca,"
+      },
+      {
+        "scene_id": "scene_58",
+        "speaker": "narrador",
+        "text": "ni una contradicción donde meter los dedos."
+      },
+      {
+        "scene_id": "scene_59",
+        "speaker": "narrador",
+        "text": "[low] El reloj pesaba en mi muñeca. Yo había prometido"
+      },
+      {
+        "scene_id": "scene_60",
+        "speaker": "narrador",
+        "text": "devolvérselo cuando despertara. Y Rin… ya no estaba allí. ¿Dónde estás?…"
+      }
+    ],
+    "full_script": "[low, strained] En un pasillo sellado del Hospital Saebyeok, Lee Han apretaba el mango\nde una daga mientras la criatura frente a él\nse deshacía en humo negro bajo la luz fría del techo. [pause]\n[breathless] Una hora antes, yo ni siquiera sabía que esa daga existía.\nHabía entrado a este hospital buscando a mi hermana… y terminé\nabriéndome paso hacia un cuarto donde ella ya no estaba. [pause]\nEl cuarto vacío.\n[shaken] Después del medidor de dos lados, seguí avanzando por el hospital\ncomo si caminar fuera la única forma de no caer otra vez.\nEl corredor blanco estaba intacto de una manera que no parecía calma, sino vigilancia.\n[nervous] Afuera el desastre hacía ruido. Adentro, cada paso sonaba demasiado fuerte.\nUn piso entero estaba sellado con el emblema de la Asociación,\ny la seguridad no parecía proteger pacientes, sino algo que nadie quería nombrar.\nYo seguía pensando lo mismo: ¿por qué tanto ejército para un hospital? [pause]\n[stunned] Entonces abrí la interfaz otra vez. No por confianza.\nPor miedo. Si el sistema podía mostrarme un medidor que no entendía,\ntal vez también tenía reglas que yo todavía no sabía leer.\n[awe, breathless] Moví la pantalla con los dedos y encontré una pestaña nueva. Equipo.\n[cold] Equipo inicial disponible. Daga básica registrada.\n[low] Se me enfrió la nuca. Una daga apareció en mi mano,\nsimple, pesada, con el filo marcado por un brillo verde muy tenue.\nNo era un premio nuevo. Era equipo inicial.\n[strained] Eso significaba que pude haberla usado antes.\nCasi morí peleando con lo que encontraba en el suelo,\nmientras una herramienta real esperaba dentro de una pestaña que nunca abrí.\nNo parecía una trampa. Parecía algo más frío: el sistema registraba\nlo disponible, pero aprender a mirar era problema mío. [pause]\n[terrified] Entonces los monstruos llegaron al pasillo.\nUn lagarto de sombra se deslizó desde la esquina con el vientre\ncasi pegado al suelo, y detrás apareció una criatura del túnel,\ntorcida como una mala copia de un cuerpo humano. Me cortaron\nel camino hacia el ala de Rin, y por primera vez\nno busqué una salida rota. [panting] Apreté la daga.\nLectura me marcó el instante en que el lagarto iba a girar.\nNo era una debilidad secreta. Era movimiento puro,\nel segundo exacto donde su velocidad dejaba una grieta.\n[dramatic tone] Cuando saltó, yo también me moví. Clavé el filo donde la marca tembló,\ny el impacto me subió por el brazo hasta la mandíbula.\nMatar de cerca tenía otra textura. Ya no era provocar un accidente\ny sobrevivir al resultado. Era elegir el punto, acercarme, y hundir la mano. [pause]\n[desperate] La criatura del túnel vino detrás. Giré con la fuerza nueva,\ntorpe pero real, y por primera vez el golpe no se sintió prestado.\nLa daga abrió sombra. Yo abrí camino.\n[breathless] Corrí hacia el ala de Rin con el pecho ardiendo y la promesa\npesándome en la muñeca. Esta vez estaba cerca. Más cerca que nunca.\nPasé una puerta de seguridad, luego el corredor cambió.\nEl aire dejó de sentirse como hospital y empezó a sentirse\ncomo una habitación cerrada desde hace años. [pause]\n[sorrowful] Llegué al cuarto de Rin. La puerta estaba entreabierta.\n[low, horrified] La empujé despacio… y adentro no había nadie. La cama estaba tendida\ncon una precisión insoportable. La almohada seguía en su lugar.\nLas máquinas estaban apagadas a un lado, limpias, quietas,\ncomo objetos que jamás hubieran esperado a una paciente.\nEntré y busqué una señal de lo que había pasado ahí. No encontré ninguna.\n[flat] Nada. Mi cabeza intentó trabajar, como siempre.\nQuiso armar una explicación con lo poco que veía, pero lo poco era cero.\nEl cuarto no ofrecía una grieta, una marca,\nni una contradicción donde meter los dedos.\n[low] El reloj pesaba en mi muñeca. Yo había prometido\ndevolvérselo cuando despertara. Y Rin… ya no estaba allí. ¿Dónde estás?…",
+    "engine": "elevenlabs",
+    "voice_id": "452WrNT9o8dphaYW5YGU"
+  }
+}

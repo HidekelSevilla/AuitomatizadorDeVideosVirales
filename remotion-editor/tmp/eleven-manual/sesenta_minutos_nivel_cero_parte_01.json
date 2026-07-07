@@ -1,0 +1,1043 @@
+{
+  "project": {
+    "title": "Sesenta Minutos de Nivel Cero - Parte 1: Sesenta minutos tarde",
+    "preset": "manhwa",
+    "slug": "sesenta_minutos_nivel_cero_parte_01",
+    "language": "es-419",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "default_clip_duration_s": 4
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "elevenlabs",
+      "voice_id": "452WrNT9o8dphaYW5YGU",
+      "language": "es-419"
+    },
+    "editing": {
+      "tool": "remotion"
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Telephoto rear angle: Lee Han runs through a blocked Seoul avenue toward a distant hospital silhouette, soaked work vest flaring, blue wristwatch visible on his left wrist. Abandoned cars angle across wet lanes while blurred civilians fill the far background. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[low, strained] Este chico corre hacia un hospital que quizá ya no exista…",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_02",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Extreme close-up angle in a white-page framed single manhwa panel: Lee Han’s tense mouth and scraped jaw fill a black rectangular crop. Rain beads slide from his chin, his lips part mid-run, and the clean white margin isolates panic from the street. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "y todavía cree que su peor problema es llegar tarde. [pause]",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_03",
+      "type": "narrative_card",
+      "card": {
+        "mode": "editor",
+        "text": "Sesenta minutos tarde"
+      },
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": ""
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Sesenta minutos tarde.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_04",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Medium frontal portrait angle: Lee Han stands alone in a clean gray void, nineteen-year-old ordinary Korean face, short black hair, dark-brown eyes fully visible, plain white shirt and simple posture, blue wristwatch on his left wrist. The frame feels like a character-introduction panel before the disaster. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[serious] Ese chico… soy yo. Lee Han.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_05",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Front portrait angle: Lee Han stands alone against a plain gray void, nineteen-year-old ordinary face, short black hair, dark-brown eyes, blue wristwatch on left wrist, empty hands at his sides. The composition introduces him as tired and painfully normal. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Acababa de cumplir diecinueve años, tenía dos trabajos, cero talento,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_06",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Doorway wide angle inside a pale hospital room: Lee Han stands beside Lee Rin’s bed while Rin sits weakly near the pillow. Cold daylight through blinds touches the bed rail and bedside table, establishing the sister bond inside a quiet medical space. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "y una hermana menor llamada Rin en coma dentro del Hospital Saebyeok. [pause]",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_07",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Bedside low angle: Lee Rin reaches toward Lee Han’s left wrist in a birthday memory, her hospital cardigan sleeve loose around a thin hand. Han leans closer, worried, while the pale room stays still around them. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[soft, sorrowful] En mi cumpleaños, justo antes de cerrar los ojos,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_08",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Close hand angle: Rin’s fingers fasten the old blue watch around Lee Han’s left wrist, the strap crossing his skin while his right hand hovers nearby. The hospital bed edge and white blanket blur behind them, and the watch is sharpest. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Rin me amarró en la muñeca el reloj azul de nuestro padre.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_09",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Macro watch angle: a single thick black-framed manhwa panel placed on a pure white page shows the blue analog wristwatch face, silver hands reading exactly '6:42', worn metal rim and brown leather strap. The watch fills the panel like a memory object, with pale hospital light reflected on the glass. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La aguja estaba clavada en las seis cuarenta y dos,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_10",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Soft close-up angle on Lee Rin’s face in the hospital bed, light-brown eyes tired, mouth forming a small teasing smile. The pale blanket frames her shoulders, and the sterile room fades into a gentle blur around her expression. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "y ella sonrió como si eso también fuera una broma.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_11",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Close-up voice angle: Lee Rin’s lips and lower face sit inside a white-page manhwa panel with a simple black crop. Her hospital collar and faint smile remain visible, creating an intimate spoken-memory frame for her line. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "—Tú siempre llegas tarde, Han… úsalo tú.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_12",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Over-the-shoulder bedside angle: a single thick black-framed panel placed on a pure white page shows Lee Han looking down at the blue watch on his left wrist beside Rin's hospital bed, dark-brown eyes lowered, shoulders small. The pale room is simplified inside the frame, focused on the promise. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[low] Yo le prometí devolvérselo cuando despertara. En ese momento",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_13",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Medium seated angle: a single thick black-framed panel placed on a pure white page shows Lee Han sitting beside the hospital bed, both hands clasped near his knees, blue watch visible on his left wrist. Rin rests blurred behind him under pale daylight, and the empty white margin makes the promise feel fragile. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "pensé que era una promesa pequeña. De esas que uno hace",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_14",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Wide bedside angle: a single thick black-framed panel placed on a pure white page shows Lee Han standing at the foot of Rin's hospital bed, silent and helpless, his blue watch catching a tiny highlight. The hospital bed dominates the framed panel while the pure white page around it feels quiet. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "porque no sabe qué más decir frente a una cama de hospital. [pause]",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_15",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "White-page framed news-collage angle: three narrow manhwa panels show ordinary Seoul under calm daylight, a small broadcast screen with the short phrase 'TODO CONTROLADO', and commuters walking past hairline cracks in glass. The layout feels official and reassuring. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[serious] El mundo todavía fingía normalidad. La Asociación hablaba de apagones",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_16",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Low street angle between Seoul buildings: faint hairline distortions hang high in the sky while pedestrians continue moving underneath them. A bus waits at the curb, office windows reflect pale light, and the city tries to keep rhythm. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "y temblores, decía que todo estaba controlado, y la gente quería",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_17",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "White-page framed close angle on Lee Han behind a convenience-store counter, dark-brown eyes tired as he counts small bills near the register. The blue watch sits on his left wrist, and the white margin turns money pressure into silence. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "creerlo porque el miedo cansa más cuando hay que pagar renta.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_18",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Behind-counter angle inside Daro 24: Lee Han wears his convenience-store vest under warm fluorescent lights, one hand near the register and the other at his side. Shelves of snacks and drink coolers build a cramped night-shift background. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[tired] Mi turno empezó en Daro veinticuatro, el konbini donde trabajaba",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_19",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Aisle-level angle between ramen shelves: Lee Han walks through the narrow konbini aisle, vest visible, blue watch at his left wrist. Bright packaged cups and snack rows create a tunnel of cheap food and late-night routine. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "de noche. Un konbini es una tienda abierta todo el día,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_20",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Product-shelf angle: generic coffee cans, instant ramen cups, and small price tags fill the konbini foreground while Lee Han is blurred in the distance behind the counter. Warm ceiling light makes the place ordinary and exhausting. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "con café barato, ramen instantáneo y un sueldo que nunca alcanzaba.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_21",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Counter close angle: Lee Han holds a plain phone to his ear with his right hand, dark-brown eyes tightening as the call lands. His left wrist rests near the register with the blue watch visible under warm store light. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[strained] Esa tarde llamó el hospital. Si no pagaba antes del cierre,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_22",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Side medium angle: Lee Han lowers the phone from his ear, shoulders stiff, mouth half-open before he asks to leave. The konbini manager remains a blurred figure in the background, focused downward behind the counter. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "sacarían a Rin del tratamiento. Guardé el teléfono, pedí salir antes,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_23",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "White-page framed reaction angle: Lee Han stands small beside the checkout counter while a blurred manager shape looks down at paperwork. Han’s hand hangs at his side, the watch visible, and the white margin isolates dismissal. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "y mi jefe ni levantó la vista.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_24",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Dutch angle inside the konbini: the front glass windows tremble while Lee Han turns toward them, startled. Ramen cups and small packaged goods shake on nearby shelves, and two blurred customers freeze in the aisle. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[nervous] Entonces temblaron los vidrios. No era un apagón ni un temblor pequeño.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_25",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Wide intersection angle outside Daro 24: cars halt across the Seoul street as pedestrians look up in staggered confusion. Reflections stretch across wet asphalt, traffic lights glow red, and the city pauses mid-motion. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Afuera, los autos se detuvieron como si toda Seúl hubiera olvidado",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_26",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Extreme low-angle sky shot: Seoul buildings frame the view upward as a black rift tears open across the daylight sky, drawing every face in the street toward it. The avenue below sits frozen beneath the opening. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "The black rift tears open violently across the sky as the camera tilts upward from the frozen street. One ripple of dark particles falls from the split while the buildings stay rigid around it. Maintain character consistency, keep all subjects inside the frame. Final second holds still.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "cómo moverse, y el cielo se abrió sobre la ciudad. [pause]",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_27",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Low front tracking angle: Lee Han breaks into a run through the blocked avenue, soaked vest flaring, blue watch flashing on his left wrist. Blurred civilians scatter behind him while smoke and stopped cars create a narrowing path. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[breathless] Ahí sí corrí. No por valentía. Corrí porque Rin",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_28",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Over-the-shoulder running angle from behind Lee Han: the distant hospital tower sits across the city haze while the street between him and it buckles into blocked lanes. His posture leans forward with urgent, imperfect speed. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "estaba sola al otro lado de Seúl, y las calles empezaron",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_29",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Street-level angle at a subway entrance: emergency tape and abandoned cars squeeze the street while Lee Han reaches the stair railing. The entrance descends into a darker underpass, offering the only visible route through the chaos. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "a cerrarse una tras otra.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_30",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "High angle from the top of the station stairs: Lee Han descends into the underground passage, one hand sliding along the rail, wet shoes stepping into dim light. The bright street behind him narrows into a rectangle. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[shaken] Para cortar camino bajé al paso subterráneo de la estación.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_31",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Long corridor angle inside the underpass: Lee Han stands alone in the wet tiled passage, framed by flickering ceiling lights and shallow puddles. The heavy shutter and emergency chain sit deep in the background, quiet and waiting. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Estaba vacío, mojado, demasiado quieto. La peor decisión de mi vida.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_32",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Floor-to-ceiling angle: Lee Han looks forward in the corridor while the black rift creature drops from the ceiling behind him, limbs bent wrong and teeth emerging from shadow. Wet tiles reflect both figures under cold fluorescent light. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "The creature drops sharply from the ceiling behind Lee Han as the camera snaps from the floor toward the landing. A single puddle ripple spreads outward under its claws. Maintain character consistency, keep all subjects inside the frame. Final second holds still.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[terrified] Algo cayó del techo. Una criatura negra, doblada como un cuerpo mal armado,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_33",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Dutch low angle in the tunnel: the creature crouches between Lee Han and the exit, hollow face aimed at him while he stumbles backward. Its mouth opens with too many teeth, and the wet corridor tightens around them. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "me miró sin ojos y avanzó hacia mí.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_34",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Side impact setup angle: Lee Han tries to slip around the creature near a tiled support column, but the monster’s long arm cuts across his path. His body twists away, vest soaked, left wrist exposed as the attack connects. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Intenté rodearla. Me alcanzó igual. Me estrelló contra una columna,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_35",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "High angle looking down: Lee Han lies ON TOP of the wet tiled floor after the impact, right shoulder and hip contacting the ground while his left forearm stretches toward the blue watch. His knees bend unevenly and puddles frame the wrist. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "me arrancó el aire, y cuando caí, mi mano golpeó el reloj.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_36",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Top-down UI angle over Han’s left wrist: a translucent jade system window blooms above the blue watch with compact labels 'REGISTRO DESVIADO', 'NIVEL 0', and 'CRITICO'. The jade light touches Han’s knuckles and wet tile. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[cold] Portador detectado. Registro desviado. Nivel cero. Condición crítica.",
+        "speaker": "sistema"
+      }
+    },
+    {
+      "id": "scene_37",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Close-up wrist angle: a single thick black-framed panel placed on a pure white page shows Lee Han's left wrist ON TOP of the wet tile, the blue watch under a translucent jade interface with short glyph blocks. The jade glow touches his sleeve and knuckles, while his dark-brown eyes are outside the crop. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[awe, breathless] Una ventana verde apareció sobre mi muñeca.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_38",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Point-of-view tactical angle from Han’s position on the floor: the creature crouches ahead, while a jade UI near the watch shows '60:00' and 'OBJETIVO'. Thin jade lines mark the creature, the hanging shutter, and wet cable path. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[cold] Tiempo restante, sesenta minutos. Elimina objetivo marcado.",
+        "speaker": "sistema"
+      }
+    },
+    {
+      "id": "scene_39",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Three-panel analysis layout on a pure white page: first thick black-framed panel shows Lee Han kneeling wounded, second panel shows the black creature marked by a tiny jade outline, third panel shows his left wrist with the blue watch and a compact jade UI. Each sub-panel uses one clear subject. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[desperate] No me dio fuerza. Solo marcó a la criatura,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_40",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Low mechanical angle under the heavy metal shutter: a rusted emergency chain hangs beside exposed wet cables, with a shallow puddle spreading beneath. Jade system marks lightly outline the shutter seam and cable contact point. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "una compuerta sobre mi cabeza y unos cables mojados junto al suelo.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_41",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Diagonal action angle: Lee Han reaches upward with his right hand and grips the emergency chain while kneeling on wet tile, left wrist watch visible. His torn, soaked sleeve clings to his arm as the chain centers the frame. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Así que hice lo único que podía hacer: jalé la cadena.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_42",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure onomatopoeia panel: the full vertical frame is filled with jagged white lettering 'KRAK' outlined in deep red over black-and-gray speed lines, each letter fractured downward like falling metal. The typography carries the shutter impact as a single blow. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[impact] KRAK.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_43",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Frontal impact angle in the underpass: the heavy shutter crashes down between Lee Han and the creature as wet cables spark across the floor, and the creature breaks into black smoke under the falling metal. White-blue sparks dominate the impact. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "The metal shutter slams downward heavily as the camera shakes once from the impact. White-blue sparks crawl through the puddle while black smoke bursts from the creature. Maintain character consistency, keep all subjects inside the frame. Final second holds still.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[dramatic tone] La compuerta cayó, los cables chispearon, y la criatura se deshizo en humo negro",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_44",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Aftermath angle: a single thick black-framed panel placed on a pure white page shows Lee Han kneeling ON TOP of the wet tunnel floor, right hand pressed to tile, left wrist with the blue watch near his chest, smoke fading behind him. His dark-brown eyes look stunned, and the white margin isolates his survival. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "mientras yo seguía respirando sin entender por qué. [pause]",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_45",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Final system UI angle: a single thick black-framed panel placed on a pure white page shows Lee Han's blue watch in the lower frame and a translucent jade interface above it with compact labels 'OBJETIVO', 'HOSPITAL', 'LEE RIN'. The jade glow lights only the watch and wet tile, ending in a cold cliffhanger. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[cold] Objetivo eliminado. Origen activo, Hospital Saebyeok. Usuario cero… Lee Rin…",
+        "speaker": "sistema"
+      }
+    }
+  ],
+  "render_export": {
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18",
+      "scene_19",
+      "scene_20",
+      "scene_21",
+      "scene_22",
+      "scene_23",
+      "scene_24",
+      "scene_25",
+      "scene_26",
+      "scene_27",
+      "scene_28",
+      "scene_29",
+      "scene_30",
+      "scene_31",
+      "scene_32",
+      "scene_33",
+      "scene_34",
+      "scene_35",
+      "scene_36",
+      "scene_37",
+      "scene_38",
+      "scene_39",
+      "scene_40",
+      "scene_41",
+      "scene_42",
+      "scene_43",
+      "scene_44",
+      "scene_45"
+    ]
+  },
+  "tts_export": {
+    "language": "es-419",
+    "mode": "dialogue",
+    "model_id": "eleven_v3",
+    "elevenlabs_speed": 1,
+    "edit_speed": 1.35,
+    "voices": {
+      "narrador": "452WrNT9o8dphaYW5YGU",
+      "sistema": "iOeCMakiJ4CctfQaM9yd"
+    },
+    "dialogue": [
+      {
+        "scene_id": "scene_01",
+        "speaker": "narrador",
+        "text": "[low, strained] Este chico corre hacia un hospital que quizá ya no exista…"
+      },
+      {
+        "scene_id": "scene_02",
+        "speaker": "narrador",
+        "text": "y todavía cree que su peor problema es llegar tarde. [pause]"
+      },
+      {
+        "scene_id": "scene_03",
+        "speaker": "narrador",
+        "text": "Sesenta minutos tarde."
+      },
+      {
+        "scene_id": "scene_04",
+        "speaker": "narrador",
+        "text": "[serious] Ese chico… soy yo. Lee Han."
+      },
+      {
+        "scene_id": "scene_05",
+        "speaker": "narrador",
+        "text": "Acababa de cumplir diecinueve años, tenía dos trabajos, cero talento,"
+      },
+      {
+        "scene_id": "scene_06",
+        "speaker": "narrador",
+        "text": "y una hermana menor llamada Rin en coma dentro del Hospital Saebyeok. [pause]"
+      },
+      {
+        "scene_id": "scene_07",
+        "speaker": "narrador",
+        "text": "[soft, sorrowful] En mi cumpleaños, justo antes de cerrar los ojos,"
+      },
+      {
+        "scene_id": "scene_08",
+        "speaker": "narrador",
+        "text": "Rin me amarró en la muñeca el reloj azul de nuestro padre."
+      },
+      {
+        "scene_id": "scene_09",
+        "speaker": "narrador",
+        "text": "La aguja estaba clavada en las seis cuarenta y dos,"
+      },
+      {
+        "scene_id": "scene_10",
+        "speaker": "narrador",
+        "text": "y ella sonrió como si eso también fuera una broma."
+      },
+      {
+        "scene_id": "scene_11",
+        "speaker": "narrador",
+        "text": "—Tú siempre llegas tarde, Han… úsalo tú."
+      },
+      {
+        "scene_id": "scene_12",
+        "speaker": "narrador",
+        "text": "[low] Yo le prometí devolvérselo cuando despertara. En ese momento"
+      },
+      {
+        "scene_id": "scene_13",
+        "speaker": "narrador",
+        "text": "pensé que era una promesa pequeña. De esas que uno hace"
+      },
+      {
+        "scene_id": "scene_14",
+        "speaker": "narrador",
+        "text": "porque no sabe qué más decir frente a una cama de hospital. [pause]"
+      },
+      {
+        "scene_id": "scene_15",
+        "speaker": "narrador",
+        "text": "[serious] El mundo todavía fingía normalidad. La Asociación hablaba de apagones"
+      },
+      {
+        "scene_id": "scene_16",
+        "speaker": "narrador",
+        "text": "y temblores, decía que todo estaba controlado, y la gente quería"
+      },
+      {
+        "scene_id": "scene_17",
+        "speaker": "narrador",
+        "text": "creerlo porque el miedo cansa más cuando hay que pagar renta."
+      },
+      {
+        "scene_id": "scene_18",
+        "speaker": "narrador",
+        "text": "[tired] Mi turno empezó en Daro veinticuatro, el konbini donde trabajaba"
+      },
+      {
+        "scene_id": "scene_19",
+        "speaker": "narrador",
+        "text": "de noche. Un konbini es una tienda abierta todo el día,"
+      },
+      {
+        "scene_id": "scene_20",
+        "speaker": "narrador",
+        "text": "con café barato, ramen instantáneo y un sueldo que nunca alcanzaba."
+      },
+      {
+        "scene_id": "scene_21",
+        "speaker": "narrador",
+        "text": "[strained] Esa tarde llamó el hospital. Si no pagaba antes del cierre,"
+      },
+      {
+        "scene_id": "scene_22",
+        "speaker": "narrador",
+        "text": "sacarían a Rin del tratamiento. Guardé el teléfono, pedí salir antes,"
+      },
+      {
+        "scene_id": "scene_23",
+        "speaker": "narrador",
+        "text": "y mi jefe ni levantó la vista."
+      },
+      {
+        "scene_id": "scene_24",
+        "speaker": "narrador",
+        "text": "[nervous] Entonces temblaron los vidrios. No era un apagón ni un temblor pequeño."
+      },
+      {
+        "scene_id": "scene_25",
+        "speaker": "narrador",
+        "text": "Afuera, los autos se detuvieron como si toda Seúl hubiera olvidado"
+      },
+      {
+        "scene_id": "scene_26",
+        "speaker": "narrador",
+        "text": "cómo moverse, y el cielo se abrió sobre la ciudad. [pause]"
+      },
+      {
+        "scene_id": "scene_27",
+        "speaker": "narrador",
+        "text": "[breathless] Ahí sí corrí. No por valentía. Corrí porque Rin"
+      },
+      {
+        "scene_id": "scene_28",
+        "speaker": "narrador",
+        "text": "estaba sola al otro lado de Seúl, y las calles empezaron"
+      },
+      {
+        "scene_id": "scene_29",
+        "speaker": "narrador",
+        "text": "a cerrarse una tras otra."
+      },
+      {
+        "scene_id": "scene_30",
+        "speaker": "narrador",
+        "text": "[shaken] Para cortar camino bajé al paso subterráneo de la estación."
+      },
+      {
+        "scene_id": "scene_31",
+        "speaker": "narrador",
+        "text": "Estaba vacío, mojado, demasiado quieto. La peor decisión de mi vida."
+      },
+      {
+        "scene_id": "scene_32",
+        "speaker": "narrador",
+        "text": "[terrified] Algo cayó del techo. Una criatura negra, doblada como un cuerpo mal armado,"
+      },
+      {
+        "scene_id": "scene_33",
+        "speaker": "narrador",
+        "text": "me miró sin ojos y avanzó hacia mí."
+      },
+      {
+        "scene_id": "scene_34",
+        "speaker": "narrador",
+        "text": "Intenté rodearla. Me alcanzó igual. Me estrelló contra una columna,"
+      },
+      {
+        "scene_id": "scene_35",
+        "speaker": "narrador",
+        "text": "me arrancó el aire, y cuando caí, mi mano golpeó el reloj."
+      },
+      {
+        "scene_id": "scene_36",
+        "speaker": "sistema",
+        "text": "[cold] Portador detectado. Registro desviado. Nivel cero. Condición crítica."
+      },
+      {
+        "scene_id": "scene_37",
+        "speaker": "narrador",
+        "text": "[awe, breathless] Una ventana verde apareció sobre mi muñeca."
+      },
+      {
+        "scene_id": "scene_38",
+        "speaker": "sistema",
+        "text": "[cold] Tiempo restante, sesenta minutos. Elimina objetivo marcado."
+      },
+      {
+        "scene_id": "scene_39",
+        "speaker": "narrador",
+        "text": "[desperate] No me dio fuerza. Solo marcó a la criatura,"
+      },
+      {
+        "scene_id": "scene_40",
+        "speaker": "narrador",
+        "text": "una compuerta sobre mi cabeza y unos cables mojados junto al suelo."
+      },
+      {
+        "scene_id": "scene_41",
+        "speaker": "narrador",
+        "text": "Así que hice lo único que podía hacer: jalé la cadena."
+      },
+      {
+        "scene_id": "scene_42",
+        "speaker": "narrador",
+        "text": "[impact] KRAK."
+      },
+      {
+        "scene_id": "scene_43",
+        "speaker": "narrador",
+        "text": "[dramatic tone] La compuerta cayó, los cables chispearon, y la criatura se deshizo en humo negro"
+      },
+      {
+        "scene_id": "scene_44",
+        "speaker": "narrador",
+        "text": "mientras yo seguía respirando sin entender por qué. [pause]"
+      },
+      {
+        "scene_id": "scene_45",
+        "speaker": "sistema",
+        "text": "[cold] Objetivo eliminado. Origen activo, Hospital Saebyeok. Usuario cero… Lee Rin…"
+      }
+    ],
+    "full_script": "[low, strained] Este chico corre hacia un hospital que quizá ya no exista…\ny todavía cree que su peor problema es llegar tarde. [pause]\nSesenta minutos tarde.\n[serious] Ese chico… soy yo. Lee Han.\nAcababa de cumplir diecinueve años, tenía dos trabajos, cero talento,\ny una hermana menor llamada Rin en coma dentro del Hospital Saebyeok. [pause]\n[soft, sorrowful] En mi cumpleaños, justo antes de cerrar los ojos,\nRin me amarró en la muñeca el reloj azul de nuestro padre.\nLa aguja estaba clavada en las seis cuarenta y dos,\ny ella sonrió como si eso también fuera una broma.\n—Tú siempre llegas tarde, Han… úsalo tú.\n[low] Yo le prometí devolvérselo cuando despertara. En ese momento\npensé que era una promesa pequeña. De esas que uno hace\nporque no sabe qué más decir frente a una cama de hospital. [pause]\n[serious] El mundo todavía fingía normalidad. La Asociación hablaba de apagones\ny temblores, decía que todo estaba controlado, y la gente quería\ncreerlo porque el miedo cansa más cuando hay que pagar renta.\n[tired] Mi turno empezó en Daro veinticuatro, el konbini donde trabajaba\nde noche. Un konbini es una tienda abierta todo el día,\ncon café barato, ramen instantáneo y un sueldo que nunca alcanzaba.\n[strained] Esa tarde llamó el hospital. Si no pagaba antes del cierre,\nsacarían a Rin del tratamiento. Guardé el teléfono, pedí salir antes,\ny mi jefe ni levantó la vista.\n[nervous] Entonces temblaron los vidrios. No era un apagón ni un temblor pequeño.\nAfuera, los autos se detuvieron como si toda Seúl hubiera olvidado\ncómo moverse, y el cielo se abrió sobre la ciudad. [pause]\n[breathless] Ahí sí corrí. No por valentía. Corrí porque Rin\nestaba sola al otro lado de Seúl, y las calles empezaron\na cerrarse una tras otra.\n[shaken] Para cortar camino bajé al paso subterráneo de la estación.\nEstaba vacío, mojado, demasiado quieto. La peor decisión de mi vida.\n[terrified] Algo cayó del techo. Una criatura negra, doblada como un cuerpo mal armado,\nme miró sin ojos y avanzó hacia mí.\nIntenté rodearla. Me alcanzó igual. Me estrelló contra una columna,\nme arrancó el aire, y cuando caí, mi mano golpeó el reloj.\n[cold] Portador detectado. Registro desviado. Nivel cero. Condición crítica.\n[awe, breathless] Una ventana verde apareció sobre mi muñeca.\n[cold] Tiempo restante, sesenta minutos. Elimina objetivo marcado.\n[desperate] No me dio fuerza. Solo marcó a la criatura,\nuna compuerta sobre mi cabeza y unos cables mojados junto al suelo.\nAsí que hice lo único que podía hacer: jalé la cadena.\n[impact] KRAK.\n[dramatic tone] La compuerta cayó, los cables chispearon, y la criatura se deshizo en humo negro\nmientras yo seguía respirando sin entender por qué. [pause]\n[cold] Objetivo eliminado. Origen activo, Hospital Saebyeok. Usuario cero… Lee Rin…",
+    "engine": "elevenlabs",
+    "voice_id": "452WrNT9o8dphaYW5YGU"
+  }
+}

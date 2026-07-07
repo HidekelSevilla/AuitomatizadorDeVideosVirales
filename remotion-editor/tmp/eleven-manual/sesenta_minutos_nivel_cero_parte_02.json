@@ -1,0 +1,590 @@
+{
+  "project": {
+    "title": "Sesenta Minutos de Nivel Cero - Parte 2: Los que llegaron tarde",
+    "preset": "manhwa",
+    "slug": "sesenta_minutos_nivel_cero_parte_02",
+    "language": "es-419",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "default_clip_duration_s": 4
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "elevenlabs",
+      "voice_id": "452WrNT9o8dphaYW5YGU",
+      "language": "es-419"
+    },
+    "editing": {
+      "tool": "remotion"
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "High three-quarter angle in bright morning daylight: Lee Han drops to both knees on the hospital asphalt, his left cheek pressed to the ground while he braces with one shaking palm, soaked convenience-store uniform clinging to him, three rifle laser dots burning on his chest. Containment troops and long gun barrels crowd the blurred foreground around him. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[serious] Lee Han cayó de rodillas frente al Hospital Saebyeok, la mejilla contra el asfalto."
+      }
+    },
+    {
+      "id": "scene_02",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Worm's-eye close-up in clear daytime light: Lee Han lifts his face a few centimeters from the asphalt while red laser dots tremble across his soaked chest, and a single brighter red point climbs slowly from his collarbone toward his forehead. Rifle muzzles angle in from the upper frame, tight and threatening. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Tres luces rojas se clavaban en su pecho, y el punto rojo subía despacio."
+      }
+    },
+    {
+      "id": "scene_03",
+      "type": "narrative_card",
+      "card": {
+        "mode": "editor",
+        "text": "Los que llegaron tarde"
+      },
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": ""
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Los que llegaron tarde."
+      }
+    },
+    {
+      "id": "scene_04",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Bird's-eye angle looking down in pale daytime spill from above: Lee Han lies ON TOP of the wet tunnel floor, chest and both forearms pressed to the tile, head lifted weakly as he wakes against a damp wall, black hair stuck to his face, mouth half open as if tasting blood. Cold fluorescent light lingers inside the underground passage. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[groaning] Cuando abrí los ojos, seguía en el paso subterráneo, con hierro en la boca."
+      }
+    },
+    {
+      "id": "scene_05",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Extreme close-up in cold tunnel daylight spill: Lee Han presses his right hand against the healed side of his torso through the soaked store uniform, jaw clenched while his shoulders tremble uncontrollably, droplets sliding off his sleeve. The rough wall and wet tile blur behind him, emphasizing the strange absence of an open wound. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La herida ya no estaba abierta, pero mi cuerpo temblaba como un interruptor roto."
+      }
+    },
+    {
+      "id": "scene_06",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga page layout on pure white background, three stacked rectangular panels with bold black borders, all in morning continuity: top panel — Lee Han's tired dark-brown eye narrows in confusion; middle panel — his left wrist twists upward, showing the blue watch frozen at '6:42'; bottom panel — daylight glows beyond the stair exit. Fine hatching shadows inside the panels, clean white gutter around them. Hand-drawn Korean manhwa webtoon illustration, inked lineart, high contrast, vertical 9:16 composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "El reloj azul marcaba seis cuarenta y dos, aunque afuera ya era de día."
+      }
+    },
+    {
+      "id": "scene_07",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Over-the-shoulder shot from behind in bright daytime: Lee Han drags one leg up the stairwell, left hand gripping the rail while his body leans toward the rectangle of daylight above, wet steps and broken debris trailing behind him. His soaked convenience-store vest hangs heavy as he forces himself upward. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Subí las escaleras arrastrando una pierna, hasta que la luz me pegó."
+      }
+    },
+    {
+      "id": "scene_08",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Wide establishing shot in bright late-morning daylight: the Seoul avenue opens beyond the tunnel exit, traffic halted by emergency lines, ambulances parked crookedly, civilians clustering at the sidewalks while the city carries on in fragments. The sky looks almost ordinary above distant damage and barrier tape, making the street feel painfully half-alive. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[tired] Seúl no estaba muerta. Estaba viva a medias, bajo un día demasiado normal."
+      }
+    },
+    {
+      "id": "scene_09",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Knee-level lateral shot in crisp daytime: anonymous pedestrians stop behind a loose safety line, several leaning forward as they record with raised phones, while an ambulance crew wheels equipment in the background. Shoes, tape, and smartphone screens dominate the lower frame, making the avenue feel crowded, nosy, and unsteady rather than abandoned. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Había ambulancias, cordones plásticos y curiosos filmando como si el cielo fuera noticia."
+      }
+    },
+    {
+      "id": "scene_10",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga page layout on pure white background, three stacked rectangular panels with bold black borders, all under sharp daytime light: top panel — a police officer gestures civilians backward; middle panel — a loudspeaker van points toward the cordon; bottom panel — yellow tape flaps across cracked pavement. Clean white margins surround the framed sequence, with sparse motion lines inside only. Hand-drawn Korean manhwa webtoon illustration, inked lineart, high contrast, vertical 9:16 composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Y la policía repetía que todo estaba bajo control, aunque nadie lo creyera. [pause]"
+      }
+    },
+    {
+      "id": "scene_11",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Long telephoto shot in bright daytime: a team of licensed hunters strides through the avenue cordon with camera operators packed around them, and Park Tae leads at center frame, moving smoothly while bystanders part to let him pass. Broadcast cameras and excited spectators compress around the hunters like a celebrity arrival. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[shaken] Entonces llegaron los cazadores con licencia, acompañados por cámaras y sonrisas ensayadas."
+      }
+    },
+    {
+      "id": "scene_12",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Medium low-angle shot in hard daytime light: Park Tae turns toward the cameras with a flawless smile, one arm lifted as blue fire coils around his forearm and palm. His clean combat gear stays immaculate, and the smoky edge of an active rift hangs behind him like a stage backdrop waiting for the performance. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "En medio de todos estaba Park Tae, impecable, con fuego azul enroscado al brazo."
+      }
+    },
+    {
+      "id": "scene_13",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Dutch medium shot in clear daylight: Park Tae raises an open hand toward the rift while turning his perfect profile toward the nearest camera, deliberately pausing so the lens catches him first. Black smoke pours from the crack in the air behind him, and scattered spectators hold up phones beyond the barrier tape. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La grieta escupió humo negro, y Park Tae levantó la mano para posar."
+      }
+    },
+    {
+      "id": "scene_14",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Frontal action shot in blazing daytime: Park Tae thrusts his palm straight toward the smoking rift, blue fire bursting outward to bite into the crack while camera operators lean around him to capture the moment. His smile stays camera-ready even as the flame arcs and the torn air collapses. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "Blue fire lashes forward from Park Tae's outstretched hand and seals the smoking rift shut in one violent surge. Static frontal camera with one hard shake at the instant the crack collapses. Maintain character consistency, keep all subjects inside the frame. Final second holds still.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "—Retrocedan, por favor. Esto puede ser peligroso… y luego cerró la grieta con fuego azul."
+      }
+    },
+    {
+      "id": "scene_15",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga panel on pure white background: a single rectangular panel with a bold black border, inside it Lee Han stands rigid and dripping in bright daytime while blurred hands and smartphones around him clap and rise in celebration. His soaked work uniform hangs heavy, blood hidden beneath the fabric, and his exhausted dark-brown eyes stay fixed ahead. Fine hatching inside the panel, clean white gutter around it. Hand-drawn Korean manhwa webtoon illustration, inked lineart, high contrast, vertical 9:16 composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La multitud aplaudió, y yo seguí quieto, empapado, sangrando bajo el uniforme del Daro."
+      }
+    },
+    {
+      "id": "scene_16",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Over-the-shoulder shot in harsh daytime: Lee Han pushes through the edge of the gathered crowd with one shoulder forward, eyes locked on Park Tae ahead, his wet sleeve brushing past blurred civilians. The barrier line and camera crew create a narrow channel as he moves toward the hunters, small and ragged among people with intact clothes. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[desperate] Me acerqué porque pensé que alguien tendría respuestas, pero Park Tae ni volteó."
+      }
+    },
+    {
+      "id": "scene_17",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Side impact shot in bright daytime: Park Tae, tall in clean black hunter gear, drives past from the left and shoves Lee Han aside with his shoulder without looking at him. Lee Han, smaller in a soaked convenience-store uniform, recoils to the right with his body twisting off balance, while cameras stay pointed past him toward the hero. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Solo me apartó con el hombro, como si yo fuera otro civil estorbando."
+      }
+    },
+    {
+      "id": "scene_18",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Strict profile close-up in daylight: Lee Han catches himself after the shove, one hand lifted for balance while he turns away from the cheering crowd and stares down the road toward the hospital. Water drips from his messy hair, and the expression on his tired face hardens from humiliation into urgency. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Y tal vez tenía razón, pero Rin seguía dentro del Saebyeok."
+      }
+    },
+    {
+      "id": "scene_19",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Medium tracking shot in bright daytime: Lee Han runs toward Hospital Saebyeok across open pavement, one arm tucked close to his aching side while the other pumps for speed, his soaked uniform flaring with each step. The hospital facade rises ahead, sterile and distant, as emergency vehicles and scattered bystanders blur behind him. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Corrí al hospital porque mi hermana estaba allá, conectada a una máquina."
+      }
+    },
+    {
+      "id": "scene_20",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Wide high-angle shot in clean daytime: the front of Hospital Saebyeok sits under a heavier security perimeter than the surrounding streets, with layered barricades, armored vans, and sparse civilian space. The entrance looks isolated inside its own controlled zone, visibly separated from the ordinary disaster response outside. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[breathless] El Saebyeok no estaba acordonado como las otras calles. Tenía otra clase de cerco."
+      }
+    },
+    {
+      "id": "scene_21",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Frontal medium-wide shot in bright morning daylight: an agent of containment in black tactical armor steps across the hospital entrance line, rifle angled inward toward the building instead of outward to the street. More helmeted agents hold positions behind a double barrier, making the security posture feel wrong and unnervingly focused on what is inside. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Había agentes con cascos negros, barreras dobles y rifles apuntando hacia adentro."
+      }
+    },
+    {
+      "id": "scene_22",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Shoulder-height tracking shot in bright daylight: Lee Han slips past a gap near the barrier with his head lowered and one hand half-raised as if expecting to be stopped, but the agents look through him and keep watching the hospital. His crumpled ID hangs uselessly from his fingers while he moves forward unnoticed. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Mi identificación pasó invisible, mi nombre también… a nadie le importó."
+      }
+    },
+    {
+      "id": "scene_23",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga panel on pure white background: a single rectangular panel with a bold black border, inside it a rigid Association warning placard is bolted beside the hospital entrance in stark daytime light, displaying the exact words 'PROTOCOLO DE CONTENCIÓN ACTIVO' in clean black lettering. Barricade tape and a sliver of the doorway edge frame the sign. Clean white margins remain around the panel. Hand-drawn Korean manhwa webtoon illustration, inked lineart, high contrast, vertical 9:16 composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "En la entrada, un cartel decía: Protocolo de contención activo."
+      }
+    },
+    {
+      "id": "scene_24",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Low side shot in bright daytime: the twisted threshold creature drags itself along the hospital side entrance lane, shoulders rolling low as clawed feet scrape concrete and its dark plated back flexes toward the glass access doors ahead. Reflections ripple across the tempered glass while faint black vapor leaks from the monster's joints. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Y fue entonces cuando vi algo arrastrarse por la entrada lateral del hospital."
+      }
+    },
+    {
+      "id": "scene_25",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Waist-level frontal shot in sharp daytime: the low twisted creature hunches and advances straight toward the hospital doors, plated shoulders rising and falling as it prowls, its pale faceless slit angled at the entrance. The glass structure looms behind it, clearly showing that the monster is closing in on the doors. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Era una criatura baja, torcida, cubierta de placas oscuras, y venía hacia las puertas."
+      }
+    },
+    {
+      "id": "scene_26",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga page layout on pure white background, three stacked rectangular panels with bold black borders, all in bright daytime: top panel — Lee Han lurches forward and falters, knees weak; middle panel — his dark-brown eyes snap to a thin green fracture line glowing on a metal glass support; bottom panel — his hand reaches toward a loose metal bar near the base. Clean white gutters isolate the analysis beat. Hand-drawn Korean manhwa webtoon illustration, inked lineart, high contrast, vertical 9:16 composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Mi cuerpo quiso correr, pero las piernas no daban para tanto."
+      }
+    },
+    {
+      "id": "scene_27",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Tight close-up in hard daylight: Lee Han crouches beside the side entrance support and fixes his gaze on the thin jade Lectura line glowing across the glass mechanism, lips parted in concentration as he lifts a short metal bar with both hands. The green mark stays on the structure, far from his dark-brown eyes. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[whispers] Entonces usé la Lectura… una línea verde me mostró dónde golpear."
+      }
+    },
+    {
+      "id": "scene_28",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Side action shot in bright daytime: the threshold creature leaps through the hospital side entrance path at the same moment the tempered-glass door drops straight down like a guillotine, the falling sheet lined with a giant integrated 'KRAK' sound effect as it cuts across the monster's body. Shattered reflections and a hard vertical impact define the kill. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "The tempered glass door slams straight down violently like a guillotine, bursting the leaping creature into black smoke on impact. Static side camera with one hard shake at the moment of impact. Maintain character consistency, keep all subjects inside the frame. Final second holds still.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "—Cae… por favor, cae… y el vidrio bajó como una guillotina sobre la criatura."
+      }
+    },
+    {
+      "id": "scene_29",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga panel on pure white background: a single rectangular panel with a bold black border, inside it Lee Han's trembling hands hang in front of his blood-stained uniform in bright daytime, fingers twitching while his other hand drifts toward his aching side. No healing glow appears anywhere, only exhaustion and thin smoke residue far behind him. Fine hatching stays inside the panel, surrounded by clean white margin. Hand-drawn Korean manhwa webtoon illustration, inked lineart, high contrast, vertical 9:16 composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[horrified] La criatura se partió en humo negro, pero no hubo cura ni nivel."
+      }
+    },
+    {
+      "id": "scene_30",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Rear impact shot in bright daytime: Lee Han starts to turn from the shattered glass aftermath when a dark armored blur crashes into his back from off-frame, his body pitching forward and the loose bar flying from his hand. The concrete lane and hospital wall streak diagonally as the sudden hit takes him off balance. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "Lee Han jerks forward violently as a strike from behind slams into his back and sends him pitching toward the asphalt. Diagonal tracking camera with one sharp shake at the impact. Maintain character consistency, keep all subjects inside the frame. Final second holds still.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Solo mis manos temblando, mi costado ardiendo… y entonces algo me golpeó por detrás."
+      }
+    },
+    {
+      "id": "scene_31",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Top-down angle in bright daytime: Lee Han lies ON TOP of the hospital asphalt face-down, right cheek flattened to the ground, both forearms visible, while a containment agent plants a heavy boot onto Han's shoulder blade and pins him there. The agent's armored leg dominates the upper frame, making the restraint immediate and physical. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Caí de cara al asfalto, y una bota me hundió el hombro."
+      }
+    },
+    {
+      "id": "scene_32",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Low POV from the asphalt in bright daylight: Lee Han strains his neck upward from the ground, one eye visible and fixed on the rifles above him while multiple red laser dots settle across his chest again. Black gun barrels and gloved hands loom in a ring from the upper edges, recreating the threat from his trapped perspective. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Cuando levanté la vista, las luces rojas ya estaban otra vez sobre mi pecho."
+      }
+    },
+    {
+      "id": "scene_33",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Compressed frontal shot in bright daytime: several containment rifles fill the blurred foreground, all aimed inward toward the hospital approach, while beyond them the main glass doors of Hospital Saebyeok begin sliding together. Through the narrowing opening, a hospital bed silhouette and a hanging IV line are faintly visible inside, implying Rin beyond the threshold. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Detrás de los rifles, las puertas del Hospital Saebyeok empezaron a cerrarse."
+      }
+    },
+    {
+      "id": "scene_34",
+      "type": "panel",
+      "render_mode": "animated",
+      "visual": {
+        "image_prompt": "Long-lens closing shot in bright daytime: from near Lee Han's pinned position, the hospital glass doors slide shut while a single red laser point climbs from his chest toward his face in the foreground, and beyond the glass the silhouette of Rin's bed recedes behind the seal. The composition ties Han's helplessness to the vanishing entrance. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "The hospital glass doors slide shut steadily while the red laser point climbs upward across Lee Han toward his head. Slow push-in camera with no secondary motion except the closing doors. Maintain character consistency, keep all subjects inside the frame. Final second holds still.",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Y del otro lado estaba Rin, mientras el punto rojo me subía hasta la cabeza…"
+      }
+    }
+  ],
+  "render_export": {
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18",
+      "scene_19",
+      "scene_20",
+      "scene_21",
+      "scene_22",
+      "scene_23",
+      "scene_24",
+      "scene_25",
+      "scene_26",
+      "scene_27",
+      "scene_28",
+      "scene_29",
+      "scene_30",
+      "scene_31",
+      "scene_32",
+      "scene_33",
+      "scene_34"
+    ]
+  },
+  "tts_export": {
+    "language": "es-419",
+    "model_id": "eleven_v3",
+    "elevenlabs_speed": 1,
+    "edit_speed": 1.4,
+    "full_script": "[serious] Lee Han cayó de rodillas frente al Hospital Saebyeok, la mejilla contra el asfalto.\nTres luces rojas se clavaban en su pecho, y el punto rojo subía despacio.\nLos que llegaron tarde.\n[groaning] Cuando abrí los ojos, seguía en el paso subterráneo, con hierro en la boca.\nLa herida ya no estaba abierta, pero mi cuerpo temblaba como un interruptor roto.\nEl reloj azul marcaba seis cuarenta y dos, aunque afuera ya era de día.\nSubí las escaleras arrastrando una pierna, hasta que la luz me pegó.\n[tired] Seúl no estaba muerta. Estaba viva a medias, bajo un día demasiado normal.\nHabía ambulancias, cordones plásticos y curiosos filmando como si el cielo fuera noticia.\nY la policía repetía que todo estaba bajo control, aunque nadie lo creyera. [pause]\n[shaken] Entonces llegaron los cazadores con licencia, acompañados por cámaras y sonrisas ensayadas.\nEn medio de todos estaba Park Tae, impecable, con fuego azul enroscado al brazo.\nLa grieta escupió humo negro, y Park Tae levantó la mano para posar.\n—Retrocedan, por favor. Esto puede ser peligroso… y luego cerró la grieta con fuego azul.\nLa multitud aplaudió, y yo seguí quieto, empapado, sangrando bajo el uniforme del Daro.\n[desperate] Me acerqué porque pensé que alguien tendría respuestas, pero Park Tae ni volteó.\nSolo me apartó con el hombro, como si yo fuera otro civil estorbando.\nY tal vez tenía razón, pero Rin seguía dentro del Saebyeok.\nCorrí al hospital porque mi hermana estaba allá, conectada a una máquina.\n[breathless] El Saebyeok no estaba acordonado como las otras calles. Tenía otra clase de cerco.\nHabía agentes con cascos negros, barreras dobles y rifles apuntando hacia adentro.\nMi identificación pasó invisible, mi nombre también… a nadie le importó.\nEn la entrada, un cartel decía: Protocolo de contención activo.\nY fue entonces cuando vi algo arrastrarse por la entrada lateral del hospital.\nEra una criatura baja, torcida, cubierta de placas oscuras, y venía hacia las puertas.\nMi cuerpo quiso correr, pero las piernas no daban para tanto.\n[whispers] Entonces usé la Lectura… una línea verde me mostró dónde golpear.\n—Cae… por favor, cae… y el vidrio bajó como una guillotina sobre la criatura.\n[horrified] La criatura se partió en humo negro, pero no hubo cura ni nivel.\nSolo mis manos temblando, mi costado ardiendo… y entonces algo me golpeó por detrás.\nCaí de cara al asfalto, y una bota me hundió el hombro.\nCuando levanté la vista, las luces rojas ya estaban otra vez sobre mi pecho.\nDetrás de los rifles, las puertas del Hospital Saebyeok empezaron a cerrarse.\nY del otro lado estaba Rin, mientras el punto rojo me subía hasta la cabeza…",
+    "engine": "elevenlabs",
+    "voice_id": "452WrNT9o8dphaYW5YGU"
+  }
+}

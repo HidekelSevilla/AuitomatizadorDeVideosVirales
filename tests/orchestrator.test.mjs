@@ -20,7 +20,7 @@ function harness(opts = {}) {
     queue: { running: true, paused: false, phase: opts.phase || "images", currentIndex: 0, heartbeatAt: 0 },
     pacing: { windowStart: 0, windowCount: 0, sessionGen: 0, cooldownUntil: 0, cooldownStep: 0 },
     metrics: { generations: 0, errors: 0, cooldownMs: 0, since: 0 },
-    project: null,
+    project: opts.project || null,
   };
   const calls = { sleep: [], pauseForError: [], onHardStop: [], image: 0, animation: 0, parallel: 0 };
   const clock = { t: 0 };
@@ -178,4 +178,17 @@ assert.equal(classifyError("handoff imagen=grok -> animacion=flow no soportado")
   assert.equal(h.state.queue.running, false, "k: el bucle no quedo girando");
 }
 
-console.log("OK: orchestrator - classifyError, retry, fail-fast, agotado, hardStop, ritmo, paralelo, pausa, carriles, idempotencia, anti-bucle.");
+// (l) HIBRIDO Manhwa: en fase animacion, escenas static no deben llamar runner ni aplicar Ritmo.
+{
+  const st = scene("static_01"); st.status = S.IMAGE_DONE; st.renderMode = "static";
+  const an = scene("anim_01"); an.status = S.IMAGE_DONE; an.renderMode = "animated";
+  const h = harness({ scenes: [st, an], phase: "animation", project: { perSceneRender: true } });
+  await h.orch.runQueue();
+  assert.equal(st.status, S.DONE, "l: static marcada DONE");
+  assert.equal(an.status, S.DONE, "l: animated marcada DONE");
+  assert.equal(h.calls.animation, 1, "l: solo anima la escena animated");
+  assert.equal(h.calls.sleep.includes(1000), false, "l: no aplica ritmo por static no-op");
+  assert.equal(h.state.pacing.sessionGen, 0, "l: static no cuenta como generacion");
+}
+
+console.log("OK: orchestrator - classifyError, retry, fail-fast, agotado, hardStop, ritmo, paralelo, pausa, carriles, idempotencia, anti-bucle, static-noop.");

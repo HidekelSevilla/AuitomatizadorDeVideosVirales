@@ -39,7 +39,14 @@ export interface SceneData {
   // historias v2: la cartela de texto YA viene pintada DENTRO del PNG; el render NO la dibuja (solo metadata).
   // Su presencia marca la escena como "punch" (fija + golpe de SFX) si hay capcut_export.punch_sfx.
   text_overlay?: { word?: string; baked_in_image?: boolean; static_hold?: boolean };
-  voiceover?: { text?: string; words?: WordTs[] };
+  voiceover?: { text?: string; words?: WordTs[]; speaker?: string };
+  // manhwa: referencias del JSON maestro (el render solo las usa para detectar escenas del sistema -> flash+ding
+  // automatico). El validador acepta la forma string ("sistema_ui") ademas de {id}; aqui se toleran ambas.
+  references?: { characters?: ({ id?: string } | string)[]; assets?: ({ id?: string } | string)[] };
+  // manhwa: transicion de ENTRADA de la escena. Default "cut" (corte seco). dip_black = fundido a negro
+  // (saltos de tiempo/lugar); crossfade = disolvencia (entrar/salir de recuerdos); flash = destello
+  // (tambien lo dispara SOLO el render al abrir la ventana del sistema). Otros presets: se ignora.
+  transition_in?: "cut" | "crossfade" | "dip_black" | "flash";
   _window?: { start: number; end: number }; // historias voz-continua: ventana (seg, raw Fish) de la escena sobre el audio maestro (lo inyecta align/inject-words.mjs)
   captions?: CaptionData;
   sfx?: SfxCue[];
@@ -88,6 +95,15 @@ export interface AudioData {
   hook_sfx_volume?: number; // default 1.8
   scene_sfx?: string; // flash al aparecer el cartel de cada escena, default "flash.mp3"
   scene_sfx_volume?: number; // default 1.25
+  // manhwa: ding al APARECER la ventana del sistema (primera escena de cada bloque de sistema).
+  // Default "ding.mp3" (public/sfx/); el render lo omite en silencio si el archivo no existe.
+  system_sfx?: string;
+  system_sfx_volume?: number; // default 0.7
+  // manhwa: cambio de cama musical a mitad del video. Cada cue arranca su pista con crossfade (~1.5s)
+  // al INICIO de la escena indicada; del frame 0 al primer cue suena music_file/la cama default.
+  // Rutas "music/..." = biblioteca compartida public/music/. Cue con archivo inexistente se omite
+  // (sondeado en metadata, no cancela el render). Sin music_cues: una sola cama, como siempre.
+  music_cues?: { at_scene?: string; file?: string }[];
   // historias voz-continua (lo inyecta align/inject-words.mjs, NO viene del JSON del usuario):
   _continuous?: boolean; // true -> el render usa 1 pista maestra de voz + ventanas por escena (sin costura)
   _master?: string; // ruta del mp3 maestro relativa a public/<slug>/ (ej "voice/full.mp3")
@@ -98,6 +114,8 @@ export interface CaptionStyle {
   size?: number;
   position?: string;
   enabled?: boolean;
+  // karaoke por grupos: cuantas palabras visibles a la vez (la activa resaltada). manhwa default 4; otros presets 1 (comportamiento clasico).
+  max_words_on_screen?: number;
 }
 
 export interface EditingData {
@@ -176,4 +194,10 @@ export interface ViralProps {
   capcut_export?: CapcutExport;
   render_export?: CapcutExport; // schema nuevo historias: renombrado de capcut_export (mismo shape; el render usa render_export ?? capcut_export)
   _timeline?: ComputedTimeline; // lo inyecta calculateMetadata
+  // manhwa (lo inyecta calcViralMetadata tras SONDEAR que los archivos existan; nunca vienen del JSON):
+  _manhwaMusic?: string; // cama musical default compartida (public/music/manhwa_ambient.mp3) si existe y el JSON no trae music_file
+  _musicFileOk?: boolean; // resultado del sondeo de audio.music_file (false = no existe: se omite para no cancelar el render)
+  _systemSfxFile?: string; // sfx del sistema verificado en disco (public/sfx/); ausente -> sin ding, sin romper
+  _musicCues?: { at_scene: string; file: string }[]; // music_cues cuyo archivo SI existe (sondeados); solo estos se montan
+  _tensionAltOk?: boolean; // existe music/manhwa_tension2.mp3 -> los cues de tension ROTAN entre ambas por slug (variedad entre Partes)
 }

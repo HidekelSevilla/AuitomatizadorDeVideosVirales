@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 
 import { validateQueueProject } from "../lib/queue-validator.js";
-import { getMediaRequirements } from "../shared/media-requirements.mjs";
+import { getMediaRequirements, projectMediaSignature } from "../shared/media-requirements.mjs";
 
 function baseProject() {
   return {
@@ -96,6 +96,19 @@ const fileExists = (rel) => rel === "assets/characters/protagonista_base.png";
   const res = validateQueueProject(p, { fileExists: () => false });
   assert.equal(res.ok, false);
   assert.ok(res.errors.some((e) => e.includes("no existe assets/characters/protagonista_base.png")));
+}
+
+{
+  const p = baseProject();
+  p.tts_export.elevenlabs_speed = 1.15;
+  p.tts_export.edit_speed = 1.0;
+  const original = projectMediaSignature(p);
+
+  p.tts_export.edit_speed = 1.4;
+  assert.equal(projectMediaSignature(p), original);
+
+  p.tts_export.elevenlabs_speed = 1.2;
+  assert.notEqual(projectMediaSignature(p), original);
 }
 
 console.log("OK: queue validator");

@@ -11,3 +11,4 @@ function Stop-Match([string]$match, [string]$label) {
 }
 Stop-Match '*reload-server.mjs*' 'dev-server'
 Stop-Match '*build.mjs*--watch*'  'render watch'
+Stop-Match '*telegram-bridge.mjs*' 'telegram bridge'

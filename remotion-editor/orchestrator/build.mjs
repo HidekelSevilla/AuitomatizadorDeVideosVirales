@@ -113,7 +113,7 @@ function inspectValidated(job) {
   const missingRequirements = requirements
     .map((r) => ({ ...r, fullPath: path.join(PUBLIC, r.path) }))
     .filter((r) => !fileOk(r.fullPath));
-  if (generatedMediaExists(slug) && !mediaSignatureMatches(slug, p)) {
+  if (generatedMediaExists(slug) && !mediaSignatureOkOrAdopted(slug, p, missingRequirements.length === 0)) {
     missingRequirements.unshift({
       path: `${slug}/.media-signature.json`,
       kind: "media_signature",
@@ -131,16 +131,33 @@ function generatedMediaExists(slug) {
     try { return fs.existsSync(dir) && fs.readdirSync(dir).length > 0; } catch { return false; }
   });
 }
-function mediaSignatureMatches(slug, p) {
+
+function writeMediaSignature(slug, signature, reason) {
+  const dir = path.join(PUBLIC, slug);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, ".media-signature.json"), JSON.stringify({
+    signature,
+    reason,
+    updatedAt: new Date().toISOString(),
+  }, null, 2), "utf8");
+}
+
+function mediaSignatureOkOrAdopted(slug, p, canAdoptMissing) {
+  const signature = projectMediaSignature(p);
   try {
     const meta = JSON.parse(fs.readFileSync(path.join(PUBLIC, slug, ".media-signature.json"), "utf8"));
-    return meta.signature === projectMediaSignature(p);
-  } catch { return false; }
+    return meta.signature === signature;
+  } catch {
+    if (!canAdoptMissing) return false;
+    writeMediaSignature(slug, signature, "adopted-existing-complete-media");
+    return true;
+  }
 }
 
 function readElevenApiKey() {
   try {
-    const s = JSON.parse(fs.readFileSync(path.join(repoRoot, "secrets.local.json"), "utf8"));
+    const raw = fs.readFileSync(path.join(repoRoot, "secrets.local.json"), "utf8").replace(/^\uFEFF/, "").replace(/^Ã¯Â»Â¿/, "");
+    const s = JSON.parse(raw);
     return (s.elevenApiKey || "").trim();
   } catch { return ""; }
 }
@@ -308,11 +325,19 @@ function enhanceIfNeeded(job, slug) {
   if (p.project?.enhance === false) return; // opt-out por proyecto
   const preset = p.project?.preset || "";
   if (/^(historias|criptoclaro|habitos|pov-historias)/.test(preset)) return; // image-only base: sin enhance de clips
+  if (preset === "novela-coreana") return; // evita deformar rostros lejanos con Real-ESRGAN/RIFE.
+  const enhanceEnv = { ...process.env, ENHANCE_STEP_TIMEOUT_MS: process.env.ENHANCE_STEP_TIMEOUT_MS || String(15 * 60_000) };
   if (preset === "manhwa") {
-    const animated = (p.scenes || []).some((s) => s?.type !== "narrative_card" && s?.render_mode === "animated");
+    const animatedClipNames = (p.scenes || [])
+      .filter((s) => s?.type !== "narrative_card" && s?.render_mode === "animated")
+      .map((s) => `${s.id ?? s.scene_id}.mp4`)
+      .filter(Boolean);
     const clipsDir = path.join(PUBLIC, slug, "clips");
-    const hasClips = fs.existsSync(clipsDir) && fs.readdirSync(clipsDir).some((f) => /\.mp4$/i.test(f));
-    if (!animated || !hasClips) return;
+    const wanted = new Set(animatedClipNames.map((f) => f.toLowerCase()));
+    const hasClips = fs.existsSync(clipsDir)
+      && fs.readdirSync(clipsDir).some((f) => wanted.has(f.toLowerCase()));
+    if (!animatedClipNames.length || !hasClips) return;
+    enhanceEnv.ENHANCE_CLIP_FILTER = animatedClipNames.join(";");
   }
   console.log("  mejorando clips con IA (Real-ESRGAN + RIFE, solo los nuevos)...");
   const enhanceTimeoutMs = Math.max(60_000, Number(process.env.ENHANCE_TIMEOUT_MS || 45 * 60_000) || 45 * 60_000);
@@ -323,7 +348,7 @@ function enhanceIfNeeded(job, slug) {
     windowsHide: true,
     timeout: enhanceTimeoutMs,
     killSignal: "SIGKILL",
-    env: { ...process.env, ENHANCE_STEP_TIMEOUT_MS: process.env.ENHANCE_STEP_TIMEOUT_MS || String(15 * 60_000) },
+    env: enhanceEnv,
   });
   if (enhanced.error?.code === "ETIMEDOUT") {
     console.log(`  (enhance timeout ${Math.round(enhanceTimeoutMs / 60000)} min; renderizo con clips actuales)`);
@@ -346,9 +371,13 @@ function syncClipDurations(job, slug) {
   let p;
   try { p = JSON.parse(fs.readFileSync(job.jsonPath, "utf8").replace(/^﻿/, "")); } catch { return; }
   const base = path.join(PUBLIC, slug, "clips");
+  const stills = /^(historias|criptoclaro|habitos|pov-historias|manhwa)/.test(p.project?.preset || "");
   let changed = false;
   const probe = (s, clipsDir) => {
-    const clip = path.join(clipsDir, `${s.id}.mp4`);
+    if (stills && s?.render_mode !== "animated") return;
+    const id = s.id ?? s.scene_id;
+    if (!id) return;
+    const clip = path.join(clipsDir, `${id}.mp4`);
     if (!fs.existsSync(clip)) return;
     const r = spawnSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${clip}"`, { encoding: "utf8", shell: true });
     const dur = Math.round(parseFloat((r.stdout || "").trim()) * 100) / 100;
@@ -461,7 +490,7 @@ function videoSpeed(job) {
     if (typeof ov === "number") return ov;                                        // override explicito por video (speed o speed_final)
     const ttsSpeed = p.tts_export?.edit_speed ?? p.tts_export?.video_speed;
     if (typeof ttsSpeed === "number") return ttsSpeed;
-    if (p.project?.preset === "manhwa" && p.tts_export?.mode === "dialogue") return 1.30;
+    if (p.project?.preset === "manhwa" && p.tts_export?.mode === "dialogue") return 1.40; // fallback manhwa dialogue sin velocidad declarada
     return 1;
   } catch { return 1; }
 }

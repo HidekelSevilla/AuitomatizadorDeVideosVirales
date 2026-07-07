@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { Fragment, useMemo } from "react";
 import {
   AbsoluteFill,
   Audio,
@@ -46,6 +46,16 @@ const HIST_XFADE_S = 0;      // historias: edicion estatica -> corte duro entre 
 const HIST_CAPTION_SIZE = 72; // historias: karaoke un poco mas chico que el de costumbre (esqueletos ~128). El JSON puede sobreescribir con render_export.caption_style.size.
 const CAPTION_GAP_HOLD_S = 0.16; // evita que la ultima palabra se quede pegada durante pausas largas.
 const WAKE_INTRO_S = 1.3; // pov-historias: duracion del fundido de negro -> primera imagen al arranque ("despertar"). Fija.
+// ---- manhwa (2026-07): musica + acentos del sistema/impacto + transiciones + karaoke por grupos ----
+const MANHWA_MUSIC_VOL = 0.13;      // cama musical bajo la voz (apenas consciente); audio.music_volume manda si viene
+const MANHWA_MUSIC_DUCK = 0.55;     // factor de ducking mientras la voz habla (vol * factor)
+const MANHWA_DEFAULT_MUSIC = "music/manhwa_ambient.mp3"; // bed default COMPARTIDO (public/music/); solo suena si existe (sondeado en metadata)
+const SYSTEM_SFX = "ding.mp3";      // ding al APARECER la ventana del sistema (public/sfx/); omitido en silencio si falta
+const SYSTEM_SFX_VOL = 0.7;
+const MANHWA_XFADE_S = 0.4;         // crossfade de scene.transition_in="crossfade" (recuerdos)
+const MANHWA_CUE_XFADE_S = 1.5;     // crossfade entre camas al cambiar de pista (audio.music_cues)
+const DIP_BLACK_S = 0.35;           // fundido a negro de "dip_black" (saltos de tiempo): pre-roll + salida
+const MANHWA_CAPTION_WORDS = 4;     // karaoke por grupos: palabras visibles a la vez (la activa resaltada)
 
 // ---------- helpers ----------
 
@@ -153,6 +163,13 @@ const sceneMotion = (s: SceneData) => s.visual?.motion ?? s.motion;
 // HIBRIDO criptoclaro_reel: una escena con render_mode "animated" se dibuja como CLIP de video (no still + Ken Burns).
 const isAnimatedScene = (s: SceneData) => s.render_mode === "animated";
 const isManhwa = (p: ViralProps) => p.project.preset === "manhwa";
+// manhwa: ¿la escena es "del sistema"? (voz [cold] o referencia a sistema_ui). La PRIMERA escena de cada
+// bloque de sistema dispara flash + ding automaticos (regla fija: cero carga para el generador del JSON).
+const refId = (r: { id?: string } | string | undefined) => (typeof r === "string" ? r : r?.id);
+const isSystemScene = (s?: SceneData): boolean =>
+  !!s && (s.voiceover?.speaker === "sistema"
+    || (s.references?.characters ?? []).some((c) => refId(c) === "sistema_ui")
+    || (s.references?.assets ?? []).some((a) => refId(a) === "sistema_ui"));
 const isNarrativeCard = (s: SceneData) => s.type === "narrative_card";
 const isEditorNarrativeCard = (s: SceneData) => isNarrativeCard(s) && (s.card?.mode ?? "editor") !== "generated";
 const captionStyle = (p: ViralProps) => isManhwa(p) ? (p.editing?.caption_style ?? xport(p)?.caption_style) : xport(p)?.caption_style;
@@ -172,6 +189,65 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
   const [width, height] = dimsFromAspect(props.project.aspect_ratio ?? defaultAspect);
   const slug = getSlug(props);
   const preset = getPreset(props.project.preset);
+  // manhwa (2026-07): SONDEOS de assets opcionales. Montar <Audio> de un archivo inexistente rompe el
+  // render, asi que la cama musical default y el ding del sistema solo se inyectan si EXISTEN en disco.
+  const manhwaExtras: Partial<ViralProps> = {};
+  if (props.project.preset === "manhwa") {
+    const probeBed = async () => {
+      try {
+        await getAudioDurationInSeconds(staticFile(MANHWA_DEFAULT_MUSIC));
+        manhwaExtras._manhwaMusic = MANHWA_DEFAULT_MUSIC;
+      } catch {
+        // eslint-disable-next-line no-console
+        console.warn(`[manhwa] sin cama musical: agrega public/${MANHWA_DEFAULT_MUSIC} (o audio.music_file) — el video sale sin musica`);
+      }
+    };
+    const mf = typeof props.audio?.music_file === "string" ? props.audio.music_file : undefined;
+    if (mf) {
+      // sondear tambien el music_file declarado: un <Audio loop> con archivo inexistente CANCELA el render.
+      const mfPath = mf.startsWith("music/") ? mf : `${slug}/${mf}`;
+      try {
+        await getAudioDurationInSeconds(staticFile(mfPath));
+        manhwaExtras._musicFileOk = true;
+      } catch {
+        manhwaExtras._musicFileOk = false;
+        // eslint-disable-next-line no-console
+        console.warn(`[manhwa] audio.music_file no encontrado (${mfPath}); se usa la cama default si existe`);
+        await probeBed();
+      }
+    } else {
+      await probeBed();
+    }
+    const dingFile = props.audio?.system_sfx ?? SYSTEM_SFX;
+    try {
+      await getAudioDurationInSeconds(staticFile(`sfx/${dingFile}`));
+      manhwaExtras._systemSfxFile = dingFile;
+    } catch { /* sin ding en public/sfx/: solo flash, sin sonido */ }
+    // music_cues: sondear cada pista; un cue con archivo roto se OMITE (la cama anterior sigue sonando).
+    const cues = props.audio?.music_cues;
+    if (Array.isArray(cues) && cues.length) {
+      const ok: { at_scene: string; file: string }[] = [];
+      for (const c of cues) {
+        if (typeof c?.at_scene !== "string" || typeof c?.file !== "string" || !c.at_scene || !c.file) continue;
+        const cuePath = c.file.startsWith("music/") ? c.file : `${slug}/${c.file}`;
+        try {
+          await getAudioDurationInSeconds(staticFile(cuePath));
+          ok.push({ at_scene: c.at_scene, file: c.file });
+        } catch {
+          // eslint-disable-next-line no-console
+          console.warn(`[manhwa] music_cues: public/${cuePath} no existe; se omite el cambio en ${c.at_scene}`);
+        }
+      }
+      if (ok.length) {
+        manhwaExtras._musicCues = ok;
+        // variedad entre Partes: si existe la tension alterna, el render rota tension<->tension2 por slug.
+        try {
+          await getAudioDurationInSeconds(staticFile("music/manhwa_tension2.mp3"));
+          manhwaExtras._tensionAltOk = true;
+        } catch { /* sin alterna: siempre manhwa_tension.mp3 */ }
+      }
+    }
+  }
   const baseCard = preset.showLabelCard
     ? Math.round((xport(props)?.label_card_duration_s ?? CARD_SEC) * fps)
     : 0;
@@ -211,7 +287,7 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
     return {
       durationInFrames: totalFrames,
       fps, width, height,
-      props: { ...props, _timeline: { fps, hookFrames: 0, scenes: cont, totalFrames } },
+      props: { ...props, ...manhwaExtras, _timeline: { fps, hookFrames: 0, scenes: cont, totalFrames } },
     };
   }
 
@@ -277,7 +353,7 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
     fps,
     width,
     height,
-    props: { ...props, _timeline: { fps, hookFrames, scenes, totalFrames } },
+    props: { ...props, ...manhwaExtras, _timeline: { fps, hookFrames, scenes, totalFrames } },
   };
 };
 
@@ -295,7 +371,8 @@ const Karaoke: React.FC<{
   hot?: string[];
   bottom?: number;
   size?: number;
-}> = ({ text, words, windowFrames, voiceRate, preset, hot = [], bottom = 380, size = 132 }) => {
+  maxWords?: number; // >1 = karaoke por GRUPOS (chunk fijo con la palabra activa resaltada). 1 = clasico una-palabra.
+}> = ({ text, words, windowFrames, voiceRate, preset, hot = [], bottom = 380, size = 132, maxWords = 1 }) => {
   const frame = useCurrentFrame();
   const { fps, width } = useVideoConfig();
 
@@ -323,7 +400,14 @@ const Karaoke: React.FC<{
       // En pausas cortas sostiene la ultima palabra; en pausas largas desaparece para no sentirse atrasado.
       let lastIdx = -1;
       for (let i = 0; i < list.length; i++) { if (list[i].start <= audioT) lastIdx = i; else break; }
-      if (lastIdx < 0 || audioT > list[lastIdx].end + CAPTION_GAP_HOLD_S) return null;
+      if (lastIdx < 0) return null;
+      if (maxWords > 1) {
+        // modo GRUPOS: la frase completa se sostiene mientras la pausa caiga DENTRO de su chunk (si no,
+        // una pausa dramatica entre palabra 2 y 3 apagaba y re-encendia toda la frase).
+        const cIdx = Math.floor(lastIdx / maxWords);
+        const chunkEnd = list[Math.min(cIdx * maxWords + maxWords, list.length) - 1].end;
+        if (audioT > chunkEnd + CAPTION_GAP_HOLD_S) return null;
+      } else if (audioT > list[lastIdx].end + CAPTION_GAP_HOLD_S) return null;
       idx = lastIdx;
     }
     wordStartFrame = (list[idx].start / voiceRate) * fps;
@@ -331,6 +415,54 @@ const Karaoke: React.FC<{
     const per = windowFrames / list.length;
     idx = Math.max(0, Math.min(list.length - 1, Math.floor(frame / per)));
     wordStartFrame = idx * per;
+  }
+
+  // ---- modo GRUPOS (manhwa, 2026-07): chunk fijo de maxWords palabras; la activa se pinta del color hot.
+  // A 1.4x el modo una-palabra parpadea (palabras de ~100ms); el grupo da una frase estable que leer.
+  if (maxWords > 1) {
+    const chunkIdx = Math.floor(idx / maxWords);
+    const chunk = list.slice(chunkIdx * maxWords, chunkIdx * maxWords + maxWords);
+    const activeInChunk = idx - chunkIdx * maxWords;
+    const chunkStartFrame = timed
+      ? (chunk[0].start / voiceRate) * fps
+      : chunkIdx * maxWords * (windowFrames / list.length);
+    const popG = spring({ frame: frame - chunkStartFrame, fps, config: { damping: 26, stiffness: 140, mass: 0.6 } });
+    const chars = Math.max(6, chunk.reduce((a, w) => a + cleanWord(w.word).length + 1, 0));
+    const fitG = Math.max(46, Math.min(size, Math.floor((width * 1.55) / (chars * 0.6))));
+    return (
+      <AbsoluteFill style={{ justifyContent: "flex-end", alignItems: "center", paddingBottom: bottom }}>
+        <div
+          style={{
+            display: "flex", flexWrap: "wrap", justifyContent: "center", alignItems: "baseline",
+            columnGap: Math.round(fitG * 0.28), rowGap: 8,
+            transform: `scale(${0.94 + 0.06 * popG})`, transformOrigin: "center bottom",
+            maxWidth: "90%", padding: "0 24px", textAlign: "center",
+          }}
+        >
+          {chunk.map((w, i) => {
+            const cw = cleanWord(w.word);
+            const active = i === activeInChunk;
+            const isHotW = hotSet.has(norm(cw));
+            return (
+              <span
+                key={i}
+                style={{
+                  fontFamily, fontWeight: 900, fontSize: fitG, letterSpacing: -1, lineHeight: 1.05,
+                  textTransform: "uppercase", whiteSpace: "nowrap",
+                  color: active || isHotW ? preset.captionHotBg : preset.captionBase,
+                  transform: active ? "scale(1.08)" : undefined,
+                  WebkitTextStroke: `${Math.round(fitG * 0.09)}px #000`,
+                  paintOrder: "stroke fill",
+                  textShadow: "0 12px 26px rgba(0,0,0,.8), 0 3px 8px rgba(0,0,0,.95)",
+                }}
+              >
+                {cw}
+              </span>
+            );
+          })}
+        </div>
+      </AbsoluteFill>
+    );
   }
 
   // UNA sola palabra a la vez (la activa), con pop SUAVE al entrar (antes era muy brusco/rapido).
@@ -464,6 +596,24 @@ const FlashOverlay: React.FC = () => {
   return <AbsoluteFill style={{ backgroundColor: "white", opacity: op }} />;
 };
 
+// ---------- dip-to-black (manhwa): fundido a negro en saltos de tiempo/lugar (scene.transition_in="dip_black") ----------
+// Sube a negro sobre el FINAL de la escena anterior (pre-roll), sostiene 2 frames y revela la nueva.
+
+const DipBlackOverlay: React.FC<{ peak: number; total: number }> = ({ peak, total }) => {
+  const frame = useCurrentFrame();
+  // Sin pre-roll (escena 1, at=0): abre EN negro y solo revela — sin el frame de imagen + blink que daba
+  // la curva subida-bajada con peak 0.
+  const op = peak <= 0
+    ? interpolate(frame, [0, 2, Math.max(3, total - 1)], [1, 1, 0], {
+        extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.inOut(Easing.ease),
+      })
+    : interpolate(frame, [0, Math.max(1, peak), Math.max(2, peak + 2), Math.max(3, total - 1)], [0, 1, 1, 0], {
+        extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.inOut(Easing.ease),
+      });
+  if (op <= 0) return null;
+  return <AbsoluteFill style={{ backgroundColor: "black", opacity: op }} />;
+};
+
 // ---------- fundido de negro -> imagen al ARRANQUE del video (pov-historias: efecto "despertar") ----------
 // Capa negra a pantalla completa cuya opacidad va de 1 -> 0 en los primeros WAKE_INTRO_S. Puramente visual:
 // no retrasa audio ni el inicio real de la escena 1, solo la tapa durante el fundido. Gateado por preset.wakeIntro.
@@ -484,7 +634,7 @@ const WakeIntroOverlay: React.FC = () => {
 // La imagen NO se anima (el arte de codice es plano); todo el movimiento es paneo/zoom lento del editor,
 // que arranca al inicio de la ventana de la escena y termina al acabar el audio (easing suave).
 
-const kenBurnsTransform = (motion: string | undefined, p: number, pan: number = KEN_PAN, zoom: number = KEN_ZOOM): string => {
+const kenBurnsTransform = (motion: string | undefined, p: number, pan: number = KEN_PAN, zoom: number = KEN_ZOOM, tSec?: number): string => {
   let scale = zoom;
   let x = 0;
   let y = 0;
@@ -506,6 +656,23 @@ const kenBurnsTransform = (motion: string | undefined, p: number, pan: number = 
     case "pull_out": scale = interpolate(p, [0, 1], [zoom + 0.05, 1.0]); break; // compat v1 (zoom out)
     case "slow_push_in":
     case "push_in": scale = interpolate(p, [0, 1], [1.0, zoom]); break;         // compat v1 (zoom in)
+    // manhwa: acentos de impacto (2026-07). Viven en TIEMPO REAL (tSec, segundos desde el inicio de la
+    // escena), no en el p easado de ventana completa: el easing inOut arranca a velocidad ~0 y convertia
+    // el golpe en un zoom-out lento. punch_in = entra ~10% mas cerca y ASIENTA en ~0.35s + deriva suave;
+    // shake = temblor de ~9Hz que muere en ~0.8s. Se activan por escena via editor_motion.preset.
+    case "punch_in": {
+      const settle = Math.min(1, (tSec ?? p * 3) / 0.35);
+      scale = interpolate(settle, [0, 1], [zoom + 0.10, zoom]) + 0.02 * p;
+      break;
+    }
+    case "shake": {
+      const ts = tSec ?? p;
+      const env = Math.exp(-ts * 4);
+      scale = zoom + 0.015 * p;
+      x = Math.sin(ts * 2 * Math.PI * 9) * pan * 0.45 * env;
+      y = Math.cos(ts * 2 * Math.PI * 7) * pan * 0.28 * env;
+      break;
+    }
     default: x = interpolate(p, [0, 1], [pan, -pan]); break; // sin motion -> pan_lr (v2 nunca usa zoom)
   }
   return `scale(${scale}) translate(${x}%, ${y}%)`;
@@ -594,6 +761,7 @@ const KenBurnsImage: React.FC<{ src: string; motion?: string; windowFrames: numb
   zoom,
 }) => {
   const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
   const p = interpolate(frame, [0, Math.max(1, windowFrames - 1)], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -607,7 +775,7 @@ const KenBurnsImage: React.FC<{ src: string; motion?: string; windowFrames: numb
           width: "100%",
           height: "100%",
           objectFit: "cover",
-          transform: kenBurnsTransform(motion, p, pan, zoom),
+          transform: kenBurnsTransform(motion, p, pan, zoom, frame / fps),
           transformOrigin: "50% 50%",
         }}
       />
@@ -623,6 +791,7 @@ const EditorMotionFrame: React.FC<{
   children: React.ReactNode;
 }> = ({ motion, windowFrames, pan, zoom, children }) => {
   const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
   const p = interpolate(frame, [0, Math.max(1, windowFrames - 1)], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -632,7 +801,7 @@ const EditorMotionFrame: React.FC<{
     <AbsoluteFill style={{ overflow: "hidden" }}>
       <AbsoluteFill
         style={{
-          transform: kenBurnsTransform(motion, p, pan, zoom),
+          transform: kenBurnsTransform(motion, p, pan, zoom, frame / fps),
           transformOrigin: "50% 50%",
         }}
       >
@@ -853,6 +1022,7 @@ const Scene: React.FC<{
               hot={scene.captions?.highlight_words}
               bottom={capBottom}
               size={capSize}
+              maxWords={captionStyle(props)?.max_words_on_screen ?? (isManhwa(props) ? MANHWA_CAPTION_WORDS : 1)}
             />
           )}
 
@@ -898,25 +1068,149 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
   const continuous = !!preset.stills && !!props.audio?._continuous && !!props.audio?._master;
   const xfadeFrames = Math.max(0, Math.round((props.project.crossfade_s ?? HIST_XFADE_S) * t.fps));
 
+  // manhwa: spans de HABLA en tiempo del audio maestro (ventana de escena + word-timestamps window-relative),
+  // con huecos <0.35s fusionados. Alimenta el ducking de la musica (baja bajo la voz, sube en pausas).
+  const speechSpans = useMemo<[number, number][]>(() => {
+    if (!isManhwa(props) || !continuous) return [];
+    const spans: [number, number][] = [];
+    for (const s of props.scenes) {
+      const win = s._window;
+      if (!win) continue;
+      const ws = dedupeWords(s.voiceover?.words);
+      if (ws && ws.length) spans.push([win.start + ws[0].start, win.start + ws[ws.length - 1].end]);
+      else spans.push([win.start, win.end]);
+    }
+    spans.sort((a, b) => a[0] - b[0]);
+    const merged: [number, number][] = [];
+    for (const sp of spans) {
+      const last = merged[merged.length - 1];
+      if (last && sp[0] - last[1] < 0.35) last[1] = Math.max(last[1], sp[1]);
+      else merged.push([sp[0], sp[1]]);
+    }
+    return merged;
+  }, [props, continuous]);
+
+  // manhwa: fade de ENTRADA por escena segun transition_in. "crossfade" = disolvencia local (recuerdos);
+  // cualquier otra transicion explicita = corte (el overlay pone el efecto); ausente = default global
+  // (xfadeFrames, 0 en manhwa/historias) -> comportamiento identico al actual si el JSON no trae el campo.
+  const entryFades = placed.map(({ st }) => {
+    const sc = byId[st.id];
+    const tr = isManhwa(props) ? sc?.transition_in : undefined;
+    if (tr === "crossfade") return Math.max(xfadeFrames, Math.round(MANHWA_XFADE_S * t.fps));
+    if (tr) return 0;
+    return xfadeFrames;
+  });
+
   return (
     <AbsoluteFill style={{ backgroundColor: "black" }}>
       {(() => {
         // Musica de fondo: la del proyecto si la trae; si no, la COMPARTIDA por defecto. Loop para cubrir
         // todo el video. Volumen FIJO 0.25 siempre (el usuario lo quiere asi); music_volume=0 sigue silenciando.
-        const ownMusic = props.audio?.music_file;
+        // manhwa: si el music_file declarado NO existe en disco (_musicFileOk false), se descarta aqui
+        // (montar el <Audio loop> roto cancelaria el render) y cae a la cama default sondeada.
+        const ownMusic = isManhwa(props) && props._musicFileOk === false ? undefined : props.audio?.music_file;
+        // manhwa (2026-07): bed default compartido (public/music/manhwa_ambient.mp3) inyectado por metadata
+        // SOLO si el archivo existe -> sin bed y sin music_file, sigue en silencio (sin romper).
+        const manhwaBed = isManhwa(props) ? props._manhwaMusic : undefined;
         // novela-coreana E historias: SIN musica de fondo por defecto (no les queda; la voz manda). Solo suena
         // si el JSON trae su propio audio.music_file. Otros presets: musica compartida por defecto (intacto).
         const isNovela = props.project.preset === "novela-coreana";
-        const noDefaultMusic = isNovela || preset.stills;
-        const muted = props.audio?.music_volume === 0 || (noDefaultMusic && !ownMusic);
+        const noDefaultMusic = isNovela || (preset.stills && !manhwaBed);
+        // manhwa music_cues (sondeados en metadata): pueden sonar aunque falte la cama base (arrancan en su escena).
+        const cues = isManhwa(props) && continuous ? (props._musicCues ?? []) : [];
+        const muted = props.audio?.music_volume === 0 || (noDefaultMusic && !ownMusic && cues.length === 0);
         if (muted && !ownMusic) return null; // nada de musica -> ni cargar el default
-        const src = ownMusic ? staticFile(`${slug}/${ownMusic}`) : staticFile(DEFAULT_MUSIC);
-        // historias respeta audio.music_volume del JSON (control por video) y por defecto va a HIST_MUSIC_VOL
-        // (0.15, mas baja). Otros presets: FIJO 0.25 como antes.
-        const vol = muted ? 0
+        const chosen = ownMusic ?? manhwaBed;
+        // manhwa: rutas "music/..." resuelven a la BIBLIOTECA COMPARTIDA public/music/ (camas por mood
+        // reutilizables entre series). Otros presets: relativo a la carpeta del proyecto, como siempre.
+        const src = chosen
+          ? (isManhwa(props) && chosen.startsWith("music/") ? staticFile(chosen) : staticFile(`${slug}/${chosen}`))
+          : staticFile(DEFAULT_MUSIC);
+        const baseVol = muted ? 0
+          : isManhwa(props) ? (typeof props.audio?.music_volume === "number" ? props.audio.music_volume : MANHWA_MUSIC_VOL)
           : preset.stills ? (typeof props.audio?.music_volume === "number" ? props.audio.music_volume : HIST_MUSIC_VOL)
           : DEFAULT_MUSIC_VOL;
-        return <Audio src={src} volume={vol} loop />;
+        // manhwa: DUCKING simple — baja bajo la voz, sube en pausas/beats (rampa de 0.25s). Sin spans: fijo.
+        // volAt es ABSOLUTO (frames del video): lo usan igual la cama unica y cada tramo de music_cues.
+        const ducked = isManhwa(props) && continuous && speechSpans.length > 0 && baseVol > 0;
+        const rate = props.audio?.voice_rate ?? 1.0;
+        const low = baseVol * MANHWA_MUSIC_DUCK;
+        const volAt = (f: number): number => {
+          if (!ducked) return baseVol;
+          const tSec = (f / t.fps) * rate;
+          let dist = Infinity;
+          for (const [s, e] of speechSpans) {
+            if (tSec >= s && tSec <= e) return low;
+            dist = Math.min(dist, tSec < s ? s - tSec : tSec - e);
+            if (s > tSec) break; // ordenados: no hay mas spans que puedan contener tSec
+          }
+          const ramp = 0.25;
+          return dist >= ramp ? baseVol : low + (baseVol - low) * (dist / ramp);
+        };
+        if (cues.length) {
+          // music_cues: tramos de cama. [0, cue1) = base; [cue_i, cue_i+1) = su pista. Cada tramo saliente
+          // se extiende XF frames fundiendose mientras el entrante hace fade-in -> crossfade sin hueco.
+          const XF = Math.max(1, Math.round(MANHWA_CUE_XFADE_S * t.fps));
+          // rotacion de tension: con manhwa_tension2.mp3 en la biblioteca, las Partes alternan entre ambas
+          // (hash del slug: DETERMINISTA, re-renderizar la misma Parte no cambia la musica). Cue explicito
+          // a tension2 se respeta tal cual.
+          const useAltTension = !!props._tensionAltOk
+            && [...slug].reduce((a, c) => a + c.charCodeAt(0), 0) % 2 === 1;
+          const resolveSrc = (file: string) => {
+            const f = useAltTension && file === "music/manhwa_tension.mp3" ? "music/manhwa_tension2.mp3" : file;
+            return f.startsWith("music/") ? staticFile(f) : staticFile(`${slug}/${f}`);
+          };
+          const anchors = cues
+            .map((c) => ({ file: c.file, at: placed.find((p) => p.st.id === c.at_scene)?.at }))
+            .filter((c): c is { file: string; at: number } => typeof c.at === "number")
+            .sort((a, b) => a.at - b.at);
+          const segs: { src: string; from: number; to: number }[] = [];
+          let cursor = 0;
+          let curSrc = chosen ? src : undefined;
+          for (const a of anchors) {
+            const next = resolveSrc(a.file);
+            if (next === curSrc) continue; // misma pista: no hay cambio
+            if (!curSrc) { cursor = Math.max(cursor, a.at); curSrc = next; continue; } // sin cama base: el 1er cue arranca en SU escena
+            // cue a menos de XF del anterior: no cabe el crossfade -> el nuevo REEMPLAZA al anterior en el
+            // mismo punto (sin tramo enano que nunca llega a volumen pleno ni triple solape audible).
+            if (a.at - cursor >= XF) {
+              segs.push({ src: curSrc, from: cursor, to: a.at });
+              cursor = a.at;
+            }
+            curSrc = next;
+          }
+          if (curSrc && t.totalFrames > cursor) segs.push({ src: curSrc, from: cursor, to: t.totalFrames });
+          return (
+            <>
+              {segs.map((sg, i) => {
+                const isLastSeg = i === segs.length - 1;
+                const body = sg.to - sg.from;
+                const dur = Math.max(1, body + (isLastSeg ? 0 : XF)); // cola XF solapada con el siguiente
+                return (
+                  <Sequence key={`music-${i}`} from={sg.from} durationInFrames={dur}>
+                    <Audio
+                      src={sg.src}
+                      loop
+                      loopVolumeCurveBehavior="extend"
+                      volume={(f) => {
+                        let v = volAt(f + sg.from);
+                        if (sg.from > 0 && f < XF) v *= Math.max(0, f) / XF; // entrada del tramo
+                        if (!isLastSeg && f > body) v *= Math.max(0, 1 - (f - body) / XF); // salida sobre el entrante
+                        return Math.min(1, Math.max(0, v));
+                      }}
+                    />
+                  </Sequence>
+                );
+              })}
+            </>
+          );
+        }
+        if (ducked) {
+          // loopVolumeCurveBehavior="extend": sin el, f se REINICIA en cada vuelta del loop del bed y el
+          // ducking quedaria desfasado contra la voz desde la 2a vuelta (verificado en remotion 4.0.477).
+          return <Audio src={src} volume={(f) => volAt(f)} loop loopVolumeCurveBehavior="extend" />;
+        }
+        return <Audio src={src} volume={baseVol} loop />;
       })()}
 
       {/* historias voz-continua: UNA pista maestra de voz (full.mp3) para TODO el video -> sin costuras
@@ -932,10 +1226,12 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
         const scene = byId[st.id];
         if (!scene) return null;
         const isLast = i === placed.length - 1;
-        const dur = st.sceneFrames + (isLast ? 0 : xfadeFrames);
+        // manhwa: el solape/fade lo decide la transicion de la escena SIGUIENTE (entryFades[i+1]) y el
+        // fade propio entryFades[i]. Sin transition_in en el JSON, entryFades == xfadeFrames (identico a antes).
+        const dur = st.sceneFrames + (isLast ? 0 : (entryFades[i + 1] ?? 0));
         return (
           <Sequence key={`img-${st.id}`} from={at} durationInFrames={dur}>
-            <FadeIn frames={xfadeFrames}>
+            <FadeIn frames={entryFades[i]}>
               {isEditorNarrativeCard(scene) ? (
                 <NarrativeCard text={scene.card?.text} preset={preset} frames={dur} props={props} />
               ) : isAnimatedScene(scene) ? (
@@ -982,6 +1278,46 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
               continuous={continuous}
             />
           </Sequence>
+        );
+      })}
+
+      {/* manhwa (2026-07): acentos automaticos por ENCIMA de imagen y captions — flash+ding al ABRIR cada
+          bloque de la ventana del sistema (regla fija, cero carga para el JSON), flash por transition_in
+          ="flash", y dip-to-black en saltos de tiempo (transition_in="dip_black", con pre-roll sobre el
+          final de la escena anterior). Gateado a isManhwa -> otros presets no montan nada. */}
+      {isManhwa(props) && placed.map(({ st, at }, i) => {
+        const scene = byId[st.id];
+        if (!scene) return null;
+        const prev = i > 0 ? byId[placed[i - 1].st.id] : undefined;
+        const sysStart = isSystemScene(scene) && !isSystemScene(prev);
+        const wantFlash = sysStart || scene.transition_in === "flash";
+        const dip = scene.transition_in === "dip_black";
+        if (!wantFlash && !dip) return null;
+        const pre = Math.min(at, Math.round(0.25 * t.fps));
+        const post = Math.round(DIP_BLACK_S * t.fps);
+        return (
+          <Fragment key={`fx-${st.id}`}>
+            {wantFlash && (
+              <Sequence from={at} durationInFrames={8} name={`fx-flash-${st.id}`}>
+                <FlashOverlay />
+              </Sequence>
+            )}
+            {/* el ding vive en su PROPIO Sequence (1.5s): dentro del flash de 8 frames se truncaba al ~25%
+                del sample con click audible. */}
+            {sysStart && props._systemSfxFile && (
+              <Sequence from={at} durationInFrames={Math.round(1.5 * t.fps)} name={`fx-ding-${st.id}`}>
+                <Audio
+                  src={staticFile(`sfx/${props._systemSfxFile}`)}
+                  volume={props.audio?.system_sfx_volume ?? SYSTEM_SFX_VOL}
+                />
+              </Sequence>
+            )}
+            {dip && (
+              <Sequence from={at - pre} durationInFrames={pre + post} name={`fx-dip-${st.id}`}>
+                <DipBlackOverlay peak={pre} total={pre + post} />
+              </Sequence>
+            )}
+          </Fragment>
         );
       })}
 

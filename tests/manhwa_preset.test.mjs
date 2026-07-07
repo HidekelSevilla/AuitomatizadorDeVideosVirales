@@ -47,6 +47,60 @@ const fileExists = (rel) => assets.has(rel);
   console.log(`MISSING_ASSET_ERROR ${msg}`);
 }
 
+{
+  // references.assets (sistema_ui): resuelve contra characters.<id>.poses y adjunta su asset
+  const withAsset = structuredClone(raw);
+  withAsset.characters.sistema_ui = {
+    poses: { base: { mode: "existing", asset: "assets/characters/serie_test/sistema_ui_base.png" } },
+  };
+  withAsset.scenes[0].references.assets = [{ id: "sistema_ui", pose: "base" }];
+  const assetsPlus = new Set([...assets, "assets/characters/serie_test/sistema_ui_base.png"]);
+  const res = validateQueueProject(withAsset, { fileExists: (rel) => assetsPlus.has(rel) });
+  assert.equal(res.ok, true, res.errors.join("\n"));
+  assert.equal(res.warnings.some((w) => w.includes("characters.sistema_ui") && w.includes("ninguna escena")), false, res.warnings.join("\n"));
+  const p2 = parseProject(withAsset);
+  assert.equal(p2.ok, true, p2.errors?.join("\n"));
+  const s01 = p2.scenes.find((s) => s.id === "scene_01");
+  assert.ok(s01.referenceAssets.includes("assets/characters/serie_test/sistema_ui_base.png"), s01.referenceAssets.join(", "));
+  console.log("REFERENCES_ASSETS_OK sistema_ui adjunto via references.assets");
+
+  // pose inexistente en references.assets -> error
+  withAsset.scenes[0].references.assets = [{ id: "sistema_ui", pose: "no_existe" }];
+  const resBad = validateQueueProject(withAsset, { fileExists: (rel) => assetsPlus.has(rel) });
+  assert.equal(resBad.ok, false);
+  assert.ok(resBad.errors.some((e) => e.includes('no tiene pose "no_existe"')), resBad.errors.join("\n"));
+  console.log("REFERENCES_ASSETS_BAD_POSE_ERROR_OK");
+}
+
+{
+  // personaje/asset declarado pero no referenciado por ninguna escena -> warning
+  const unused = structuredClone(raw);
+  unused.characters.sistema_ui = {
+    poses: { base: { mode: "existing", asset: "assets/characters/serie_test/sistema_ui_base.png" } },
+  };
+  const assetsPlus = new Set([...assets, "assets/characters/serie_test/sistema_ui_base.png"]);
+  const res = validateQueueProject(unused, { fileExists: (rel) => assetsPlus.has(rel) });
+  assert.equal(res.ok, true, res.errors.join("\n"));
+  assert.ok(res.warnings.some((w) => w.includes("characters.sistema_ui") && w.includes("ninguna escena")), res.warnings.join("\n"));
+  console.log("UNUSED_CHARACTER_WARNING_OK");
+}
+
+{
+  // typo en editor_motion.preset / panel_motion.cycle -> error (antes caia en silencio a pan_lr)
+  const typo = structuredClone(raw);
+  typo.scenes[3].editor_motion.preset = "bottom_left_top_right";
+  const res = validateQueueProject(typo, { fileExists });
+  assert.equal(res.ok, false);
+  assert.ok(res.errors.some((e) => e.includes('editor_motion.preset invalido "bottom_left_top_right"')), res.errors.join("\n"));
+
+  const typoCycle = structuredClone(raw);
+  typoCycle.editing.panel_motion.cycle.push("pan_diagonal");
+  const res2 = validateQueueProject(typoCycle, { fileExists });
+  assert.equal(res2.ok, false);
+  assert.ok(res2.errors.some((e) => e.includes("editing.panel_motion.cycle[5]")), res2.errors.join("\n"));
+  console.log("MOTION_PRESET_VALIDATION_OK typo -> error");
+}
+
 const parsed = parseProject(raw);
 assert.equal(parsed.ok, true, parsed.errors?.join("\n"));
 assert.equal(parsed.project.preset, "manhwa");

@@ -72,6 +72,7 @@ async function loadState() {
   }
   state.pacing = { windowStart: 0, windowCount: 0, sessionGen: 0, cooldownUntil: 0, cooldownStep: 0, grokGenCount: 0, ...(state.pacing || {}) };
   state.metrics = { generations: 0, errors: 0, cooldownMs: 0, since: Date.now(), ...(state.metrics || {}) };
+  state.remote = { lastCommandId: 0, ...(state.remote || {}) };
   // Rehidrata el ring de logs (clave separada) para que el historial sobreviva al sueno del SW.
   try { const lr = await chrome.storage.local.get(LOG_RING_KEY); if (Array.isArray(lr[LOG_RING_KEY])) logRing = lr[LOG_RING_KEY]; } catch (_e) { /* noop */ }
   // Defensa: si la cola quedo marcada running por un crash, no la creamos viva sola;
@@ -129,6 +130,7 @@ function emit(type, payload) {
 
 function emitState() {
   emit(EVT.STATE_UPDATE, { state });
+  scheduleRemoteState();
 }
 
 // Ring-buffer de logs persistido en clave PROPIA (no en AppState, que se reescribe decenas de veces).
@@ -138,6 +140,7 @@ const LOG_RING_KEY = "flow_log_ring_v1";
 const LOG_RING_MAX = 400;
 let logRing = [];
 let logSaveTimer = null;
+let remoteStateTimer = null;
 function scheduleLogSave() {
   if (logSaveTimer) return;
   logSaveTimer = setTimeout(() => {
@@ -151,6 +154,75 @@ function log(level, message) {
   logRing.push(entry);
   if (logRing.length > LOG_RING_MAX) logRing.splice(0, logRing.length - LOG_RING_MAX);
   scheduleLogSave();
+  if (level === LOG_LEVEL.ERROR || level === LOG_LEVEL.WARN || /PAUSA|PARADA|AUTOPILOTO detenido|medios listos/i.test(message || "")) {
+    postRemoteEvent({ level, message, ts: entry.ts }).catch(() => {});
+  }
+}
+
+function remoteBase() {
+  return (state?.config?.remoteControlUrl || DEFAULT_CONFIG.remoteControlUrl || "").replace(/\/$/, "");
+}
+
+function compactStatusCounts(items = []) {
+  return items.reduce((acc, x) => {
+    const k = x?.status || "unknown";
+    acc[k] = (acc[k] || 0) + 1;
+    return acc;
+  }, {});
+}
+
+function remoteSnapshot() {
+  const ingredients = state?.project?.ingredients || [];
+  const activeIngredient = ingredients.find((g) => g.status === SCENE_STATUS.GENERATING_IMAGE)
+    || ingredients.find((g) => g.status === SCENE_STATUS.ERROR)
+    || null;
+  const activeScene = state?.scenes?.[state?.queue?.currentIndex || 0] || state?.scenes?.find((s) => s.status === SCENE_STATUS.ERROR) || null;
+  return {
+    project: state?.project ? {
+      title: state.project.title,
+      slug: state.project.slug,
+      preset: state.project.preset,
+      provider: state.project.imageProvider || state.config?.provider,
+    } : null,
+    queue: state?.queue || null,
+    autoQueue: !!state?.config?.autoQueue,
+    scenes: { total: state?.scenes?.length || 0, counts: compactStatusCounts(state?.scenes || []) },
+    ingredients: { total: ingredients.length, counts: compactStatusCounts(ingredients) },
+    activeScene: activeScene ? { id: activeScene.id, status: activeScene.status, error: activeScene.error || null } : null,
+    activeIngredient: activeIngredient ? { id: activeIngredient.id, status: activeIngredient.status, error: activeIngredient.error || null } : null,
+    lastLogs: logRing.slice(-12),
+    updatedAt: Date.now(),
+  };
+}
+
+function scheduleRemoteState() {
+  if (remoteStateTimer) return;
+  remoteStateTimer = setTimeout(() => {
+    remoteStateTimer = null;
+    postRemoteState().catch(() => {});
+  }, 1000);
+}
+
+async function postRemoteState() {
+  if (!state) return;
+  const base = remoteBase();
+  if (!base) return;
+  await fetch(`${base}/state`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ state: remoteSnapshot() }),
+  }).catch(() => {});
+}
+
+async function postRemoteEvent(event) {
+  if (!state) return;
+  const base = remoteBase();
+  if (!base) return;
+  await fetch(`${base}/event`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ ...event, snapshot: remoteSnapshot() }),
+  }).catch(() => {});
 }
 
 function emitSceneStatus(sceneId, status, error) {
@@ -319,6 +391,64 @@ async function handleMessage(message) {
       log(LOG_LEVEL.WARN, `Mensaje no manejado: ${type}`);
       return;
   }
+}
+
+async function pollRemoteCommands() {
+  await ensureState();
+  const base = remoteBase();
+  if (!base) return;
+  const since = Number(state.remote?.lastCommandId || 0);
+  const data = await fetch(`${base}/commands?since=${encodeURIComponent(since)}`).then((r) => r.json()).catch(() => null);
+  const commands = Array.isArray(data?.commands) ? data.commands : [];
+  if (!commands.length) return;
+  for (const c of commands.sort((a, b) => a.id - b.id)) {
+    try {
+      await applyRemoteCommand(c);
+    } catch (e) {
+      log(LOG_LEVEL.ERROR, `Remote ${c.command}: ${e?.message ?? e}`);
+    } finally {
+      state.remote.lastCommandId = Math.max(Number(state.remote.lastCommandId || 0), Number(c.id || 0));
+      await saveState();
+      scheduleRemoteState();
+    }
+  }
+}
+
+async function applyRemoteCommand(c) {
+  const command = String(c?.command || "").toLowerCase();
+  log(LOG_LEVEL.INFO, `Remote: ${command}`);
+  if (["pause", "pausar"].includes(command)) return onPause();
+  if (["stop", "detener"].includes(command)) return onStop();
+  if (["resume", "reanudar", "start"].includes(command)) return onStartOrResume();
+  if (["run_all", "hacer_todo", "todo"].includes(command)) return onRunAll();
+  if (["retry", "reintentar"].includes(command)) return onRemoteRetry();
+  if (["skip", "saltar"].includes(command)) return onRemoteSkip();
+  if (["queue_on", "cola_on"].includes(command)) {
+    await onSetConfig({ config: { autoQueue: true } });
+    return pollQueue();
+  }
+  if (["queue_off", "cola_off"].includes(command)) return onSetConfig({ config: { autoQueue: false } });
+  if (["status", "estado"].includes(command)) { scheduleRemoteState(); return; }
+  log(LOG_LEVEL.WARN, `Remote: comando no permitido: ${command}`);
+}
+
+async function onRemoteRetry() {
+  await ensureState();
+  const ing = (state.project?.ingredients || []).find((g) => g.status === SCENE_STATUS.ERROR);
+  if (ing) return onRetryIngredient({ ingredientId: ing.id });
+  if ((state.scenes || []).some((s) => s.status === SCENE_STATUS.ERROR)) return onRetryAllErrors();
+  if (state.queue?.paused) return onStartOrResume();
+  log(LOG_LEVEL.INFO, "Remote reintentar: no hay error activo.");
+}
+
+async function onRemoteSkip() {
+  await ensureState();
+  const ing = (state.project?.ingredients || []).find((g) => g.status === SCENE_STATUS.ERROR);
+  if (ing) {
+    log(LOG_LEVEL.WARN, `Remote saltar: no salto ingredientes automaticamente (${ing.id}); usa reintentar o corrige el JSON.`);
+    return;
+  }
+  return onSkipScene({});
 }
 
 // ---------------------------------------------------------------------------
@@ -636,6 +766,29 @@ async function resumeAfterCooldown() {
   else launchLoop();
 }
 
+function completedImagePhaseCanAnimate() {
+  if ((state.queue?.phase || "images") !== "images") return false;
+  if (!state.scenes?.length) return false;
+  if (!state.scenes.some((s) => s.status === SCENE_STATUS.IMAGE_DONE)) return false;
+  if (state.scenes.some((s) => [SCENE_STATUS.PENDING, SCENE_STATUS.GENERATING_IMAGE, SCENE_STATUS.ERROR].includes(s.status))) return false;
+  const hasAnimated = state.scenes.some((s) => s.renderMode === "animated");
+  if (state.project?.imageOnly && !hasAnimated) return false;
+  return true;
+}
+
+async function advanceCompletedImagesToAnimationIfNeeded(reason) {
+  if (!completedImagePhaseCanAnimate()) return false;
+  state.queue.phase = "animation";
+  state.queue.currentIndex = 0;
+  state.queue.running = true;
+  state.queue.paused = false;
+  state.queue.errorSceneId = null;
+  await saveState();
+  log(LOG_LEVEL.INFO, `Auto-avance: imagenes completas; paso a animacion (${reason}).`);
+  emitState();
+  return true;
+}
+
 // Pausa "blanda" por fallo recuperable-a-mano (no captcha/sin-creditos): deja la cola PAUSADA para que
 // pollQueue no jale mas trabajos y el autopiloto se detenga. El usuario arregla en Flow y reanuda.
 async function pauseForError(message, sceneId = null) {
@@ -662,6 +815,7 @@ async function onStartOrResume() {
   await saveState();
   emitState();
   if (!(await ensureIngredientsBeforeSceneLoop("reanudar"))) return;
+  await advanceCompletedImagesToAnimationIfNeeded("reanudar");
   launchLoop();
 }
 
@@ -1082,10 +1236,6 @@ async function runGrokImage(scene) {
     state.pacing.grokGenCount = 0;
     await saveState();
   }
-  await ensureGrokCompositor(tab.id); // vuelve al composer fresco (tras la escena previa quedo en /imagine/post/<id>)
-  await ensureContentScript(tab.id, "grok");
-  await ensureDebugger(tab.id);
-
   // Referencias a subir por CDP: personaje(s) base O su character_edited (PNG en disco) + ingredientes + escenas previas.
   const refPaths = [];
   const chars = state.project?.characters || {};
@@ -1128,14 +1278,13 @@ async function runGrokImage(scene) {
   scene.status = SCENE_STATUS.GENERATING_IMAGE;
   await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.GENERATING_IMAGE); emitState();
 
-  if (refPaths.length) {
-    try { await sendActOrFail(tab.id, ACT.CLEAR_REFS, {}); } catch (_e) {}
-    try { await cdpSetFileInput(tab.id, refPaths); log(LOG_LEVEL.INFO, `${scene.id}: ${refPaths.length} referencia(s) subidas a Grok.`); }
-    catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no pude subir referencias (${e?.message ?? e}); genero sin ellas.`); }
-  }
   // Aspecto: del JSON (project.aspect_ratio). historias sin aspect_ratio -> 16:9 (documental horizontal).
   const aspectRatio = state.project?.aspectRatio || ((state.project?.preset === "historias" || state.project?.preset === "criptoclaro") ? "16:9" : "9:16");
-  const img = await sendGrokGenerateImage(tab.id, { prompt: scene.imagePrompt, aspectRatio, cfg: driverCfg() });
+  const img = await sendGrokGenerateImageWithUiRetry(tab.id, {
+    prompt: scene.imagePrompt,
+    aspectRatio,
+    cfg: driverCfg(),
+  }, { refPaths, label: scene.id });
   const imageUrl = img?.imageUrl;
   if (!imageUrl) throw new Error("Grok no devolvio URL de imagen");
   if (img?.variantCount > 1) log(LOG_LEVEL.INFO, `${scene.id}: Grok genero ${img.variantCount} variaciones; uso la 1a (determinista).`);
@@ -2014,6 +2163,10 @@ function isNoNewGrokImageError(e) {
   return /no aparecio imagen nueva en Grok tras generar/i.test(e?.message ?? String(e));
 }
 
+function isGrokSendNotRegisteredError(e) {
+  return /Enviar de Grok no registro|prompt no se vacio/i.test(e?.message ?? String(e));
+}
+
 async function sendGrokGenerateImage(tabId, payload) {
   try {
     return await sendActOrFail(tabId, ACT.GENERATE_IMAGE, payload);
@@ -2039,6 +2192,42 @@ async function sendGrokGenerateImage(tabId, payload) {
       log(LOG_LEVEL.WARN, `Grok: no pude recuperar imagen tras fallo de deteccion (${recoverErr?.message ?? recoverErr}).`);
     }
     throw e;
+  }
+}
+
+async function prepareGrokImageAttempt(tabId, refPaths, label) {
+  await ensureGrokCompositor(tabId);
+  await ensureContentScript(tabId, "grok");
+  await ensureDebugger(tabId);
+  try { await sendActOrFail(tabId, ACT.CLEAR_REFS, {}); } catch (_e) {}
+  if (refPaths?.length) {
+    try {
+      await cdpSetFileInput(tabId, refPaths);
+      log(LOG_LEVEL.INFO, `${label}: ${refPaths.length} referencia(s) subidas a Grok.`);
+    } catch (e) {
+      log(LOG_LEVEL.WARN, `${label}: no pude subir referencias (${e?.message ?? e}); genero sin ellas.`);
+    }
+  }
+}
+
+async function sendGrokGenerateImageWithUiRetry(tabId, payload, options = {}) {
+  const refPaths = options.refPaths || [];
+  const label = options.label || "Grok";
+  const maxUiRetries = Math.max(0, Number(options.maxUiRetries ?? 2) || 0);
+  for (let attempt = 0; attempt <= maxUiRetries; attempt++) {
+    await prepareGrokImageAttempt(tabId, refPaths, label);
+    try {
+      return await sendGrokGenerateImage(tabId, payload);
+    } catch (e) {
+      if (!isGrokSendNotRegisteredError(e) || attempt >= maxUiRetries) throw e;
+      log(LOG_LEVEL.WARN, `${label}: Enviar de Grok no registro; recargo /imagine y reintento (${attempt + 2}/${maxUiRetries + 1}).`);
+      try { await hardReloadGrok(tabId); }
+      catch (reloadErr) {
+        log(LOG_LEVEL.WARN, `${label}: recarga Grok fallo (${reloadErr?.message ?? reloadErr}); intento volver al composer.`);
+        await ensureGrokCompositor(tabId);
+      }
+      await delay(1200);
+    }
   }
 }
 
@@ -2566,10 +2755,6 @@ async function runIngredientsPhase(options = {}) {
           state.pacing.grokGenCount = 0;
           await saveState();
         }
-        await ensureGrokCompositor(tab.id);              // composer fresco (la generacion previa dejo /post)
-        await ensureContentScript(tab.id, "grok");
-        await ensureDebugger(tab.id);
-        try { await sendActOrFail(tab.id, ACT.CLEAR_REFS, {}); } catch (_e) {}
         const refPaths = [];
         // character_edited: subir el PNG base como referencia para "vestirlo" con edit_prompt.
         if (ing.type === "character_edited" && ing.base) {
@@ -2588,8 +2773,10 @@ async function runIngredientsPhase(options = {}) {
             log(LOG_LEVEL.WARN, `Ingrediente ${ing.id}: no resolvi referencia "${rel}" (${e?.message ?? e}); sigo sin ella.`);
           }
         }
-        if (refPaths.length) await cdpSetFileInput(tab.id, refPaths);
-        const img = await sendGrokGenerateImage(tab.id, { prompt: ing.prompt, cfg: driverCfg() });
+        const img = await sendGrokGenerateImageWithUiRetry(tab.id, {
+          prompt: ing.prompt,
+          cfg: driverCfg(),
+        }, { refPaths, label: `Ingrediente ${ing.id}` });
         if (!img?.imageUrl) throw new Error("Grok no devolvio URL de imagen");
         if (img?.variantCount > 1) log(LOG_LEVEL.INFO, `Ingrediente ${ing.id}: Grok genero ${img.variantCount} variaciones; uso la 1a (determinista).`);
         ing.imageUrl = img.imageUrl;
@@ -2796,8 +2983,10 @@ async function heartbeatJobLock() {
 
 // Alarma periodica (sobrevive al sueno del SW; min ~30s). Gateada por config.autoQueue.
 chrome.alarms?.create?.("queuePoll", { periodInMinutes: 0.5 });
+chrome.alarms?.create?.("remoteControlPoll", { periodInMinutes: 0.5 });
 chrome.alarms?.onAlarm?.addListener((a) => {
   if (a.name === "queuePoll") pollQueue().catch(() => {});
+  else if (a.name === "remoteControlPoll") pollRemoteCommands().catch(() => {});
   else if (a.name === "rateLimitResume") resumeAfterCooldown().catch(() => {});
   else if (a.name === "keepAlive") keepAliveTick().catch(() => {});
 });
@@ -2814,4 +3003,4 @@ async function keepAliveTick() {
 }
 
 // Arranque inicial: rehidrata cuando el modulo se evalua y reanuda si quedo una corrida a medias.
-loadState().then(() => { applySecrets(); resumeIfInterrupted(); });
+loadState().then(() => { applySecrets(); postRemoteState(); pollRemoteCommands(); resumeIfInterrupted(); });

@@ -1,0 +1,513 @@
+{
+  "project": {
+    "title": "Demo FX manhwa",
+    "slug": "manhwa_fx_demo",
+    "preset": "manhwa",
+    "aspect_ratio": "9:16",
+    "fps": 30
+  },
+  "audio": {
+    "_continuous": true,
+    "_master": "voice/full.mp3",
+    "music_cues": [
+      {
+        "at_scene": "scene_04",
+        "file": "music/manhwa_tension.mp3"
+      },
+      {
+        "at_scene": "scene_07",
+        "file": "music/manhwa_emotional.mp3"
+      }
+    ]
+  },
+  "editing": {
+    "caption_style": {
+      "enabled": true,
+      "size": 64
+    },
+    "panel_motion": {
+      "enabled": true,
+      "apply_to": "all_panels",
+      "static_zoom": 1.04,
+      "static_pan": 4
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "panel",
+      "render_mode": "static",
+      "_window": {
+        "start": 0.6,
+        "end": 4.349
+      },
+      "visual": {
+        "image_prompt": "demo"
+      },
+      "voiceover": {
+        "text": "Así se ve una escena normal con corte seco",
+        "words": [
+          {
+            "word": "Así",
+            "start": 0.12,
+            "end": 0.428
+          },
+          {
+            "word": "se",
+            "start": 0.448,
+            "end": 0.755
+          },
+          {
+            "word": "ve",
+            "start": 0.775,
+            "end": 1.083
+          },
+          {
+            "word": "una",
+            "start": 1.103,
+            "end": 1.411
+          },
+          {
+            "word": "escena",
+            "start": 1.431,
+            "end": 1.738
+          },
+          {
+            "word": "normal",
+            "start": 1.758,
+            "end": 2.066
+          },
+          {
+            "word": "con",
+            "start": 2.086,
+            "end": 2.394
+          },
+          {
+            "word": "corte",
+            "start": 2.414,
+            "end": 2.721
+          },
+          {
+            "word": "seco",
+            "start": 2.741,
+            "end": 3.049
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_02",
+      "type": "panel",
+      "render_mode": "static",
+      "_window": {
+        "start": 4.349,
+        "end": 8.173
+      },
+      "visual": {
+        "image_prompt": "demo"
+      },
+      "voiceover": {
+        "text": "Esto es el fundido a negro del salto de tiempo",
+        "words": [
+          {
+            "word": "Esto",
+            "start": 0.12,
+            "end": 0.402
+          },
+          {
+            "word": "es",
+            "start": 0.422,
+            "end": 0.705
+          },
+          {
+            "word": "el",
+            "start": 0.725,
+            "end": 1.007
+          },
+          {
+            "word": "fundido",
+            "start": 1.027,
+            "end": 1.31
+          },
+          {
+            "word": "a",
+            "start": 1.33,
+            "end": 1.612
+          },
+          {
+            "word": "negro",
+            "start": 1.632,
+            "end": 1.914
+          },
+          {
+            "word": "del",
+            "start": 1.934,
+            "end": 2.217
+          },
+          {
+            "word": "salto",
+            "start": 2.237,
+            "end": 2.519
+          },
+          {
+            "word": "de",
+            "start": 2.539,
+            "end": 2.821
+          },
+          {
+            "word": "tiempo",
+            "start": 2.841,
+            "end": 3.124
+          }
+        ]
+      },
+      "transition_in": "dip_black"
+    },
+    {
+      "id": "scene_03",
+      "type": "panel",
+      "render_mode": "static",
+      "_window": {
+        "start": 8.173,
+        "end": 12.117
+      },
+      "visual": {
+        "image_prompt": "demo"
+      },
+      "voiceover": {
+        "text": "HABILIDAD DESBLOQUEADA: LECTURA.",
+        "words": [
+          {
+            "word": "HABILIDAD",
+            "start": 0.12,
+            "end": 1.148
+          },
+          {
+            "word": "DESBLOQUEADA:",
+            "start": 1.168,
+            "end": 2.196
+          },
+          {
+            "word": "LECTURA.",
+            "start": 2.216,
+            "end": 3.244
+          }
+        ],
+        "speaker": "sistema"
+      }
+    },
+    {
+      "id": "scene_04",
+      "type": "panel",
+      "render_mode": "static",
+      "_window": {
+        "start": 12.117,
+        "end": 15.711
+      },
+      "visual": {
+        "image_prompt": "demo"
+      },
+      "voiceover": {
+        "text": "Y este es el golpe de cámara en un impacto",
+        "words": [
+          {
+            "word": "Y",
+            "start": 0.12,
+            "end": 0.379
+          },
+          {
+            "word": "este",
+            "start": 0.399,
+            "end": 0.659
+          },
+          {
+            "word": "es",
+            "start": 0.679,
+            "end": 0.938
+          },
+          {
+            "word": "el",
+            "start": 0.958,
+            "end": 1.218
+          },
+          {
+            "word": "golpe",
+            "start": 1.238,
+            "end": 1.497
+          },
+          {
+            "word": "de",
+            "start": 1.517,
+            "end": 1.776
+          },
+          {
+            "word": "cámara",
+            "start": 1.796,
+            "end": 2.056
+          },
+          {
+            "word": "en",
+            "start": 2.076,
+            "end": 2.335
+          },
+          {
+            "word": "un",
+            "start": 2.355,
+            "end": 2.615
+          },
+          {
+            "word": "impacto",
+            "start": 2.635,
+            "end": 2.894
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "punch_in",
+        "zoom": 1.06,
+        "pan": 5
+      }
+    },
+    {
+      "id": "scene_05",
+      "type": "panel",
+      "render_mode": "static",
+      "_window": {
+        "start": 15.711,
+        "end": 19.349
+      },
+      "visual": {
+        "image_prompt": "demo"
+      },
+      "voiceover": {
+        "text": "Ahora el temblor cuando el golpe lo recibe él",
+        "words": [
+          {
+            "word": "Ahora",
+            "start": 0.12,
+            "end": 0.415
+          },
+          {
+            "word": "el",
+            "start": 0.435,
+            "end": 0.731
+          },
+          {
+            "word": "temblor",
+            "start": 0.751,
+            "end": 1.046
+          },
+          {
+            "word": "cuando",
+            "start": 1.066,
+            "end": 1.362
+          },
+          {
+            "word": "el",
+            "start": 1.382,
+            "end": 1.677
+          },
+          {
+            "word": "golpe",
+            "start": 1.697,
+            "end": 1.992
+          },
+          {
+            "word": "lo",
+            "start": 2.012,
+            "end": 2.308
+          },
+          {
+            "word": "recibe",
+            "start": 2.328,
+            "end": 2.623
+          },
+          {
+            "word": "él",
+            "start": 2.643,
+            "end": 2.939
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "shake",
+        "zoom": 1.05,
+        "pan": 5
+      }
+    },
+    {
+      "id": "scene_06",
+      "type": "panel",
+      "render_mode": "static",
+      "_window": {
+        "start": 19.349,
+        "end": 23.158
+      },
+      "visual": {
+        "image_prompt": "demo"
+      },
+      "voiceover": {
+        "text": "La disolvencia suave para entrar en un recuerdo",
+        "words": [
+          {
+            "word": "La",
+            "start": 0.12,
+            "end": 0.476
+          },
+          {
+            "word": "disolvencia",
+            "start": 0.496,
+            "end": 0.852
+          },
+          {
+            "word": "suave",
+            "start": 0.872,
+            "end": 1.228
+          },
+          {
+            "word": "para",
+            "start": 1.248,
+            "end": 1.604
+          },
+          {
+            "word": "entrar",
+            "start": 1.624,
+            "end": 1.98
+          },
+          {
+            "word": "en",
+            "start": 2,
+            "end": 2.357
+          },
+          {
+            "word": "un",
+            "start": 2.377,
+            "end": 2.733
+          },
+          {
+            "word": "recuerdo",
+            "start": 2.753,
+            "end": 3.109
+          }
+        ]
+      },
+      "transition_in": "crossfade"
+    },
+    {
+      "id": "scene_07",
+      "type": "narrative_card",
+      "card": {
+        "text": "Así se ve la card",
+        "mode": "editor"
+      },
+      "_window": {
+        "start": 23.158,
+        "end": 25.502
+      },
+      "voiceover": {
+        "text": "Así se ve la card",
+        "words": [
+          {
+            "word": "Así",
+            "start": 0.12,
+            "end": 0.409
+          },
+          {
+            "word": "se",
+            "start": 0.429,
+            "end": 0.718
+          },
+          {
+            "word": "ve",
+            "start": 0.738,
+            "end": 1.027
+          },
+          {
+            "word": "la",
+            "start": 1.047,
+            "end": 1.335
+          },
+          {
+            "word": "card",
+            "start": 1.355,
+            "end": 1.644
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_08",
+      "type": "panel",
+      "render_mode": "static",
+      "_window": {
+        "start": 25.502,
+        "end": 32.661
+      },
+      "visual": {
+        "image_prompt": "demo"
+      },
+      "voiceover": {
+        "text": "Y la música baja cuando hablo y sube en las pausas",
+        "words": [
+          {
+            "word": "Y",
+            "start": 0.12,
+            "end": 0.405
+          },
+          {
+            "word": "la",
+            "start": 0.425,
+            "end": 0.711
+          },
+          {
+            "word": "música",
+            "start": 0.731,
+            "end": 1.016
+          },
+          {
+            "word": "baja",
+            "start": 1.036,
+            "end": 1.321
+          },
+          {
+            "word": "cuando",
+            "start": 1.341,
+            "end": 1.627
+          },
+          {
+            "word": "hablo",
+            "start": 1.647,
+            "end": 1.932
+          },
+          {
+            "word": "y",
+            "start": 1.952,
+            "end": 2.237
+          },
+          {
+            "word": "sube",
+            "start": 2.257,
+            "end": 2.543
+          },
+          {
+            "word": "en",
+            "start": 2.563,
+            "end": 2.848
+          },
+          {
+            "word": "las",
+            "start": 2.868,
+            "end": 3.153
+          },
+          {
+            "word": "pausas",
+            "start": 3.173,
+            "end": 3.459
+          }
+        ]
+      }
+    }
+  ]
+}

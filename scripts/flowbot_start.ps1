@@ -1,6 +1,7 @@
-# flowbot_start.ps1 - levanta los 2 procesos del autopiloto:
+# flowbot_start.ps1 - levanta los procesos del autopiloto:
 #   1) dev-server (puente extension <-> disco, puerto 35729): /secrets /save /move /queue /charfile
 #   2) render watch de Remotion: renderiza cada video cuando sus medios estan listos (no gasta tokens)
+#   3) telegram-bridge opcional: solo si secrets.local.json trae telegramBotToken
 # Evita duplicados (chequea la linea de comando), arranca en ventana minimizada y verifica.
 $ErrorActionPreference = "Stop"
 $Root     = Split-Path -Parent $PSScriptRoot
@@ -29,5 +30,26 @@ if (Test-Proc '*build.mjs*--watch*') {
   Start-Sleep -Seconds 2
 }
 
-# 3. estado final
+# 3. telegram bridge opcional
+$SecretsPath = Join-Path $Root "secrets.local.json"
+$TelegramEnabled = $false
+if (Test-Path $SecretsPath) {
+  try {
+    $sec = Get-Content $SecretsPath -Raw | ConvertFrom-Json
+    $TelegramEnabled = -not [string]::IsNullOrWhiteSpace($sec.telegramBotToken)
+  } catch { $TelegramEnabled = $false }
+}
+if ($TelegramEnabled) {
+  if (Test-Proc '*telegram-bridge.mjs*') {
+    Write-Host "[OK] telegram bridge ya estaba corriendo."
+  } else {
+    Write-Host "[*] Iniciando telegram bridge..."
+    Start-Process node -ArgumentList 'scripts/telegram-bridge.mjs' -WorkingDirectory $Root -WindowStyle Minimized
+    Start-Sleep -Seconds 2
+  }
+} else {
+  Write-Host "[--] telegram bridge desactivado (sin telegramBotToken)."
+}
+
+# 4. estado final
 & (Join-Path $PSScriptRoot "flowbot_status.ps1")

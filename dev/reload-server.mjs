@@ -70,12 +70,116 @@ function cors(res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 }
 
+const remote = {
+  state: null,
+  stateUpdatedAt: 0,
+  commandSeq: 0,
+  commands: [],
+  eventSeq: 0,
+  events: [],
+};
+
+function readJsonBody(req, maxBytes = 8 * 1024 * 1024) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    let size = 0;
+    req.on("data", (c) => {
+      size += c.length;
+      if (size > maxBytes) { reject(new Error("body demasiado grande")); req.destroy(); return; }
+      chunks.push(c);
+    });
+    req.on("end", () => {
+      try { resolve(JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}")); }
+      catch (e) { reject(e); }
+    });
+    req.on("error", reject);
+  });
+}
+
+function sendJson(res, obj, status = 200) {
+  res.writeHead(status, { "content-type": "application/json" });
+  res.end(JSON.stringify(obj));
+}
+
+function pushRemoteEvent(event) {
+  const item = { id: ++remote.eventSeq, ts: Date.now(), ...event };
+  remote.events.push(item);
+  if (remote.events.length > 200) remote.events.splice(0, remote.events.length - 200);
+  return item;
+}
+
 const server = http.createServer((req, res) => {
   cors(res);
   if (req.method === "OPTIONS") { res.writeHead(204); res.end(); return; }
 
   // POST /save?path=<rel> : la extension escribe un medio (ej. audio mp3) en la carpeta del proyecto.
   const u = new URL(req.url, `http://localhost:${PORT}`);
+
+  if (req.method === "GET" && u.pathname === "/remote/state") {
+    sendJson(res, { ok: true, updatedAt: remote.stateUpdatedAt, state: remote.state });
+    return;
+  }
+
+  if (req.method === "POST" && u.pathname === "/remote/state") {
+    readJsonBody(req).then((body) => {
+      remote.state = body?.state || body || null;
+      remote.stateUpdatedAt = Date.now();
+      sendJson(res, { ok: true });
+    }).catch((e) => sendJson(res, { ok: false, error: String(e?.message || e) }, 400));
+    return;
+  }
+
+  if (req.method === "POST" && u.pathname === "/remote/event") {
+    readJsonBody(req).then((body) => {
+      const item = pushRemoteEvent(body || {});
+      sendJson(res, { ok: true, event: item });
+    }).catch((e) => sendJson(res, { ok: false, error: String(e?.message || e) }, 400));
+    return;
+  }
+
+  if (req.method === "GET" && u.pathname === "/remote/events") {
+    const since = Number(u.searchParams.get("since") || 0);
+    sendJson(res, { ok: true, events: remote.events.filter((e) => e.id > since), lastId: remote.eventSeq });
+    return;
+  }
+
+  if (req.method === "POST" && u.pathname === "/remote/command") {
+    readJsonBody(req).then((body) => {
+      const command = String(body?.command || "").trim().toLowerCase();
+      if (!command) return sendJson(res, { ok: false, error: "command requerido" }, 400);
+      const item = { id: ++remote.commandSeq, ts: Date.now(), command, args: body?.args || {}, source: body?.source || "remote" };
+      remote.commands.push(item);
+      if (remote.commands.length > 200) remote.commands.splice(0, remote.commands.length - 200);
+      log(`remote command #${item.id}: ${command}`);
+      sendJson(res, { ok: true, command: item });
+    }).catch((e) => sendJson(res, { ok: false, error: String(e?.message || e) }, 400));
+    return;
+  }
+
+  if (req.method === "GET" && u.pathname === "/remote/commands") {
+    const since = Number(u.searchParams.get("since") || 0);
+    sendJson(res, { ok: true, commands: remote.commands.filter((c) => c.id > since), lastId: remote.commandSeq });
+    return;
+  }
+
+  if (req.method === "POST" && u.pathname === "/queue/add") {
+    readJsonBody(req).then((body) => {
+      const p = body?.json;
+      if (!p || typeof p !== "object" || Array.isArray(p)) return sendJson(res, { ok: false, error: "json requerido" }, 400);
+      const checked = validateQueueProject(p, { fileExists: queueAssetExists });
+      if (!checked.ok) return sendJson(res, { ok: false, error: "JSON invalido", errors: checked.errors }, 400);
+      const rawName = body?.name || p.project?.slug || p.project?.title || "telegram_job";
+      const name = slugify(String(rawName)).slice(0, 120) || `telegram_${Date.now()}`;
+      const dest = path.join(QUEUE_DIR, `${name}.json`);
+      if (fs.existsSync(dest) && !body?.overwrite) return sendJson(res, { ok: false, error: "ya existe", name }, 409);
+      fs.mkdirSync(QUEUE_DIR, { recursive: true });
+      fs.writeFileSync(dest, JSON.stringify(p, null, 2), "utf8");
+      log(`cola: JSON agregado por remoto -> ${path.relative(ROOT, dest)}`);
+      sendJson(res, { ok: true, name, path: path.relative(ROOT, dest), warnings: checked.warnings || [] });
+    }).catch((e) => sendJson(res, { ok: false, error: String(e?.message || e) }, 400));
+    return;
+  }
+
   if (req.method === "POST" && u.pathname === "/save") {
     const rel = u.searchParams.get("path") || "";
     const dest = path.resolve(ROOT, rel);
@@ -494,13 +598,6 @@ function generatedMediaExists(slug) {
   });
 }
 
-function mediaSignatureMatches(p) {
-  const slug = p.project?.slug || slugify(p.project?.title || "project");
-  const signature = projectMediaSignature(p);
-  const current = readMediaSignature(slug);
-  return !!current && current.signature === signature;
-}
-
 function prepareProjectMedia(p) {
   const slug = p.project?.slug || slugify(p.project?.title || "project");
   const signature = projectMediaSignature(p);
@@ -508,7 +605,7 @@ function prepareProjectMedia(p) {
   const base = path.join(PUBLIC_SLUGS, slug);
   let archived = false;
   let archiveRel = null;
-  if ((!current || current.signature !== signature) && generatedMediaExists(slug)) {
+  if (current && current.signature !== signature && generatedMediaExists(slug)) {
     const stamp = new Date().toISOString().replace(/[:.]/g, "-");
     const archive = path.join(base, "_media_archive", stamp);
     fs.mkdirSync(archive, { recursive: true });
@@ -521,33 +618,40 @@ function prepareProjectMedia(p) {
     archiveRel = path.relative(ROOT, archive);
     log(`media reset ${slug}: ${current ? "firma distinta" : "sin firma previa"} -> ${archiveRel}`);
   }
-  writeMediaSignature(slug, signature, archived ? "archived-old-media" : "matched-or-empty");
+  const reason = archived ? "archived-old-media"
+    : !current && generatedMediaExists(slug) ? "adopted-existing-media"
+      : "matched-or-empty";
+  writeMediaSignature(slug, signature, reason);
   return { slug, signature, archived, archive: archiveRel };
 }
 
 function mediaComplete(p) {
-  const slug = p.project?.slug || slugify(p.project?.title);
-  if (generatedMediaExists(slug) && !mediaSignatureMatches(p)) return false;
-  const base = path.join(PUBLIC_SLUGS, slug);
-  // schema nuevo historias: render_export.clip_order + scene_id. historias = image-only (images/<id>.jpg)
-  // + voz continua (voice/full.mp3); otros presets = clips/<id>.mp4 + voz por escena (igual que antes).
-  const stills = /^(historias|criptoclaro|habitos|pov-historias|manhwa)/.test(p.project?.preset || "");
-  const order = p.render_export?.clip_order || p.capcut_export?.clip_order || (p.scenes || []).map((s) => s.id ?? s.scene_id);
-  const need = [];
-  for (const id of order) {
-    need.push(path.join(base, stills ? "images" : "clips", `${id}.${stills ? "jpg" : "mp4"}`));
-    if (!stills) need.push(path.join(base, "voice", `${id}.mp3`));
-  }
-  if (stills) need.push(path.join(base, "voice", "full.mp3"));
-  if (p.hook) need.push(path.join(base, "voice", "hook.mp3"));
-  return [...new Set(need)].every(fileOk);   // existe Y tamano plausible (no 0-byte/truncado)
+  const { slug, requirements } = getMediaRequirements(p);
+  const complete = requirements.every((r) => fileOk(path.join(PUBLIC_SLUGS, r.path)));
+  if (!complete) return false;
+  if (generatedMediaExists(slug)) return mediaSignatureOkOrAdopted(p, true);
+  return true;
 }
 
 function mediaStatus(p, name) {
   const { slug, requirements } = getMediaRequirements(p, { fallbackName: name });
   const missingMedia = requirements.filter((r) => !fileOk(path.join(PUBLIC_SLUGS, r.path))).map((r) => r.path);
-  if (generatedMediaExists(slug) && !mediaSignatureMatches(p)) missingMedia.unshift(`${slug}/.media-signature.json`);
+  if (generatedMediaExists(slug) && !mediaSignatureOkOrAdopted(p, missingMedia.length === 0)) {
+    missingMedia.unshift(`${slug}/.media-signature.json`);
+  }
   return { slug, mediaComplete: missingMedia.length === 0, missingMedia };
+}
+
+function mediaSignatureOkOrAdopted(p, canAdoptMissing) {
+  const slug = p.project?.slug || slugify(p.project?.title || "project");
+  const signature = projectMediaSignature(p);
+  const current = readMediaSignature(slug);
+  if (current?.signature === signature) return true;
+  if (!current && canAdoptMissing) {
+    writeMediaSignature(slug, signature, "adopted-existing-complete-media");
+    return true;
+  }
+  return false;
 }
 
 function queueAssetExists(rel) {

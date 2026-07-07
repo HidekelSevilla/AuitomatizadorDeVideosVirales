@@ -6,6 +6,7 @@
   "description": "Dev tooling solo (tests/lint). Chrome ignora este archivo al cargar la extension.",
   "scripts": {
     "dev": "node dev/reload-server.mjs",
+    "telegram": "node scripts/telegram-bridge.mjs",
     "test": "node tests/dryrun.test.mjs && node tests/schema_v2.test.mjs && node tests/scene_transition.test.mjs && node tests/orchestrator.test.mjs && node tests/queue_validator.test.mjs && node tests/manhwa_preset.test.mjs && node tests/novela_coreana_v2.test.mjs"
   }
 }

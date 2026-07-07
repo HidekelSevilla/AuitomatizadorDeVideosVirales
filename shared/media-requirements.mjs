@@ -71,7 +71,6 @@ export function projectMediaSignature(projectJson) {
       voices: tts.voices || null,
       voice_settings: tts.voice_settings || tts.settings || null,
       elevenlabs_speed: tts.elevenlabs_speed || null,
-      edit_speed: tts.edit_speed || null,
       full_script: tts.full_script || "",
       dialogue: Array.isArray(tts.dialogue) ? tts.dialogue.map((d) => ({
         scene_id: d?.scene_id || d?.id || "",
