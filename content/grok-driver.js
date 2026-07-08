@@ -72,11 +72,18 @@
   // Quita las referencias adjuntas (chips con boton aria-label "Remove image") del compositor, para
   // que el SW pueda setear un set nuevo por CDP sin acumular las de la escena previa.
   async function clearRefs() {
-    let n = 0;
-    for (const b of [...document.querySelectorAll("button")].filter((b) => b.getAttribute("aria-label") === "Remove image")) {
-      try { b.click(); n++; await sleep(200); } catch (_e) {}
+    const removeBtns = () => [...document.querySelectorAll("button")].filter((b) => b.getAttribute("aria-label") === "Remove image");
+    let removed = 0;
+    // BUCLE re-consultando cada vuelta: clicar un chip re-renderiza la lista, asi que un snapshot unico se
+    // desincroniza y deja chips de la escena PREVIA -> se acumulan y Grok rechaza por pasar de 3 refs.
+    for (let pass = 0; pass < 12; pass++) {
+      const btns = removeBtns();
+      if (!btns.length) break;
+      try { btns[0].click(); removed++; } catch (_e) {}
+      await sleep(180);
     }
-    return { ok: true, data: { removed: n } };
+    const left = removeBtns().length;
+    return { ok: left === 0, data: { removed, left } };
   }
 
   // -------------------------------------------------------------- deteccion ---
@@ -321,7 +328,11 @@
     return { ok: true, data: { imageUrl: chosen.currentSrc || chosen.src, postUrl, variantCount: freshEls.length } };
   }
 
-  async function collectImage({ timeoutMs = 45000, requirePost = false } = {}) {
+  // COLLECT_IMAGE: via de RECUPERACION (canal caido / SW reiniciado a media generacion). Aplica las
+  // MISMAS senales de estabilizacion que generateImage: antes devolvia el primer <img> grande sin
+  // validar y recuperaba el placeholder de RUIDO o un frame a media difusion (recurrencia del bug de
+  // scene_15/scene_30). data: -> quieto QUIET_DATA_MS + dataImageLooksFinal; servidor -> quieto largo.
+  async function collectImage({ timeoutMs = 45000, requirePost = false, cfg } = {}) {
     const found = await waitFor(() => {
       const hs = detectHardStop(); if (hs) return hs;
       if (requirePost && !/\/imagine\/post\//.test(location.href)) return null;
@@ -329,8 +340,25 @@
       return el ? { hit: true } : null;
     }, { timeout: timeoutMs });
     if (found.type) return found;
+    const isData = (s) => /^data:/.test(s || "");
+    const QUIET_SERVER_MS = Number(cfg?.grokImageServerQuietMs) || 10000;
+    const QUIET_DATA_MS = 10000;
+    const settleMax = Math.max(30000, timeoutMs);
+    const t0 = Date.now();
+    let maxLen = -1, lastGrow = Date.now(), settled = false;
+    while (Date.now() - t0 < settleMax) {
+      const hs = detectHardStop(); if (hs) return hs;
+      const el = pickResultImage();
+      const cur = el ? (el.currentSrc || el.src || "") : "";
+      if (cur.length > maxLen) { maxLen = cur.length; lastGrow = Date.now(); }
+      const idle = Date.now() - lastGrow;
+      if (cur && !isData(cur) && idle >= QUIET_SERVER_MS) { settled = true; break; }
+      if (cur && isData(cur) && idle >= QUIET_DATA_MS && await dataImageLooksFinal(cur, cfg)) { settled = true; break; }
+      await sleep(400);
+    }
     const chosen = pickResultImage();
     if (!chosen) return { ok: false, error: "no encontre imagen generada actual en Grok" };
+    if (!settled) return { ok: false, error: "la imagen recuperada no se estabilizo (posible ruido/frame intermedio); reintenta" };
     return {
       ok: true,
       data: {

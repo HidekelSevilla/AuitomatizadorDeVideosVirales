@@ -70,6 +70,7 @@ const el = {
   fishModel: $('fishModel'),
   providerSelect: $('providerSelect'),
   btnAudioTest: $('btnAudioTest'),
+  btnAudioMissing: $('btnAudioMissing'),
   btnAudioAll: $('btnAudioAll'),
   ingredientsCard: $('ingredientsCard'),
   ingredientsSummary: $('ingredientsSummary'),
@@ -814,6 +815,11 @@ function wireInputs() {
     const n = (lastScenes || []).filter((s) => (s.voiceoverText || '').trim()).length;
     if (!(await confirmInline(`Vas a generar la voz de ${n} escena(s) + hook con Fish Audio (usa creditos Fish).\n\n¿Continuar?`, 'Generar voz'))) return;
     send(msg(CMD.GENERATE_AUDIO, { includeHook: true }));
+  });
+  // Solo faltantes: el SW verifica en disco (via dev-server) que mp3 existen y genera SOLO los que
+  // faltan -> recuperar un audio caido no re-gasta creditos de los que ya estan.
+  el.btnAudioMissing?.addEventListener('click', () => {
+    send(msg(CMD.GENERATE_AUDIO, { includeHook: true, missingOnly: true }));
   });
 }
 

@@ -191,4 +191,52 @@ assert.equal(classifyError("handoff imagen=grok -> animacion=flow no soportado")
   assert.equal(h.state.pacing.sessionGen, 0, "l: static no cuenta como generacion");
 }
 
-console.log("OK: orchestrator - classifyError, retry, fail-fast, agotado, hardStop, ritmo, paralelo, pausa, carriles, idempotencia, anti-bucle, static-noop.");
+// (m) classifyError: still RECHAZADO por integridad ("dev-server" en el texto) debe ser 'generation'
+// (retry de imagen GRATIS), NO 'environment' (fail-fast que negaba el reintento). Bug real #1.
+assert.equal(classifyError("still rechazado por dev-server: archivo demasiado pequeno (posible corrupto/incompleto)"), "generation", "m: still rechazado -> generation");
+assert.equal(classifyError("dev-server no responde"), "environment", "m: dev-server caido sigue siendo environment");
+
+// (n) RECUPERACION SIN RE-GASTO: en fase animation sin IMAGE_DONE, una escena ANIMATING con videoUrl
+// (retry "download" / SW muerto tras el fire) debe ser recogida por el bucle secuencial. Antes solo el
+// runner paralelo (off por default) la veia -> quedaba varada en ANIMATING para siempre.
+{
+  const sc = scene("s1"); sc.status = S.ANIMATING; sc.videoUrl = "https://flow/video.mp4";
+  let fired = 0;
+  const collect = async (s) => { if (!s.videoUrl) fired++; s.status = S.DONE; };  // como los runners reales: con videoUrl NO re-dispara
+  const h = harness({ scenes: [sc], phase: "animation", animation: collect });
+  await h.orch.runQueue();
+  assert.equal(sc.status, S.DONE, "n: ANIMATING+videoUrl recogida y DONE");
+  assert.equal(fired, 0, "n: NO re-disparo la animacion (no re-gasto)");
+  assert.equal(h.calls.animation, 1, "n: paso por el runner de animacion");
+  assert.equal(h.state.queue.running, false, "n: la fase termino");
+}
+
+// (n2) la escena ANIMATING SIN videoUrl NO debe ser elegida (re-animarla seria gasto): fase termina sola.
+{
+  const sc = scene("s1"); sc.status = S.ANIMATING; sc.videoUrl = null;
+  const h = harness({ scenes: [sc], phase: "animation" });
+  await h.orch.runQueue();
+  assert.equal(h.calls.animation, 0, "n2: no toco la escena ANIMATING sin video");
+  assert.equal(sc.status, S.ANIMATING, "n2: la deja como esta (decision del SW/resume)");
+}
+
+// (n3) anti-bucle tambien en la recuperacion: si el collect no avanza la escena (sigue ANIMATING), se
+// marca ERROR en vez de re-elegirla infinitamente.
+{
+  const sc = scene("s1"); sc.status = S.ANIMATING; sc.videoUrl = "https://flow/video.mp4";
+  const noop = async () => { /* no avanza */ };
+  const h = harness({ scenes: [sc], phase: "animation", animation: noop });
+  await h.orch.runQueue();
+  assert.equal(sc.status, S.ERROR, "n3: collect no-op marcada ERROR (sin bucle infinito)");
+  assert.equal(h.state.queue.running, false, "n3: el bucle salio");
+}
+
+// (n4) escena ANIMATING+videoUrl pero SKIPPED no se recoge.
+{
+  const sc = scene("s1"); sc.status = S.ANIMATING; sc.videoUrl = "x"; sc.skipped = true;
+  const h = harness({ scenes: [sc], phase: "animation" });
+  await h.orch.runQueue();
+  assert.equal(h.calls.animation, 0, "n4: skipped no se toca");
+}
+
+console.log("OK: orchestrator - classifyError, retry, fail-fast, agotado, hardStop, ritmo, paralelo, pausa, carriles, idempotencia, anti-bucle, static-noop, still-rechazado, collect-ANIMATING.");

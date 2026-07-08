@@ -28,12 +28,12 @@ const jsonArg = process.argv[2];
 if (!jsonArg) { console.error("Uso: node tools/fish-voice.mjs <ruta-al-json>"); process.exit(1); }
 const jsonPath = path.resolve(jsonArg);
 const proj = JSON.parse(fs.readFileSync(jsonPath, "utf8").replace(/^﻿/, ""));
-// API key: secrets.local.json si existe; si no, fallback HARDCODE local (uso personal).
+// API key: SOLO desde secrets.local.json (nunca hardcodeada en el repo).
 const apiKey = (() => {
   try { return JSON.parse(fs.readFileSync(path.join(REPO, "secrets.local.json"), "utf8")).fishApiKey; }
   catch { return ""; }
-})() || "d4e19ba180a5403a9bd203c28def4d0f";
-if (!apiKey) { console.error("Falta fishApiKey"); process.exit(1); }
+})();
+if (!apiKey) { console.error("Falta fishApiKey en secrets.local.json"); process.exit(1); }
 
 const preset = proj.project?.preset || "";
 const presetCfg = FISH_PRESETS[preset] || null;
@@ -132,7 +132,12 @@ console.log(`Fish: ${items.length} audios -> ${slug}/voice/ (preset "${preset}",
 let ok = 0, noWords = 0;
 for (const it of items) {
   const dir = it.dir || outDir;   // opening compartido -> su propia carpeta; el resto -> la del proyecto
-  if (fs.existsSync(path.join(dir, `${it.id}.mp3`))) { console.log(`  · ${it.id}.mp3 ya existe, lo salto`); continue; }
+  // Saltar solo si existe Y pesa lo minimo: un mp3 truncado/0-byte (descarga rota) bloqueaba la
+  // regeneracion para siempre ("ya existe") y el render quedaba esperando un audio corrupto.
+  const mp3Path = path.join(dir, `${it.id}.mp3`);
+  const mp3Size = (() => { try { return fs.statSync(mp3Path).size; } catch { return 0; } })();
+  if (mp3Size >= 4096) { console.log(`  · ${it.id}.mp3 ya existe, lo salto`); continue; }
+  if (mp3Size > 0) console.log(`  · ${it.id}.mp3 existe pero pesa ${mp3Size}B (corrupto): lo regenero`);
   try {
     const { audio, words } = await fishTTSWithTimestamps(it.text);
     fs.writeFileSync(path.join(dir, `${it.id}.mp3`), audio);

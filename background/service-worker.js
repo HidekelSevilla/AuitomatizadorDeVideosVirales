@@ -33,6 +33,10 @@ let state = null;          // cache de AppState; se rehidrata bajo demanda
 let loopRunning = false;   // guarda anti-reentrada del bucle de ESCENAS en este worker vivo
 let autopilotBusy = false; // guarda anti-reentrada de la CORRIDA COMPLETA (onRunAll: ingredientes + fases)
 let ingredientsRunning = false; // guarda anti-reentrada de la fase/boton de INGREDIENTES
+let remotePollBusy = false; // guarda anti-reentrada de pollRemoteCommands (bootstrap + alarma cada 30s)
+let pollQueueBusy = false;  // guarda anti-reentrada de pollQueue (la ventana claim->onRunAll dura minutos)
+let audioBusy = false;      // guarda anti-reentrada de onGenerateAudio (2 triggers = doble gasto de creditos)
+let resumeInFlight = false; // resumeIfInterrupted en curso: pollQueue NO debe liberar/reclamar mientras tanto
 
 // ---------------------------------------------------------------------------
 // Persistencia
@@ -276,19 +280,40 @@ chrome.runtime.onStartup.addListener(() => { loadState().then(resumeIfInterrupte
 async function resumeIfInterrupted() {
   await ensureState();
   if (loopRunning || !state.queue.running || state.queue.paused) return;
+  resumeInFlight = true;
+  try {
+  // Latido fresco YA: pollQueue (alarma del mismo despertar) veia el heartbeat rancio, liberaba
+  // running=false y este resume abortaba en silencio -> la corrida a medias se abandonaba.
+  state.queue.heartbeatAt = Date.now();
   for (const s of state.scenes) {
     if (s.status === SCENE_STATUS.GENERATING_IMAGE) s.status = SCENE_STATUS.PENDING;                       // imagen: regen gratis
     else if ((s.status === SCENE_STATUS.DOWNLOADING || s.status === SCENE_STATUS.EXTRACTING_FRAME) && s.videoUrl) s.status = SCENE_STATUS.ANIMATING; // re-recoge (no re-anima)
-    else if (s.status === SCENE_STATUS.ANIMATING && !s.videoUrl) { s.status = SCENE_STATUS.ERROR; s.error = "interrumpido durante la animacion; revisa Flow y dale Re-descargar/Reanimar (puede ya estar el video)."; } // evita re-gasto silencioso
+    else if (s.status === SCENE_STATUS.ANIMATING && !s.videoUrl && s.grokFired && s.grokVideoPostUrl) {
+      // El disparo en Grok YA se pago y sabemos donde quedo el post: recoger sin re-animar.
+      // runGrokAnimation salta el FIRE (grokFired) y navega a grokVideoPostUrl a recolectar.
+      s.status = SCENE_STATUS.IMAGE_DONE;
+    }
+    else if (s.status === SCENE_STATUS.ANIMATING && !s.videoUrl) {
+      s.status = SCENE_STATUS.ERROR;
+      s.error = s.grokFired
+        ? "interrumpido tras disparar la animacion en Grok (YA se pago, pero no se donde quedo). Busca el video en Grok antes de Reanimar."
+        : "interrumpido durante la animacion; revisa Flow y dale Re-descargar/Reanimar (puede ya estar el video).";
+      s.errorPhase = "animation";
+    } // evita re-gasto silencioso
   }
   await saveState();
   log(LOG_LEVEL.INFO, "Reanudando corrida tras reinicio del service worker.");
   emitState();
+  // Mismas reparaciones que onStartOrResume: stills que faltan en disco vuelven a PENDING y si hay
+  // pendientes la fase NO puede ser animation (evita reanudar en la fase equivocada).
+  await repairMissingStillAssetsBeforeResume("reinicio del service worker");
+  if (forceImagesPhaseIfPending("reinicio del service worker")) await saveState();
   if (!(await ensureIngredientsBeforeSceneLoop("reinicio del service worker"))) return;
   // Si la corrida era PARALELA (murio el SW durante la espera de Grok), reanuda en paralelo (idempotente
   // por status, no re-gasta) en vez del bucle secuencial; si no, el bucle unico de siempre.
   if (state.queue.mode === "parallel" && state.config.parallelPipeline) runPhasesParallel().catch((e) => log(LOG_LEVEL.ERROR, `Reanudacion paralela fallo: ${e?.message ?? e}`));
   else launchLoop();
+  } finally { resumeInFlight = false; }
 }
 
 // ---------------------------------------------------------------------------
@@ -394,38 +419,58 @@ async function handleMessage(message) {
 }
 
 async function pollRemoteCommands() {
-  await ensureState();
-  const base = remoteBase();
-  if (!base) return;
-  const since = Number(state.remote?.lastCommandId || 0);
-  const data = await fetch(`${base}/commands?since=${encodeURIComponent(since)}`).then((r) => r.json()).catch(() => null);
-  const commands = Array.isArray(data?.commands) ? data.commands : [];
-  if (!commands.length) return;
-  for (const c of commands.sort((a, b) => a.id - b.id)) {
-    try {
-      await applyRemoteCommand(c);
-    } catch (e) {
-      log(LOG_LEVEL.ERROR, `Remote ${c.command}: ${e?.message ?? e}`);
-    } finally {
-      state.remote.lastCommandId = Math.max(Number(state.remote.lastCommandId || 0), Number(c.id || 0));
+  // Sin este guard, el bootstrap del SW + la alarma de 30s corren DOS pasadas con el mismo cursor y
+  // aplican cada comando dos veces (un "audio" doble = doble gasto de creditos TTS).
+  if (remotePollBusy) return;
+  remotePollBusy = true;
+  try {
+    await ensureState();
+    const base = remoteBase();
+    if (!base) return;
+    state.remote = state.remote || { lastCommandId: 0 };   // onClearAll pudo dejar el estado sin `remote`
+    const since = Number(state.remote.lastCommandId || 0);
+    const data = await fetch(`${base}/commands?since=${encodeURIComponent(since)}`).then((r) => r.json()).catch(() => null);
+    const commands = Array.isArray(data?.commands) ? data.commands : [];
+    if (!commands.length) return;
+    for (const c of commands.sort((a, b) => a.id - b.id)) {
+      // Cursor ANTES de ejecutar (at-most-once): un comando largo (run_all/audio, minutos) dejaba el
+      // cursor viejo visible a la siguiente alarma -> se re-ejecutaba cada 30s (reintentos fantasma).
+      // Asignacion PLANA (no Math.max): si el dev-server reinicio, sus ids vuelven a empezar y el cursor
+      // debe poder BAJAR para adoptarlos; con Math.max se re-servia el mismo lote hasta agotar su TTL.
+      state.remote.lastCommandId = Number(c.id || 0);
       await saveState();
-      scheduleRemoteState();
+      try {
+        await applyRemoteCommand(c);
+      } catch (e) {
+        log(LOG_LEVEL.ERROR, `Remote ${c.command}: ${e?.message ?? e}`);
+      } finally {
+        scheduleRemoteState();
+      }
     }
+  } finally {
+    remotePollBusy = false;
   }
 }
 
 async function applyRemoteCommand(c) {
   const command = String(c?.command || "").toLowerCase();
   log(LOG_LEVEL.INFO, `Remote: ${command}`);
+  // Lanza una operacion LARGA sin bloquear el poll de comandos: pollRemoteCommands sostiene remotePollBusy
+  // mientras await-ea; si esperaramos a run_all (horas) o audio (minutos), un "pausar"/"detener" remoto NO
+  // se procesaria hasta que terminara. Estas ops ya tienen su propio guard (autopilotBusy/audioBusy/loopRunning)
+  // y el cursor ya avanzo antes de ejecutar, asi que no se re-disparan. El .catch evita un unhandled rejection.
+  const bg = (p) => { Promise.resolve(p).catch((e) => log(LOG_LEVEL.ERROR, `Remote ${command} (bg): ${e?.message ?? e}`)); };
   if (["pause", "pausar"].includes(command)) return onPause();
   if (["stop", "detener"].includes(command)) return onStop();
-  if (["resume", "reanudar", "start"].includes(command)) return onStartOrResume();
-  if (["run_all", "hacer_todo", "todo"].includes(command)) return onRunAll();
-  if (["retry", "reintentar"].includes(command)) return onRemoteRetry();
+  if (["resume", "reanudar", "start"].includes(command)) return bg(onStartOrResume());
+  if (["run_all", "hacer_todo", "todo"].includes(command)) return bg(onRunAll());
+  if (["audio_missing", "audio_faltante", "generate_audio_missing", "audio"].includes(command)) return bg(onGenerateAudio({ includeHook: true, missingOnly: true }));
+  if (["audio_all", "generate_audio"].includes(command)) return bg(onGenerateAudio({ includeHook: true }));
+  if (["retry", "reintentar"].includes(command)) return bg(onRemoteRetry());
   if (["skip", "saltar"].includes(command)) return onRemoteSkip();
   if (["queue_on", "cola_on"].includes(command)) {
     await onSetConfig({ config: { autoQueue: true } });
-    return pollQueue();
+    return bg(pollQueue());
   }
   if (["queue_off", "cola_off"].includes(command)) return onSetConfig({ config: { autoQueue: false } });
   if (["status", "estado"].includes(command)) { scheduleRemoteState(); return; }
@@ -548,6 +593,13 @@ async function onRetryScene(message) {
     log(LOG_LEVEL.WARN, `RETRY: escena no encontrada: ${message.sceneId}`);
     return;
   }
+  // Guard de corrida activa (mismo criterio que onRetryIngredient): un retry a media corrida cambiaba
+  // queue.phase debajo del bucle vivo. Con la cola PAUSADA (flujo normal de recuperacion) si se permite.
+  if ((autopilotBusy || loopRunning || ingredientsRunning || state.queue.running) && !state.queue.paused) {
+    log(LOG_LEVEL.WARN, `Escena ${scene.id}: hay una corrida activa; pausa o espera a que termine antes de reintentar.`);
+    emitState();
+    return;
+  }
   scene.attempts = 0;
   scene.error = null;
   if (state.queue.errorSceneId === scene.id) state.queue.errorSceneId = null;
@@ -633,6 +685,9 @@ async function onRetryIngredient(message) {
 // asi un reintento por escena toca solo la que el usuario pidio.
 async function runAnimationRetry() {
   state.queue.phase = "animation";
+  // Si aun hay imagenes PENDIENTES, primero se completan (la fase animation con pendings las abandonaba
+  // en silencio); al terminar, el auto-avance pasa a animation y recoge la escena reintentada.
+  forceImagesPhaseIfPending("retry de animacion");
   state.queue.paused = false;
   state.queue.running = true;
   await saveState();
@@ -646,15 +701,55 @@ async function runAnimationRetry() {
 async function onRetryAllErrors() {
   const errs = state.scenes.filter((s) => s.status === SCENE_STATUS.ERROR);
   if (!errs.length) { log(LOG_LEVEL.INFO, "No hay escenas en error para reintentar."); return; }
+  // Mismo guard que onRetryScene: no cambiar fase/estados debajo de un bucle vivo (con pausa si se permite).
+  if ((autopilotBusy || loopRunning || ingredientsRunning) && !state.queue.paused) {
+    log(LOG_LEVEL.WARN, "Reintentar errores: hay una corrida activa; pausa o espera a que termine.");
+    emitState();
+    return;
+  }
+  let toImages = false;
   let toAnimate = false;
   for (const s of errs) {
     s.attempts = 0; s.error = null;
-    if (s.imageUrl) { s.status = SCENE_STATUS.IMAGE_DONE; s.videoUrl = null; s.clipFilename = null; s.lastFrameFilename = null; s.savedOk = false; s.grokFired = false; s.grokVideoPostUrl = null; s.grokAnimBefore = null; toAnimate = true; }
-    else { s.status = SCENE_STATUS.PENDING; }
+    const retryAsImage = s.errorPhase === "images" || !s.imageUrl;
+    if (!retryAsImage && s.imageUrl && s.videoUrl) {
+      // El video YA se pago (fallo la descarga/guardado, no la animacion): SOLO recoger/descargar,
+      // igual que el retry por escena en modo "download". NO limpiar videoUrl/grokFired: eso re-dispara
+      // la animacion y cobra 20-40 pts otra vez por un clip que ya existe.
+      s.status = SCENE_STATUS.ANIMATING;
+      s.clipFilename = null;
+      s.lastFrameFilename = null;
+      s.savedOk = false;
+      toAnimate = true;
+    } else if (!retryAsImage && s.imageUrl) {
+      s.status = SCENE_STATUS.IMAGE_DONE;
+      s.videoUrl = null;
+      s.clipFilename = null;
+      s.lastFrameFilename = null;
+      s.savedOk = false;
+      s.grokFired = false;
+      s.grokVideoPostUrl = null;
+      s.grokAnimBefore = null;
+      toAnimate = true;
+    } else {
+      s.status = SCENE_STATUS.PENDING;
+      s.imageUrl = null;
+      s.imageFilePath = null;
+      s.grokPostUrl = null;
+      s.videoUrl = null;
+      s.clipFilename = null;
+      s.lastFrameFilename = null;
+      s.savedOk = false;
+      s.grokFired = false;
+      s.grokVideoPostUrl = null;
+      s.grokAnimBefore = null;
+      toImages = true;
+    }
+    s.errorPhase = null;
     emitSceneStatus(s.id, s.status);
   }
   state.queue.errorSceneId = null;
-  state.queue.phase = toAnimate ? "animation" : "images";
+  state.queue.phase = toImages || (state.scenes || []).some((s) => s.status === SCENE_STATUS.PENDING) ? "images" : (toAnimate ? "animation" : "images");
   state.queue.paused = false;
   state.queue.running = true;
   await saveState();
@@ -701,7 +796,9 @@ async function onClearAll() {
   detachDebuggers();
   lastFrames.clear();
   logRing = [];
-  state = makeInitialState();
+  const prevRemote = state?.remote;   // preservar el cursor de comandos remotos: si vuelve a 0, el
+  state = makeInitialState();         // dev-server re-sirve los comandos vivos (TTL 5 min) = replay
+  state.remote = { lastCommandId: prevRemote?.lastCommandId || 0 };
   await chrome.storage.local.remove([STORAGE_KEY, LOG_RING_KEY]);
   await saveState();
   log(LOG_LEVEL.INFO, "Estado de la extension borrado por completo (estado inicial).");
@@ -761,6 +858,9 @@ async function resumeAfterCooldown() {
   await saveState();
   log(LOG_LEVEL.INFO, "Cooldown de rate-limit terminado: reanudando la cola.");
   emitState();
+  // Mismas reparaciones que onStartOrResume/resumeIfInterrupted antes de relanzar el bucle.
+  await repairMissingStillAssetsBeforeResume("cooldown");
+  if (forceImagesPhaseIfPending("cooldown")) await saveState();
   if (!(await ensureIngredientsBeforeSceneLoop("cooldown"))) return;
   if (state.queue.mode === "parallel" && state.config.parallelPipeline) runPhasesParallel().catch((e) => log(LOG_LEVEL.ERROR, `Reanudacion paralela fallo: ${e?.message ?? e}`));
   else launchLoop();
@@ -789,6 +889,55 @@ async function advanceCompletedImagesToAnimationIfNeeded(reason) {
   return true;
 }
 
+function isRenderableStillScene(scene) {
+  if (!scene || scene.sceneType === "narrative_card") return false;
+  if (state.project?.imageOnly) return true;
+  return !!state.project?.perSceneRender && scene.renderMode !== "animated";
+}
+
+async function repairMissingStillAssetsBeforeResume(reason) {
+  const slug = state.project?.slug || "";
+  if (!slug || (!state.project?.imageOnly && !state.project?.perSceneRender)) return 0;
+  let repaired = 0;
+  for (const scene of state.scenes || []) {
+    if (![SCENE_STATUS.DONE, SCENE_STATUS.IMAGE_DONE].includes(scene.status)) continue;
+    if (!isRenderableStillScene(scene)) continue;
+    const rel = `remotion-editor/public/${slug}/images/${scene.id}.jpg`;
+    if (await publicFileOk(rel, 4096)) continue;
+    scene.status = SCENE_STATUS.PENDING;
+    scene.attempts = 0;
+    scene.error = null;
+    scene.imageUrl = null;
+    scene.imageFilePath = null;
+    scene.grokPostUrl = null;
+    scene.videoUrl = null;
+    scene.clipFilename = null;
+    scene.lastFrameFilename = null;
+    scene.savedOk = false;
+    scene.grokFired = false;
+    scene.grokVideoPostUrl = null;
+    scene.grokAnimBefore = null;
+    repaired++;
+    emitSceneStatus(scene.id, SCENE_STATUS.PENDING);
+  }
+  if (repaired) {
+    state.queue.phase = "images";
+    log(LOG_LEVEL.WARN, `Auto-reparacion (${reason}): ${repaired} still(s) faltante(s) reencolado(s) a imagenes.`);
+    await saveState();
+    emitState();
+  }
+  return repaired;
+}
+
+function forceImagesPhaseIfPending(reason) {
+  if ((state.queue?.phase || "images") !== "animation") return false;
+  const hasPendingImages = (state.scenes || []).some((s) => (s.status === SCENE_STATUS.PENDING && !s.skipped) || (s.status === SCENE_STATUS.ERROR && !s.skipped && !s.imageUrl));
+  if (!hasPendingImages) return false;
+  state.queue.phase = "images";
+  log(LOG_LEVEL.WARN, `Auto-correccion (${reason}): habia escenas pendientes; vuelvo a fase images.`);
+  return true;
+}
+
 // Pausa "blanda" por fallo recuperable-a-mano (no captcha/sin-creditos): deja la cola PAUSADA para que
 // pollQueue no jale mas trabajos y el autopiloto se detenga. El usuario arregla en Flow y reanuda.
 async function pauseForError(message, sceneId = null) {
@@ -808,6 +957,8 @@ async function pauseForError(message, sceneId = null) {
 // ---------------------------------------------------------------------------
 
 async function onStartOrResume() {
+  await repairMissingStillAssetsBeforeResume("reanudar");
+  forceImagesPhaseIfPending("reanudar");
   state.queue.paused = false;
   state.queue.running = true;
   state.queue.errorSceneId = null;   // al reanudar, reconocemos el fallo; el resto continua (la escena en error queda marcada)
@@ -821,13 +972,17 @@ async function onStartOrResume() {
 
 // Arranca una FASE: "images" (genera todas las imagenes) o "animation" (anima las listas).
 async function onStartPhase(phase) {
+  if (phase === "animation" && (state.scenes || []).some((s) => (s.status === SCENE_STATUS.PENDING && !s.skipped) || (s.status === SCENE_STATUS.ERROR && !s.skipped && !s.imageUrl))) {
+    log(LOG_LEVEL.WARN, "Animacion pedida con escenas pendientes; vuelvo a generar imagenes primero.");
+    phase = "images";
+  }
   state.queue.phase = phase;
   // Reactiva escenas en ERROR SOLO en la fase de imagenes (gratis). En animacion NO se reactiva:
   // re-animar gasta ~20-40 pts y debe ser decision explicita (boton por escena o RETRY_ALL_ERRORS),
   // no un efecto colateral de pulsar "Animar". (Auditoria: la pausa-ante-fallo se anulaba sola.)
   if (phase === "images") {
     for (const s of state.scenes) {
-      if (s.status === SCENE_STATUS.ERROR && !s.imageUrl) { s.status = SCENE_STATUS.PENDING; s.attempts = 0; s.error = null; }
+      if (s.status === SCENE_STATUS.ERROR && !s.skipped && !s.imageUrl) { s.status = SCENE_STATUS.PENDING; s.attempts = 0; s.error = null; }   // !skipped: respetar "Saltar" (antes se resucitaban)
     }
   }
   state.queue.errorSceneId = null;
@@ -895,6 +1050,9 @@ const orchestrator = createOrchestrator({
 // comparten pollQueue/resumeIfInterrupted; el orquestador lo lee/escribe via deps.loop.
 function launchLoop() {
   if (loopRunning) return;
+  // keepAlive TAMBIEN en secuencial: la espera de ~6 min de Grok (debugger suelto, sin eventos chrome.*)
+  // mataba el SW MV3 a media corrida. La alarma lo revive/mantiene; keepAliveTick se auto-apaga al final.
+  try { chrome.alarms.create("keepAlive", { periodInMinutes: 0.4 }); } catch (_e) {}
   orchestrator.runQueue().catch((e) => {
     console.error("runQueue error:", e);
     log(LOG_LEVEL.ERROR, `Bucle abortado: ${e?.message ?? e}`);
@@ -1043,7 +1201,12 @@ async function runRealImage(scene, prevSceneId, refName) {
       if (moved.via === "server") log(LOG_LEVEL.INFO, `${scene.id}: still movido a public/${slug}/images/ (image-only).`);
       else log(LOG_LEVEL.WARN, `${scene.id}: still en Descargas (dev-server no responde); muevelo a public/${slug}/images/.`);
     } catch (e) {
-      if (isRejectedStillError(e)) throw e;
+      if (isRejectedStillError(e)) {
+        scene.imageUrl = null;
+        scene.imageFilePath = null;
+        scene.savedOk = false;
+        throw e;
+      }
       log(LOG_LEVEL.WARN, `${scene.id}: no pude guardar/mover el still (${e?.message ?? e}).`);
     }
   } else if (animProv !== "flow" && scene.imageUrl) {
@@ -1265,15 +1428,29 @@ async function runGrokImage(scene) {
     if (ing?.imageFilePath) refPaths.push(ing.imageFilePath);
     else log(LOG_LEVEL.WARN, `${scene.id}: ingrediente '${rid}' sin imagen en disco; se omite.`);
   }
-  for (const sr of (scene.sceneRefs || [])) {
-    const ref = state.scenes.find((x) => x.id === sr.sceneId);
-    if (ref?.imageFilePath) refPaths.push(ref.imageFilePath);
-    else log(LOG_LEVEL.WARN, `${scene.id}: ref a escena '${sr.sceneId}' sin imagen en disco; se omite.`);
-  }
+  // ESCENARIO + assets sueltos (sistema_ui): son INGREDIENTES base -> tienen prioridad sobre las escenas
+  // previas, asi que se adjuntan ANTES (si hay que recortar por el limite de Grok, cae primero lo de abajo).
   for (const rel of (scene.referenceAssets || [])) {
     try { const p = await resolveCharFileFlexible(rel); if (p) refPaths.push(p); }
     catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no resolvi asset de referencia "${rel}": ${e?.message ?? e}`); }
   }
+  // ESCENAS PREVIAS (references.scenes): continuidad, MENOR prioridad -> al final del array.
+  const sceneRefPaths = [];
+  for (const sr of (scene.sceneRefs || [])) {
+    const ref = state.scenes.find((x) => x.id === sr.sceneId);
+    if (ref?.imageFilePath) sceneRefPaths.push(ref.imageFilePath);
+    else log(LOG_LEVEL.WARN, `${scene.id}: ref a escena '${sr.sceneId}' sin imagen en disco; se omite.`);
+  }
+  // Grok solo acepta 3 imagenes de referencia por generacion. Junta ingredientes (personaje/escenario/
+  // sistema_ui) PRIMERO y escenas previas al final; si se pasa de 3, recorta desde el final (caen antes las
+  // escenas) para no reventar la generacion. Idempotente si ya son <=3 (comportamiento identico al anterior).
+  const GROK_MAX_REFS = 3;
+  const allRefs = [...refPaths, ...sceneRefPaths];
+  if (allRefs.length > GROK_MAX_REFS) {
+    log(LOG_LEVEL.WARN, `${scene.id}: ${allRefs.length} referencias exceden el limite de Grok (${GROK_MAX_REFS}); adjunto solo las ${GROK_MAX_REFS} de mayor prioridad (ingredientes antes que escenas previas).`);
+  }
+  refPaths.length = 0;
+  refPaths.push(...allRefs.slice(0, GROK_MAX_REFS));
 
   scene.status = SCENE_STATUS.GENERATING_IMAGE;
   await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.GENERATING_IMAGE); emitState();
@@ -1302,7 +1479,13 @@ async function runGrokImage(scene) {
       else log(LOG_LEVEL.WARN, `${scene.id}: still en Descargas (dev-server no responde); muevelo a public/${slug}/images/ o corre flowbot.`);
     }
   } catch (e) {
-    if (isRejectedStillError(e)) throw e;
+    if (isRejectedStillError(e)) {
+      scene.imageUrl = null;
+      scene.imageFilePath = null;
+      scene.grokPostUrl = null;
+      scene.savedOk = false;
+      throw e;
+    }
     log(LOG_LEVEL.WARN, `${scene.id}: no pude guardar/mover la imagen (${e?.message ?? e}).`);
   }
   if (state.pacing) state.pacing.grokGenCount = (state.pacing.grokGenCount || 0) + 1;   // contador anti-cuelgue (recarga cada N imagenes)
@@ -1701,6 +1884,44 @@ async function cleanupV3VoiceFile(slug, filename, outputFormat) {
   }
 }
 
+async function publicFileOk(relPath, minBytes = 1) {
+  const writerUrl = state.config.audioWriterUrl || DEFAULT_CONFIG.audioWriterUrl;
+  let base = "http://localhost:35729";
+  try { base = new URL(writerUrl).origin; } catch (_e) { /* fallback */ }
+  try {
+    const res = await fetch(`${base}/file-status?path=${encodeURIComponent(relPath)}`);
+    if (!res.ok) return false;
+    const j = await res.json().catch(() => null);
+    return !!j?.ok && Number(j.size || 0) >= minBytes;
+  } catch (_e) {
+    return false;
+  }
+}
+
+async function voiceFileOk(slug, filename) {
+  const minBytes = filename.toLowerCase().endsWith(".mp3") ? 4096 : 2;
+  return publicFileOk(`remotion-editor/public/${slug}/voice/${filename}`, minBytes);
+}
+
+// Verifica EN DISCO (via dev-server) que la voz del proyecto este completa: full.mp3 para presets de
+// voz continua; 1 mp3 por escena con voiceover (+hook) para el resto. Devuelve la lista de faltantes.
+// Ojo: con el dev-server caido reporta todo como faltante (el render tampoco los veria).
+async function missingVoiceFiles() {
+  const slug = state.project?.slug || "proyecto";
+  const preset = state.project?.preset || "";
+  const fullScript = state.project?.ttsExport?.full_script;
+  const continuous = /^(historias|criptoclaro|habitos|pov-historias|manhwa)/.test(preset) && typeof fullScript === "string" && fullScript.trim();
+  if (continuous) return (await voiceFileOk(slug, "full.mp3")) ? [] : ["full.mp3"];
+  const missing = [];
+  const hv = state.project?.hook?.voiceover;
+  const hookText = typeof hv === "string" ? hv : (hv && typeof hv.text === "string" ? hv.text : "");
+  if (hookText.trim() && !(await voiceFileOk(slug, "hook.mp3"))) missing.push("hook.mp3");
+  for (const s of (state.scenes || []).filter((x) => (x.voiceoverText || "").trim())) {
+    if (!(await voiceFileOk(slug, `${s.id}.mp3`))) missing.push(`${s.id}.mp3`);
+  }
+  return missing;
+}
+
 function currentProjectAsElevenJson() {
   const p = state.project || {};
   const tts = p.ttsExport || {};
@@ -1954,8 +2175,17 @@ async function generateHistoriasEleven(fullScript, sceneTexts, slug, tts, apiKey
 }
 
 // Genera la voz de cada escena (+ hook) con Fish Audio. limit -> solo las primeras N escenas (prueba).
-async function onGenerateAudio(message) {
+// Devuelve true si TODO el audio pedido quedo generado (o ya existia); false si algo fallo o si ya
+// habia otra generacion en curso. Los callers (onRunAll, remoto) usan el boolean para NO dar por
+// buenos medios de voz que no existen.
+async function onGenerateAudio(message = {}) {
+  // Anti-reentrada: panel + comando remoto + autopiloto pueden coincidir; dos generaciones
+  // concurrentes duplican el gasto de creditos TTS y se pisan los archivos.
+  if (audioBusy) { log(LOG_LEVEL.WARN, "Audio: ya hay una generacion en curso; ignoro la reentrada."); return false; }
+  audioBusy = true;
+  try {
   await applySecrets();   // recarga la key desde secrets.local.json por si el dev-server arranco tarde
+  const missingOnly = !!message.missingOnly;
 
   // historias + ElevenLabs V3: si el JSON pide engine "elevenlabs", la voz va por V3 (NO requiere key de Fish).
   // Bloque con scope propio (_*) para no chocar con las const del flujo Fish de abajo.
@@ -1967,8 +2197,12 @@ async function onGenerateAudio(message) {
       || (_preset === "manhwa" && _tts.engine === "elevenlabs");
     if (_wantsEleven && typeof _fs === "string" && _fs.trim()) {
       const elevenKey = (state.config.elevenApiKey || "").trim();
-      if (!elevenKey) { log(LOG_LEVEL.ERROR, "ElevenLabs: el JSON pide engine \"elevenlabs\" pero falta elevenApiKey en secrets.local.json."); return; }
+      if (!elevenKey) { log(LOG_LEVEL.ERROR, "ElevenLabs: el JSON pide engine \"elevenlabs\" pero falta elevenApiKey en secrets.local.json."); return false; }
       const _slug = state.project?.slug || "proyecto";
+      if (missingOnly && await voiceFileOk(_slug, "full.mp3")) {
+        log(LOG_LEVEL.INFO, `Audio faltante: ${_slug}/voice/full.mp3 ya existe; no genero de nuevo.`);
+        return true;
+      }
       const _texts = (state.scenes || []).filter((s) => (s.voiceoverText || "").trim()).map((s) => s.voiceoverText.trim());
       try {
         const payload = state.queue?.jobName
@@ -1978,19 +2212,20 @@ async function onGenerateAudio(message) {
         log(LOG_LEVEL.INFO, `ElevenLabs: delegando voz a Node local (${label}) para evitar perdida por service worker.`);
         await generateElevenViaNode(payload);
         log(LOG_LEVEL.INFO, `ElevenLabs Node listo -> ${_slug}/voice/full.mp3`);
+        return true;
       } catch (e) {
         log(LOG_LEVEL.ERROR, `ElevenLabs Node fallo: ${e?.message ?? e}`);
+        return false;
       }
-      return;
     }
     if (_preset === "manhwa") {
       log(LOG_LEVEL.ERROR, "manhwa requiere tts_export.full_script y pipeline.tts.tool \"elevenlabs\".");
-      return;
+      return false;
     }
   }
 
   const apiKey = (state.config.fishApiKey || "").trim();
-  if (!apiKey) { log(LOG_LEVEL.ERROR, "Fish Audio: falta tu API key. Revisa secrets.local.json y que 'flowbot start' este corriendo."); return; }
+  if (!apiKey) { log(LOG_LEVEL.ERROR, "Fish Audio: falta tu API key. Revisa secrets.local.json y que 'flowbot start' este corriendo."); return false; }
 
   // Voz: config.fishVoiceId (si la pegaste) GANA; si no, la del preset (project.preset); si no, DEFAULT_VOICE_ID.
   // NUNCA queda vacio: aunque el JSON olvide "preset", SIEMPRE usa la voz default (no la generica de Fish).
@@ -2028,7 +2263,22 @@ async function onGenerateAudio(message) {
     log(LOG_LEVEL.INFO, "historias: 1 voz continua desde tts_export.full_script -> full.mp3 + full.words.json (sin costura entre escenas).");
   }
 
-  if (!items.length) { log(LOG_LEVEL.WARN, "No hay textos de voz (scenes[].voiceover.text) para generar."); return; }
+  if (!items.length) { log(LOG_LEVEL.WARN, "No hay textos de voz (scenes[].voiceover.text) para generar."); return true; }   // sin voz que generar = nada que fallar
+
+  if (missingOnly) {
+    const original = items.length;
+    const missing = [];
+    for (const it of items) {
+      if (!(await voiceFileOk(slug, `${it.id}.mp3`))) missing.push(it);
+    }
+    items.splice(0, items.length, ...missing);
+    const skipped = original - items.length;
+    if (!items.length) {
+      log(LOG_LEVEL.INFO, `Audio faltante: todos los mp3 ya existen (${skipped}); no gasto creditos.`);
+      return true;
+    }
+    log(LOG_LEVEL.INFO, `Audio faltante: genero ${items.length}; omito ${skipped} existente(s).`);
+  }
 
   log(LOG_LEVEL.INFO, `Fish Audio: generando ${items.length} audio(s)+timestamps -> ${slug}/voice/ (modelo ${model})...`);
   let okCount = 0, viaDownloads = false, noWords = 0;
@@ -2054,6 +2304,10 @@ async function onGenerateAudio(message) {
   log(LOG_LEVEL.INFO, `Fish Audio: ${okCount}/${items.length} audios listos.`);
   if (noWords) log(LOG_LEVEL.WARN, `${noWords} sin timestamps (el editor usara karaoke estimado para esas escenas).`);
   if (viaDownloads) log(LOG_LEVEL.WARN, `Algunos cayeron en Descargas/${slug}/voice/ (el dev-server no respondio). Corre 'npm run dev' o muevelos a remotion-editor/public/${slug}/voice/.`);
+  // Solo cuenta como exito si TODOS los audios quedaron Y en el proyecto (los que caen en Descargas
+  // NO los ve el render: el caller debe avisar en vez de dar los medios por listos).
+  return okCount === items.length && !viaDownloads;
+  } finally { audioBusy = false; }
 }
 
 // Espera a que una descarga de chrome.downloads termine; devuelve el item (con .filename ABSOLUTO).
@@ -2199,7 +2453,17 @@ async function prepareGrokImageAttempt(tabId, refPaths, label) {
   await ensureGrokCompositor(tabId);
   await ensureContentScript(tabId, "grok");
   await ensureDebugger(tabId);
-  try { await sendActOrFail(tabId, ACT.CLEAR_REFS, {}); } catch (_e) {}
+  // Limpiar las referencias de la escena PREVIA antes de subir las nuevas. Verificar que quedaron 0 chips
+  // (si clearRefs no alcanzo a quitarlos todos, se acumulan y Grok rechaza por pasar de 3): reintentar 1 vez.
+  let cleared = false;
+  for (let k = 0; k < 2 && !cleared; k++) {
+    try {
+      const r = await sendActOrFail(tabId, ACT.CLEAR_REFS, {});
+      cleared = (r?.data?.left ?? r?.left ?? 0) === 0;
+    } catch (_e) { cleared = false; }
+    if (!cleared) await new Promise((res) => setTimeout(res, 300));
+  }
+  if (!cleared) log(LOG_LEVEL.WARN, `${label}: no confirme 0 referencias previas tras limpiar; Grok podria rechazar por exceso.`);
   if (refPaths?.length) {
     try {
       await cdpSetFileInput(tabId, refPaths);
@@ -2468,7 +2732,7 @@ async function runPhaseToEnd(phase) {
   // Reactiva ERROR SOLO en imagenes (gratis). En animacion NO (evita re-gasto silencioso de puntos).
   if (phase === "images") {
     for (const s of state.scenes) {
-      if (s.status === SCENE_STATUS.ERROR && !s.imageUrl) { s.status = SCENE_STATUS.PENDING; s.attempts = 0; s.error = null; }
+      if (s.status === SCENE_STATUS.ERROR && !s.skipped && !s.imageUrl) { s.status = SCENE_STATUS.PENDING; s.attempts = 0; s.error = null; }   // !skipped: respetar "Saltar" (antes se resucitaban)
     }
   }
   state.queue.paused = false;
@@ -2831,8 +3095,16 @@ async function onRunAll() {
   // cargaba su JSON encima -> pisaba state.project y reventaba el ingrediente en curso ("message channel
   // closed"). autopilotBusy cubre TODO onRunAll (ingredientes + fases), no solo el bucle de escenas.
   if (autopilotBusy) { log(LOG_LEVEL.WARN, "AUTOPILOTO: ya hay una corrida activa; ignoro la reentrada."); return; }
+  // Tambien contra una corrida MANUAL viva (boton de fase / retry): sin esto, "Hacer todo" arrancaba la
+  // fase de ingredientes ENCIMA del bucle de escenas en curso y ambos mutaban state.scenes a la vez.
+  if ((loopRunning || ingredientsRunning) && !state.queue?.paused) {
+    log(LOG_LEVEL.WARN, "AUTOPILOTO: hay una corrida manual activa; pausa o espera a que termine antes de 'Hacer todo'.");
+    return;
+  }
   autopilotBusy = true;
   try {
+  // keepAlive durante TODA la corrida (ingredientes + audio incluidos, donde loopRunning=false).
+  try { chrome.alarms.create("keepAlive", { periodInMinutes: 0.4 }); } catch (_e) {}
   await applySecrets();
   await ensureState();
   if (!state.project || !state.scenes?.length) { log(LOG_LEVEL.WARN, "AUTOPILOTO: no hay proyecto cargado."); return; }
@@ -2862,8 +3134,20 @@ async function onRunAll() {
     }
   }
 
-  log(LOG_LEVEL.INFO, "AUTOPILOTO: generando voz (Fish)...");
-  await onGenerateAudio({ includeHook: true });
+  log(LOG_LEVEL.INFO, "AUTOPILOTO: generando voz...");
+  // missingOnly: en un re-run (job reanudado) NO regenerar mp3 que ya existen (gasto de creditos).
+  // En una corrida fresca no existe nada -> genera todo igual que antes.
+  const audioOk = await onGenerateAudio({ includeHook: true, missingOnly: true });
+  const missingVoice = await missingVoiceFiles();
+  if (!audioOk || missingVoice.length) {
+    // ERROR (no INFO): llega al panel y a Telegram via remote events. El job se marca done igualmente
+    // (re-tomarlo re-gastaria imagenes/animaciones); la via de recuperacion es "audio faltante"
+    // (Telegram /audio o el boton del panel), que solo genera lo que falta.
+    const detail = missingVoice.length
+      ? `faltan: ${missingVoice.slice(0, 5).join(", ")}${missingVoice.length > 5 ? ` y ${missingVoice.length - 5} mas` : ""}`
+      : "la generacion reporto fallo";
+    log(LOG_LEVEL.ERROR, `AUTOPILOTO: AUDIO INCOMPLETO (${detail}). El render NO va a arrancar sin la voz. Reintenta con "audio faltante" (/audio en Telegram) cuando el problema este resuelto.`);
+  }
 
   // Limpieza de Flow: SOLO si TODOS los clips se descargaron al proyecto (savedOk). Salvaguarda:
   // si falta alguno, NO borra nada (se preservan los medios en Flow para no perder trabajo).
@@ -2889,7 +3173,11 @@ async function onRunAll() {
     }
   }
 
-  log(LOG_LEVEL.INFO, "AUTOPILOTO: medios listos en remotion-editor/public/. El orquestador (build.mjs --watch) renderiza el video.");
+  if (audioOk && !missingVoice.length) {
+    log(LOG_LEVEL.INFO, "AUTOPILOTO: medios listos en remotion-editor/public/. El orquestador (build.mjs --watch) renderiza el video.");
+  } else {
+    log(LOG_LEVEL.WARN, "AUTOPILOTO: imagenes/clips listos pero la VOZ quedo incompleta; el render espera hasta completar el audio.");
+  }
   return true;   // corrida COMPLETA OK -> la cola marca el job como hecho (no re-tomarlo aunque el SW se duerma). Los `return` previos (fallos) devuelven undefined.
   } finally { autopilotBusy = false; }
 }
@@ -2934,12 +3222,21 @@ async function pollQueue() {
   if (state.queue.paused) return;                    // pausa (manual o por fallo): NO jalar mas trabajos
   if (autopilotBusy) return;                        // corrida completa en curso (incl. ingredientes): no tomar otro job
   if (loopRunning) return;                          // bucle vivo en este worker: no encimar
+  if (ingredientsRunning) return;                   // fase de ingredientes viva (no marca loopRunning): no encimar
+  if (resumeInFlight) return;                       // resumeIfInterrupted reparando una corrida a medias: no pisarla
+  // Guard de reentrada PROPIO: autopilotBusy no se enciende hasta onRunAll, pero entre el claim y onRunAll
+  // hay awaits de minutos (hardReloadGrok, prepareProjectMedia). Una 2a alarma en esa ventana reclamaba
+  // OTRO job y su onLoadJson pisaba state.project/scenes del primero.
+  if (pollQueueBusy) return;
+  pollQueueBusy = true;
+  try {
   // "running" persistido solo cuenta si el latido es reciente; si esta rancio, el bucle murio -> lo reseteamos.
   if (state.queue.running) {
     const fresh = (Date.now() - (state.queue.heartbeatAt || 0)) < 120000;
     if (fresh) return;
     state.queue.running = false; await saveState();
     log(LOG_LEVEL.WARN, "Cola marcada 'running' sin bucle vivo (latido rancio): la libero.");
+    return;   // este tick SOLO libera; el siguiente decide (da chance a resumeIfInterrupted de ganar la carrera)
   }
   let jobs;
   try { jobs = await fetch(state.config.queueUrl || DEFAULT_CONFIG.queueUrl).then((r) => r.json()); }
@@ -2957,10 +3254,25 @@ async function pollQueue() {
     .then((r) => r.json()).catch(() => null);
   if (!claimed?.ok) { log(LOG_LEVEL.DEBUG, `cola: "${job.name}" ya estaba tomado, salto.`); return; }
   log(LOG_LEVEL.INFO, `AUTOPILOTO: tomando "${job.name}" de la cola.`);
-  state.queue.jobName = job.name;   // para heartbeat del lock (SCALE-02) y diagnostico
-  await saveState();
+  // MISMO job a medias (el SW murio fuera del bucle de escenas y el lock caduco): NO recargar el JSON.
+  // onLoadJson resetearia TODAS las escenas a PENDING y se re-gastaria cada imagen/animacion ya pagada.
+  // Se reanuda el estado persistido (los runners son idempotentes por status). Verificamos que el JSON del
+  // job corresponda al proyecto cargado (mismo slug) para no reanudar escenas de otro proyecto.
+  const sameJob = state.queue.jobName === job.name
+    && (state.scenes || []).length > 0
+    && (state.scenes || []).some((s) => s.status !== SCENE_STATUS.PENDING)
+    && (() => { try { const chk = validateQueueProject(job.json); return chk.ok && chk.parsed.project.slug === state.project?.slug; } catch (_e) { return false; } })();
   await resetGrokForQueueJob(job);
-  await onLoadJson({ json: job.json });
+  if (sameJob) {
+    log(LOG_LEVEL.WARN, `AUTOPILOTO: "${job.name}" ya estaba a medias; reanudo el progreso persistido (sin re-gastar lo hecho).`);
+    await repairMissingStillAssetsBeforeResume("re-claim del mismo job");
+    forceImagesPhaseIfPending("re-claim del mismo job");
+    await saveState();
+  } else {
+    state.queue.jobName = job.name;   // para heartbeat del lock (SCALE-02) y diagnostico
+    await saveState();
+    await onLoadJson({ json: job.json });
+  }
   const ok = await onRunAll();
   // Solo si la corrida COMPLETO bien lo marcamos como hecho (persistente). Si fallo/se pauso (parada dura),
   // NO se marca -> se puede reintentar tras arreglar el problema. Evita re-tomar lo ya terminado.
@@ -2971,6 +3283,7 @@ async function pollQueue() {
   }
   state.queue.jobName = null;       // corrida terminada/pausada: deja de latir el lock
   await saveState();
+  } finally { pollQueueBusy = false; }
 }
 
 // Mantiene fresco el lock del trabajo en curso (dev-server lo relista si el lock se vuelve rancio).
@@ -2997,9 +3310,11 @@ chrome.alarms?.onAlarm?.addListener((a) => {
 async function keepAliveTick() {
   await ensureState();
   const anyLane = state.lanes && (state.lanes.images?.running || state.lanes.animation?.running);
-  if (!anyLane) { try { chrome.alarms.clear("keepAlive"); } catch (_e) {} return; }
+  const seqAlive = loopRunning || autopilotBusy || ingredientsRunning;   // corrida secuencial/ingredientes/audio viva
+  if (!anyLane && !seqAlive) { try { chrome.alarms.clear("keepAlive"); } catch (_e) {} return; }
   state.queue.heartbeatAt = Date.now();
   await saveState();
+  heartbeatJobLock();   // el lock del job tambien late en ingredientes/audio (antes caducaba a los 15 min ahi)
 }
 
 // Arranque inicial: rehidrata cuando el modulo se evalua y reanuda si quedo una corrida a medias.

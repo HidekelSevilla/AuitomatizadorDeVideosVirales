@@ -78,6 +78,12 @@ const remote = {
   eventSeq: 0,
   events: [],
 };
+const REMOTE_COMMAND_TTL_MS = 5 * 60 * 1000;
+
+function pruneRemoteCommands() {
+  const minTs = Date.now() - REMOTE_COMMAND_TTL_MS;
+  remote.commands = remote.commands.filter((c) => Number(c.ts || 0) >= minTs);
+}
 
 function readJsonBody(req, maxBytes = 8 * 1024 * 1024) {
   return new Promise((resolve, reject) => {
@@ -157,7 +163,9 @@ const server = http.createServer((req, res) => {
   }
 
   if (req.method === "GET" && u.pathname === "/remote/commands") {
-    const since = Number(u.searchParams.get("since") || 0);
+    pruneRemoteCommands();
+    let since = Number(u.searchParams.get("since") || 0);
+    if (since > remote.commandSeq) since = 0; // dev-server reiniciado; el SW conserva cursor viejo
     sendJson(res, { ok: true, commands: remote.commands.filter((c) => c.id > since), lastId: remote.commandSeq });
     return;
   }
@@ -195,6 +203,16 @@ const server = http.createServer((req, res) => {
     req.on("end", () => {
       try {
         const buf = Buffer.concat(chunks);
+        // Integridad minima: un payload vacio o un mp3 diminuto es una descarga rota; aceptarlo con
+        // ok:true hacia que un full.mp3 corrupto contara como "guardado" y el render lo consumiera.
+        const ext = path.extname(dest).toLowerCase();
+        const minBytes = ext === ".mp3" ? 4096 : 1;
+        if (buf.length < minBytes) {
+          res.writeHead(422, { "content-type": "text/plain" });
+          res.end("archivo demasiado pequeno (posible corrupto/incompleto)");
+          log(`RECHAZADO save (${buf.length}B < ${minBytes}B): ${path.relative(ROOT, dest)}`);
+          return;
+        }
         fs.mkdirSync(path.dirname(dest), { recursive: true });
         fs.writeFileSync(dest, buf);
         res.writeHead(200, { "content-type": "application/json" });
@@ -516,6 +534,21 @@ const server = http.createServer((req, res) => {
   // GET /filebytes?path=<rel> : devuelve los BYTES de un archivo local (solo dentro de assets/ o
   // remotion-editor/public/), con CORS, para que una pagina (ej. grok.com) lo cargue como File y lo
   // suba como referencia, o reuse un clip/imagen ya guardado. Solo lectura.
+  if (req.method === "GET" && u.pathname === "/file-status") {
+    const rel = u.searchParams.get("path") || "";
+    const abs = path.resolve(ROOT, rel);
+    const ASSETS = path.join(ROOT, "assets");
+    const inAssets = abs.startsWith(ASSETS + path.sep);
+    const inPublic = abs.startsWith(PUBLIC_DIR + path.sep);
+    if (!(inAssets || inPublic) || !fs.existsSync(abs) || !fs.statSync(abs).isFile()) {
+      sendJson(res, { ok: false, error: "no existe" }, 404);
+      return;
+    }
+    const st = fs.statSync(abs);
+    sendJson(res, { ok: true, size: st.size, mtimeMs: st.mtimeMs, path: path.relative(ROOT, abs) });
+    return;
+  }
+
   if (req.method === "GET" && u.pathname === "/filebytes") {
     const rel = u.searchParams.get("path") || "";
     const abs = path.resolve(ROOT, rel);
