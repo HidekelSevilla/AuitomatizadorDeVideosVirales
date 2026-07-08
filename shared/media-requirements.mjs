@@ -2,6 +2,28 @@ import { slugify } from "./slug.mjs";
 
 export const STILL_PRESET_RE = /^(historias|criptoclaro|habitos|pov-historias|manhwa)/;
 
+// Piso de bytes por tipo de medio = FUENTE UNICA (dev-server /move+/save y build.mjs deben coincidir).
+// Solo atrapa descargas TRUNCADAS/0-byte, NO el placeholder de ruido de Grok: eso ya lo rechaza el
+// driver (dataImageLooksFinal) ANTES de descargar. Por eso el piso de imagen es BAJO: un panel legitimo
+// muy oscuro (manhwa/cripto) comprime a ~15-40KB y NO debe rechazarse; el viejo piso de 90KB lo tumbaba.
+// Overridable: env MIN_STILL_BYTES (global) o project.min_still_bytes (por JSON) para casos extremos.
+export const DEFAULT_MIN_STILL_BYTES = 8 * 1024;
+
+export function minMediaBytes(pathOrExt, projectJson = null) {
+  const s = String(pathOrExt || "").toLowerCase();
+  const ext = s.includes(".") ? s.slice(s.lastIndexOf(".")) : s;
+  if (ext === ".mp4") return 50 * 1024;   // clip de video
+  if (ext === ".mp3") return 2 * 1024;    // voz
+  if ([".jpg", ".jpeg", ".png", ".webp"].includes(ext)) {
+    const envRaw = (typeof process !== "undefined" && process?.env) ? Number(process.env.MIN_STILL_BYTES) : NaN;
+    if (Number.isFinite(envRaw) && envRaw > 0) return envRaw;
+    const projRaw = Number(projectJson?.project?.min_still_bytes);
+    if (Number.isFinite(projRaw) && projRaw > 0) return projRaw;
+    return DEFAULT_MIN_STILL_BYTES;
+  }
+  return 1;
+}
+
 export function sceneId(scene) {
   return scene && typeof scene.id === "string" ? scene.id
     : scene && typeof scene.scene_id === "string" ? scene.scene_id

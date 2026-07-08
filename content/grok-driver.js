@@ -418,18 +418,28 @@
     }, { timeout: 12000 });
     await trustedClickEl(send);       // trusted: el "Crear video"/Enviar sintetico a veces no registra
     // Confirma que la generacion ARRANCO: Grok navega al /post del video (o muestra "Generando %"/<video>).
-    // Si NADA pasa en ~14s, el clic no registro -> fallar CLARO (reintentable) en vez de dejar a ANIMATE_COLLECT
-    // esperando 6 min en vano. Un throw aqui SOLO ocurre si NO arranco: si arranca, alguna senal se cumple ya.
+    // Si NADA pasa en ~40s (Grok a veces tarda en navegar/pintar "Generando"), el clic no registro -> fallar
+    // CLARO. El timeout de 14s daba FALSOS NEGATIVOS: el clic SI registro (video pagado) pero Grok tardo mas,
+    // el SW no marcaba grokFired y el auto-retry re-disparaba -> DOBLE gasto. Devolvemos maybeStarted para que
+    // el SW haga un probe antes de re-disparar en vez de asumir que no arranco.
+    const startedTimeout = Number(cfg?.grokAnimStartedTimeoutMs) || 40000;
     const started = await waitFor(() => {
       const hs = detectHardStop(); if (hs) return hs;
       if (location.href !== preUrl && /\/imagine\/post\//.test(location.href)) return { ok: true };
       if (/Generando|Generating/i.test(document.body?.innerText || "")) return { ok: true };
       if (resultVideos().length > 0) return { ok: true };
       return null;
-    }, { timeout: 14000 }).catch(() => null);
+    }, { timeout: startedTimeout }).catch(() => null);
     if (started && started.type) return started;   // parada dura
-    if (!started) throw new Error('el "Crear video" de Grok no arranco la generacion (el clic no registro); reintenta');
-    return { ok: true, data: { fired: true } };
+    if (!started) {
+      // Pista para el SW: ¿la URL YA es un /post de video? (posible arranque no detectado por texto/video aun).
+      const maybeStarted = /\/imagine\/post\//.test(location.href) && location.href !== preUrl;
+      const e = new Error('el "Crear video" de Grok no arranco la generacion (el clic no registro); reintenta');
+      e.maybeStarted = maybeStarted;
+      e.postUrl = maybeStarted ? location.href : null;
+      throw e;
+    }
+    return { ok: true, data: { fired: true, postUrl: /\/imagine\/post\//.test(location.href) ? location.href : null } };
   }
 
   // ANIMATE_COLLECT: el SW re-inyecta este script en el /post del video; esperamos el <video> TERMINADO

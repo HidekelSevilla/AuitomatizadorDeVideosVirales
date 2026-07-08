@@ -1497,6 +1497,24 @@ async function runGrokImage(scene) {
 // FASE 2 (Grok): anima con el boton "Hacer video" SOBRE el post de la imagen (asi anima Grok; NO es
 // "modo Video"). Al disparar, Grok navega a un /post/<videoId> nuevo y genera en sitio -> re-inyectamos
 // y recolectamos el <video> ahi. Clic sintetico (sin debugger) -> sin congelamiento de la pestana.
+// Probe anti doble-gasto: tras un FIRE que reporto "no arranco", busca evidencia de que la generacion
+// SI arranco (y se pago) antes de dejar que un reintento la re-dispare. Barato: URL del /post (sin content
+// script) + VIDEO_SRCS best-effort. Devuelve {started, reason, postUrl}.
+async function grokAnimationLikelyStarted(tabId, preUrl, before) {
+  try {
+    const t = await chrome.tabs.get(tabId);
+    const u = t?.url || "";
+    if (/\/imagine\/post\//.test(u) && u !== preUrl) return { started: true, reason: "navego al /post del video", postUrl: u };
+  } catch (_e) { /* noop */ }
+  try {
+    await ensureContentScript(tabId, "grok");
+    const srcs = (await sendActOrFail(tabId, ACT.VIDEO_SRCS, {}))?.srcs || [];
+    const beforeSet = new Set(before || []);
+    if (srcs.some((s) => !beforeSet.has(s))) return { started: true, reason: "aparecio un video nuevo en el DOM", postUrl: null };
+  } catch (_e) { /* content script pudo morir en la navegacion */ }
+  return { started: false, reason: "", postUrl: null };
+}
+
 async function runGrokAnimation(scene) {
   const tab = await findFlowTab("grok");
   if (!tab) throw new Error("No hay pestana de Grok abierta (grok.com/imagine). Abrela y reintenta.");
@@ -1569,7 +1587,18 @@ async function runGrokAnimation(scene) {
     } catch (e) {
       const msg = e?.message ?? String(e);
       if (/no respondio|message port|closed|sin respuesta/i.test(msg)) log(LOG_LEVEL.WARN, `${scene.id}: fire sin respuesta (navegacion); continuo a recolectar.`);
-      else { detachDebugger(tab.id); throw e; }
+      else {
+        // "no arranco" puede ser un FALSO NEGATIVO (Grok tardo mas que el timeout): probe antes de re-disparar.
+        // Si hay evidencia de que la generacion arranco (y se pago), NO relanzamos: marcamos grokFired abajo y
+        // recogemos. Solo si NO hay evidencia relanzamos el error (fallo real, reintento libre).
+        const probe = await grokAnimationLikelyStarted(tab.id, preUrl, scene.grokAnimBefore);
+        if (probe.started) {
+          log(LOG_LEVEL.WARN, `${scene.id}: "${msg}" pero la animacion SI arranco (${probe.reason}); NO re-disparo, recojo.`);
+          if (probe.postUrl) { scene.grokVideoPostUrl = probe.postUrl; }
+        } else {
+          detachDebugger(tab.id); throw e;
+        }
+      }
     }
 
     // Soltamos el debugger de ESTA pestana ANTES de la espera larga del video (su retencion congelaba la

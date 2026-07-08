@@ -13,7 +13,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { slugify } from "../../shared/slug.mjs";   // FUENTE UNICA del slug (debe coincidir con la extension)
-import { getMediaRequirements, projectMediaSignature } from "../../shared/media-requirements.mjs";
+import { getMediaRequirements, projectMediaSignature, minMediaBytes } from "../../shared/media-requirements.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -37,13 +37,11 @@ function readJson(file) {
 }
 
 // Integridad: "existe Y tamano plausible" (atrapa 0-byte/truncados antes de renderizar con basura).
-function fileOk(p) {
-  try {
-    const ext = path.extname(p).toLowerCase();
-    // Grok placeholders/noise can be valid JPEGs around 70-88KB; reject those before render.
-    const min = ext === ".mp4" ? 50 * 1024 : ext === ".mp3" ? 2 * 1024 : [".jpg", ".jpeg", ".png", ".webp"].includes(ext) ? 90 * 1024 : 1;
-    return fs.statSync(p).size >= min;
-  } catch { return false; }
+// Piso central compartido con el dev-server (shared/media-requirements). El ruido de Grok lo bloquea el
+// driver antes de descargar, asi que el piso de imagen es BAJO (paneles oscuros legitimos pesan poco);
+// override por env MIN_STILL_BYTES o project.min_still_bytes (proyecto en scope via fileOkFor).
+function fileOk(p, projectJson = null) {
+  try { return fs.statSync(p).size >= minMediaBytes(p, projectJson); } catch { return false; }
 }
 
 function ensureDirs() {
@@ -101,7 +99,7 @@ function inspect(job) {
   if (p.audio?.transition_sfx) need.push(path.join(PUBLIC, "sfx", p.audio.transition_sfx));
   for (const s of p.scenes || []) for (const c of s.sfx || []) need.push(path.join(PUBLIC, "sfx", c.file));
 
-  const missing = [...new Set(need)].filter((f) => !fileOk(f));
+  const missing = [...new Set(need)].filter((f) => !fileOk(f, p));
   return { slug, missing };
 }
 
@@ -112,7 +110,7 @@ function inspectValidated(job) {
   const { slug, requirements } = getMediaRequirements(p, { fallbackName: job.name });
   const missingRequirements = requirements
     .map((r) => ({ ...r, fullPath: path.join(PUBLIC, r.path) }))
-    .filter((r) => !fileOk(r.fullPath));
+    .filter((r) => !fileOk(r.fullPath, p));
   if (generatedMediaExists(slug) && !mediaSignatureOkOrAdopted(slug, p, missingRequirements.length === 0)) {
     missingRequirements.unshift({
       path: `${slug}/.media-signature.json`,
@@ -475,10 +473,35 @@ function injectWords(job) {
 }
 
 function render(job, slug) {
+  // MP4 rancio: si ya existe out/<slug>.mp4 de un render anterior (JSON viejo), lo apartamos a
+  // .stale-<ts>.mp4 ANTES de renderizar. Asi out/<slug>.mp4 SOLO existe cuando lo produjo ESTE render,
+  // y nada (Telegram "Enviar video", etc.) confunde un render viejo con uno fresco. Si el render falla,
+  // no queda un mp4 rancio haciendose pasar por nuevo (queda el backup por si acaso).
+  const dest = path.join(OUT, `${slug}.mp4`);
+  if (fs.existsSync(dest)) {
+    try {
+      const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+      fs.renameSync(dest, path.join(OUT, `${slug}.stale-${stamp}.mp4`));
+      try { fs.rmSync(path.join(OUT, `${slug}.render-meta.json`), { force: true }); } catch { /* noop */ }
+    } catch (e) { console.log(`  (no pude apartar el mp4 anterior: ${e?.message || e})`); }
+  }
   // --concurrency limitado para no saturar la PC (especialmente si se genera en paralelo)
   const cmd = `npx remotion render ViralVideo "out/${slug}.mp4" --props="${rel(job.jsonPath)}" --concurrency=6`;
   console.log("  > " + cmd);
   return spawnSync(cmd, { cwd: ROOT, stdio: "inherit", shell: true }).status === 0;
+}
+
+// Sello del render: firma del JSON que lo produjo. Permite distinguir un mp4 fresco de uno viejo cuando el
+// slug se re-encola con un JSON editado (out/ NO se archiva en prepare-media, solo public/).
+function writeRenderMeta(job, slug) {
+  try {
+    const p = readJson(job.jsonPath);
+    fs.writeFileSync(path.join(OUT, `${slug}.render-meta.json`), JSON.stringify({
+      signature: projectMediaSignature(p),
+      finishedAt: new Date().toISOString(),
+      job: job.name,
+    }, null, 2), "utf8");
+  } catch (e) { console.log(`  (no pude escribir render-meta: ${e?.message || e})`); }
 }
 
 // VELOCIDAD del video final. Por defecto NO acelera; solo aplica velocidad si el JSON trae
@@ -580,6 +603,7 @@ function processOnce() {
       injectWords(job);
       if (render(job, info.slug)) {
         finalizeVideo(info.slug, videoSpeed(job));   // loudnorm + velocidad explicita si el JSON la pide
+        writeRenderMeta(job, info.slug);             // sella el mp4 con la firma del JSON (fresco vs viejo)
         console.log(`OK ${job.name}: out/${info.slug}.mp4`);
         moveDone(job);
       } else {

@@ -359,6 +359,7 @@ function latestMp4(preferredSlug = "") {
   }
   for (const name of fs.readdirSync(OUT_DIR)) {
     if (!name.toLowerCase().endsWith(".mp4")) continue;
+    if (/\.stale-/.test(name)) continue;   // backups de renders viejos: no son "el ultimo video"
     const p = path.join(OUT_DIR, name);
     try { candidates.push({ p, mtime: fs.statSync(p).mtimeMs }); } catch {}
   }

@@ -12,9 +12,9 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { spawnSync } from "node:child_process";
+import { spawnSync, spawn } from "node:child_process";
 import { slugify } from "../shared/slug.mjs";   // FUENTE UNICA del slug (debe coincidir con la extension y el render)
-import { getMediaRequirements, projectMediaSignature } from "../shared/media-requirements.mjs";
+import { getMediaRequirements, projectMediaSignature, minMediaBytes } from "../shared/media-requirements.mjs";
 import { validateQueueProject } from "../lib/queue-validator.js";
 
 const PORT = Number(process.env.FLOW_DEV_PORT) || 35729;
@@ -79,6 +79,7 @@ const remote = {
   events: [],
 };
 const REMOTE_COMMAND_TTL_MS = 5 * 60 * 1000;
+const elevenInflight = new Set();   // slugs con generacion ElevenLabs en vuelo (guard de concurrencia)
 
 function pruneRemoteCommands() {
   const minTs = Date.now() - REMOTE_COMMAND_TTL_MS;
@@ -203,10 +204,10 @@ const server = http.createServer((req, res) => {
     req.on("end", () => {
       try {
         const buf = Buffer.concat(chunks);
-        // Integridad minima: un payload vacio o un mp3 diminuto es una descarga rota; aceptarlo con
+        // Integridad minima: un payload vacio o un mp3/still diminuto es una descarga rota; aceptarlo con
         // ok:true hacia que un full.mp3 corrupto contara como "guardado" y el render lo consumiera.
-        const ext = path.extname(dest).toLowerCase();
-        const minBytes = ext === ".mp3" ? 4096 : 1;
+        // Piso central compartido (imagenes bajas: paneles oscuros; .words.json/.txt -> 1).
+        const minBytes = minMediaBytes(dest);
         if (buf.length < minBytes) {
           res.writeHead(422, { "content-type": "text/plain" });
           res.end("archivo demasiado pequeno (posible corrupto/incompleto)");
@@ -306,29 +307,56 @@ const server = http.createServer((req, res) => {
           ? path.join(remotionRoot, ".venv-eleven", "Scripts", "python.exe")
           : "python";
         const relJson = path.relative(remotionRoot, jsonPath);
-        log(`audio/generate-eleven: ${label} -> ${relJson}`);
-        const r = spawnSync(py, ["tts/tts_elevenlabs.py", relJson], {
+
+        // slug + carpeta de voz para el marcador que build.mjs lee (evita doble generacion de audio).
+        let slug = "";
+        try { const pj = JSON.parse(fs.readFileSync(jsonPath, "utf8").replace(/^ï»¿/, "")); slug = slugify(pj?.project?.slug || pj?.project?.title || label); } catch { /* noop */ }
+        const voiceDir = slug ? path.join(remotionRoot, "public", slug, "voice") : null;
+        const inflightFile = voiceDir ? path.join(voiceDir, ".full.mp3.extension-inflight.json") : null;
+
+        // Concurrencia: rechaza otra generacion del MISMO slug en vuelo (doble gasto de creditos).
+        if (slug && elevenInflight.has(slug)) {
+          res.writeHead(409, { "content-type": "application/json" });
+          res.end(JSON.stringify({ ok: false, error: `ya hay una generacion de audio en curso para ${slug}` }));
+          return;
+        }
+        if (slug) elevenInflight.add(slug);
+        if (inflightFile) { try { fs.mkdirSync(voiceDir, { recursive: true }); fs.writeFileSync(inflightFile, JSON.stringify({ status: "running", startedAtMs: Date.now(), label })); } catch { /* noop */ } }
+        const clearInflight = () => {
+          if (slug) elevenInflight.delete(slug);
+          if (inflightFile) { try { fs.rmSync(inflightFile, { force: true }); } catch { /* noop */ } }
+        };
+
+        log(`audio/generate-eleven: ${label} -> ${relJson} (async)`);
+        // ASYNC: spawn (no spawnSync) para NO congelar el event loop del server hasta 20 min. Mientras
+        // corre python, /queue, /save, /move y /heartbeat siguen respondiendo. Respondemos en 'close'.
+        const child = spawn(py, ["tts/tts_elevenlabs.py", relJson], {
           cwd: remotionRoot,
-          encoding: "utf8",
-          maxBuffer: 64 * 1024 * 1024,
           windowsHide: true,
-          timeout: Number(process.env.ELEVENLABS_NODE_TIMEOUT_MS || 20 * 60_000),
           env: {
             ...process.env,
             ELEVENLABS_API_KEY: key,
             ELEVENLABS_MAX_CONCURRENCY: process.env.ELEVENLABS_MAX_CONCURRENCY || "1",
           },
         });
-        const ok = r.status === 0;
-        if (!ok) log(`ERROR audio/generate-eleven ${label}: exit ${r.status ?? "error"}`);
-        res.writeHead(ok ? 200 : 500, { "content-type": "application/json" });
-        res.end(JSON.stringify({
-          ok,
-          exitCode: r.status,
-          error: r.error?.message || null,
-          stdout: (r.stdout || "").slice(-4000),
-          stderr: (r.stderr || "").slice(-4000),
-        }));
+        let out = "", err = "", done = false;
+        child.stdout?.on("data", (d) => { out += d; if (out.length > 64 * 1024 * 1024) out = out.slice(-4_000_000); });
+        child.stderr?.on("data", (d) => { err += d; if (err.length > 8 * 1024 * 1024) err = err.slice(-1_000_000); });
+        const timeoutMs = Number(process.env.ELEVENLABS_NODE_TIMEOUT_MS || 20 * 60_000);
+        const killer = setTimeout(() => { if (!done) { try { child.kill("SIGKILL"); } catch { /* noop */ } } }, timeoutMs);
+        const finish = (status, spawnErr) => {
+          if (done) return; done = true;
+          clearTimeout(killer);
+          clearInflight();
+          const ok = status === 0;
+          if (!ok) log(`ERROR audio/generate-eleven ${label}: exit ${status ?? "error"}${spawnErr ? " " + spawnErr : ""}`);
+          try {
+            res.writeHead(ok ? 200 : 500, { "content-type": "application/json" });
+            res.end(JSON.stringify({ ok, exitCode: status, error: spawnErr || null, stdout: out.slice(-4000), stderr: err.slice(-4000) }));
+          } catch { /* cliente ya cerro */ }
+        };
+        child.on("close", (code) => finish(code, null));
+        child.on("error", (e) => finish(null, String(e?.message || e)));
       } catch (e) {
         res.writeHead(500, { "content-type": "application/json" });
         res.end(JSON.stringify({ ok: false, error: String(e?.message || e) }));
@@ -590,17 +618,11 @@ const LOCK_STALE_MS = 15 * 60 * 1000;
 // Tamano minimo plausible por tipo: atrapa descargas truncadas / archivos de 0 bytes sin ffprobe.
 // Critico: `savedOk` y `mediaComplete` deben significar "archivo usable", no solo "existe" — si no,
 // el render usa un clip roto y `cleanupFlowAfterDownload` borra la fuente cara confiando en un 0-byte.
-function minBytesFor(p) {
-  const ext = path.extname(p).toLowerCase();
-  if (ext === ".mp4") return 50 * 1024;   // clip de video
-  if (ext === ".mp3") return 2 * 1024;     // voz
-  // Grok a veces descarga un placeholder de ruido de ~70-88KB antes del still real.
-  // 90KB mantiene ese bloqueo sin rechazar assets validos que quedan apenas debajo de 100KB.
-  if ([".jpg", ".jpeg", ".png", ".webp"].includes(ext)) return 90 * 1024;
-  return 1;
-}
 function fileOk(p) {
-  try { return fs.statSync(p).size >= minBytesFor(p); } catch { return false; }
+  // Piso central compartido con build.mjs (shared/media-requirements). El ruido de Grok lo bloquea el
+  // driver antes de descargar; aqui solo atrapamos truncados/0-byte, por eso el piso de imagen es bajo
+  // (paneles oscuros legitimos pesan poco). Override: env MIN_STILL_BYTES.
+  try { return fs.statSync(p).size >= minMediaBytes(p); } catch { return false; }
 }
 
 const GENERATED_DIRS = ["images", "clips", "clips_raw", "voice"];
