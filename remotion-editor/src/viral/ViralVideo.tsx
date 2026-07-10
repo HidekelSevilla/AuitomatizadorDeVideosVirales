@@ -690,6 +690,12 @@ const MANHWA_EDITOR_MOTION_CYCLE = [
   "top_right_to_bottom_left",
   "slow_push_in",
 ];
+// manhwa: el paneo del ciclo recorre TODA la amplitud dentro de la ventana de la escena, asi que en
+// escenas de 1-3 s se sentia "camara rapida" (reporte P1 2026-07: scene_23/33). Se escala la amplitud
+// por duracion (velocidad ~constante): a partir de MANHWA_MOTION_FULL_S segundos va la amplitud
+// completa; mas corta = proporcionalmente menos recorrido. punch_in/shake quedan intactos (son
+// acentos cortos por diseño). Solo manhwa: panelMotionFor devuelve null en otros presets.
+const MANHWA_MOTION_FULL_S = 6;
 const resolveMotion = (
   motion: string | undefined,
   index: number,
@@ -713,7 +719,8 @@ const panelMotionFor = (
   props: ViralProps,
   scene: SceneData,
   index: number,
-  animated: boolean
+  animated: boolean,
+  windowSec?: number
 ): PanelMotionRuntime | null => {
   if (!isManhwa(props) || isNarrativeCard(scene)) return null;
   const global = props.editing?.panel_motion;
@@ -726,7 +733,12 @@ const panelMotionFor = (
   const preset = local?.preset || cycle[index % cycle.length] || "bottom_to_top";
   const pan = local?.pan ?? (animated ? global?.animated_pan : global?.static_pan) ?? (animated ? 2 : 4);
   const zoom = local?.zoom ?? (animated ? global?.animated_zoom : global?.static_zoom) ?? (animated ? 1.02 : 1.04);
-  return { enabled: true, preset, pan, zoom };
+  // amortiguacion por duracion (ver MANHWA_MOTION_FULL_S). El zoom escala su DELTA (1 + (z-1)*k) para
+  // que slow_push_in tambien vaya mas lento y el overscale se achique junto con el paneo.
+  const damp = (preset === "punch_in" || preset === "shake" || windowSec == null)
+    ? 1
+    : Math.min(1, windowSec / MANHWA_MOTION_FULL_S);
+  return { enabled: true, preset, pan: pan * damp, zoom: 1 + (zoom - 1) * damp };
 };
 
 const motionNameFor = (
@@ -741,14 +753,14 @@ const motionNameFor = (
   return resolveMotion(sceneMotion(scene), index, props.project, preset.stills);
 };
 
-const motionPanFor = (props: ViralProps, scene: SceneData, index: number, animated: boolean, fallback?: number): number | undefined => {
-  const pm = panelMotionFor(props, scene, index, animated);
+const motionPanFor = (props: ViralProps, scene: SceneData, index: number, animated: boolean, fallback?: number, windowSec?: number): number | undefined => {
+  const pm = panelMotionFor(props, scene, index, animated, windowSec);
   if (pm) return pm.pan;
   return fallback;
 };
 
-const motionZoomFor = (props: ViralProps, scene: SceneData, index: number, animated: boolean, fallback?: number): number | undefined => {
-  const pm = panelMotionFor(props, scene, index, animated);
+const motionZoomFor = (props: ViralProps, scene: SceneData, index: number, animated: boolean, fallback?: number, windowSec?: number): number | undefined => {
+  const pm = panelMotionFor(props, scene, index, animated, windowSec);
   if (pm) return pm.zoom;
   return fallback;
 };
@@ -985,8 +997,8 @@ const Scene: React.FC<{
                 <EditorMotionFrame
                   motion={motionNameFor(props, scene, sceneIndex, true, preset)}
                   windowFrames={clipWindow}
-                  pan={motionPanFor(props, scene, sceneIndex, true, 2)}
-                  zoom={motionZoomFor(props, scene, sceneIndex, true, 1.02)}
+                  pan={motionPanFor(props, scene, sceneIndex, true, 2, clipWindow / fps)}
+                  zoom={motionZoomFor(props, scene, sceneIndex, true, 1.02, clipWindow / fps)}
                 >
                   <SceneClip slug={slug} id={sceneId(scene)} />
                 </EditorMotionFrame>
@@ -995,8 +1007,8 @@ const Scene: React.FC<{
                   src={staticFile(`${slug}/images/${sceneId(scene)}.jpg`)}
                   motion={motionNameFor(props, scene, sceneIndex, false, preset)}
                   windowFrames={clipWindow}
-                  pan={motionPanFor(props, scene, sceneIndex, false, props.project.ken_pan ?? (preset.stills ? HIST_PAN : undefined))}
-                  zoom={motionZoomFor(props, scene, sceneIndex, false, props.project.ken_zoom ?? (preset.stills ? HIST_ZOOM : undefined))}
+                  pan={motionPanFor(props, scene, sceneIndex, false, props.project.ken_pan ?? (preset.stills ? HIST_PAN : undefined), clipWindow / fps)}
+                  zoom={motionZoomFor(props, scene, sceneIndex, false, props.project.ken_zoom ?? (preset.stills ? HIST_ZOOM : undefined), clipWindow / fps)}
                 />
               ) : (
                 <AbsoluteFill style={{ transform: `scale(${CLIP_ZOOM})`, transformOrigin: "50% 0%" }}>
@@ -1238,8 +1250,8 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
                 <EditorMotionFrame
                   motion={motionNameFor(props, scene, i, true, preset)}
                   windowFrames={dur}
-                  pan={motionPanFor(props, scene, i, true, 2)}
-                  zoom={motionZoomFor(props, scene, i, true, 1.02)}
+                  pan={motionPanFor(props, scene, i, true, 2, dur / t.fps)}
+                  zoom={motionZoomFor(props, scene, i, true, 1.02, dur / t.fps)}
                 >
                   <SceneClip slug={slug} id={sceneId(scene)} />
                 </EditorMotionFrame>
@@ -1248,8 +1260,8 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
                   src={staticFile(`${slug}/images/${sceneId(scene)}.jpg`)}
                   motion={motionNameFor(props, scene, i, false, preset)}
                   windowFrames={dur}
-                  pan={motionPanFor(props, scene, i, false, props.project.ken_pan ?? HIST_PAN)}
-                  zoom={motionZoomFor(props, scene, i, false, props.project.ken_zoom ?? HIST_ZOOM)}
+                  pan={motionPanFor(props, scene, i, false, props.project.ken_pan ?? HIST_PAN, dur / t.fps)}
+                  zoom={motionZoomFor(props, scene, i, false, props.project.ken_zoom ?? HIST_ZOOM, dur / t.fps)}
                 />
               )}
             </FadeIn>

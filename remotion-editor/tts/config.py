@@ -22,7 +22,7 @@ PUBLIC_DIR = ROOT / "public"
 
 # --- Modelo / voz -------------------------------------------------------------
 MODEL_ID = "eleven_v3"
-STABILITY = 0.0          # V3 Creative (discreta: 0.0 Creative / 0.5 Natural / 1.0 Robust)
+STABILITY = 0.5          # V3 Natural (discreta: 0.0 Creative / 0.5 Natural / 1.0 Robust)
 SIMILARITY_BOOST = 0.75  # voice_settings V3
 STYLE = 0                # voice_settings V3
 VOICE_ID = os.environ.get("ELEVENLABS_VOICE_ID", "8mBRP99B2Ng2QwsJMFQl")

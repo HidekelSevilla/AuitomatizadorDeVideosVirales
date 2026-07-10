@@ -18,6 +18,7 @@ import {
 import { validateQueueProject } from "../lib/queue-validator.js";
 import { createOrchestrator } from "../lib/orchestrator.js";
 import { planScene, nextSceneIndex, nextSceneIndexByStatus } from "../lib/queue.js";
+import { minMediaBytes } from "../shared/media-requirements.mjs";
 
 // Auto-reload de desarrollo: inerte en produccion (Web Store inyecta `update_url`
 // en el manifest en runtime; las extensiones descomprimidas no lo tienen).
@@ -430,6 +431,9 @@ async function pollRemoteCommands() {
     state.remote = state.remote || { lastCommandId: 0 };   // onClearAll pudo dejar el estado sin `remote`
     const since = Number(state.remote.lastCommandId || 0);
     const data = await fetch(`${base}/commands?since=${encodeURIComponent(since)}`).then((r) => r.json()).catch(() => null);
+    // Latido del snapshot en cada tick (30s): /estado en Telegram ya no depende de que haya actividad
+    // (antes el snapshot quedaba rancio/nulo tras reiniciar el dev-server con la extension ociosa).
+    scheduleRemoteState();
     const commands = Array.isArray(data?.commands) ? data.commands : [];
     if (!commands.length) return;
     for (const c of commands.sort((a, b) => a.id - b.id)) {
@@ -441,6 +445,9 @@ async function pollRemoteCommands() {
       await saveState();
       try {
         await applyRemoteCommand(c);
+        // Ack a Telegram: el "Comando enviado" del bridge solo significa "encolado en el dev-server";
+        // esto confirma que la extension lo RECIBIO (los encolados expiran a los 5 min en silencio).
+        postRemoteEvent({ level: "info", message: `Remote: "${c.command}" recibido por la extension.`, ts: Date.now() }).catch(() => {});
       } catch (e) {
         log(LOG_LEVEL.ERROR, `Remote ${c.command}: ${e?.message ?? e}`);
       } finally {
@@ -466,8 +473,9 @@ async function applyRemoteCommand(c) {
   if (["run_all", "hacer_todo", "todo"].includes(command)) return bg(onRunAll());
   if (["audio_missing", "audio_faltante", "generate_audio_missing", "audio"].includes(command)) return bg(onGenerateAudio({ includeHook: true, missingOnly: true }));
   if (["audio_all", "generate_audio"].includes(command)) return bg(onGenerateAudio({ includeHook: true }));
-  if (["retry", "reintentar"].includes(command)) return bg(onRemoteRetry());
-  if (["skip", "saltar"].includes(command)) return onRemoteSkip();
+  if (["retry", "reintentar"].includes(command)) return bg(onRemoteRetry(c.args || {}));
+  if (["skip", "saltar"].includes(command)) return onRemoteSkip(c.args || {});
+  if (["grok_reload", "recargar_grok", "grok"].includes(command)) return bg(onRemoteGrokReload());
   if (["queue_on", "cola_on"].includes(command)) {
     await onSetConfig({ config: { autoQueue: true } });
     return bg(pollQueue());
@@ -477,8 +485,18 @@ async function applyRemoteCommand(c) {
   log(LOG_LEVEL.WARN, `Remote: comando no permitido: ${command}`);
 }
 
-async function onRemoteRetry() {
+async function onRemoteRetry(args = {}) {
   await ensureState();
+  // Dirigido: /reintentar <escena> desde Telegram. Modo SEGURO por estado: video ya pagado -> solo
+  // recoger/descargar; imagen ok y fallo de animacion -> re-animar (el usuario confirmo el costo en el
+  // bridge); sin imagen -> regenerar desde cero (gratis).
+  if (args.sceneId) {
+    const s = (state.scenes || []).find((x) => x.id === args.sceneId);
+    if (!s) { log(LOG_LEVEL.WARN, `Remote reintentar: escena no encontrada: ${args.sceneId}`); return; }
+    const mode = s.videoUrl ? "download" : (s.imageUrl && s.errorPhase !== "images") ? "anim" : "image";
+    return onRetryScene({ sceneId: args.sceneId, mode });
+  }
+  if (args.ingredientId) return onRetryIngredient({ ingredientId: args.ingredientId });
   const ing = (state.project?.ingredients || []).find((g) => g.status === SCENE_STATUS.ERROR);
   if (ing) return onRetryIngredient({ ingredientId: ing.id });
   if ((state.scenes || []).some((s) => s.status === SCENE_STATUS.ERROR)) return onRetryAllErrors();
@@ -486,14 +504,37 @@ async function onRemoteRetry() {
   log(LOG_LEVEL.INFO, "Remote reintentar: no hay error activo.");
 }
 
-async function onRemoteSkip() {
+async function onRemoteSkip(args = {}) {
   await ensureState();
+  if (args.sceneId) return onSkipScene({ sceneId: args.sceneId });
   const ing = (state.project?.ingredients || []).find((g) => g.status === SCENE_STATUS.ERROR);
   if (ing) {
     log(LOG_LEVEL.WARN, `Remote saltar: no salto ingredientes automaticamente (${ing.id}); usa reintentar o corrige el JSON.`);
     return;
   }
   return onSkipScene({});
+}
+
+// Recarga Grok de cero DESDE EL TELEFONO (el cuelgue tipico de grok.com/imagine) y, si la corrida estaba
+// pausada por fallo, reanuda sola. Seguro contra re-gasto: los runners son idempotentes (grokFired/videoUrl).
+async function onRemoteGrokReload() {
+  await ensureState();
+  if ((autopilotBusy || loopRunning || ingredientsRunning) && !state.queue.paused) {
+    log(LOG_LEVEL.WARN, "Remote grok_reload: hay una corrida activa; pausa primero (/pausar) para no matar la generacion en curso.");
+    return;
+  }
+  const tab = await findFlowTab("grok");
+  if (!tab) { log(LOG_LEVEL.WARN, "Remote grok_reload: no hay pestana de Grok abierta."); return; }
+  detachDebugger(tab.id);
+  try { await hardReloadGrok(tab.id); }
+  catch (e) { log(LOG_LEVEL.WARN, `Remote grok_reload: la recarga fallo (${e?.message ?? e}).`); return; }
+  if (state.pacing) state.pacing.grokGenCount = 0;
+  await saveState();
+  log(LOG_LEVEL.INFO, "Remote: Grok recargado de cero.");
+  if (state.queue?.paused) {
+    log(LOG_LEVEL.INFO, "Remote grok_reload: la corrida estaba pausada; reanudo.");
+    await onStartOrResume();
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -515,7 +556,11 @@ async function onLoadJson(message) {
   const prevQueue = state.queue || {};
   state.project = { ...result.project, characterRef: prevRef };
   state.scenes = result.scenes;
-  state.queue = { running: false, paused: false, currentIndex: 0, doneJobs: prevQueue.doneJobs || [], jobName: prevQueue.jobName || null };  // preserva cola/doneJobs/lock
+  // jobName/jobSlug SOLO se preservan si el JSON cargado corresponde al job reclamado (la cola carga el
+  // json del job -> mismo slug). Un JSON manual de OTRO proyecto los dejaba rancios y la reanudacion
+  // automatica de la cola actuaba sobre el job equivocado.
+  const keepJob = !!prevQueue.jobName && (!prevQueue.jobSlug || prevQueue.jobSlug === result.project.slug);
+  state.queue = { running: false, paused: false, currentIndex: 0, doneJobs: prevQueue.doneJobs || [], jobName: keepJob ? prevQueue.jobName : null, jobSlug: keepJob ? (prevQueue.jobSlug || null) : null };  // preserva cola/doneJobs/lock
   // Reinicia el RITMO al cargar un JSON nuevo: cada video arranca "fresco". Antes solo se reseteaba queue,
   // asi que un 2o video en la misma hora HEREDABA windowCount/sessionGen/cooldown del anterior y disparaba
   // "Tope 50/hora: pausa 20 min" (o un descanso largo) de la nada. El tope/hora pasa a ser por-video.
@@ -528,6 +573,7 @@ async function onLoadJson(message) {
   }
   await prepareProjectMedia(message.json).catch((e) => log(LOG_LEVEL.WARN, `No pude preparar medios del slug (${e?.message ?? e}); continuo.`));
   await hydrateExistingIngredientFiles({ emit: false }).catch(() => false);
+  await rehydrateScenesFromDisk().catch((e) => log(LOG_LEVEL.WARN, `Rehidratacion desde disco fallo (${e?.message ?? e}); continuo sin ella.`));
   await saveState();
   log(LOG_LEVEL.INFO, `Proyecto cargado: "${state.project.title}" (${state.scenes.length} escenas).`);
   emitState();
@@ -666,6 +712,7 @@ async function onRetryIngredient(message) {
     return;
   }
 
+  const wasError = ing.status === SCENE_STATUS.ERROR;   // el retry viene de un fallo (no de un rehacer estetico)
   ing.imageUrl = null;
   ing.imageFilePath = null;
   ing.status = SCENE_STATUS.PENDING;
@@ -675,9 +722,28 @@ async function onRetryIngredient(message) {
   emitState();
 
   log(LOG_LEVEL.INFO, `Ingrediente ${ingredientId}: reintentando generacion manual.`);
-  await runIngredientsPhase({ forceIds: [ingredientId], ignorePaused: true });
+  const ok = await runIngredientsPhase({ forceIds: [ingredientId], ignorePaused: true });
   await ensureState();
   emitState();
+  // Auto-reanudacion: si el retry vino de un fallo que dejo la corrida PAUSADA y salio bien, continuar
+  // solo. Antes quedaba "regenerado" + pausado para siempre y parecia que la extension se colgaba.
+  if (ok && wasError && state.queue.paused) {
+    // Rama de cola SOLO si el job reclamado corresponde al proyecto cargado (jobSlug ancla); un jobName
+    // rancio de otro proyecto mandaba a pollQueue a reclamar/correr un job ajeno.
+    if (state.queue.jobName && state.config.autoQueue
+        && (!state.queue.jobSlug || state.queue.jobSlug === state.project?.slug)) {
+      // Job de la cola: despausar y dejar que pollQueue reanude la corrida completa (fases + audio + done).
+      state.queue.paused = false;
+      state.queue.errorSceneId = null;
+      await saveState();
+      log(LOG_LEVEL.INFO, `Ingrediente ${ingredientId} recuperado: la cola reanuda "${state.queue.jobName}".`);
+      emitState();
+      pollQueue().catch(() => {});
+    } else {
+      log(LOG_LEVEL.INFO, `Ingrediente ${ingredientId} recuperado: reanudo la corrida.`);
+      await onStartOrResume();
+    }
+  }
 }
 
 // Arranca la fase de animacion para recoger/animar las escenas que YA estan en estado animable
@@ -722,14 +788,25 @@ async function onRetryAllErrors() {
       s.savedOk = false;
       toAnimate = true;
     } else if (!retryAsImage && s.imageUrl) {
-      s.status = SCENE_STATUS.IMAGE_DONE;
-      s.videoUrl = null;
-      s.clipFilename = null;
-      s.lastFrameFilename = null;
-      s.savedOk = false;
-      s.grokFired = false;
-      s.grokVideoPostUrl = null;
-      s.grokAnimBefore = null;
+      if (s.grokFired && s.grokVideoPostUrl) {
+        // El FIRE YA se pago y sabemos donde quedo el post: NO limpiar grokFired (re-dispararia y cobraria
+        // 20-40 pts otra vez). IMAGE_DONE + flags intactos -> el runner salta el fire y recolecta ahi
+        // (mismo tratamiento que resumeIfInterrupted).
+        s.status = SCENE_STATUS.IMAGE_DONE;
+        s.videoUrl = null;
+        s.clipFilename = null;
+        s.lastFrameFilename = null;
+        s.savedOk = false;
+      } else {
+        s.status = SCENE_STATUS.IMAGE_DONE;
+        s.videoUrl = null;
+        s.clipFilename = null;
+        s.lastFrameFilename = null;
+        s.savedOk = false;
+        s.grokFired = false;
+        s.grokVideoPostUrl = null;
+        s.grokAnimBefore = null;
+      }
       toAnimate = true;
     } else {
       s.status = SCENE_STATUS.PENDING;
@@ -777,9 +854,17 @@ async function onResetScenes() {
     s.attempts = 0;
     s.error = null;
     s.imageUrl = null;
+    s.imageFilePath = null;
     s.grokPostUrl = null;
     s.clipFilename = null;
     s.lastFrameFilename = null;
+    // Tambien el estado de VIDEO: sin esto, la animacion veia el videoUrl viejo, saltaba el fire y pegaba
+    // el clip anterior a la imagen regenerada (o fallaba con la URL expirada).
+    s.videoUrl = null;
+    s.savedOk = false;
+    s.grokFired = false;
+    s.grokVideoPostUrl = null;
+    s.grokAnimBefore = null;
   }
   state.queue = { running: false, paused: false, currentIndex: 0, phase: "images", errorSceneId: null, heartbeatAt: 0, doneJobs: state.queue?.doneJobs || [] };
   for (const s of state.scenes) s.skipped = false;
@@ -852,7 +937,9 @@ async function resumeAfterCooldown() {
   await ensureState();
   if (!state.pacing?.cooldownUntil || Date.now() < state.pacing.cooldownUntil) return;
   state.pacing.cooldownUntil = 0;
-  if (state.queue.errorSceneId) { log(LOG_LEVEL.INFO, "Cooldown terminado, pero hay un fallo pendiente; no reanudo solo."); return; }
+  // WARN (no INFO): asi llega a Telegram; el usuario recibio "reanuda solo" y sin esto nunca se enteraba
+  // de que la reanudacion se cancelo por el fallo pendiente.
+  if (state.queue.errorSceneId) { log(LOG_LEVEL.WARN, "Cooldown terminado, pero hay un fallo pendiente; NO reanudo solo. Revisa /errores y dale Reintentar/Reanudar."); return; }
   state.queue.paused = false;
   state.queue.running = true;
   await saveState();
@@ -891,7 +978,10 @@ async function advanceCompletedImagesToAnimationIfNeeded(reason) {
 
 function isRenderableStillScene(scene) {
   if (!scene || scene.sceneType === "narrative_card") return false;
-  if (state.project?.imageOnly) return true;
+  // Escenas ANIMADAS quedan fuera tambien en imageOnly: su asset final es el clip (clips/<id>.mp4), no el
+  // still. Antes, un .jpg fuente borrado de disco reseteaba la escena ENTERA (videoUrl/grokFired incluidos)
+  // aunque el clip pagado siguiera intacto -> re-gasto de imagen + animacion.
+  if (state.project?.imageOnly) return scene.renderMode !== "animated";
   return !!state.project?.perSceneRender && scene.renderMode !== "animated";
 }
 
@@ -927,6 +1017,58 @@ async function repairMissingStillAssetsBeforeResume(reason) {
     emitState();
   }
   return repaired;
+}
+
+// Rehidratacion desde disco al cargar un JSON: si el asset final de una escena ya existe en
+// remotion-editor/public/<slug>/ (corrida anterior interrumpida, re-carga del mismo JSON), se marca la
+// escena como hecha en vez de regenerar y RE-GASTAR. Espejo de hydrateExistingIngredientFiles pero para
+// escenas. prepareProjectMedia archiva la carpeta si el JSON cambio -> solo se rehidrata media del MISMO
+// contenido. Sin dev-server corriendo es no-op (publicFileStatus devuelve null).
+async function rehydrateScenesFromDisk() {
+  const slug = state.project?.slug;
+  if (!slug || !state.scenes?.length) return 0;
+  const animProv = state.project?.animationProvider || state.config.provider;
+  let doneCount = 0, stillCount = 0;
+  for (const scene of state.scenes) {
+    if (scene.status !== SCENE_STATUS.PENDING || scene.sceneType === "narrative_card") continue;
+    const stillRel = `remotion-editor/public/${slug}/images/${scene.id}.jpg`;
+    if (isRenderableStillScene(scene)) {
+      // El still ES el asset final (imageOnly / hibrido estatico).
+      if (await publicFileOk(stillRel, minMediaBytes(stillRel))) {
+        scene.status = SCENE_STATUS.DONE;
+        scene.savedOk = true;
+        scene.error = null;
+        doneCount++;
+      }
+      continue;
+    }
+    // Escena animada: el clip es el asset final.
+    const clipRel = `remotion-editor/public/${slug}/clips/${scene.id}.mp4`;
+    if (await publicFileOk(clipRel, minMediaBytes(clipRel))) {
+      scene.status = SCENE_STATUS.DONE;
+      scene.clipFilename = `${scene.id}.mp4`;
+      scene.savedOk = true;
+      scene.error = null;
+      doneCount++;
+      continue;
+    }
+    // Sin clip pero con el still en public/ y animacion en Grok: IMAGE_DONE con la ruta en disco -> la
+    // fase de animacion SUBE la imagen por CDP (handoff, no necesita /post). Flow anima desde su tile
+    // en la grilla, no desde disco -> no aplica.
+    if (animProv === "grok") {
+      const st = await publicFileStatus(stillRel);
+      if (st?.abspath && Number(st.size || 0) >= minMediaBytes(stillRel)) {
+        scene.status = SCENE_STATUS.IMAGE_DONE;
+        scene.imageFilePath = st.abspath;
+        scene.error = null;
+        stillCount++;
+      }
+    }
+  }
+  if (doneCount || stillCount) {
+    log(LOG_LEVEL.INFO, `Rehidratacion desde disco: ${doneCount} escena(s) ya completa(s)${stillCount ? ` y ${stillCount} still(s) listos para animar` : ""} -> no se regeneran (sin re-gasto).`);
+  }
+  return doneCount + stillCount;
 }
 
 function forceImagesPhaseIfPending(reason) {
@@ -1393,8 +1535,13 @@ async function runGrokImage(scene) {
   const tab = await findFlowTab("grok");
   if (!tab) throw new Error("No hay pestana de Grok abierta (grok.com/imagine). Abrela y reintenta.");
   // Cada GROK_RELOAD_EVERY imagenes recarga la pestana de cero (anti-cuelgue por acumulacion en el renderer).
-  if ((state.pacing?.grokGenCount || 0) >= GROK_RELOAD_EVERY) {
-    log(LOG_LEVEL.INFO, `Grok: recargando la pestana de cero tras ${GROK_RELOAD_EVERY} imagenes (anti-cuelgue).`);
+  // TAMBIEN recarga si esta llamada es un REINTENTO (attempts>=2): el intento anterior fallo y la causa
+  // tipica es la pestana colgada; sin recargar, los N reintentos fallaban igual y se pausaba todo.
+  const isRetryAttempt = (scene.attempts || 0) >= 2;
+  if (isRetryAttempt || (state.pacing?.grokGenCount || 0) >= GROK_RELOAD_EVERY) {
+    log(LOG_LEVEL.INFO, isRetryAttempt
+      ? `Grok: recargando la pestana de cero antes de reintentar ${scene.id} (intento ${scene.attempts}).`
+      : `Grok: recargando la pestana de cero tras ${GROK_RELOAD_EVERY} imagenes (anti-cuelgue).`);
     try { await hardReloadGrok(tab.id); } catch (e) { log(LOG_LEVEL.WARN, `Grok: recarga anti-cuelgue fallo (${e?.message ?? e}); sigo sin recargar.`); }
     state.pacing.grokGenCount = 0;
     await saveState();
@@ -1501,6 +1648,9 @@ async function runGrokImage(scene) {
 // SI arranco (y se pago) antes de dejar que un reintento la re-dispare. Barato: URL del /post (sin content
 // script) + VIDEO_SRCS best-effort. Devuelve {started, reason, postUrl}.
 async function grokAnimationLikelyStarted(tabId, preUrl, before) {
+  // Margen para que la UI pinte las senales: el "no arranco" del driver suele ser un timeout apretado y
+  // probear en caliente daba falso negativo -> re-disparo de una animacion YA pagada (doble gasto).
+  await delay(3000);
   try {
     const t = await chrome.tabs.get(tabId);
     const u = t?.url || "";
@@ -1512,6 +1662,12 @@ async function grokAnimationLikelyStarted(tabId, preUrl, before) {
     const beforeSet = new Set(before || []);
     if (srcs.some((s) => !beforeSet.has(s))) return { started: true, reason: "aparecio un video nuevo en el DOM", postUrl: null };
   } catch (_e) { /* content script pudo morir en la navegacion */ }
+  // Misma senal que usa el driver para confirmar arranque: el texto "Generando/Generating" en la pagina.
+  // El probe no la miraba y era la ventana tipica del falso negativo.
+  try {
+    const [r] = await chrome.scripting.executeScript({ target: { tabId }, func: () => (document.body?.innerText || "").slice(0, 20000) });
+    if (/generando|generating/i.test(r?.result || "")) return { started: true, reason: "la pagina muestra 'Generando'", postUrl: null };
+  } catch (_e) { /* pestana sin acceso: sin senal extra */ }
   return { started: false, reason: "", postUrl: null };
 }
 
@@ -1913,18 +2069,23 @@ async function cleanupV3VoiceFile(slug, filename, outputFormat) {
   }
 }
 
-async function publicFileOk(relPath, minBytes = 1) {
+async function publicFileStatus(relPath) {
   const writerUrl = state.config.audioWriterUrl || DEFAULT_CONFIG.audioWriterUrl;
   let base = "http://localhost:35729";
   try { base = new URL(writerUrl).origin; } catch (_e) { /* fallback */ }
   try {
     const res = await fetch(`${base}/file-status?path=${encodeURIComponent(relPath)}`);
-    if (!res.ok) return false;
+    if (!res.ok) return null;
     const j = await res.json().catch(() => null);
-    return !!j?.ok && Number(j.size || 0) >= minBytes;
+    return j?.ok ? j : null;
   } catch (_e) {
-    return false;
+    return null;
   }
+}
+
+async function publicFileOk(relPath, minBytes = 1) {
+  const j = await publicFileStatus(relPath);
+  return !!j && Number(j.size || 0) >= minBytes;
 }
 
 async function voiceFileOk(slug, filename) {
@@ -2149,7 +2310,8 @@ async function generateHistoriasEleven(fullScript, sceneTexts, slug, tts, apiKey
   const defaultVoice = preset === "manhwa" ? ELEVEN_MANHWA_VOICE : ELEVEN_DEFAULT_VOICE;
   const o = {
     apiKey,
-    voiceId: preset === "manhwa" ? ELEVEN_MANHWA_VOICE : forceChannelVoice ? ELEVEN_DEFAULT_VOICE : ((tts.voice_id || "").trim() || defaultVoice),
+    // manhwa: voz de narrador POR SERIE (tts_export.voices.narrador; voice_id ya viene resuelto por el loader).
+    voiceId: preset === "manhwa" ? ((tts.voices?.narrador || "").trim() || (tts.voice_id || "").trim() || ELEVEN_MANHWA_VOICE) : forceChannelVoice ? ELEVEN_DEFAULT_VOICE : ((tts.voice_id || "").trim() || defaultVoice),
     modelId,
     languageCode: tts.language_code || "es",
     outputFormat: tts.output_format || "mp3_44100_192",
@@ -2370,9 +2532,17 @@ async function downloadClipToProject(url, slug, id) {
   const base = (state.config.audioWriterUrl || DEFAULT_CONFIG.audioWriterUrl).replace(/\/save$/, "");
   try {
     const res = await fetch(`${base}/move?from=${encodeURIComponent(item.filename)}&to=${encodeURIComponent(to)}`, { method: "POST" });
-    const j = await res.json().catch(() => null);
+    const body = await res.text().catch(() => "");
+    const j = body ? (() => { try { return JSON.parse(body); } catch (_e) { return null; } })() : null;
     if (res.ok && j && j.ok) return { via: "server", path: to };
-  } catch (_e) { /* dev-server no corre: queda en Descargas */ }
+    // 422 = el dev-server RECHAZO el clip (truncado/0-bytes). Antes se trataba igual que "dev-server
+    // caido" y la escena quedaba DONE con un video roto en silencio. Propagar -> reintento (re-descarga
+    // sin re-animar: videoUrl ya esta).
+    if (res.status === 422) throw new Error(`clip rechazado por dev-server (posible corrupto, descarga incompleta): ${body || res.statusText}`);
+  } catch (e) {
+    if (/clip rechazado/i.test(String(e?.message ?? e))) throw e;
+    /* dev-server no corre: queda en Descargas */
+  }
   return { via: "downloads", path: item.filename };
 }
 
@@ -2498,7 +2668,9 @@ async function prepareGrokImageAttempt(tabId, refPaths, label) {
       await cdpSetFileInput(tabId, refPaths);
       log(LOG_LEVEL.INFO, `${label}: ${refPaths.length} referencia(s) subidas a Grok.`);
     } catch (e) {
-      log(LOG_LEVEL.WARN, `${label}: no pude subir referencias (${e?.message ?? e}); genero sin ellas.`);
+      // Antes: WARN + "genero sin ellas" -> imagen SIN personaje/escenario que terminaba DONE como si
+      // nada (perdida de continuidad indetectable). Fallar el intento: el reintento recarga y re-sube.
+      throw new Error(`no pude subir referencias a Grok (${e?.message ?? e})`);
     }
   }
 }
@@ -2553,9 +2725,16 @@ function navigateTab(tabId, url) {
 
 // Busca la pestana del PROVEEDOR activo: Flow (labs.google) o Grok (grok.com). Prefiere la activa.
 async function findFlowTab(provider) {
-  const pattern = (provider || state.config.provider) === "grok" ? "https://grok.com/*" : "https://labs.google/*";
+  const isGrok = (provider || state.config.provider) === "grok";
+  const pattern = isGrok ? "https://grok.com/*" : "https://labs.google/*";
   try {
     const tabs = await chrome.tabs.query({ url: pattern });
+    // Grok: preferir la pestana que YA esta en /imagine; sin esto, con un chat de grok.com abierto y
+    // activo, el bot lo secuestraba y lo navegaba a /imagine sin avisar.
+    if (isGrok) {
+      const imagine = tabs.filter((t) => /grok\.com\/imagine/.test(t.url || ""));
+      if (imagine.length) return imagine.find((t) => t.active) ?? imagine[0];
+    }
     return tabs.find((t) => t.active) ?? tabs[0] ?? null;
   } catch (e) {
     console.warn("findFlowTab:", e);
@@ -2584,7 +2763,12 @@ async function ensureContentScript(tabId, provider) {
 async function ensureGrokCompositor(tabId) {
   let tab = null;
   try { tab = await chrome.tabs.get(tabId); } catch (_e) {}
-  if (/^https:\/\/grok\.com\/imagine\/?($|\?)/.test(tab?.url || "")) return; // ya en el composer fresco
+  if (/^https:\/\/grok\.com\/imagine\/?($|\?)/.test(tab?.url || "")) {
+    // La URL no basta: una pestana CRASHEADA ("Aw, Snap") conserva su ultima URL y el short-circuit la
+    // daba por buena; todo lo demas fallaba con errores genericos. Ping real al renderer antes de confiar.
+    try { await chrome.scripting.executeScript({ target: { tabId }, func: () => true }); return; }
+    catch (_e) { log(LOG_LEVEL.WARN, "Grok: la pestana no responde (¿crasheada?); la re-navego."); }
+  }
   await new Promise((resolve, reject) => {
     chrome.tabs.update(tabId, { url: "https://grok.com/imagine" }, () => {
       const e = chrome.runtime.lastError; if (e) return reject(new Error(e.message)); resolve();
@@ -3026,6 +3210,7 @@ async function runIngredientsPhase(options = {}) {
   // meter encima el interSceneDelay+warmup hacia la fase eterna (~8 min para 10) y parecia congelada. El
   // ritmo configurado SIGUE aplicando entre ESCENAS (produccion sostenida); aqui no hace falta. La red de
   // seguridad reactiva (onRateLimit / "actividad inusual") cubre cualquier rafaga.
+  const ingRetries = new Map();   // reintento reactivo por ingrediente (1 recarga+retry antes de pausar)
   for (let ingIndex = 0; ingIndex < pending.length; ingIndex++) {
     const ing = pending[ingIndex];
     const isLastIngredient = ings.length > 1 && ing.id === ings[ings.length - 1]?.id;
@@ -3105,13 +3290,31 @@ async function runIngredientsPhase(options = {}) {
       await saveState();
       emitState();
       if (e?.hardStop) { await onHardStop(e.hardStop, e?.message); return false; }
+      // Reintento REACTIVO (solo Grok, imagenes gratis): la causa tipica es la pestana colgada. Antes se
+      // pausaba TODO al primer error sin recargar; ahora recarga de cero y reintenta 1 vez antes de pausar.
+      const tries = ingRetries.get(ing.id) || 0;
+      if (provider === "grok" && tries < 1) {
+        ingRetries.set(ing.id, tries + 1);
+        log(LOG_LEVEL.WARN, `Ingrediente ${ing.id} fallo (${e?.message ?? e}); recargo Grok de cero y reintento (2/2).`);
+        try { await hardReloadGrok(tab.id); } catch (re) { log(LOG_LEVEL.WARN, `Recarga de Grok fallo (${re?.message ?? re}); reintento igual.`); }
+        if (state.pacing) state.pacing.grokGenCount = 0;
+        ing.status = SCENE_STATUS.PENDING;
+        ing.error = null;
+        await saveState();
+        emitState();
+        ingIndex--;   // repite este mismo ingrediente
+        continue;
+      }
       log(LOG_LEVEL.ERROR, `Ingrediente ${ing.id} fallo: ${e?.message ?? e}`);
       await pauseForError(`ingrediente ${ing.id}: ${e?.message ?? e}`, null);
       return false;
     }
   }
   if (provider !== "grok") detachDebugger(tab.id);
-  log(LOG_LEVEL.INFO, "FASE INGREDIENTES completa.");
+  // forceIds (retry manual) NO es la fase completa: solo se regenero ese/esos ingrediente(s).
+  log(LOG_LEVEL.INFO, forceIds.size
+    ? `Ingrediente(s) regenerado(s): ${[...forceIds].join(", ")}.`
+    : "FASE INGREDIENTES completa.");
   return true;
   } finally {
     ingredientsRunning = false;
@@ -3267,6 +3470,31 @@ async function pollQueue() {
     log(LOG_LEVEL.WARN, "Cola marcada 'running' sin bucle vivo (latido rancio): la libero.");
     return;   // este tick SOLO libera; el siguiente decide (da chance a resumeIfInterrupted de ganar la carrera)
   }
+  // JOB A MEDIAS PERSISTIDO (fallo previo, aborto o SW reiniciado): REANUDAR esa corrida en vez de
+  // reclamar otro JSON. Antes: el lock ocultaba el job del listado del dev-server y la cola saltaba al
+  // siguiente JSON; onLoadJson del nuevo pisaba el estado del job a medias y, al relistarse por lock
+  // rancio, se recargaba de cero -> re-gasto de todo lo ya pagado.
+  if (state.queue.jobName) {
+    const projSlug = state.project?.slug || null;
+    if (!projSlug || (state.queue.jobSlug && projSlug !== state.queue.jobSlug)) {
+      // El proyecto cargado ya no corresponde al job (JSON cambiado a mano / claim interrumpido antes de
+      // cargar). No hay progreso que proteger: soltar el job; su lock caduca y se relista para un claim limpio.
+      log(LOG_LEVEL.WARN, `cola: el proyecto cargado (${projSlug || "ninguno"}) no corresponde al job "${state.queue.jobName}"; lo suelto (se relistara solo).`);
+      processedJobs.delete(state.queue.jobName);   // que ESTA vida del SW pueda re-reclamarlo al relistarse
+      state.queue.jobName = null;
+      state.queue.jobSlug = null;
+      await saveState();
+    } else {
+      const jobName = state.queue.jobName;
+      log(LOG_LEVEL.INFO, `AUTOPILOTO: reanudando trabajo a medias "${jobName}" (sin re-gastar lo hecho).`);
+      await repairMissingStillAssetsBeforeResume("reanudacion de job a medias");
+      forceImagesPhaseIfPending("reanudacion de job a medias");
+      await saveState();
+      const ok = await onRunAll().catch((e) => { log(LOG_LEVEL.ERROR, `AUTOPILOTO: excepcion no manejada: ${e?.message ?? e}`); return false; });
+      await finishQueueJob(jobName, ok);
+      return;
+    }
+  }
   let jobs;
   try { jobs = await fetch(state.config.queueUrl || DEFAULT_CONFIG.queueUrl).then((r) => r.json()); }
   catch (_e) { return; }                              // dev-server caido
@@ -3287,32 +3515,44 @@ async function pollQueue() {
   // onLoadJson resetearia TODAS las escenas a PENDING y se re-gastaria cada imagen/animacion ya pagada.
   // Se reanuda el estado persistido (los runners son idempotentes por status). Verificamos que el JSON del
   // job corresponda al proyecto cargado (mismo slug) para no reanudar escenas de otro proyecto.
-  const sameJob = state.queue.jobName === job.name
-    && (state.scenes || []).length > 0
+  const sameJob = (state.scenes || []).length > 0
     && (state.scenes || []).some((s) => s.status !== SCENE_STATUS.PENDING)
     && (() => { try { const chk = validateQueueProject(job.json); return chk.ok && chk.parsed.project.slug === state.project?.slug; } catch (_e) { return false; } })();
   await resetGrokForQueueJob(job);
+  // jobName se CONSERVA hasta completar (fallos incluidos): asi la cola reanuda ESTE job en el siguiente
+  // tick en vez de tomar otro JSON. jobSlug ancla el job al proyecto cargado (guard de la reanudacion).
+  state.queue.jobName = job.name;
+  state.queue.jobSlug = job.slug || null;
+  await saveState();
   if (sameJob) {
     log(LOG_LEVEL.WARN, `AUTOPILOTO: "${job.name}" ya estaba a medias; reanudo el progreso persistido (sin re-gastar lo hecho).`);
     await repairMissingStillAssetsBeforeResume("re-claim del mismo job");
     forceImagesPhaseIfPending("re-claim del mismo job");
     await saveState();
   } else {
-    state.queue.jobName = job.name;   // para heartbeat del lock (SCALE-02) y diagnostico
-    await saveState();
     await onLoadJson({ json: job.json });
   }
-  const ok = await onRunAll();
-  // Solo si la corrida COMPLETO bien lo marcamos como hecho (persistente). Si fallo/se pauso (parada dura),
-  // NO se marca -> se puede reintentar tras arreglar el problema. Evita re-tomar lo ya terminado.
+  const ok = await onRunAll().catch((e) => { log(LOG_LEVEL.ERROR, `AUTOPILOTO: excepcion no manejada: ${e?.message ?? e}`); return false; });
+  await finishQueueJob(job.name, ok);
+  } finally { pollQueueBusy = false; }
+}
+
+// Cierra el ciclo de un job de la cola tras onRunAll. Exito -> doneJobs + soltar jobName. Fallo -> CONSERVA
+// jobName (la cola reanuda ese job en vez de tomar otro) y, si el aborto fue SILENCIOSO (sin pausa y sin
+// corrida viva: sin pestana del proveedor, proyecto no cargado, etc.), pausa la cola para que el usuario lo
+// vea; sin esto, pollQueue saltaba al siguiente JSON a los 30s dejando el actual a medias.
+async function finishQueueJob(name, ok) {
+  await ensureState();
   if (ok) {
     state.queue.doneJobs = state.queue.doneJobs || [];
-    if (!state.queue.doneJobs.includes(job.name)) state.queue.doneJobs.push(job.name);
-    log(LOG_LEVEL.INFO, `AUTOPILOTO: "${job.name}" completado; no se re-tomara.`);
+    if (!state.queue.doneJobs.includes(name)) state.queue.doneJobs.push(name);
+    state.queue.jobName = null;       // corrida terminada: deja de latir el lock
+    state.queue.jobSlug = null;
+    log(LOG_LEVEL.INFO, `AUTOPILOTO: "${name}" completado; no se re-tomara.`);
+  } else if (!state.queue.paused && !loopRunning && !autopilotBusy && !ingredientsRunning) {
+    await pauseForError(`el autopiloto aborto "${name}" sin terminar; revisa el log, arregla la causa y dale Reanudar`, null);
   }
-  state.queue.jobName = null;       // corrida terminada/pausada: deja de latir el lock
   await saveState();
-  } finally { pollQueueBusy = false; }
 }
 
 // Mantiene fresco el lock del trabajo en curso (dev-server lo relista si el lock se vuelve rancio).
@@ -3327,7 +3567,7 @@ async function heartbeatJobLock() {
 chrome.alarms?.create?.("queuePoll", { periodInMinutes: 0.5 });
 chrome.alarms?.create?.("remoteControlPoll", { periodInMinutes: 0.5 });
 chrome.alarms?.onAlarm?.addListener((a) => {
-  if (a.name === "queuePoll") pollQueue().catch(() => {});
+  if (a.name === "queuePoll") pollQueue().catch((e) => log(LOG_LEVEL.ERROR, `pollQueue fallo: ${e?.message ?? e}`));
   else if (a.name === "remoteControlPoll") pollRemoteCommands().catch(() => {});
   else if (a.name === "rateLimitResume") resumeAfterCooldown().catch(() => {});
   else if (a.name === "keepAlive") keepAliveTick().catch(() => {});

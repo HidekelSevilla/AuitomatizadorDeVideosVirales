@@ -133,6 +133,18 @@ def is_manhwa(doc: dict) -> bool:
     return str(((doc.get("project") or {}).get("preset")) or "") == "manhwa"
 
 
+def manhwa_narrator_voice(doc: dict) -> str:
+    """Voz del narrador manhwa POR SERIE: tts_export.voices.narrador > pipeline.tts.voice_id > voz oficial.
+    tts_export.voice_id 'suelto' sigue ignorado (guard anti-voz-accidental del generador de JSON)."""
+    tx = doc.get("tts_export") or {}
+    voices = tx.get("voices") if isinstance(tx.get("voices"), dict) else {}
+    pt = (doc.get("pipeline") or {}).get("tts") or {}
+    for v in (voices.get("narrador"), pt.get("voice_id")):
+        if isinstance(v, str) and v.strip():
+            return v.strip()
+    return MANHWA_VOICE_ID
+
+
 def validate_tags(text: str) -> list[str]:
     """Devuelve WARNINGS (no borra nada). Avisa de tags que NO son del estilo simple de V3
     (p. ej. compuestos largos estilo Fish `[warm, measured, storyteller tone]`)."""
@@ -233,10 +245,11 @@ def _dialogue_settings(doc: dict, voice_id_override: Optional[str] = None) -> di
 def _speaker_voice_map(doc: dict, narrador_override: Optional[str] = None) -> dict[str, str]:
     tx = doc.get("tts_export") or {}
     voices = tx.get("voices") if isinstance(tx.get("voices"), dict) else {}
+    narr = manhwa_narrator_voice(doc) if is_manhwa(doc) else VOICE_ID
     out = {
-        "narrador": MANHWA_VOICE_ID if is_manhwa(doc) else VOICE_ID,
-        "voz_general": MANHWA_VOICE_ID if is_manhwa(doc) else VOICE_ID,
-        "general": MANHWA_VOICE_ID if is_manhwa(doc) else VOICE_ID,
+        "narrador": narr,
+        "voz_general": narr,
+        "general": narr,
         "sistema": MANHWA_SYSTEM_VOICE_ID,
         "system": MANHWA_SYSTEM_VOICE_ID,
         "ia": MANHWA_SYSTEM_VOICE_ID,
@@ -586,12 +599,12 @@ def _default_settings(voice_id: str = VOICE_ID) -> dict:
 
 
 def _resolve_settings(doc: dict, voice_id_override: Optional[str] = None) -> dict:
-    """Resuelve settings. Manhwa usa su voz fija aunque el JSON declare otra."""
+    """Resuelve settings. Manhwa: narrador por serie (voices.narrador/pipeline.tts.voice_id) o voz oficial."""
     tx = doc.get("tts_export") or {}
     pt = (doc.get("pipeline") or {}).get("tts") or {}
     force_channel_voice = uses_channel_voice(doc) and not voice_id_override
     default_voice_id = MANHWA_VOICE_ID if is_manhwa(doc) else VOICE_ID
-    resolved_voice_id = MANHWA_VOICE_ID if is_manhwa(doc) else (VOICE_ID if force_channel_voice else (voice_id_override or tx.get("voice_id") or pt.get("voice_id") or default_voice_id))
+    resolved_voice_id = (voice_id_override or manhwa_narrator_voice(doc)) if is_manhwa(doc) else (VOICE_ID if force_channel_voice else (voice_id_override or tx.get("voice_id") or pt.get("voice_id") or default_voice_id))
     s = _default_settings(resolved_voice_id)
     if tx.get("model_id"):
         s["model_id"] = tx["model_id"]

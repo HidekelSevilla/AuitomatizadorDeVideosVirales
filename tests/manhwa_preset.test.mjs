@@ -110,14 +110,32 @@ assert.equal(parsed.project.ttsExport.engine, "elevenlabs");
 assert.equal(parsed.project.ttsExport.voice_id, MANHWA_DEFAULT_VOICE);
 console.log(`MANHWA_DEFAULT_VOICE ${parsed.project.ttsExport.voice_id}`);
 
+// tts_export.voice_id "suelto" sigue sin pasar (guard anti-voz-accidental del generador de JSON)
 const parsedWithOtherVoice = parseProject({
   ...raw,
   tts_export: { ...(raw.tts_export || {}), voice_id: "OTRA_VOZ_NO_DEBE_PASAR" },
-  pipeline: { ...(raw.pipeline || {}), tts: { ...(raw.pipeline?.tts || {}), voice_id: "OTRA_VOZ_PIPELINE" } },
 });
 assert.equal(parsedWithOtherVoice.ok, true, parsedWithOtherVoice.errors?.join("\n"));
 assert.equal(parsedWithOtherVoice.project.ttsExport.voice_id, MANHWA_DEFAULT_VOICE);
 console.log("MANHWA_FORCE_VOICE_OK");
+
+// voz de narrador POR SERIE: tts_export.voices.narrador gana sobre pipeline.tts.voice_id
+const parsedNarradora = parseProject({
+  ...raw,
+  tts_export: { ...(raw.tts_export || {}), voices: { narrador: "VOZ_NARRADORA_SERIE" } },
+  pipeline: { ...(raw.pipeline || {}), tts: { ...(raw.pipeline?.tts || {}), voice_id: "VOZ_PIPELINE" } },
+});
+assert.equal(parsedNarradora.ok, true, parsedNarradora.errors?.join("\n"));
+assert.equal(parsedNarradora.project.ttsExport.voice_id, "VOZ_NARRADORA_SERIE");
+
+// sin voices.narrador, pipeline.tts.voice_id declara la voz de la serie
+const parsedPipelineVoice = parseProject({
+  ...raw,
+  pipeline: { ...(raw.pipeline || {}), tts: { ...(raw.pipeline?.tts || {}), voice_id: "VOZ_PIPELINE" } },
+});
+assert.equal(parsedPipelineVoice.ok, true, parsedPipelineVoice.errors?.join("\n"));
+assert.equal(parsedPipelineVoice.project.ttsExport.voice_id, "VOZ_PIPELINE");
+console.log("MANHWA_NARRATOR_VOICE_PER_SERIES_OK");
 const parsedDialogue = parseProject({
   ...raw,
   scenes: raw.scenes.map((s, i) => ({

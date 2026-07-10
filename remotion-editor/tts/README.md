@@ -49,7 +49,7 @@ npx remotion render ViralVideo out/la_atlantida_sin_marco.mp4 --props=done/la_at
 
 ## Configuración
 
-Todo en `config.py` (override por variable de entorno): `MODEL_ID`, `STABILITY=0.0` (Creative),
+Todo en `config.py` (override por variable de entorno): `MODEL_ID`, `STABILITY=0.5` (Natural),
 `VOICE_ID`, `OUTPUT_FORMAT`, `LANGUAGE_CODE="es"`, `SEED`, `CHUNK_MAX_CHARS`, `CHUNK_MIN_CHARS`,
 `MAX_CONCURRENCY`.
 

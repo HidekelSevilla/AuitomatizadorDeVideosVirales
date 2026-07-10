@@ -1,0 +1,1982 @@
+{
+  "project": {
+    "preset": "novela-coreana",
+    "title": "La hija que el hospital borró - Parte 1",
+    "subtitle": "La paciente que sabía mi nombre",
+    "alternate_title_ko": "기록에서 지워진 딸",
+    "serie": "la_hija_que_el_hospital_borro",
+    "slug": "la_hija_que_el_hospital_borro_parte_01",
+    "series": {
+      "id": "la_hija_que_el_hospital_borro",
+      "part": 1,
+      "is_cliffhanger": true
+    },
+    "motor": "abandono",
+    "secondary_motor": "identidad_robada",
+    "romantic_subplot": "vulnerabilidad_bajo_presion",
+    "world": "moderno_kdrama_realista",
+    "language": "es",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "reuse_ingredients": true,
+    "grok_clip_seconds": "6",
+    "scene_target_seconds": 4,
+    "voice_target_seconds": [
+      3,
+      4
+    ],
+    "voice_ceiling_seconds": "5",
+    "hook": "La paciente llevaba veinte años sin hablar. Al oír mi nombre, lloró."
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "fish"
+    }
+  },
+  "characters": {
+    "seo_jin": {
+      "display_name": "Han Seo-jin",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/seo_jin_base.png",
+          "prompt": "Character reference, vertical 9:16, single Korean woman age 27, realistic East-Asian features, oval face, dark brown eyes, straight shoulder-length black hair tied in a low ponytail, pale blue modern nurse uniform, white clinical shoes, restrained compassionate expression, standing upright, empty hands, neutral soft grey studio background, cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "cabecera_tensa": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/seo_jin_cabecera_tensa.png",
+          "reference_pose": "base",
+          "prompt": "Same character Han Seo-jin, same face and hair, same pale blue nurse uniform, standing with tense shoulders, one hand near her chest, restrained alarm, empty other hand, neutral studio background."
+        },
+        "sentada_escalera_herida": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/seo_jin_sentada_escalera_herida.png",
+          "reference_pose": "base",
+          "prompt": "Same character Han Seo-jin, same face and hair, same nurse uniform, seated on a plain step, minor scrape across her right palm, shoulders trembling, feet flat on the floor, neutral studio background."
+        },
+        "sentada_escalera_vendada": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/seo_jin_sentada_escalera_vendada.png",
+          "reference_pose": "base",
+          "prompt": "Same character Han Seo-jin, same face and hair, same nurse uniform, seated on a plain step, right hand wrapped in a clean white bandage, restrained vulnerable expression, feet flat on the floor, neutral studio background."
+        },
+        "casillero_humillada": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/seo_jin_casillero_humillada.png",
+          "reference_pose": "base",
+          "prompt": "Same character Han Seo-jin, same face and hair, pale blue nurse uniform slightly rumpled, standing with wet eyes and controlled humiliation, hands empty at her sides, neutral studio background."
+        },
+        "exterior_noche": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/seo_jin_exterior_noche.png",
+          "reference_pose": "base",
+          "prompt": "Same character Han Seo-jin, same face and hair, pale blue nurse uniform under a charcoal coat, standing, right hand bandaged, exhausted but determined expression, neutral studio background."
+        }
+      }
+    },
+    "directora_yoon": {
+      "display_name": "Directora Yoon",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/directora_yoon_base.png",
+          "prompt": "Character reference, vertical 9:16, single elegant Korean woman age 52, realistic East-Asian features, sharp dark eyes, sleek black bob, tailored navy executive suit, pearl earrings, restrained maternal smile with hidden severity, standing upright, empty hands, neutral soft grey studio background, cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "cabecera_fria": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/directora_yoon_cabecera_fria.png",
+          "reference_pose": "base",
+          "prompt": "Same character Directora Yoon, same face, hair, navy suit and pearl earrings, standing with one hand lightly raised in command, cold controlled expression, neutral studio background."
+        },
+        "confrontacion_pasillo": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/directora_yoon_confrontacion_pasillo.png",
+          "reference_pose": "base",
+          "prompt": "Same character Directora Yoon, same face and wardrobe, standing with chin lifted and hands clasped before her, controlled menace with a flicker of fear, neutral studio background."
+        },
+        "exterior_noche": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/directora_yoon_exterior_noche.png",
+          "reference_pose": "base",
+          "prompt": "Same character Directora Yoon, same face and hair, navy executive suit under a long black coat, standing rigidly, eyes lowered for the first time, neutral studio background."
+        }
+      }
+    },
+    "min_jae": {
+      "display_name": "Kang Min-jae",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/min_jae_base.png",
+          "prompt": "Character reference, vertical 9:16, single Korean man age 30, realistic East-Asian features, warm dark eyes, short slightly tousled black hair, white resident doctor coat over charcoal scrubs, hospital ID without readable text, restrained rebellious expression, standing upright, empty hands, neutral soft grey studio background, cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "sentado_escalera": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/min_jae_sentado_escalera.png",
+          "reference_pose": "base",
+          "prompt": "Same character Kang Min-jae, same face, hair, doctor coat and scrubs, seated on a plain step, leaning slightly forward, hands ready to bandage an injury, feet flat on the floor, restrained concern, neutral studio background."
+        },
+        "pasillo_firme": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/min_jae_pasillo_firme.png",
+          "reference_pose": "base",
+          "prompt": "Same character Kang Min-jae, same face and wardrobe, standing with squared shoulders, one hand raised to stop someone, controlled defiance, neutral studio background."
+        }
+      }
+    },
+    "paciente_silenciosa": {
+      "display_name": "Paciente silenciosa",
+      "poses": {
+        "base_supina": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/paciente_silenciosa_base_supina.png",
+          "prompt": "Character reference, vertical 9:16, single Korean woman age 68, realistic East-Asian features, silver-streaked black hair, pale hospital gown, lying supine in a simple hospital bed pose, thin face, closed mouth, distant exhausted expression, hands resting above the blanket, neutral light grey studio background, cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "despierta_ambulancia": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/paciente_silenciosa_despierta_ambulancia.png",
+          "reference_pose": "base_supina",
+          "prompt": "Same patient, same face and silver-streaked hair, pale hospital gown, lying supine on a gurney, eyes suddenly open, one trembling hand raised slightly, restrained tears, neutral studio background."
+        }
+      }
+    },
+    "enfermera_amiga": {
+      "display_name": "Compañera de turno",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/enfermera_amiga_base.png",
+          "prompt": "Character reference, vertical 9:16, single Korean woman age 26, realistic East-Asian features, round face, dark eyes, black hair in a neat bun, pale green nurse uniform, anxious loyal expression, standing upright, empty hands, neutral soft grey studio background, cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "mostrador_nerviosa": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/enfermera_amiga_mostrador_nerviosa.png",
+          "reference_pose": "base",
+          "prompt": "Same companion nurse, same face, bun and pale green uniform, standing with hunched shoulders, one hand hidden near her hip as if concealing a bag, worried expression, neutral studio background."
+        },
+        "descanso_culpable": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/enfermera_amiga_descanso_culpable.png",
+          "reference_pose": "base",
+          "prompt": "Same companion nurse, same face and uniform, seated on a plain chair, hands clasped tightly on her lap, tearful guilty expression, feet on the floor, neutral studio background."
+        }
+      }
+    },
+    "guardia": {
+      "display_name": "Guardia de seguridad",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/guardia_base.png",
+          "prompt": "Character reference, vertical 9:16, single Korean man age 44, realistic East-Asian features, short black hair, dark hospital security uniform without logos, restrained professional expression, standing upright, empty hands, neutral soft grey studio background, cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "ascensor_bloqueo": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/guardia_ascensor_bloqueo.png",
+          "reference_pose": "base",
+          "prompt": "Same security guard, same face and dark uniform, standing with one arm extended across a doorway to block passage, controlled unease, neutral studio background."
+        }
+      }
+    },
+    "cirujano_antiguo": {
+      "display_name": "Antiguo cirujano",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/cirujano_antiguo_base.png",
+          "prompt": "Character reference, vertical 9:16, single Korean man age 64, realistic East-Asian features, silver hair combed back, rimless glasses, dark charcoal overcoat over a formal suit, stern authoritative face carrying old guilt, standing upright, empty hands, neutral soft grey studio background, cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "exterior_autoridad": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/cirujano_antiguo_exterior_autoridad.png",
+          "reference_pose": "base",
+          "prompt": "Same former surgeon, same face, silver hair, glasses and dark overcoat, standing with one hand raised in command, severe authority and restrained guilt, neutral studio background."
+        },
+        "arrodillado": {
+          "mode": "generate",
+          "asset": "assets/characters/la_hija_que_el_hospital_borro/cirujano_antiguo_arrodillado.png",
+          "reference_pose": "base",
+          "prompt": "Same former surgeon, same face and wardrobe, kneeling on one knee, both hands carefully holding two small broken newborn wristband halves, eyes wet with remorse, neutral studio background."
+        }
+      }
+    }
+  },
+  "escenarios": {
+    "habitacion_paciente": {
+      "display_name": "Habitación de la paciente",
+      "views": {
+        "desde_puerta": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/habitacion_paciente_desde_puerta.png",
+          "prompt": "EMPTY private Korean hospital room seen from the doorway, single bed centered beneath a window, monitoring equipment with abstract unreadable screens, visitor chair, cold blue-grey night lighting, clean modern realism, no people, no text, vertical 9:16."
+        },
+        "cabecera_izquierda": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/habitacion_paciente_cabecera_izquierda.png",
+          "reference_view": "desde_puerta",
+          "prompt": "Same empty hospital room, new camera position at the left side of the bed facing the headboard, bed rail in the foreground, cold blue-grey night lighting, no people, no text, vertical 9:16."
+        },
+        "cabecera_derecha": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/habitacion_paciente_cabecera_derecha.png",
+          "reference_view": "desde_puerta",
+          "prompt": "Same empty hospital room, new camera position at the right side of the bed facing the headboard, visitor chair behind, cold blue-grey night lighting, no people, no text, vertical 9:16."
+        },
+        "lado_cortina": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/habitacion_paciente_lado_cortina.png",
+          "reference_view": "desde_puerta",
+          "prompt": "Same empty hospital room, new camera position beside the privacy curtain looking diagonally toward the bed and door, cold blue-grey night lighting, no people, no text, vertical 9:16."
+        }
+      }
+    },
+    "estacion_enfermeria": {
+      "display_name": "Estación de enfermería",
+      "views": {
+        "general": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/estacion_enfermeria_general.png",
+          "prompt": "EMPTY modern Korean hospital nurse station at night, curved counter, computers with abstract unreadable screens, medicine cabinets, long corridor behind, cold blue-grey fluorescent light, no people, no text, realistic K-drama, vertical 9:16."
+        },
+        "detras_mostrador": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/estacion_enfermeria_detras_mostrador.png",
+          "reference_view": "general",
+          "prompt": "Same empty nurse station, new camera position behind the counter facing the corridor, counter edge in the foreground, cold blue-grey night light, no people, no text, vertical 9:16."
+        },
+        "puerta_acceso": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/estacion_enfermeria_puerta_acceso.png",
+          "reference_view": "general",
+          "prompt": "Same hospital area, new camera position facing a secure glass access door and card reader beside the nurse station, floor visible, cold blue-grey night light, no people, no readable text, vertical 9:16."
+        }
+      }
+    },
+    "escalera_servicio": {
+      "display_name": "Escalera de servicio",
+      "views": {
+        "rellano_general": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/escalera_servicio_rellano_general.png",
+          "prompt": "EMPTY modern hospital service stairwell, concrete steps, metal handrail, small landing, cold overhead light, muted grey-blue palette, no people, no text, realistic K-drama, vertical 9:16."
+        },
+        "banco_lado_a": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/escalera_servicio_banco_lado_a.png",
+          "reference_view": "rellano_general",
+          "prompt": "Same empty hospital stairwell, camera from the lower steps looking toward the landing bench and handrail, feet-level floor visible, cold overhead light, no people, no text, vertical 9:16."
+        },
+        "banco_lado_b": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/escalera_servicio_banco_lado_b.png",
+          "reference_view": "rellano_general",
+          "prompt": "Same empty hospital stairwell, reverse camera position from the upper steps looking toward the landing bench, consistent cold overhead light, no people, no text, vertical 9:16."
+        }
+      }
+    },
+    "pasillo_archivos": {
+      "display_name": "Pasillo de archivos",
+      "views": {
+        "panel_acceso": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/pasillo_archivos_panel_acceso.png",
+          "prompt": "EMPTY restricted hospital records corridor, secure door with card reader, rows of frosted glass archive rooms, polished floor, cold blue-grey light, no people, no readable text, realistic K-drama, vertical 9:16."
+        },
+        "desde_fondo": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/pasillo_archivos_desde_fondo.png",
+          "reference_view": "panel_acceso",
+          "prompt": "Same empty restricted records corridor, camera from the far end looking toward the secure door, deep perspective, cold blue-grey light, no people, no text, vertical 9:16."
+        }
+      }
+    },
+    "vestuario_personal": {
+      "display_name": "Vestuario del personal",
+      "views": {
+        "general": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/vestuario_personal_general.png",
+          "prompt": "EMPTY Korean hospital staff locker room, narrow aisle, pale metal lockers, wooden bench, one open locker, cold clinical lighting, no people, no text, realistic K-drama, vertical 9:16."
+        },
+        "desde_banco": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/vestuario_personal_desde_banco.png",
+          "reference_view": "general",
+          "prompt": "Same empty staff locker room, camera low from the bench facing the row of lockers, floor and open locker visible, cold clinical lighting, no people, no text, vertical 9:16."
+        }
+      }
+    },
+    "sala_descanso": {
+      "display_name": "Sala de descanso",
+      "views": {
+        "mesa_lado_a": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/sala_descanso_mesa_lado_a.png",
+          "prompt": "Same empty break room, camera at table level from one chair toward the opposite chair, tabletop in the foreground, dim neutral night lighting, no people, no text, vertical 9:16."
+        },
+        "mesa_lado_b": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/sala_descanso_mesa_lado_b.png",
+          "reference_view": "mesa_lado_a",
+          "prompt": "Same empty break room, reverse camera position at table level from the opposite chair, tabletop in the foreground, consistent dim night lighting, no people, no text, vertical 9:16."
+        }
+      }
+    },
+    "ala_antigua": {
+      "display_name": "Ala antigua",
+      "views": {
+        "puerta_habitacion": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/ala_antigua_puerta_habitacion.png",
+          "prompt": "Same empty old hospital wing, camera at the doorway of a patient room looking inside at an empty bed, corridor visible behind, dim cold night light, no people, no text, vertical 9:16."
+        }
+      }
+    },
+    "ascensor_servicio": {
+      "display_name": "Ascensor de servicio",
+      "views": {
+        "lado_guardia": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/ascensor_servicio_lado_guardia.png",
+          "prompt": "Same empty service elevator lobby, camera from the corridor side facing the elevator, floor visible and wall close to frame-left for a blocking figure, cold institutional light, no people, no text, vertical 9:16."
+        },
+        "lado_medico": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/ascensor_servicio_lado_medico.png",
+          "reference_view": "lado_guardia",
+          "prompt": "Same empty service elevator lobby, reverse camera position beside the elevator facing the corridor, cold institutional light, no people, no text, vertical 9:16."
+        }
+      }
+    },
+    "bahia_ambulancias": {
+      "display_name": "Bahía de ambulancias",
+      "views": {
+        "entrada_general": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/bahia_ambulancias_entrada_general.png",
+          "prompt": "EMPTY covered ambulance bay outside a Korean hospital at night, one white ambulance parked under cold canopy lights, wet pavement reflecting blue-grey light, hospital doors in the background, no people, no logos, no readable text, realistic K-drama, vertical 9:16."
+        },
+        "lateral_ambulancia": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/bahia_ambulancias_lateral_ambulancia.png",
+          "reference_view": "entrada_general",
+          "prompt": "Same empty ambulance bay, camera beside the parked ambulance looking toward the hospital doors, wet pavement and vehicle side visible, cold night lighting, no people, no logos, no text, vertical 9:16."
+        },
+        "puertas_traseras": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/bahia_ambulancias_puertas_traseras.png",
+          "reference_view": "entrada_general",
+          "prompt": "Same empty ambulance bay, camera directly behind the ambulance with rear doors prominent and hospital entrance beyond, wet pavement, cold night lighting, no people, no logos, no text, vertical 9:16."
+        },
+        "desde_hospital": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/bahia_ambulancias_desde_hospital.png",
+          "reference_view": "entrada_general",
+          "prompt": "Same empty ambulance bay, camera from the hospital doorway looking outward toward the parked ambulance, canopy columns creating depth, wet pavement, cold night lighting, no people, no logos, no text, vertical 9:16."
+        },
+        "interior_ambulancia": {
+          "mode": "generate",
+          "asset": "assets/escenarios/la_hija_que_el_hospital_borro/bahia_ambulancias_interior_ambulancia.png",
+          "prompt": "EMPTY interior of a modern Korean ambulance, gurney centered, medical cabinets and soft cold ceiling lights, rear doors behind, no people, no logos, no readable text, realistic cinematic K-drama, vertical 9:16."
+        }
+      }
+    }
+  },
+  "ingredients": [
+    {
+      "id": "pulsera_seo_jin",
+      "type": "entity",
+      "generation_prompt": "One half of a faded newborn hospital wristband, tiny pale fabric band with a clean torn edge and abstract unreadable markings, emotional Korean melodrama prop, neutral background, high detail, no readable text, no logo.",
+      "output_file": "assets/ingredients/la_hija_que_el_hospital_borro/pulsera_seo_jin.png"
+    },
+    {
+      "id": "pulsera_paciente",
+      "type": "entity",
+      "generation_prompt": "Complementary half of a faded newborn hospital wristband, tiny pale fabric band with matching torn edge and abstract unreadable markings, emotional Korean melodrama prop, neutral background, high detail, no readable text, no logo.",
+      "output_file": "assets/ingredients/la_hija_que_el_hospital_borro/pulsera_paciente.png"
+    },
+    {
+      "id": "tarjeta_acceso",
+      "type": "entity",
+      "generation_prompt": "Modern hospital access card with a small red rejected indicator light, blank surface without readable text or logo, realistic Korean hospital prop, neutral background, high detail.",
+      "output_file": "assets/ingredients/la_hija_que_el_hospital_borro/tarjeta_acceso.png"
+    },
+    {
+      "id": "llave_latón",
+      "type": "entity",
+      "generation_prompt": "Small old brass key with a worn circular head, realistic hospital archive key, emotional thriller prop, neutral background, high detail, no text, no logo.",
+      "output_file": "assets/ingredients/la_hija_que_el_hospital_borro/llave_laton.png"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_01",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "paciente_silenciosa",
+            "pose": "base_supina"
+          }
+        ],
+        "escenario": {
+          "id": "habitacion_paciente",
+          "view": "cabecera_izquierda"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Paciente silenciosa in the provided Habitación de la paciente: medium close-up from the left bedside at eye level, she lies beneath the blanket BEHIND the raised bed rail, both hands resting above the blanket, one tear forming as her eyes shift toward an unseen nurse, cold blue-grey night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): one tear slowly crosses the patient's cheek while her eyes remain fixed on the doorway, mouth closed, not speaking; slow dolly in. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, tense] La paciente llevaba veinte años sin hablar. Al oír mi nombre, lloró.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "DIJO MI NOMBRE",
+        "highlight_words": [
+          "nombre"
+        ]
+      }
+    },
+    {
+      "id": "scene_02",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "estacion_enfermeria",
+          "view": "puerta_acceso"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin in the provided Estación de enfermería access-door view: full body shot from the far end of the corridor, Seo-jin stands BEHIND the locked glass door line with both feet on the polished floor, one hand pressed to the glass and the other holding her empty palm close to her chest, restrained panic, cold blue-grey light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Seo-jin presses her palm more firmly against the locked glass, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Me llamo Han Seo-jin. La directora me quitó a la única mujer que sabía quién era.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "ME QUITARON LA VERDAD",
+        "highlight_words": [
+          "quitó",
+          "mujer"
+        ]
+      }
+    },
+    {
+      "id": "scene_03",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "cirujano_antiguo",
+            "pose": "exterior_autoridad"
+          }
+        ],
+        "escenario": {
+          "id": "bahia_ambulancias",
+          "view": "entrada_general"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Antiguo cirujano in the provided Bahía de ambulancias: establishing wide shot from the hospital entrance, floor to canopy visible, the former surgeon stands full body small in the lower third directly BEHIND the ambulance path, one hand raised and both feet planted on wet pavement, cold night reflections, severe authority. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the former surgeon raises one hand to halt the vehicle, mouth closed, not speaking; slow dolly in. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, resolute] Antes del amanecer, el cirujano más temido detendría una ambulancia por mí.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "ANTES DEL AMANECER",
+        "highlight_words": [
+          "amanecer",
+          "ambulancia"
+        ]
+      }
+    },
+    {
+      "id": "scene_04",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "cabecera_tensa"
+          },
+          {
+            "id": "directora_yoon",
+            "pose": "cabecera_fria"
+          }
+        ],
+        "escenario": {
+          "id": "habitacion_paciente",
+          "view": "desde_puerta"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin and Directora Yoon in the provided Habitación de la paciente: full body shot from the doorway, Seo-jin stands frame-left beside the bed with both hands near the rail while Yoon stands frame-right near the foot of the bed with hands clasped, both feet on the floor, the bed between them partially occluding their lower bodies, cold blue-grey night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Yoon slowly turns her head from the patient toward Seo-jin while Seo-jin remains still, mouth closed, not speaking; static camera. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Pero, unas horas antes, yo todavía llamaba salvadora a la directora Yoon.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_05",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "directora_yoon",
+            "pose": "cabecera_fria"
+          },
+          {
+            "id": "paciente_silenciosa",
+            "pose": "base_supina"
+          }
+        ],
+        "escenario": {
+          "id": "habitacion_paciente",
+          "view": "cabecera_derecha"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Directora Yoon and Paciente silenciosa in the provided Habitación de la paciente: medium shot from the right bedside, Yoon stands frame-right BEHIND the bed rail with one hand lifted in command, the patient lies frame-left beneath the blanket with hands still above it, cold blue-grey night lighting, Yoon's controlled face dominant. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Yoon lowers her raised hand in a decisive command; slow push-in. Directora Yoon begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Directora Yoon moves their mouth; the patient keeps her mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Yoon ordenó: —Sedenla ahora. Antes de que vuelva a reaccionar.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "SEDENLA AHORA",
+        "highlight_words": [
+          "Sedenla",
+          "ahora"
+        ]
+      }
+    },
+    {
+      "id": "scene_06",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "cabecera_tensa"
+          },
+          {
+            "id": "directora_yoon",
+            "pose": "cabecera_fria"
+          }
+        ],
+        "escenario": {
+          "id": "habitacion_paciente",
+          "view": "lado_cortina"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin and Directora Yoon in the provided Habitación de la paciente: medium close-up from beside the privacy curtain, Seo-jin stands frame-left facing frame-right with both hands gripping the bed rail, Yoon stands frame-right facing her with hands still, the rail in the foreground partially hiding their waists, cold blue-grey night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Seo-jin tightens both hands around the bed rail; static camera. Han Seo-jin begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Han Seo-jin moves their mouth; Directora Yoon keeps her mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Respondí: —No está agitada. Solo me reconoció.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "SOLO ME RECONOCIÓ",
+        "highlight_words": [
+          "reconoció"
+        ]
+      }
+    },
+    {
+      "id": "scene_07",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "directora_yoon",
+            "pose": "cabecera_fria"
+          },
+          {
+            "id": "seo_jin",
+            "pose": "cabecera_tensa"
+          }
+        ],
+        "escenario": {
+          "id": "habitacion_paciente",
+          "view": "cabecera_izquierda"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Directora Yoon and Han Seo-jin in the provided Habitación de la paciente: close-up from the left bedside, Yoon occupies frame-left in three-quarter profile leaning slightly toward Seo-jin, one hand resting on the bed rail, Seo-jin remains softly visible frame-right with both hands lowered, cold blue-grey night light, shallow focus on Yoon. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Yoon leans a few centimeters closer to Seo-jin; slow dolly in. Directora Yoon begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Directora Yoon moves their mouth; Han Seo-jin keeps her mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "La directora acercó su rostro: —Tu turno terminó, Seo-jin.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "TU TURNO TERMINÓ",
+        "highlight_words": [
+          "turno",
+          "terminó"
+        ]
+      }
+    },
+    {
+      "id": "scene_08",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "estacion_enfermeria",
+          "view": "puerta_acceso"
+        },
+        "ingredients": [
+          "tarjeta_acceso"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin, Tarjeta de acceso and the provided Estación de enfermería access-door view: medium shot from the corridor side, Seo-jin stands BEHIND the glass door line with both feet on the floor, her right hand holds the card against the reader and her left hand hangs tense, a small red rejection light glows, cold blue-grey night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the card reader flashes red as Seo-jin keeps the card pressed against it, mouth closed, not speaking; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Mi tarjeta dejó de funcionar antes de alcanzar la puerta.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "TARJETA BLOQUEADA",
+        "highlight_words": [
+          "tarjeta"
+        ]
+      }
+    },
+    {
+      "id": "scene_09",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "pasillo_archivos",
+          "view": "panel_acceso"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin in the provided Pasillo de archivos: close-up at eye level beside the secure door, the red card-reader glow reflects across Seo-jin's wet eyes, her right hand lowers out of frame while her left hand closes into a fist near her waist, cold blue-grey light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Seo-jin's jaw tightens as the red reflection remains across her eyes, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Aquello dolió porque conocía ese rojo: era el color del rechazo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "EL COLOR DEL RECHAZO",
+        "highlight_words": [
+          "rojo",
+          "rechazo"
+        ]
+      }
+    },
+    {
+      "id": "scene_10",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "enfermera_amiga",
+            "pose": "mostrador_nerviosa"
+          }
+        ],
+        "escenario": {
+          "id": "estacion_enfermeria",
+          "view": "detras_mostrador"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Compañera de turno in the provided Estación de enfermería: medium shot from behind the counter, she stands BEHIND the counter edge with the tabletop in the foreground hiding her waist, both feet on the floor, one hand pushes a dark handbag beneath the counter while the other steadies herself, anxious glance toward the corridor, cold night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the companion nurse slides the handbag fully beneath the counter, mouth closed, not speaking; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Mi compañera de turno escondió mi bolso bajo el mostrador.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_11",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "enfermera_amiga",
+            "pose": "mostrador_nerviosa"
+          },
+          {
+            "id": "seo_jin",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "estacion_enfermeria",
+          "view": "general"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Compañera de turno and Han Seo-jin in the provided Estación de enfermería: medium close-up across the counter, the companion nurse stands frame-left BEHIND the counter with one hand gripping its edge, Seo-jin stands frame-right on the visitor side with both hands lowered, their faces close in a secret exchange, cold blue-grey night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the companion nurse leans slightly across the counter toward Seo-jin; slow dolly in. Compañera de turno begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Compañera de turno moves their mouth; Han Seo-jin keeps her mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Ella susurró: —Vete antes de que seguridad reciba tu fotografía.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "VETE AHORA",
+        "highlight_words": [
+          "Vete",
+          "seguridad"
+        ]
+      }
+    },
+    {
+      "id": "scene_12",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "base"
+          },
+          {
+            "id": "enfermera_amiga",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "estacion_enfermeria",
+          "view": "puerta_acceso"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin and Compañera de turno in the provided Estación de enfermería access-door view: full body shot from the secure-door side, Seo-jin stands frame-left facing the locked patient corridor with both feet planted and hands at her sides, the companion nurse remains frame-right behind the counter line, both mouths closed, cold blue-grey night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Seo-jin takes one deliberate step toward the locked corridor while the companion nurse stays still, mouth closed, not speaking; slow tracking forward. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "No podía irme sin saber por qué aquella mujer lloró al verme.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "NO PODÍA IRME",
+        "highlight_words": [
+          "irme",
+          "mujer"
+        ]
+      }
+    },
+    {
+      "id": "scene_13",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "paciente_silenciosa",
+            "pose": "base_supina"
+          }
+        ],
+        "escenario": {
+          "id": "habitacion_paciente",
+          "view": "cabecera_derecha"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Paciente silenciosa in the provided Habitación de la paciente: extreme close-up from the right bedside, her forearm rests above the blanket BEHIND the bed rail, one relaxed hand visible while a rough hand-sewn seam appears beneath the hospital-gown sleeve, cold blue-grey light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the patient's sleeve shifts a few millimeters, exposing the hidden seam, mouth closed, not speaking; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Bajo la manga de la paciente vi una costura hecha a mano.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "UNA COSTURA OCULTA",
+        "highlight_words": [
+          "costura"
+        ]
+      }
+    },
+    {
+      "id": "scene_14",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "habitacion_paciente",
+          "view": "cabecera_derecha"
+        },
+        "ingredients": [
+          "pulsera_paciente"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Pulsera de la paciente in the provided Habitación de la paciente bedside view: insert shot from above the bed rail, the faded half wristband rests in an open elderly palm above the white blanket, matching torn edge clearly visible, cold blue-grey light, no face in frame. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the elderly fingers slowly curl around the wristband half; static camera. Single continuous shot. Keep the wristband EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Dentro había media pulsera de recién nacida, idéntica a la mía.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "IDÉNTICA A LA MÍA",
+        "highlight_words": [
+          "pulsera",
+          "idéntica"
+        ]
+      }
+    },
+    {
+      "id": "scene_15",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "sentada_escalera_herida"
+          },
+          {
+            "id": "min_jae",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "escalera_servicio",
+          "view": "rellano_general"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin and Kang Min-jae in the provided Escalera de servicio: establishing wide shot from the lower steps, Seo-jin sits on the landing step BEHIND the handrail with feet on the floor and injured palm open on her knee, Min-jae stands two steps above her with both hands visible and concerned posture, cold overhead light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Min-jae descends one slow step toward seated Seo-jin, mouth closed, not speaking; slow dolly in. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Min-jae, el residente rebelde, me encontró temblando en la escalera.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "MIN-JAE ME ENCONTRÓ",
+        "highlight_words": [
+          "Min-jae",
+          "temblando"
+        ]
+      }
+    },
+    {
+      "id": "scene_16",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "sentada_escalera_herida"
+          },
+          {
+            "id": "min_jae",
+            "pose": "sentado_escalera"
+          }
+        ],
+        "escenario": {
+          "id": "escalera_servicio",
+          "view": "banco_lado_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin and Kang Min-jae in the provided Escalera de servicio: medium shot from the lower steps, both sit on the landing BEHIND the handrail, Seo-jin frame-left with feet flat and injured hand extended, Min-jae frame-right gently supporting her wrist with both hands, cold overhead light, restrained intimacy. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Min-jae gently lifts Seo-jin's injured wrist; slow push-in. Kang Min-jae begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Kang Min-jae moves their mouth; Han Seo-jin keeps her mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Min-jae tomó mi muñeca: —Estás sangrando. Déjame ayudarte.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "DÉJAME AYUDARTE",
+        "highlight_words": [
+          "sangrando",
+          "ayudarte"
+        ]
+      }
+    },
+    {
+      "id": "scene_17",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "sentada_escalera_herida"
+          },
+          {
+            "id": "min_jae",
+            "pose": "sentado_escalera"
+          }
+        ],
+        "escenario": {
+          "id": "escalera_servicio",
+          "view": "banco_lado_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin and Kang Min-jae in the provided Escalera de servicio: medium close-up from the upper steps, Seo-jin occupies frame-right in three-quarter view with her injured hand resting between them, Min-jae sits frame-left holding a bandage roll, both mouths closed, cold overhead light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Seo-jin looks down at her injured palm while Min-jae remains still, mouth closed, not speaking; static camera. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "La paciente conocía mi nombre. Alguien estaba intentando borrarla.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "ALGUIEN QUERÍA BORRARLA",
+        "highlight_words": [
+          "borrarla"
+        ]
+      }
+    },
+    {
+      "id": "scene_18",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "sentada_escalera_vendada"
+          },
+          {
+            "id": "min_jae",
+            "pose": "sentado_escalera"
+          }
+        ],
+        "escenario": {
+          "id": "escalera_servicio",
+          "view": "banco_lado_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin and Kang Min-jae in the provided Escalera de servicio: close-up from the lower steps, Min-jae's hands finish wrapping Seo-jin's right hand while both seated faces remain softly visible above, the handrail crosses the lower foreground, cold overhead light softened by the intimate moment. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Min-jae secures the final fold of the bandage around Seo-jin's hand, mouth closed, not speaking; slow dolly in. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "No preguntó si estaba loca. Solo vendó mi mano.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "SOLO VENDÓ MI MANO",
+        "highlight_words": [
+          "vendó",
+          "mano"
+        ]
+      }
+    },
+    {
+      "id": "scene_19",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "sentada_escalera_vendada"
+          },
+          {
+            "id": "min_jae",
+            "pose": "sentado_escalera"
+          }
+        ],
+        "escenario": {
+          "id": "escalera_servicio",
+          "view": "banco_lado_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin and Kang Min-jae in the provided Escalera de servicio: medium shot from the upper steps, Seo-jin sits frame-right holding a faded wristband half above her bandaged palm, Min-jae sits frame-left with both hands frozen a few centimeters away, feet on the floor, cold overhead light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Min-jae's hands freeze above Seo-jin's bandaged palm, mouth closed, not speaking; slow push-in. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Cuando vio la pulsera, los dedos de Min-jae dejaron de moverse.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "SUS DEDOS SE DETUVIERON",
+        "highlight_words": [
+          "pulsera",
+          "dedos"
+        ]
+      }
+    },
+    {
+      "id": "scene_20",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "min_jae",
+            "pose": "sentado_escalera"
+          },
+          {
+            "id": "seo_jin",
+            "pose": "sentada_escalera_vendada"
+          }
+        ],
+        "escenario": {
+          "id": "escalera_servicio",
+          "view": "banco_lado_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Kang Min-jae and Han Seo-jin in the provided Escalera de servicio: medium close-up from the lower steps, Min-jae frame-right faces frame-left and holds Seo-jin's bandaged wrist with one hand, his other hand open beneath the wristband, Seo-jin remains frame-left, cold overhead light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Min-jae tightens his supporting hand slightly around Seo-jin's wrist; static camera. Kang Min-jae begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Kang Min-jae moves their mouth; Han Seo-jin keeps her mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Min-jae preguntó: —¿Dónde conseguiste esa mitad?",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "¿DÓNDE LA CONSEGUISTE?",
+        "highlight_words": [
+          "Dónde",
+          "mitad"
+        ]
+      }
+    },
+    {
+      "id": "scene_21",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "sentada_escalera_vendada"
+          }
+        ],
+        "escenario": {
+          "id": "escalera_servicio",
+          "view": "banco_lado_b"
+        },
+        "ingredients": [
+          "pulsera_seo_jin"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin, Pulsera de Seo-jin and the provided Escalera de servicio: close-up from the upper steps, Seo-jin sits BEHIND the handrail with the wristband half resting in her bandaged palm, her other hand closes protectively around it, restrained hurt in her eyes, cold overhead light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Seo-jin closes her uninjured hand protectively over the wristband half, mouth closed, not speaking; slow dolly in. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Aquella mitad fue lo único que dejaron conmigo cuando nací.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "LO ÚNICO QUE DEJARON",
+        "highlight_words": [
+          "único",
+          "nací"
+        ]
+      }
+    },
+    {
+      "id": "scene_22",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "min_jae",
+            "pose": "sentado_escalera"
+          },
+          {
+            "id": "seo_jin",
+            "pose": "sentada_escalera_vendada"
+          }
+        ],
+        "escenario": {
+          "id": "escalera_servicio",
+          "view": "banco_lado_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Kang Min-jae and Han Seo-jin in the provided Escalera de servicio: medium shot from the lower steps, Min-jae frame-right faces Seo-jin with both hands motionless on his knees, color drained from his face, Seo-jin frame-left watches him holding the wristband near her chest, cold overhead light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Min-jae lifts his eyes from the wristband to Seo-jin; slow push-in. Kang Min-jae begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Kang Min-jae moves their mouth; Han Seo-jin keeps her mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Min-jae palideció: —Mi padre dibujó una igual durante años.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "MI PADRE DIBUJÓ UNA",
+        "highlight_words": [
+          "padre",
+          "años"
+        ]
+      }
+    },
+    {
+      "id": "scene_23",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "directora_yoon",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "pasillo_archivos",
+          "view": "desde_fondo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Directora Yoon in the provided Pasillo de archivos: establishing wide shot from the far end, Yoon stands full body small in the lower third beside stacked sealed archive boxes, both feet on the floor and hands clasped behind her back, secure doors receding around her, cold corporate light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Yoon slowly turns toward the rows of archive doors, mouth closed, not speaking; slow dolly in. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "En siete días venderían el hospital y destruirían todos los archivos antiguos.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "QUEDABAN SIETE DÍAS",
+        "highlight_words": [
+          "siete",
+          "archivos"
+        ]
+      }
+    },
+    {
+      "id": "scene_24",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "casillero_humillada"
+          }
+        ],
+        "escenario": {
+          "id": "vestuario_personal",
+          "view": "general"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin in the provided Vestuario del personal: full body shot from the doorway, Seo-jin stands BEHIND the bench line with both feet on the floor, her emptied locker open behind her, folded clothes and a spare nurse uniform scattered at her feet, both hands hanging numb at her sides, cold clinical light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Seo-jin slowly lowers her gaze to the uniform on the floor, mouth closed, not speaking; slow dolly in. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[soft, trembling, hurt] Esa noche, seguridad vació mi casillero y tiró mi uniforme al suelo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "VACIARON MI CASILLERO",
+        "highlight_words": [
+          "casillero",
+          "uniforme"
+        ]
+      }
+    },
+    {
+      "id": "scene_25",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "directora_yoon",
+            "pose": "confrontacion_pasillo"
+          },
+          {
+            "id": "seo_jin",
+            "pose": "casillero_humillada"
+          }
+        ],
+        "escenario": {
+          "id": "vestuario_personal",
+          "view": "desde_banco"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Directora Yoon and Han Seo-jin in the provided Vestuario del personal: medium shot from the bench, Yoon stands frame-left BEHIND the bench line with hands clasped and chin raised, Seo-jin stands frame-right beside the open locker with both hands at her sides, scattered uniform in the foreground, cold clinical light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Yoon takes one measured step toward Seo-jin; slow push-in. Directora Yoon begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Directora Yoon moves their mouth; Han Seo-jin keeps her mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Yoon declaró: —Estás confundiendo una coincidencia con una familia.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "NO ES TU FAMILIA",
+        "highlight_words": [
+          "coincidencia",
+          "familia"
+        ]
+      }
+    },
+    {
+      "id": "scene_26",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "casillero_humillada"
+          },
+          {
+            "id": "directora_yoon",
+            "pose": "confrontacion_pasillo"
+          }
+        ],
+        "escenario": {
+          "id": "vestuario_personal",
+          "view": "general"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin and Directora Yoon in the provided Vestuario del personal: medium close-up from the locker aisle, Seo-jin frame-right faces frame-left with her bandaged hand clenched near her waist, Yoon remains frame-left in three-quarter profile with hands still, cold clinical light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Seo-jin lifts her bandaged hand slightly between them; static camera. Han Seo-jin begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Han Seo-jin moves their mouth; Directora Yoon keeps her mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Respondí: —Entonces dígame por qué borraron la fotografía de esa mujer.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "¿POR QUÉ LA BORRARON?",
+        "highlight_words": [
+          "borraron",
+          "fotografía"
+        ]
+      }
+    },
+    {
+      "id": "scene_27",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "directora_yoon",
+            "pose": "confrontacion_pasillo"
+          },
+          {
+            "id": "seo_jin",
+            "pose": "casillero_humillada"
+          }
+        ],
+        "escenario": {
+          "id": "vestuario_personal",
+          "view": "desde_banco"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Directora Yoon and Han Seo-jin in the provided Vestuario del personal: close-up from the bench side, Yoon frame-left faces frame-right with one hand resting on the bench edge, Seo-jin remains softly visible frame-right beside the lockers, cold clinical light, Yoon's controlled eyes carrying private pain. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Yoon's fingers tighten once against the bench edge; slow dolly in. Directora Yoon begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Directora Yoon moves their mouth; Han Seo-jin keeps her mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Yoon contestó: —La verdad no siempre salva, Seo-jin. A veces abandona.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "A VECES ABANDONA",
+        "highlight_words": [
+          "verdad",
+          "abandona"
+        ]
+      }
+    },
+    {
+      "id": "scene_28",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "directora_yoon",
+            "pose": "confrontacion_pasillo"
+          }
+        ],
+        "escenario": {
+          "id": "vestuario_personal",
+          "view": "general"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Directora Yoon in the provided Vestuario del personal: extreme close-up at eye level between the locker rows, Yoon's lips remain pressed closed and a brief tremor moves beneath one eye, cold clinical light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Yoon swallows once as fear briefly breaks her composure, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Estuvo a punto de decir algo más. Por primera vez, tuvo miedo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "LA DIRECTORA TUVO MIEDO",
+        "highlight_words": [
+          "miedo"
+        ]
+      }
+    },
+    {
+      "id": "scene_29",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "enfermera_amiga",
+            "pose": "descanso_culpable"
+          }
+        ],
+        "escenario": {
+          "id": "sala_descanso",
+          "view": "mesa_lado_a"
+        },
+        "ingredients": [
+          "llave_latón"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Compañera de turno, Llave de latón and the provided Sala de descanso: medium shot at table level, she sits BEHIND the table edge with her waist partially hidden and feet on the floor, one hand lowers the brass key into a paper coffee cup while the other grips her knee, dim neutral night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the companion nurse releases the brass key into the coffee cup, mouth closed, not speaking; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Mi compañera dejó una llave dentro de mi taza de café.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "UNA LLAVE EN MI CAFÉ",
+        "highlight_words": [
+          "llave",
+          "café"
+        ]
+      }
+    },
+    {
+      "id": "scene_30",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "enfermera_amiga",
+            "pose": "descanso_culpable"
+          },
+          {
+            "id": "seo_jin",
+            "pose": "casillero_humillada"
+          }
+        ],
+        "escenario": {
+          "id": "sala_descanso",
+          "view": "mesa_lado_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Compañera de turno and Han Seo-jin in the provided Sala de descanso: medium close-up at table level, the companion nurse sits frame-left BEHIND the table edge with both hands clasped on the tabletop, Seo-jin stands frame-right beside the table with both feet on the floor and bandaged hand resting near the chair back, dim neutral night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the companion nurse opens her clasped hands in confession; slow dolly in. Compañera de turno begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Compañera de turno moves their mouth; Han Seo-jin keeps her mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Confesó: —Yo entregué tu tarjeta. Amenazaron con despedirme.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "YO ENTREGUÉ TU TARJETA",
+        "highlight_words": [
+          "entregué",
+          "tarjeta"
+        ]
+      }
+    },
+    {
+      "id": "scene_31",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "casillero_humillada"
+          },
+          {
+            "id": "enfermera_amiga",
+            "pose": "descanso_culpable"
+          }
+        ],
+        "escenario": {
+          "id": "sala_descanso",
+          "view": "mesa_lado_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin and Compañera de turno in the provided Sala de descanso: medium shot from the seated nurse's side, Seo-jin stands frame-right beside the table with both feet on the floor and bandaged hand flat on the tabletop, the companion nurse sits frame-left BEHIND the table edge with hands on her lap, dim neutral night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Seo-jin places her bandaged hand flat on the table; static camera. Han Seo-jin begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Han Seo-jin moves their mouth; Compañera de turno keeps her mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Le pedí: —Ayúdame ahora, y ambas podremos dejar de obedecer.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "DEJAR DE OBEDECER",
+        "highlight_words": [
+          "Ayúdame",
+          "obedecer"
+        ]
+      }
+    },
+    {
+      "id": "scene_32",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "enfermera_amiga",
+            "pose": "descanso_culpable"
+          },
+          {
+            "id": "seo_jin",
+            "pose": "casillero_humillada"
+          }
+        ],
+        "escenario": {
+          "id": "sala_descanso",
+          "view": "mesa_lado_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Compañera de turno and Han Seo-jin in the provided Sala de descanso: close-up at table level, the companion nurse sits frame-left BEHIND the table edge with one tear on her cheek, Seo-jin's bandaged hand rests in the foreground frame-right, dim neutral night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the companion nurse gives one trembling nod, mouth closed, not speaking; slow push-in. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Asintió llorando. Faltaban siete días; su traición se convirtió en una puerta.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "LA TRAICIÓN ABRIÓ UNA PUERTA",
+        "highlight_words": [
+          "traición",
+          "puerta"
+        ]
+      }
+    },
+    {
+      "id": "scene_33",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "exterior_noche"
+          }
+        ],
+        "escenario": {
+          "id": "ala_antigua",
+          "view": "puerta_habitacion"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin in the provided Ala antigua: establishing wide shot from the corridor doorway, Seo-jin stands full body small in the lower third BEHIND the threshold line with both feet on the corridor floor, one hand gripping the doorframe and the other bandaged hand hanging still, the empty bed visible inside, dim cold night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Seo-jin steps across the threshold toward the empty bed, mouth closed, not speaking; slow tracking forward. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "En el ala antigua, la cama de la paciente ya estaba vacía.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "LA CAMA ESTABA VACÍA",
+        "highlight_words": [
+          "cama",
+          "vacía"
+        ]
+      }
+    },
+    {
+      "id": "scene_34",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "guardia",
+            "pose": "ascensor_bloqueo"
+          },
+          {
+            "id": "seo_jin",
+            "pose": "exterior_noche"
+          }
+        ],
+        "escenario": {
+          "id": "ascensor_servicio",
+          "view": "lado_guardia"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Guardia de seguridad and Han Seo-jin in the provided Ascensor de servicio: medium shot from the corridor side, the guard stands frame-left BEHIND the elevator threshold with one arm extended across the opening and both feet planted, Seo-jin stands frame-right facing him with bandaged hand at her side, cold institutional light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the guard extends his blocking arm fully across the elevator opening; static camera. Guardia de seguridad begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Guardia de seguridad moves their mouth; Han Seo-jin keeps her mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El guardia bloqueó el ascensor: —Orden de traslado inmediato.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "TRASLADO INMEDIATO",
+        "highlight_words": [
+          "traslado",
+          "inmediato"
+        ]
+      }
+    },
+    {
+      "id": "scene_35",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "min_jae",
+            "pose": "pasillo_firme"
+          },
+          {
+            "id": "guardia",
+            "pose": "ascensor_bloqueo"
+          }
+        ],
+        "escenario": {
+          "id": "ascensor_servicio",
+          "view": "lado_medico"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Kang Min-jae and Guardia de seguridad in the provided Ascensor de servicio: medium close-up from beside the elevator, Min-jae stands frame-right facing frame-left with one hand raised between them, the guard stands frame-left with blocking arm lowered slightly, cold institutional light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Min-jae raises his open hand firmly between himself and the guard; slow push-in. Kang Min-jae begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Kang Min-jae moves their mouth; Guardia de seguridad keeps his mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Min-jae se interpuso: —No moverán a una paciente sedada.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "NO LA MOVERÁN",
+        "highlight_words": [
+          "moverán",
+          "paciente"
+        ]
+      }
+    },
+    {
+      "id": "scene_36",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "guardia",
+            "pose": "ascensor_bloqueo"
+          },
+          {
+            "id": "min_jae",
+            "pose": "pasillo_firme"
+          }
+        ],
+        "escenario": {
+          "id": "ascensor_servicio",
+          "view": "lado_guardia"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Guardia de seguridad and Kang Min-jae in the provided Ascensor de servicio: close-up from the corridor side, the guard frame-left faces frame-right with his blocking arm held at chest height, Min-jae remains softly visible frame-right in three-quarter view, cold institutional light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the guard lowers his chin in a final warning; static camera. Guardia de seguridad begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Guardia de seguridad moves their mouth; Kang Min-jae keeps his mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El guardia respondió: —Entonces perderá su residencia, doctor.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "PERDERÁ SU RESIDENCIA",
+        "highlight_words": [
+          "perderá",
+          "residencia"
+        ]
+      }
+    },
+    {
+      "id": "scene_37",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "exterior_noche"
+          },
+          {
+            "id": "guardia",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "bahia_ambulancias",
+          "view": "puertas_traseras"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Seo-jin and Guardia de seguridad in the provided Bahía de ambulancias rear-door view: full body shot from behind the ambulance, Seo-jin stands frame-right several steps away BEHIND the vehicle line with both feet on wet pavement and bandaged hand reaching toward the closing rear doors, the guard stands frame-left beside the vehicle with both hands lowered, cold canopy light and rain reflections. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the ambulance rear doors swing shut while Seo-jin holds her reaching pose and the guard remains still, mouth closed, not speaking; slow dolly in. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Las puertas de la ambulancia se cerraron frente a mí.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "SE CERRARON FRENTE A MÍ",
+        "highlight_words": [
+          "puertas",
+          "cerraron"
+        ]
+      }
+    },
+    {
+      "id": "scene_38",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "cirujano_antiguo",
+            "pose": "exterior_autoridad"
+          }
+        ],
+        "escenario": {
+          "id": "bahia_ambulancias",
+          "view": "desde_hospital"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Antiguo cirujano in the provided Bahía de ambulancias: medium shot from the hospital doorway, the former surgeon stands centered BEHIND the canopy column line with both feet planted on wet pavement, one hand raised toward the ambulance and the other at his side, cold night light, commanding silhouette. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the former surgeon raises his open palm toward the ambulance; slow push-in. Antiguo cirujano begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Antiguo cirujano moves their mouth; everyone else keeps mouths closed and remains still. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, tense] Una voz detuvo el motor: —Abran esas puertas.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "ABRAN ESAS PUERTAS",
+        "highlight_words": [
+          "Abran",
+          "puertas"
+        ]
+      }
+    },
+    {
+      "id": "scene_39",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "cirujano_antiguo",
+            "pose": "base"
+          },
+          {
+            "id": "directora_yoon",
+            "pose": "exterior_noche"
+          }
+        ],
+        "escenario": {
+          "id": "bahia_ambulancias",
+          "view": "lateral_ambulancia"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Antiguo cirujano and Directora Yoon in the provided Bahía de ambulancias: full body shot beside the ambulance, the former surgeon walks frame-left toward frame-right with one hand lowered, Yoon stands frame-right BEHIND the vehicle side with both feet on wet pavement and hands clasped, her eyes lowered, cold canopy light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the former surgeon takes one measured step toward Yoon while she remains motionless with lowered eyes, mouth closed, not speaking; slow tracking right. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El antiguo cirujano avanzó, y hasta la directora bajó la mirada.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "HASTA ELLA BAJÓ LA MIRADA",
+        "highlight_words": [
+          "directora",
+          "mirada"
+        ]
+      }
+    },
+    {
+      "id": "scene_40",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "cirujano_antiguo",
+            "pose": "exterior_autoridad"
+          },
+          {
+            "id": "directora_yoon",
+            "pose": "exterior_noche"
+          }
+        ],
+        "escenario": {
+          "id": "bahia_ambulancias",
+          "view": "desde_hospital"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Antiguo cirujano and Directora Yoon in the provided Bahía de ambulancias: medium close-up from the hospital doorway, the former surgeon occupies frame-left in three-quarter view with one hand over his chest, Yoon stands frame-right behind him with hands clasped and eyes lowered, cold night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the former surgeon places one hand over his chest; slow dolly in. Antiguo cirujano begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Antiguo cirujano moves their mouth; Directora Yoon keeps her mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, resolute] —Yo estaba presente la noche en que nació esta enfermera.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "YO ESTUVE EN SU NACIMIENTO",
+        "highlight_words": [
+          "presente",
+          "nació"
+        ]
+      }
+    },
+    {
+      "id": "scene_41",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "cirujano_antiguo",
+            "pose": "arrodillado"
+          },
+          {
+            "id": "seo_jin",
+            "pose": "exterior_noche"
+          }
+        ],
+        "escenario": {
+          "id": "bahia_ambulancias",
+          "view": "puertas_traseras"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Antiguo cirujano and Han Seo-jin in the provided Bahía de ambulancias: medium shot behind the ambulance, the former surgeon kneels frame-left on wet pavement holding two matching wristband halves in both hands, Seo-jin stands frame-right BEHIND the rear bumper line with both feet planted and bandaged hand near her chest, cold canopy light. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the kneeling surgeon brings the two wristband halves together until their torn edges align, mouth closed, not speaking; slow push-in. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El cirujano comparó mi pulsera con la de la paciente y se arrodilló.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "LAS DOS MITADES ENCAJARON",
+        "highlight_words": [
+          "pulsera",
+          "arrodilló"
+        ]
+      }
+    },
+    {
+      "id": "scene_42",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "paciente_silenciosa",
+            "pose": "despierta_ambulancia"
+          },
+          {
+            "id": "seo_jin",
+            "pose": "exterior_noche"
+          }
+        ],
+        "escenario": {
+          "id": "bahia_ambulancias",
+          "view": "interior_ambulancia"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Paciente silenciosa and Han Seo-jin in the provided ambulance interior: medium close-up from beside the gurney, the patient lies BEHIND the gurney rail frame-left with one trembling hand gripping Seo-jin's bandaged wrist, Seo-jin leans in frame-right beside the gurney with both feet on the ambulance floor, cold ceiling light, restrained shock. cinematic Korean family melodrama, realistic East-Asian characters, elegant modern hospital atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the patient tightens her trembling hand around Seo-jin's wrist; slow dolly in. Paciente silenciosa begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Paciente silenciosa moves their mouth; Han Seo-jin keeps her mouth closed and remains still. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[soft, trembling, hurt] La paciente despertó: —La mujer que pagó tus estudios es tu madre.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "ESA MUJER ES TU MADRE",
+        "highlight_words": [
+          "mujer",
+          "madre"
+        ]
+      }
+    }
+  ],
+  "capcut_export": {
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18",
+      "scene_19",
+      "scene_20",
+      "scene_21",
+      "scene_22",
+      "scene_23",
+      "scene_24",
+      "scene_25",
+      "scene_26",
+      "scene_27",
+      "scene_28",
+      "scene_29",
+      "scene_30",
+      "scene_31",
+      "scene_32",
+      "scene_33",
+      "scene_34",
+      "scene_35",
+      "scene_36",
+      "scene_37",
+      "scene_38",
+      "scene_39",
+      "scene_40",
+      "scene_41",
+      "scene_42"
+    ],
+    "caption_style": {
+      "font": "bold sans-serif",
+      "position": "lower-third",
+      "color": "white",
+      "stroke": "black"
+    },
+    "title_cards": [
+      "CONTINUARÁ",
+      "PARTE DOS: LA MADRE QUE ME BORRÓ"
+    ],
+    "cliffhanger_card": "¿LA DIRECTORA ES SU MADRE?",
+    "music_notes": [
+      "Piano dramático contenido; tensión clínica en ascenso; silencio total antes de la revelación final"
+    ],
+    "sfx_notes": [
+      "Monitor hospitalario suave",
+      "Tarjeta rechazada",
+      "Llave dentro de taza",
+      "Puertas de ascensor",
+      "Motor de ambulancia",
+      "Puertas traseras cerrándose"
+    ]
+  },
+  "audio": {
+    "voice_speed": 1.25,
+    "voice_rate": 1,
+    "music_volume": 0
+  },
+  "tts_export": {
+    "mode": "per_scene",
+    "voice_id": "bfed5c0810a347dbb62e8ccce7f59c48",
+    "note": "Una sola voz femenina narra todas las escenas y los diálogos. Fish Audio por escena."
+  }
+}

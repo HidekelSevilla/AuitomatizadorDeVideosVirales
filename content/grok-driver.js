@@ -97,6 +97,16 @@
   function detectHardStop() {
     const t = document.body ? document.body.innerText : "";
     if (/actividad inusual|unusual activity/i.test(t)) return { type: RES.RATE_LIMIT }; // anti-abuso por ritmo: el SW aplica cooldown creciente y reanuda solo (no es falta de creditos)
+    // Captcha (grok.com usa Cloudflare Turnstile): antes NO se detectaba y el pipeline quemaba los
+    // reintentos con backoff contra el muro antes de pausar con un error generico.
+    if (document.querySelector('iframe[src*="challenges.cloudflare.com"], #cf-chl-widget, .cf-turnstile')
+      || /verify (you are|you're) human|verifica que eres humano|confirma que eres humano/i.test(t)) {
+      return { type: RES.CAPTCHA };
+    }
+    // Sin creditos / limite de generaciones (best-effort por texto, conservador para evitar falsos positivos).
+    if (/reached your (daily |generation )?limit|l[ií]mite (diario|de generaciones) alcanzado|out of credits|sin cr[eé]ditos/i.test(t)) {
+      return { type: RES.NO_CREDITS };
+    }
     return null;
   }
 

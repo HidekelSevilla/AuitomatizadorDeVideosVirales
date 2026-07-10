@@ -573,7 +573,8 @@ const server = http.createServer((req, res) => {
       return;
     }
     const st = fs.statSync(abs);
-    sendJson(res, { ok: true, size: st.size, mtimeMs: st.mtimeMs, path: path.relative(ROOT, abs) });
+    // abspath: el SW lo usa para subir el archivo por CDP (DOM.setFileInputFiles exige ruta absoluta).
+    sendJson(res, { ok: true, size: st.size, mtimeMs: st.mtimeMs, path: path.relative(ROOT, abs), abspath: abs });
     return;
   }
 

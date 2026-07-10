@@ -126,12 +126,17 @@ function mainKeyboard() {
   ]);
 }
 
-function errorKeyboard() {
-  return keyboard([
+function errorKeyboard(snap = null) {
+  const rows = [
     [{ text: "Reintentar", callback_data: "retry" }, { text: "Reanudar", callback_data: "resume" }],
-    [{ text: "Panel", callback_data: "panel" }, { text: "Saltar", callback_data: "skip" }],
-    [{ text: "Estado", callback_data: "status" }],
-  ]);
+    [{ text: "Recargar Grok", callback_data: "grok_reload" }, { text: "Saltar", callback_data: "skip" }],
+    [{ text: "Panel", callback_data: "panel" }, { text: "Estado", callback_data: "status" }],
+  ];
+  // Botones DIRIGIDOS a la escena en error (si el snapshot del evento la trae): un tap reintenta/salta
+  // exactamente esa escena, sin ambiguedad con otros fallos.
+  const sid = snap?.activeScene?.error ? snap.activeScene.id : null;
+  if (sid) rows.unshift([{ text: `Reintentar ${sid}`, callback_data: `retry_scene:${sid}` }, { text: `Saltar ${sid}`, callback_data: `skip_scene:${sid}` }]);
+  return keyboard(rows);
 }
 
 function statusKeyboard() {
@@ -159,8 +164,9 @@ function formatHelp() {
     "Control:",
     "/pausar - pausa el autopiloto",
     "/reanudar - continua o avanza a la siguiente fase si ya puede",
-    "/reintentar - reintenta el fallo activo",
-    "/saltar - salta escena activa cuando aplica",
+    "/reintentar [escena] - reintenta el fallo activo (o esa escena)",
+    "/saltar [escena] - salta escena activa o la indicada",
+    "/grok - recarga grok.com/imagine de cero y reanuda si estaba pausado",
     "/detener - detiene la corrida actual",
     "/todo - ejecuta el boton Hacer todo",
     "/audio - genera solo audios faltantes",
@@ -181,6 +187,8 @@ function formatHelp() {
 }
 
 function commandLabel(command) {
+  if (command.startsWith("retry_scene:")) return `reintentar ${command.slice("retry_scene:".length)}`;
+  if (command.startsWith("skip_scene:")) return `saltar ${command.slice("skip_scene:".length)}`;
   return ({
     pause: "pausar",
     resume: "reanudar",
@@ -191,6 +199,7 @@ function commandLabel(command) {
     queue_off: "desactivar cola",
     run_all: "hacer todo",
     audio_missing: "generar audio faltante",
+    grok_reload: "recargar Grok",
   })[command] || command;
 }
 
@@ -433,12 +442,18 @@ function formatStatus(st, queue) {
   if (!s) return "Extension sin snapshot remoto todavia. Recarga la extension o espera 30s.";
   const q = s.queue || {};
   const ageSec = st?.updatedAt ? Math.round((Date.now() - Number(st.updatedAt)) / 1000) : null;
+  const counts = s.scenes?.counts || {};
+  const icounts = s.ingredients?.counts || {};
+  const total = Number(s.scenes?.total || 0);
+  const done = Number(counts.done || 0);
+  const pct = total ? Math.round((done / total) * 100) : 0;
   const lines = [
     `Proyecto: ${s.project?.slug || s.project?.title || "(sin proyecto)"}`,
-    `Cola: ${s.autoQueue ? "ON" : "OFF"} | running=${!!q.running} paused=${!!q.paused} phase=${q.phase || "-"}`,
-    `Escenas: ${s.scenes?.total || 0} ${JSON.stringify(s.scenes?.counts || {})}`,
-    `Ingredientes: ${s.ingredients?.total || 0} ${JSON.stringify(s.ingredients?.counts || {})}`,
+    `Cola: ${s.autoQueue ? "ON" : "OFF"} | ${q.running ? "corriendo" : q.paused ? "PAUSADA" : "detenida"} | fase ${q.phase || "-"}`,
+    `Escenas: ${done}/${total} listas (${pct}%)${counts.error ? ` | ${counts.error} en ERROR` : ""}${counts.pending ? ` | ${counts.pending} pendientes` : ""}`,
+    `Ingredientes: ${Number(icounts.done || 0)}/${s.ingredients?.total || 0} listos${icounts.error ? ` | ${icounts.error} en ERROR` : ""}`,
   ];
+  if (q.jobName) lines.push(`Job de cola en curso: ${q.jobName}`);
   if (ageSec !== null) lines.push(`Snapshot: hace ${ageSec}s`);
   if (s.activeIngredient) lines.push(`Ingrediente: ${s.activeIngredient.id} ${s.activeIngredient.status}${s.activeIngredient.error ? " - " + s.activeIngredient.error : ""}`);
   if (s.activeScene) lines.push(`Escena: ${s.activeScene.id} ${s.activeScene.status}${s.activeScene.error ? " - " + s.activeScene.error : ""}`);
@@ -490,9 +505,13 @@ async function handleDocument(msg) {
   return handleJsonPayload(msg.chat.id, buf.toString("utf8"), name);
 }
 
-async function sendRemote(chatId, command) {
-  const out = await localJson("POST", "/remote/command", { command, source: "telegram" });
-  return sendMessage(chatId, out.ok ? `Comando enviado: ${commandLabel(command)}` : `No pude enviar: ${out.error}`, mainKeyboard());
+async function sendRemote(chatId, command, args = null) {
+  const out = await localJson("POST", "/remote/command", { command, source: "telegram", ...(args ? { args } : {}) });
+  // "enviado" != "ejecutado": la extension confirma con su propio evento "recibido por la extension"
+  // cuando lo tome (poll de 30s); si no llega en ~1 min, Chrome esta cerrado o el SW murio.
+  return sendMessage(chatId, out.ok
+    ? `Comando enviado: ${commandLabel(command)}${args?.sceneId ? ` (${args.sceneId})` : ""}. La extension confirmara al tomarlo (~30s).`
+    : `No pude enviar: ${out.error}`, mainKeyboard());
 }
 
 // Acciones que gastan creditos o tiran trabajo: desde BOTON piden confirmacion (un teclado inline viejo
@@ -553,7 +572,9 @@ async function handleAction(chatId, action) {
     return;
   }
   if (action === "send_video") return sendLatestVideo(chatId);
-  if (["pause", "resume", "retry", "skip", "stop", "queue_on", "queue_off", "run_all", "audio_missing"].includes(action)) {
+  if (action.startsWith("retry_scene:")) return sendRemote(chatId, "retry", { sceneId: action.slice("retry_scene:".length) });
+  if (action.startsWith("skip_scene:")) return sendRemote(chatId, "skip", { sceneId: action.slice("skip_scene:".length) });
+  if (["pause", "resume", "retry", "skip", "stop", "queue_on", "queue_off", "run_all", "audio_missing", "grok_reload"].includes(action)) {
     return sendRemote(chatId, action);
   }
   return sendMessage(chatId, `Accion no reconocida: ${action}`, mainKeyboard());
@@ -568,8 +589,16 @@ async function handleCallback(q) {
   }
   await answerCallbackQuery(q.id).catch(() => {});
   const data = String(q.data || "menu");
-  if (data.startsWith("confirm:")) return handleAction(chatId, data.slice("confirm:".length));
-  if (DANGEROUS_ACTIONS.has(data)) return sendMessage(chatId, `Seguro que quieres ${commandLabel(data)}?`, confirmKeyboard(data));
+  if (data.startsWith("confirm:")) {
+    // Consumir el teclado de confirmacion: sin esto, un doble tap (o un confirm viejo del historial)
+    // ejecutaba la accion DOS veces (el anti-replay del SW no deduplica POSTs distintos).
+    if (q.message?.message_id) {
+      tg("editMessageReplyMarkup", { chat_id: chatId, message_id: q.message.message_id, reply_markup: { inline_keyboard: [] } }).catch(() => {});
+    }
+    return handleAction(chatId, data.slice("confirm:".length));
+  }
+  const dangerous = DANGEROUS_ACTIONS.has(data) || data.startsWith("retry_scene:") || data.startsWith("skip_scene:");
+  if (dangerous) return sendMessage(chatId, `Seguro que quieres ${commandLabel(data)}?`, confirmKeyboard(data));
   return handleAction(chatId, data);
 }
 
@@ -582,7 +611,9 @@ async function command(msg) {
   if (msg.document) return handleDocument(msg);
   if (text.startsWith("{")) return handleJsonPayload(chatId, text, "telegram_json");
 
-  const cmd = text.split(/\s+/)[0].toLowerCase();
+  const parts = text.split(/\s+/);
+  const cmd = parts[0].toLowerCase();
+  const arg = parts[1] || "";
   if (["/start", "/help", "/ayuda", "/comandos", "/commands", "/menu"].includes(cmd)) return sendMessage(chatId, formatHelp(), mainKeyboard());
   const map = {
     "/pausar": "pause", "/pause": "pause",
@@ -594,8 +625,13 @@ async function command(msg) {
     "/cola_off": "queue_off", "/queue_off": "queue_off",
     "/todo": "run_all", "/run_all": "run_all",
     "/audio": "audio_missing", "/audio_faltante": "audio_missing", "/generar_audio": "audio_missing",
+    "/grok": "grok_reload", "/grok_reload": "grok_reload", "/recargar_grok": "grok_reload",
   };
-  if (map[cmd]) return handleAction(chatId, map[cmd]);
+  if (map[cmd]) {
+    // /reintentar esc_07 y /saltar esc_07: dirigido a UNA escena (el SW decide el modo seguro por estado).
+    if ((map[cmd] === "retry" || map[cmd] === "skip") && arg) return sendRemote(chatId, map[cmd], { sceneId: arg });
+    return handleAction(chatId, map[cmd]);
+  }
   if (cmd === "/ping" || cmd === "/salud") {
     const st = await localJson("GET", "/remote/state").catch((e) => ({ ok: false, error: e.message }));
     const age = st?.updatedAt ? `${Math.round((Date.now() - Number(st.updatedAt)) / 1000)}s` : "sin snapshot";
@@ -614,6 +650,9 @@ async function command(msg) {
 }
 
 let lastEventId = 0;
+let eventRetryId = 0;
+let eventRetryCount = 0;
+const BRIDGE_START = Date.now();
 async function initEvents() {
   const out = await localJson("GET", "/remote/events").catch(() => null);
   lastEventId = Number(out?.lastId || 0);
@@ -632,12 +671,44 @@ async function pollEvents() {
     return;
   }
   for (const e of out.events) {
-    lastEventId = Math.max(lastEventId, Number(e.id || 0));
-    if (e.level === "debug") continue;
+    const eid = Math.max(lastEventId, Number(e.id || 0));
+    if (e.level === "debug") { lastEventId = eid; continue; }
+    // Catch-up desde 0 (initEvents fallo con el dev-server caido): no re-enviar el buffer viejo
+    // (hasta 200 PAUSAs rancias de spam). Solo pasan eventos posteriores al arranque del bridge.
+    if (e.ts && Number(e.ts) < BRIDGE_START - 60000) { lastEventId = eid; continue; }
     const snap = e.snapshot;
     const extra = snap?.activeIngredient ? `\nIngrediente: ${snap.activeIngredient.id} ${snap.activeIngredient.status}` : "";
-    const buttons = e.level === "error" || e.level === "warn" ? errorKeyboard() : mainKeyboard();
-    await sendMessage(defaultChatId, `[${e.level || "info"}] ${e.message || ""}${extra}`.trim(), buttons).catch(() => {});
+    const buttons = e.level === "error" || e.level === "warn" ? errorKeyboard(snap) : mainKeyboard();
+    try {
+      await sendMessage(defaultChatId, `[${e.level || "info"}] ${e.message || ""}${extra}`.trim(), buttons);
+      lastEventId = eid;   // el cursor avanza SOLO tras envio exitoso: una PAUSA con la red caida ya no se pierde
+    } catch (err) {
+      eventRetryCount = (eventRetryId === Number(e.id)) ? eventRetryCount + 1 : 1;
+      eventRetryId = Number(e.id);
+      if (eventRetryCount >= 3) {
+        console.error(`[telegram] evento ${e.id} fallo ${eventRetryCount} veces (${err?.message || err}); lo salto para no bloquear los siguientes.`);
+        lastEventId = eid;
+        continue;
+      }
+      console.error(`[telegram] no pude enviar evento ${e.id} (${err?.message || err}); reintento en el siguiente poll.`);
+      break;
+    }
+  }
+}
+
+// Watchdog: el SW postea snapshot cada ~30s (alarma remota). Si dice "corriendo" pero el snapshot lleva
+// >2.5 min sin refrescar, Chrome esta cerrado o el SW murio — desde el telefono era indistinguible de
+// "todo va bien". Alerta como maximo cada 15 min.
+let deadAlertAt = 0;
+async function watchdogDeadExtension() {
+  if (!defaultChatId) return;
+  const st = await localJson("GET", "/remote/state").catch(() => null);
+  const s = st?.state;
+  if (!s?.queue?.running) { deadAlertAt = 0; return; }
+  const age = st?.updatedAt ? Date.now() - Number(st.updatedAt) : 0;
+  if (age > 150000 && Date.now() - deadAlertAt > 15 * 60 * 1000) {
+    deadAlertAt = Date.now();
+    await sendMessage(defaultChatId, `OJO: la extension dice "corriendo" pero su snapshot lleva ${Math.round(age / 60000)} min sin refrescar. ¿Chrome cerrado o service worker muerto? Revisa la PC (/panel para captura).`, mainKeyboard()).catch(() => {});
   }
 }
 
@@ -646,6 +717,7 @@ async function main() {
   if (defaultChatId) await sendMessage(defaultChatId, "Flowbot Telegram activo. Usa /help para ver comandos.", mainKeyboard()).catch(() => {});
   let offset = await syncTelegramOffset(loadOffset());
   setInterval(() => pollEvents().catch(() => {}), 5000);
+  setInterval(() => watchdogDeadExtension().catch(() => {}), 60000);
   for (;;) {
     try {
       const updates = await requestJson("POST", tgUrl("getUpdates"), { offset, timeout: 25, allowed_updates: ["message", "callback_query"] });
@@ -660,7 +732,19 @@ async function main() {
       for (const u of updates.result || []) {
         offset = Math.max(offset, u.update_id + 1);
         saveOffset(offset);
-        if (u.message) await command(u.message).catch((e) => sendMessage(u.message.chat.id, `Error: ${e.message}`).catch(() => {}));
+        // Comandos VIEJOS (Telegram retiene 24h): tras una caida del bridge, un /todo de hace horas se
+        // ejecutaba al arrancar (gasto fantasma de madrugada). Se ignoran con aviso.
+        if (u.message) {
+          const ageS = u.message.date ? Math.round(Date.now() / 1000 - Number(u.message.date)) : 0;
+          if (ageS > 300) {
+            console.warn(`[telegram] comando viejo ignorado (${Math.round(ageS / 60)} min): ${String(u.message.text || "").slice(0, 60)}`);
+            if (allowedMessage(u.message)) {
+              sendMessage(u.message.chat.id, `Ignore un comando viejo de hace ${Math.round(ageS / 60)} min ("${String(u.message.text || "").slice(0, 40)}"). Si aun lo quieres, mandalo de nuevo.`).catch(() => {});
+            }
+            continue;
+          }
+          await command(u.message).catch((e) => sendMessage(u.message.chat.id, `Error: ${e.message}`).catch(() => {}));
+        }
         if (u.callback_query) await handleCallback(u.callback_query).catch((e) => {
           const cid = u.callback_query.message?.chat?.id;
           if (cid) sendMessage(cid, `Error: ${e.message}`).catch(() => {});

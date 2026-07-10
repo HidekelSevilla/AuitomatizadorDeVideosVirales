@@ -1,0 +1,851 @@
+{
+  "project": {
+    "title": "El Extra del Capítulo Cero - Parte 1: El extra debía morir primero",
+    "preset": "manhwa",
+    "slug": "extra_capitulo_cero_parte_01",
+    "language": "es-419",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "default_clip_duration_s": 4
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "elevenlabs",
+      "voice_id": "452WrNT9o8dphaYW5YGU",
+      "language": "es-419"
+    },
+    "editing": {
+      "tool": "remotion"
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "High angle looking down at Kim Noa trapped in the underground server room at deep rainy night, ink-stained work clothes, shoulders tense, dark-brown eyes fixed on the blocked exit, server racks towering around him, blue LEDs cutting across his face. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[dark] Kim Noa estaba encerrado en la sala de servidores."
+      }
+    },
+    {
+      "id": "scene_02",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Low corridor angle between server racks at deep rainy night: thick black cables twist across the exit door while the ink creature crawls between racks, long fingers dragging over concrete, mouth of tangled dark letter-shapes opening toward the blue lights. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La puerta estaba bloqueada por cables, y algo respiraba entre los racks."
+      }
+    },
+    {
+      "id": "scene_03",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Extreme close-up at floor level in the server room at deep rainy night: a damp printed sheet lies near worn sneakers, black ink trembling across the paper, blue rack lights reflecting on wet concrete, torn cable shadows crossing the page. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "A sus pies, una hoja repetía una frase imposible."
+      }
+    },
+    {
+      "id": "scene_04",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Top-down close-up of a wet printed page on cracked concrete at deep rainy night, displaying the text 'KIM NOA MURIÓ DEBAJO DEL CIBERCAFÉ MIRO' in bold black uppercase ink, centered on the sheet, torn paper fibers visible, blue server light across one corner. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition, exact text only, no additional text or labels."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "“Kim Noa murió debajo del Cibercafé Miro.” [pause]"
+      }
+    },
+    {
+      "id": "scene_05",
+      "type": "narrative_card",
+      "card": {
+        "mode": "editor",
+        "text": "El extra debía morir primero."
+      },
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": ""
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "El extra debía morir primero."
+      }
+    },
+    {
+      "id": "scene_06",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Knee-level tracking angle along sticky keyboards at deep rainy night: Kim Noa wipes the keys with a cloth, dark navy staff vest over a charcoal hoodie, his tired eyes looking down at the desk, rows of empty chairs receding behind him. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[low] Una hora antes, yo limpiaba teclados pegajosos de madrugada."
+      }
+    },
+    {
+      "id": "scene_07",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Wide establishing shot of the deserted Cibercafé Miro at deep rainy night, rows of computers glowing blue, amber coffee machine light near the counter, wet stairwell entrance in the background, rainwater glistening on the floor, empty chairs waiting. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "El Miro olía a café quemado y lluvia bajando escaleras."
+      }
+    },
+    {
+      "id": "scene_08",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Medium shot from behind the cybercafe counter at deep rainy night: Kim Noa pauses with one hand on a cleaning cloth, his other hand near the silver keyring at his belt, gaze lowered toward an old black notebook under the lamp. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "No trabajaba ahí por el sueldo, sino por mi madre."
+      }
+    },
+    {
+      "id": "scene_09",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Top-down view of the staff stairway behind the cybercafe at deep rainy night, wet concrete steps descending into blue darkness, cable bundles running along the ceiling, a black notebook placed on the top step like evidence left behind. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Kim Hayeon desapareció en ese sótano, ocho años atrás."
+      }
+    },
+    {
+      "id": "scene_10",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga panel on pure white background: a single rectangular panel with a bold black border, inside it an adult woman's hands place a black notebook beside a laptop covered in manuscript pages, late-night desk lamp glow, red correction marks scattered across printed chapters. Hand-drawn Korean manhwa webtoon illustration, inked lineart, high contrast, vertical 9:16 composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Corregía novelas web, y dejó una libreta negra antes de borrarse."
+      }
+    },
+    {
+      "id": "scene_11",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Extreme close-up of a young hand opening the black notebook at deep rainy night, crossed-out black lines filling the paper, a faint coffee stain on the corner, the page edge lit by a small desk lamp, everything else in soft shadow. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Me pidió no leer lo tachado. Obviamente lo leí."
+      }
+    },
+    {
+      "id": "scene_12",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga page layout on pure white background, three stacked rectangular panels with bold black borders, read top to bottom: top panel — crossed-out names on notebook paper; middle panel — an unfinished scene ending mid-sentence; bottom panel — black ink strokes cutting through a paragraph. Hand-drawn Korean manhwa webtoon illustration, inked lineart, high contrast, vertical 9:16 composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[tired] Había nombres sin cuerpo, escenas sin final y frases cortadas."
+      }
+    },
+    {
+      "id": "scene_13",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Extreme close-up of the last notebook page at deep rainy night, the paper torn from repeated pressure, black handwritten title marks stacked over each other until the fibers split, the notebook spine visible at the left edge. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "En la última página, un título rompía el papel."
+      }
+    },
+    {
+      "id": "scene_14",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Top-down close-up of a notebook page at deep rainy night, displaying the text 'EL SANTO DE HIERRO. CAPÍTULO CERO' in rough black uppercase handwriting, pressed deeply into torn paper fibers, lamp light cutting across the title. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition, exact text only, no additional text or labels."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "“El Santo de Hierro. Capítulo cero.” [pause]"
+      }
+    },
+    {
+      "id": "scene_15",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Over-the-shoulder shot of Kim Noa at the cybercafe counter at deep rainy night, holding the black notebook open under amber light, his head tilted down, dark-brown eyes fixed on the old pages while blue computer glow surrounds him. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Durante años pensé que era una obsesión de ella."
+      }
+    },
+    {
+      "id": "scene_16",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Close three-quarter view of the old printer behind the cybercafe counter at deep rainy night, its power light flaring awake, paper tray trembling, cable shadows crawling across the wall, empty computer rows glowing behind it. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Hasta que la impresora vieja despertó sola detrás del mostrador."
+      }
+    },
+    {
+      "id": "scene_17",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-frame giant glossy black onomatopoeia lettering 'KRRRAK' with white outline, the letters huge and breaking past the panel edges, cascading diagonally over a black-and-gray vertical speed-line background, the lettering as the only subject of the frame. Manhwa sound-effect typography, high contrast, vertical 9:16."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[impact] KRRRAK."
+      }
+    },
+    {
+      "id": "scene_18",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Extreme close-up of the printer tray at deep rainy night: a damp sheet slides out curled and heavy, black ink still shifting across its surface, droplets clinging to the paper edge, blue monitor light reflecting on wet fibers. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La primera hoja salió húmeda, con tinta negra moviéndose."
+      }
+    },
+    {
+      "id": "scene_19",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Top-down close-up of a freshly printed wet sheet on the counter at deep rainy night, displaying the text 'KIM HAYEON FUE BORRADA AQUÍ' in black uppercase ink, centered and clean, paper still half inside the printer. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition, exact text only, no additional text or labels."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Decía: “Kim Hayeon fue borrada aquí.”"
+      }
+    },
+    {
+      "id": "scene_20",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Dutch angle at the cybercafe counter at deep rainy night: Kim Noa backs away from three printed sheets falling across the floor, his dark-brown eyes wide, one hand lifted near his chest, blue computer glow flashing across the wet paper. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[shaken] La segunda hoja dijo que yo bajaría, y la tercera escribió mi muerte."
+      }
+    },
+    {
+      "id": "scene_21",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga panel floating on a solid pure black background: a single rectangular panel with a thin white border, inside it Kim Noa's hand grips a wet printed page so tightly the paper wrinkles, black ink stains his fingertips, deep rainy night shadows inside the panel. Hand-drawn Korean manhwa webtoon illustration, inked lineart, high contrast, vertical 9:16 composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Mi madre no había huido. La frase la había tragado. [pause]"
+      }
+    },
+    {
+      "id": "scene_22",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Wide shot from the cybercafe floor toward the open staff door at deep rainy night, wet stairs descending into blue darkness, one printed sheet sliding toward the threshold, empty street light faintly visible above the stairwell behind the room. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Debí salir corriendo, pero apareció otra línea."
+      }
+    },
+    {
+      "id": "scene_23",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Close-up of a printed sheet lying on the first basement step at deep rainy night, displaying the text 'ARCHIVO ORIGINAL GUARDADO EN SALA DE SERVIDORES' in bold black uppercase ink, centered on damp paper, blue stair lights glowing around it. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition, exact text only, no additional text or labels."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "“Archivo original guardado en sala de servidores.” Así que bajé."
+      }
+    },
+    {
+      "id": "scene_24",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "High angle from above the basement stairs at deep rainy night: Kim Noa descends carefully, one hand brushing the wall, eyes fixed downward toward the blue-lit depth, cable bundles hanging over his head, wet steps stretching unnaturally long. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[breathless] La escalera parecía bajar más de lo que debía."
+      }
+    },
+    {
+      "id": "scene_25",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Tight side view near an old black monitor in the server room at deep rainy night: Kim Noa leans close, blue LEDs flickering over his face, while his reflection on the dark screen lags behind his movement by one pose. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Luces azules parpadeaban, y mi reflejo llegó medio segundo tarde."
+      }
+    },
+    {
+      "id": "scene_26",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "High three-quarter angle looking down beside the industrial printer at deep rainy night: Cho Sena lies ON TOP of scattered papers, both ink-stained hands visible on the concrete, her portfolio pressed under one arm, head lifted slightly toward the aisle. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Al fondo, una chica yacía junto a la impresora, con tinta en las manos."
+      }
+    },
+    {
+      "id": "scene_27",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Extreme close-up of Cho Sena's lower face and ink-stained hands at deep rainy night, her mouth trembling as she speaks, portfolio edge pressed against her chest, blue server lights reflecting on wet black ink across her fingers. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "—No puedo levantarme —dijo, con la voz rota."
+      }
+    },
+    {
+      "id": "scene_28",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Medium close-up of Cho Sena lifting her head from the floor at deep rainy night, dark eyes locked on Kim Noa off-screen, ink on her cheek and hands, design portfolio crushed against her chest, industrial printer looming behind her. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Pero levantó la cabeza y dijo: —Soy Cho Sena. [pause]"
+      }
+    },
+    {
+      "id": "scene_29",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga panel on pure white background: a single rectangular panel with a bold black border, inside it a printed page shows a blank space where a name should be, black ink around the empty line cracking outward, sharp paper texture visible. Hand-drawn Korean manhwa webtoon illustration, inked lineart, high contrast, vertical 9:16 composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[terrified] Ese nombre no estaba escrito, y la historia se enojó."
+      }
+    },
+    {
+      "id": "scene_30",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Worm's-eye view of the server room ceiling at deep rainy night, metal panels buckling, black ink rising upward from printed sheets like smoke, blue LED light cutting through the dark vapor, cable loops trembling above the racks. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "El techo crujió. La tinta subió como humo negro."
+      }
+    },
+    {
+      "id": "scene_31",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Low angle between server racks at deep rainy night: the ink creature drops from above, long limbs unfolding, body twisted like wet brushstrokes, mouth of tangled black letter-shapes opening wide, blue rack lights slicing behind it. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Cayó una criatura mal dibujada, con una boca de letras."
+      }
+    },
+    {
+      "id": "scene_32",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Side view beside the metal printing table at deep rainy night: Kim Noa on the right grabs Cho Sena's arm from the floor on the left, pulling her toward the table, both bodies turned away from the collapsing ceiling, papers scattering under their hands. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Sena gritó, y yo la jalé hacia la mesa de impresión."
+      }
+    },
+    {
+      "id": "scene_33",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Strict profile action shot in the server room at deep rainy night: Kim Noa stumbles backward on the right, eyes locked on the ink creature crawling from the left, the creature's long fingers reaching toward him while Cho Sena remains out of frame. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La criatura no la siguió. Me siguió a mí."
+      }
+    },
+    {
+      "id": "scene_34",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Tight close-up of Kim Noa's whole face at deep rainy night, dark-brown eyes widening as he remembers, ink stain on his cheek, blue monitor glow across his jaw, his gaze fixed downward toward an unseen notebook page in his hand. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[desperate] Ahí recordé la frase de mi madre."
+      }
+    },
+    {
+      "id": "scene_35",
+      "type": "narrative_card",
+      "card": {
+        "mode": "editor",
+        "text": "El extra pasó desapercibido hasta morir."
+      },
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": ""
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "“El extra pasó desapercibido hasta morir.”"
+      }
+    },
+    {
+      "id": "scene_36",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Manga panel floating on a solid pure black background: a single rectangular panel with a thin white border, inside it Kim Noa stands small and rigid under blue server light, shoulders tight, hands open at his sides, black ink shadows closing around him. Hand-drawn Korean manhwa webtoon illustration, inked lineart, high contrast, vertical 9:16 composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "No era poder. Era una regla para que nadie llorara por mí."
+      }
+    },
+    {
+      "id": "scene_37",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Frontal medium shot of Kim Noa standing perfectly still in the server aisle at deep rainy night, mouth closed, chest held tight, both hands open and motionless at his sides, dark-brown eyes fixed on the creature off-screen, blue LEDs frozen around him. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Me quedé quieto. No grité. No respiré. No importé. [pause]"
+      }
+    },
+    {
+      "id": "scene_38",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Extreme side close-up at deep rainy night: the ink creature's long face stops a palm from Kim Noa's cheek, its tangled letter-mouth open, its empty gaze passing past him toward the blue-lit rack behind, Noa standing rigid and unblinking. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[whispers] La criatura frenó a un palmo, y sus ojos pasaron de largo."
+      }
+    },
+    {
+      "id": "scene_39",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Medium shot in the server aisle at deep rainy night: Kim Noa's ink-stained body appears slightly unfocused at the edges, black hatching breaking his outline while the server racks remain sharp, his dark-brown eyes fixed on the space beyond the creature. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Por un segundo, el mundo dejó de enfocarme. Eso alcanzó."
+      }
+    },
+    {
+      "id": "scene_40",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Low angle under the metal printing table at deep rainy night: Kim Noa pulls Cho Sena by the forearm as both roll under the table, her portfolio sliding beside them, scattered papers fluttering, blue rack lights visible through table legs. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Agarré a Sena y rodamos bajo la mesa de impresión."
+      }
+    },
+    {
+      "id": "scene_41",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "High impact angle beside the printing table at deep rainy night: the ink creature slams one long hand into the concrete floor where Kim Noa had stood, black vapor spraying outward, paper sheets lifting from the force, table legs shaking. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La criatura golpeó el suelo donde yo debía estar."
+      }
+    },
+    {
+      "id": "scene_42",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-frame giant glossy white onomatopoeia lettering 'CRAC' with black outline, the letters huge and breaking past the panel edges, exploding over jagged concrete fracture lines and black speed strokes, the lettering as the only subject of the frame. Manhwa sound-effect typography, high contrast, vertical 9:16."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[impact] CRAC."
+      }
+    },
+    {
+      "id": "scene_43",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Top-down close-up of cracked concrete at deep rainy night, a torn printed sheet split in two halves across the broken tile, black ink bleeding from the tear, blue server LEDs reflected in tiny puddles around the page. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La baldosa se partió, y mi hoja de muerte también."
+      }
+    },
+    {
+      "id": "scene_44",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Wide shot down the server aisle at deep rainy night: Kim Noa crouches under the printing table in the foreground, but his black shadow stands upright alone across the room between blue-lit racks, facing the place where he almost died. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[stunned] Mi sombra no volvió conmigo. Se quedó esperando morir."
+      }
+    },
+    {
+      "id": "scene_45",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Tight close-up of the old black monitor at deep rainy night, Kim Noa's real face half-visible at the edge while his reflected face in the glass smiles late, the delayed smile slightly offset, blue server lights streaking across the screen. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "En un monitor apagado, mi reflejo sonrió tarde."
+      }
+    },
+    {
+      "id": "scene_46",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Close shot of Kim Noa kneeling beside a small audio recorder on the server shelf at deep rainy night, his mouth open saying his name, black ink stains on his hand near the device, Cho Sena blurred behind him watching from the floor. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "—Noa —dije, pero la grabadora repitió: “Nadie.” [pause]"
+      }
+    },
+    {
+      "id": "scene_47",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Medium shot of Kim Noa crouched under the printing table at deep rainy night, staring at his own offset shadow across the server aisle, ink hatching along his shoulder, both hands pressed to the concrete, expression hollow. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Ahí entendí el precio: la historia fingió que yo no existía."
+      }
+    },
+    {
+      "id": "scene_48",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Wide shot of the empty Cibercafé Miro above the basement at deep rainy night, every computer screen turning on at once in rows, blue-white light flooding empty chairs, rainwater shining near the stairwell entrance. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Arriba, todas las computadoras se encendieron al mismo tiempo."
+      }
+    },
+    {
+      "id": "scene_49",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "High angle beside the industrial printer at deep rainy night: Kim Noa sits on the concrete with one knee raised, a fresh white sheet landing on his lap, black ink starting to gather at the top edge, blue server lights behind him. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La impresora empezó otra vez, y una hoja cayó sobre mis rodillas."
+      }
+    },
+    {
+      "id": "scene_50",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Extreme top-down close-up of a white sheet on Kim Noa's knees at deep rainy night, displaying the text 'CORRECCIÓN: MATAR AL LECTOR...' in clean black uppercase ink, centered, the letters still wet and spreading slightly, his ink-stained fingers at the bottom edge. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, dramatic rim lighting, high contrast, painted background, vertical 9:16 webtoon panel composition, exact text only, no additional text or labels."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La tinta escribió: “Corrección: matar al lector…”"
+      }
+    }
+  ],
+  "render_export": {
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18",
+      "scene_19",
+      "scene_20",
+      "scene_21",
+      "scene_22",
+      "scene_23",
+      "scene_24",
+      "scene_25",
+      "scene_26",
+      "scene_27",
+      "scene_28",
+      "scene_29",
+      "scene_30",
+      "scene_31",
+      "scene_32",
+      "scene_33",
+      "scene_34",
+      "scene_35",
+      "scene_36",
+      "scene_37",
+      "scene_38",
+      "scene_39",
+      "scene_40",
+      "scene_41",
+      "scene_42",
+      "scene_43",
+      "scene_44",
+      "scene_45",
+      "scene_46",
+      "scene_47",
+      "scene_48",
+      "scene_49",
+      "scene_50"
+    ]
+  },
+  "tts_export": {
+    "language": "es-419",
+    "mode": "single",
+    "model_id": "eleven_v3",
+    "voice_id": "452WrNT9o8dphaYW5YGU",
+    "elevenlabs_speed": 1,
+    "edit_speed": 1.4,
+    "full_script": "[dark] Kim Noa estaba encerrado en la sala de servidores.\nLa puerta estaba bloqueada por cables, y algo respiraba entre los racks.\nA sus pies, una hoja repetía una frase imposible.\n“Kim Noa murió debajo del Cibercafé Miro.” [pause]\nEl extra debía morir primero.\n[low] Una hora antes, yo limpiaba teclados pegajosos de madrugada.\nEl Miro olía a café quemado y lluvia bajando escaleras.\nNo trabajaba ahí por el sueldo, sino por mi madre.\nKim Hayeon desapareció en ese sótano, ocho años atrás.\nCorregía novelas web, y dejó una libreta negra antes de borrarse.\nMe pidió no leer lo tachado. Obviamente lo leí.\n[tired] Había nombres sin cuerpo, escenas sin final y frases cortadas.\nEn la última página, un título rompía el papel.\n“El Santo de Hierro. Capítulo cero.” [pause]\nDurante años pensé que era una obsesión de ella.\nHasta que la impresora vieja despertó sola detrás del mostrador.\n[impact] KRRRAK.\nLa primera hoja salió húmeda, con tinta negra moviéndose.\nDecía: “Kim Hayeon fue borrada aquí.”\n[shaken] La segunda hoja dijo que yo bajaría, y la tercera escribió mi muerte.\nMi madre no había huido. La frase la había tragado. [pause]\nDebí salir corriendo, pero apareció otra línea.\n“Archivo original guardado en sala de servidores.” Así que bajé.\n[breathless] La escalera parecía bajar más de lo que debía.\nLuces azules parpadeaban, y mi reflejo llegó medio segundo tarde.\nAl fondo, una chica yacía junto a la impresora, con tinta en las manos.\n—No puedo levantarme —dijo, con la voz rota.\nPero levantó la cabeza y dijo: —Soy Cho Sena. [pause]\n[terrified] Ese nombre no estaba escrito, y la historia se enojó.\nEl techo crujió. La tinta subió como humo negro.\nCayó una criatura mal dibujada, con una boca de letras.\nSena gritó, y yo la jalé hacia la mesa de impresión.\nLa criatura no la siguió. Me siguió a mí.\n[desperate] Ahí recordé la frase de mi madre.\n“El extra pasó desapercibido hasta morir.”\nNo era poder. Era una regla para que nadie llorara por mí.\nMe quedé quieto. No grité. No respiré. No importé. [pause]\n[whispers] La criatura frenó a un palmo, y sus ojos pasaron de largo.\nPor un segundo, el mundo dejó de enfocarme. Eso alcanzó.\nAgarré a Sena y rodamos bajo la mesa de impresión.\nLa criatura golpeó el suelo donde yo debía estar.\n[impact] CRAC.\nLa baldosa se partió, y mi hoja de muerte también.\n[stunned] Mi sombra no volvió conmigo. Se quedó esperando morir.\nEn un monitor apagado, mi reflejo sonrió tarde.\n—Noa —dije, pero la grabadora repitió: “Nadie.” [pause]\nAhí entendí el precio: la historia fingió que yo no existía.\nArriba, todas las computadoras se encendieron al mismo tiempo.\nLa impresora empezó otra vez, y una hoja cayó sobre mis rodillas.\nLa tinta escribió: “Corrección: matar al lector…”",
+    "engine": "elevenlabs"
+  }
+}
