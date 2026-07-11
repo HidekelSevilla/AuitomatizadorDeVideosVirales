@@ -7,6 +7,6 @@
   "scripts": {
     "dev": "node dev/reload-server.mjs",
     "telegram": "node scripts/telegram-bridge.mjs",
-    "test": "node tests/dryrun.test.mjs && node tests/schema_v2.test.mjs && node tests/scene_transition.test.mjs && node tests/orchestrator.test.mjs && node tests/queue_validator.test.mjs && node tests/manhwa_preset.test.mjs && node tests/novela_coreana_v2.test.mjs"
+    "test": "node tests/dryrun.test.mjs && node tests/schema_v2.test.mjs && node tests/scene_transition.test.mjs && node tests/orchestrator.test.mjs && node tests/queue_validator.test.mjs && node tests/manhwa_preset.test.mjs && node tests/novela_coreana_v2.test.mjs && node tests/grok_driver.test.mjs && node tests/provider_tabs.test.mjs && node tests/messaging_send.test.mjs"
   }
 }

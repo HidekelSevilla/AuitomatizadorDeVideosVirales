@@ -95,6 +95,18 @@ assert.equal(classifyError("handoff imagen=grok -> animacion=flow no soportado")
   assert.equal(h.calls.sleep.length, 0, "d: sin backoff");
 }
 
+// (d2) Resultado ambiguo de Grok: pudo generarse aunque murio el canal. Nunca re-enviar automaticamente.
+{
+  const h = harness({ scenes: [scene("s1")], image: async () => {
+    const e = new Error("Grok pudo haber generado la imagen"); e.noAutoRetry = true; throw e;
+  } });
+  await h.orch.processSceneWithRetries(h.state.scenes[0], null, null, "images");
+  assert.equal(h.calls.image, 1, "d2: no duplica la generacion ambigua");
+  assert.equal(h.calls.sleep.length, 0, "d2: sin backoff");
+  assert.equal(h.calls.pauseForError.length, 1, "d2: pausa para recuperar/revisar");
+  assert.equal(h.state.scenes[0].status, S.ERROR, "d2: queda visible como ERROR");
+}
+
 // (e) ritmo entre escenas: 2 PENDING -> tras la 1a, espera interSceneDelay; contadores +1.
 {
   const h = harness({ scenes: [scene("s1"), scene("s2")] });

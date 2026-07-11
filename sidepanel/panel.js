@@ -88,6 +88,16 @@ let lastConfig = DEFAULT_CONFIG;
 // Escena que se esta procesando ahora (para el foco visual; se reaplica tras cada re-render).
 let currentSceneId = null;
 
+// Los controles criticos no deben depender solo del broadcast: al cambiar de ventana o durante un
+// reinicio MV3 ese evento puede llegar tarde. Renderizamos la respuesta directa y mostramos un fallo
+// visible si el worker no contesto, en vez de que el boton parezca no hacer nada.
+async function runControlCommand(message, label) {
+  const st = await send(message);
+  if (st) render(st);
+  else appendLog('error', Date.now(), `${label}: la extension no respondio. Reintenta en un momento.`);
+  return st;
+}
+
 // Etiqueta legible + clase de color por estado de escena.
 const STATUS_LABEL = {
   [SCENE_STATUS.PENDING]: 'Pendiente',
@@ -220,6 +230,12 @@ function renderHero(state) {
     hero.classList.add('paused');
     el.statusTitle.textContent = 'En pausa por un fallo';
     el.statusSub.textContent = 'Revisa y dale Reanudar / Saltar / Reintentar';
+  } else if (q.paused) {
+    hero.classList.add('paused');
+    el.statusTitle.textContent = 'En pausa';
+    el.statusSub.textContent = q.running
+      ? 'La accion actual esta terminando; no se iniciaran mas escenas'
+      : `${done}/${scenes.length} listas`;
   } else if (done >= scenes.length && scenes.length) {
     hero.classList.add('done');
     el.statusTitle.textContent = 'Completado';
@@ -450,7 +466,11 @@ function renderIngredients(ingredients, queue = {}) {
     retry.textContent = 'Rehacer';
     retry.title = 'Regenera solo este ingrediente y sobrescribe el asset si aplica.';
     retry.disabled = busy || st.key === 'generating_image';
-    retry.addEventListener('click', () => send(msg(CMD.RETRY_INGREDIENT, { ingredientId: ing.id })));
+    retry.addEventListener('click', async () => {
+      retry.disabled = true;
+      await runControlCommand(msg(CMD.RETRY_INGREDIENT, { ingredientId: ing.id }), `Rehacer ingrediente ${ing.id}`);
+      if (retry.isConnected) retry.disabled = false;
+    });
     actions.append(retry);
 
     li.append(thumb, info, actions);
@@ -505,7 +525,11 @@ function renderScenes(scenes) {
       b.className = 'btn small';
       b.textContent = label;
       b.title = tip;
-      b.addEventListener('click', () => send(msg(CMD.RETRY_SCENE, { sceneId: s.id, mode })));
+      b.addEventListener('click', async () => {
+        b.disabled = true;
+        await runControlCommand(msg(CMD.RETRY_SCENE, { sceneId: s.id, mode }), `${label} ${s.id}`);
+        if (b.isConnected) b.disabled = false;
+      });
       actions.append(b);
     };
     // El video ya existe en Flow (animacion ok o reintentada a mano): re-recoger + descargar, sin re-animar.
@@ -693,18 +717,18 @@ function wireInputs() {
       send(msg(CMD.START_ANIMATION));
     }
   });
-  el.btnPause.addEventListener('click', () => send(msg(CMD.PAUSE)));
-  el.btnResume.addEventListener('click', () => send(msg(CMD.RESUME)));
-  el.btnStop.addEventListener('click', () => send(msg(CMD.STOP)));
+  el.btnPause.addEventListener('click', () => runControlCommand(msg(CMD.PAUSE), 'Pausar'));
+  el.btnResume.addEventListener('click', () => runControlCommand(msg(CMD.RESUME), 'Reanudar'));
+  el.btnStop.addEventListener('click', () => runControlCommand(msg(CMD.STOP), 'Detener'));
 
   // Banner de recuperacion por fallo.
   el.btnErrResume.addEventListener('click', async () => {
     el.errorBanner.classList.add('hidden');
-    const st = await send(msg(CMD.RESUME)); if (st) render(st);
+    await runControlCommand(msg(CMD.RESUME), 'Reanudar tras fallo');
   });
   el.btnErrSkip.addEventListener('click', async () => {
     el.errorBanner.classList.add('hidden');
-    const st = await send(msg(CMD.SKIP_SCENE, { sceneId: el.btnErrSkip.dataset.sceneId || null })); if (st) render(st);
+    await runControlCommand(msg(CMD.SKIP_SCENE, { sceneId: el.btnErrSkip.dataset.sceneId || null }), 'Saltar escena');
   });
   el.btnErrRetryAll.addEventListener('click', async () => {
     const errs = (lastScenes || []).filter((s) => s.status === SCENE_STATUS.ERROR);
@@ -716,7 +740,7 @@ function wireInputs() {
       if (!(await confirmInline(`Reintentar ${errs.length} escena(s) en error.\n${anim.length} re-ANIMARAN (cuesta ${costStr}).\n\n¿Continuar?`, 'Reintentar'))) return;
     }
     el.errorBanner.classList.add('hidden');
-    const st = await send(msg(CMD.RETRY_ALL_ERRORS)); if (st) render(st);
+    await runControlCommand(msg(CMD.RETRY_ALL_ERRORS), 'Reintentar errores');
   });
   el.btnReset.addEventListener('click', async () => {
     if (!(await confirmInline('Reiniciar todas las escenas a "Pendiente"? Esto NO borra lo ya generado en Flow; solo permite volver a generar.', 'Reiniciar'))) return;

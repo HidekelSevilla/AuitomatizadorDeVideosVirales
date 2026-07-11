@@ -18,6 +18,7 @@ import {
 import { validateQueueProject } from "../lib/queue-validator.js";
 import { createOrchestrator } from "../lib/orchestrator.js";
 import { planScene, nextSceneIndex, nextSceneIndexByStatus } from "../lib/queue.js";
+import { chooseProviderTab } from "../lib/provider-tabs.js";
 import { minMediaBytes } from "../shared/media-requirements.mjs";
 
 // Auto-reload de desarrollo: inerte en produccion (Web Store inyecta `update_url`
@@ -38,6 +39,7 @@ let remotePollBusy = false; // guarda anti-reentrada de pollRemoteCommands (boot
 let pollQueueBusy = false;  // guarda anti-reentrada de pollQueue (la ventana claim->onRunAll dura minutos)
 let audioBusy = false;      // guarda anti-reentrada de onGenerateAudio (2 triggers = doble gasto de creditos)
 let resumeInFlight = false; // resumeIfInterrupted en curso: pollQueue NO debe liberar/reclamar mientras tanto
+const providerTabIds = { flow: null, grok: null }; // ancla por corrida: cambiar de ventana no cambia la pestana objetivo
 
 // ---------------------------------------------------------------------------
 // Persistencia
@@ -158,7 +160,13 @@ function log(level, message) {
   emit(EVT.LOG, entry);
   logRing.push(entry);
   if (logRing.length > LOG_RING_MAX) logRing.splice(0, logRing.length - LOG_RING_MAX);
-  scheduleLogSave();
+  // Los WARN/ERROR suelen ser la unica pista de una corrida que mata/reinicia el worker. Persistirlos
+  // inmediatamente evita perder justo el error por el debounce de 2s; INFO/DEBUG siguen agrupados.
+  if (level === LOG_LEVEL.ERROR || level === LOG_LEVEL.WARN) {
+    chrome.storage.local.set({ [LOG_RING_KEY]: logRing }).catch(() => {});
+  } else {
+    scheduleLogSave();
+  }
   if (level === LOG_LEVEL.ERROR || level === LOG_LEVEL.WARN || /PAUSA|PARADA|AUTOPILOTO detenido|medios listos/i.test(message || "")) {
     postRemoteEvent({ level, message, ts: entry.ts }).catch(() => {});
   }
@@ -326,7 +334,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
   // Click TRUSTED (lo pide el content script para el boton Generar de Flow).
   if (type === "trusted_click") {
-    trustedClick(_sender?.tab?.id, message.x, message.y)
+    trustedClick(_sender?.tab?.id, message.x, message.y, { releaseAfterClick: !!message.releaseAfterClick })
       .then(() => sendResponse({ ok: true }))
       .catch((e) => sendResponse({ ok: false, error: e?.message ?? String(e) }));
     return true;
@@ -641,8 +649,10 @@ async function onRetryScene(message) {
   }
   // Guard de corrida activa (mismo criterio que onRetryIngredient): un retry a media corrida cambiaba
   // queue.phase debajo del bucle vivo. Con la cola PAUSADA (flujo normal de recuperacion) si se permite.
-  if ((autopilotBusy || loopRunning || ingredientsRunning || state.queue.running) && !state.queue.paused) {
-    log(LOG_LEVEL.WARN, `Escena ${scene.id}: hay una corrida activa; pausa o espera a que termine antes de reintentar.`);
+  if (autopilotBusy || loopRunning || ingredientsRunning) {
+    log(LOG_LEVEL.WARN, state.queue.paused
+      ? `Escena ${scene.id}: la pausa ya se registro, pero la accion actual aun esta cerrando; espera a que termine antes de reintentar.`
+      : `Escena ${scene.id}: hay una corrida activa; pausa o espera a que termine antes de reintentar.`);
     emitState();
     return;
   }
@@ -701,13 +711,17 @@ async function onRetryIngredient(message) {
   }
   const activeIngredient = (state.project?.ingredients || []).some((g) => g.status === SCENE_STATUS.GENERATING_IMAGE);
   const ingredientPhaseActive = ingredientsRunning || ((autopilotBusy || state.queue.running) && activeIngredient);
-  if (ingredientPhaseActive && !state.queue.paused) {
-    log(LOG_LEVEL.WARN, `Ingrediente ${ingredientId}: hay otra generacion de ingredientes activa; espera a que termine o detenla antes de rehacer.`);
+  if (ingredientPhaseActive) {
+    log(LOG_LEVEL.WARN, state.queue.paused
+      ? `Ingrediente ${ingredientId}: la pausa ya se registro, pero la subida/generacion actual aun esta cerrando; espera antes de rehacer.`
+      : `Ingrediente ${ingredientId}: hay otra generacion de ingredientes activa; espera a que termine o detenla antes de rehacer.`);
     emitState();
     return;
   }
-  if ((autopilotBusy || loopRunning || state.queue.running) && !state.queue.paused) {
-    log(LOG_LEVEL.WARN, `Ingrediente ${ingredientId}: espera a que termine o pausa la corrida antes de rehacerlo.`);
+  if (autopilotBusy || loopRunning) {
+    log(LOG_LEVEL.WARN, state.queue.paused
+      ? `Ingrediente ${ingredientId}: la corrida aun esta cerrando la accion en curso; espera antes de rehacerlo.`
+      : `Ingrediente ${ingredientId}: espera a que termine o pausa la corrida antes de rehacerlo.`);
     emitState();
     return;
   }
@@ -768,8 +782,10 @@ async function onRetryAllErrors() {
   const errs = state.scenes.filter((s) => s.status === SCENE_STATUS.ERROR);
   if (!errs.length) { log(LOG_LEVEL.INFO, "No hay escenas en error para reintentar."); return; }
   // Mismo guard que onRetryScene: no cambiar fase/estados debajo de un bucle vivo (con pausa si se permite).
-  if ((autopilotBusy || loopRunning || ingredientsRunning) && !state.queue.paused) {
-    log(LOG_LEVEL.WARN, "Reintentar errores: hay una corrida activa; pausa o espera a que termine.");
+  if (autopilotBusy || loopRunning || ingredientsRunning) {
+    log(LOG_LEVEL.WARN, state.queue.paused
+      ? "Reintentar errores: la pausa ya se registro, pero la accion actual aun esta cerrando; espera un momento."
+      : "Reintentar errores: hay una corrida activa; pausa o espera a que termine.");
     emitState();
     return;
   }
@@ -1707,7 +1723,7 @@ async function runGrokAnimation(scene) {
       await ensureGrokCompositor(tab.id);          // composer fresco (sin /post)
       await ensureContentScript(tab.id, "grok");
       await ensureDebugger(tab.id);                // CDP para subir el archivo + el clic TRUSTED
-      try { await sendActOrFail(tab.id, ACT.CLEAR_REFS, {}); } catch (_e) {}
+      await clearGrokRefsOrFail(tab.id, scene.id);
       await cdpSetFileInput(tab.id, [scene.imageFilePath]);
       log(LOG_LEVEL.INFO, `${scene.id}: imagen subida a Grok para animar (handoff desde ${imgProv}).`);
     } else {
@@ -2613,14 +2629,16 @@ function isClosedImageChannelError(e) {
 }
 
 function isNoNewGrokImageError(e) {
-  return /no aparecio imagen nueva en Grok tras generar/i.test(e?.message ?? String(e));
+  return /no aparecio imagen nueva en Grok tras generar|imagen nueva de Grok no se estabilizo/i.test(e?.message ?? String(e));
 }
 
 function isGrokSendNotRegisteredError(e) {
-  return /Enviar de Grok no registro|prompt no se vacio/i.test(e?.message ?? String(e));
+  return /Enviar de Grok no registro|prompt no se vacio|prompt de Grok no se pudo reemplazar/i.test(e?.message ?? String(e));
 }
 
 async function sendGrokGenerateImage(tabId, payload) {
+  let before = [];
+  try { before = (await sendActOrFail(tabId, ACT.IMAGE_KEYS, {}))?.keys || []; } catch (_e) {}
   try {
     return await sendActOrFail(tabId, ACT.GENERATE_IMAGE, payload);
   } catch (e) {
@@ -2629,29 +2647,59 @@ async function sendGrokGenerateImage(tabId, payload) {
     if (!closedChannel && !noNewImage) throw e;
     const reason = closedChannel ? "cerro el canal durante generate_image" : "no reporto imagen nueva tras generar";
     log(LOG_LEVEL.WARN, `Grok ${reason}; intento recuperar la imagen ya generada (${e?.message ?? e}).`);
-    await delay(closedChannel ? 5000 : 2000);
+    await delay(closedChannel ? 3000 : 1500);
     try {
       await ensureContentScript(tabId, "grok");
       const recovered = await sendActOrFail(tabId, ACT.COLLECT_IMAGE, {
         cfg: payload?.cfg,
-        requirePost: true,
-        timeoutMs: 45000,
+        before,
+        requirePost: false,
+        timeoutMs: 60000,
       });
       if (recovered?.imageUrl) {
-        log(LOG_LEVEL.INFO, "Grok: imagen recuperada desde /post tras fallo de deteccion.");
+        log(LOG_LEVEL.INFO, `Grok: imagen ya generada recuperada desde ${recovered.postUrl ? "/post" : "la grilla de 4 variantes"}; NO regenero.`);
         return recovered;
       }
     } catch (recoverErr) {
       log(LOG_LEVEL.WARN, `Grok: no pude recuperar imagen tras fallo de deteccion (${recoverErr?.message ?? recoverErr}).`);
     }
-    throw e;
+    // Segunda via: abrir la primera tarjeta nueva. Grok convierte el data: de la grilla en un post con
+    // URL JPG directa (imagine-public.x.ai), equivalente al boton Descargar que verificamos en vivo.
+    try {
+      let postUrl = "";
+      try { postUrl = (await chrome.tabs.get(tabId))?.url || ""; } catch (_e) {}
+      if (!/\/imagine\/post\//.test(postUrl)) {
+        try { await sendActOrFail(tabId, ACT.OPEN_IMAGE, { before }); } catch (_e) { /* navegar cierra el canal */ }
+        const t0 = Date.now();
+        while (Date.now() - t0 < 12000) {
+          try { postUrl = (await chrome.tabs.get(tabId))?.url || ""; } catch (_e) {}
+          if (/\/imagine\/post\//.test(postUrl)) break;
+          await delay(300);
+        }
+      }
+      if (/\/imagine\/post\//.test(postUrl)) {
+        await ensureContentScript(tabId, "grok");
+        const opened = await sendActOrFail(tabId, ACT.COLLECT_IMAGE, {
+          cfg: payload?.cfg,
+          before,
+          requirePost: true,
+          timeoutMs: 30000,
+        });
+        if (opened?.imageUrl) {
+          log(LOG_LEVEL.INFO, "Grok: adopte la primera variante abriendo su post descargable; NO regenero.");
+          return opened;
+        }
+      }
+    } catch (openErr) {
+      log(LOG_LEVEL.WARN, `Grok: tampoco pude adoptar la primera variante desde su post (${openErr?.message ?? openErr}).`);
+    }
+    const guarded = new Error(`${e?.message ?? e}. Grok pudo haber generado la imagen; no la reenvio automaticamente para evitar duplicarla.`);
+    guarded.noAutoRetry = true;
+    throw guarded;
   }
 }
 
-async function prepareGrokImageAttempt(tabId, refPaths, label) {
-  await ensureGrokCompositor(tabId);
-  await ensureContentScript(tabId, "grok");
-  await ensureDebugger(tabId);
+async function clearGrokRefsOrFail(tabId, label) {
   // Limpiar las referencias de la escena PREVIA antes de subir las nuevas. Verificar que quedaron 0 chips
   // (si clearRefs no alcanzo a quitarlos todos, se acumulan y Grok rechaza por pasar de 3): reintentar 1 vez.
   let cleared = false;
@@ -2662,11 +2710,22 @@ async function prepareGrokImageAttempt(tabId, refPaths, label) {
     } catch (_e) { cleared = false; }
     if (!cleared) await new Promise((res) => setTimeout(res, 300));
   }
-  if (!cleared) log(LOG_LEVEL.WARN, `${label}: no confirme 0 referencias previas tras limpiar; Grok podria rechazar por exceso.`);
+  if (!cleared) throw new Error(`${label}: Grok conserva referencias previas; recarga y reintenta para no mezclar escenas`);
+}
+
+async function prepareGrokImageAttempt(tabId, refPaths, label) {
+  await ensureGrokCompositor(tabId);
+  await ensureContentScript(tabId, "grok");
+  await ensureDebugger(tabId);
+  await clearGrokRefsOrFail(tabId, label);
   if (refPaths?.length) {
     try {
       await cdpSetFileInput(tabId, refPaths);
-      log(LOG_LEVEL.INFO, `${label}: ${refPaths.length} referencia(s) subidas a Grok.`);
+      const attached = await sendActOrFail(tabId, ACT.WAIT_FOR_REFS, {
+        expected: refPaths.length,
+        timeoutMs: 15000,
+      });
+      log(LOG_LEVEL.INFO, `${label}: ${refPaths.length} referencia(s) subidas y confirmadas en Grok (${attached?.fileCount || attached?.previewCount || attached?.count || refPaths.length}).`);
     } catch (e) {
       // Antes: WARN + "genero sin ellas" -> imagen SIN personaje/escenario que terminaba DONE como si
       // nada (perdida de continuidad indetectable). Fallar el intento: el reintento recarga y re-sube.
@@ -2726,16 +2785,13 @@ function navigateTab(tabId, url) {
 // Busca la pestana del PROVEEDOR activo: Flow (labs.google) o Grok (grok.com). Prefiere la activa.
 async function findFlowTab(provider) {
   const isGrok = (provider || state.config.provider) === "grok";
+  const key = isGrok ? "grok" : "flow";
   const pattern = isGrok ? "https://grok.com/*" : "https://labs.google/*";
   try {
     const tabs = await chrome.tabs.query({ url: pattern });
-    // Grok: preferir la pestana que YA esta en /imagine; sin esto, con un chat de grok.com abierto y
-    // activo, el bot lo secuestraba y lo navegaba a /imagine sin avisar.
-    if (isGrok) {
-      const imagine = tabs.filter((t) => /grok\.com\/imagine/.test(t.url || ""));
-      if (imagine.length) return imagine.find((t) => t.active) ?? imagine[0];
-    }
-    return tabs.find((t) => t.active) ?? tabs[0] ?? null;
+    const chosen = chooseProviderTab(tabs, key, providerTabIds[key]);
+    providerTabIds[key] = chosen?.id ?? null;
+    return chosen;
   } catch (e) {
     console.warn("findFlowTab:", e);
     return null;
@@ -2775,11 +2831,13 @@ async function ensureGrokCompositor(tabId) {
     });
   });
   const t0 = Date.now();
+  let ready = false;
   while (Date.now() - t0 < 20000) {
     let t = null; try { t = await chrome.tabs.get(tabId); } catch (_e) {}
-    if (t && t.status === "complete" && /grok\.com\/imagine/.test(t.url || "")) break;
+    if (t && t.status === "complete" && /grok\.com\/imagine/.test(t.url || "")) { ready = true; break; }
     await delay(300);
   }
+  if (!ready) throw new Error("Grok no termino de cargar el compositor en 20s");
   await delay(1200); // hidratacion React del composer
 }
 
@@ -2794,18 +2852,19 @@ async function hardReloadGrok(tabId) {
     const t0 = Date.now();
     while (Date.now() - t0 < ms) {
       let t = null; try { t = await chrome.tabs.get(tabId); } catch (_e) {}
-      if (t && t.status === "complete" && /grok\.com\/imagine/.test(t.url || "")) return;
+      if (t && t.status === "complete" && /grok\.com\/imagine/.test(t.url || "")) return true;
       await delay(300);
     }
+    return false;
   };
   await new Promise((resolve, reject) => {
     chrome.tabs.update(tabId, { url: "https://grok.com/imagine" }, () => {
       const e = chrome.runtime.lastError; if (e) return reject(new Error(e.message)); resolve();
     });
   });
-  await waitComplete(25000);
+  if (!(await waitComplete(25000))) throw new Error("Grok no termino la navegacion limpia en 25s");
   await new Promise((resolve) => chrome.tabs.reload(tabId, { bypassCache: true }, () => { void chrome.runtime.lastError; resolve(); }));
-  await waitComplete(25000);
+  if (!(await waitComplete(25000))) throw new Error("Grok no termino la recarga sin cache en 25s");
   await delay(1500); // hidratacion React del composer
 }
 
@@ -2858,12 +2917,18 @@ async function ensureDebugger(tabId) {
 }
 
 // Click trusted en coordenadas (CSS px del viewport).
-async function trustedClick(tabId, x, y) {
+async function trustedClick(tabId, x, y, { releaseAfterClick = false } = {}) {
   if (tabId == null) throw new Error("trusted_click sin tabId");
   await ensureDebugger(tabId);
-  await debuggerSend(tabId, "Input.dispatchMouseEvent", { type: "mouseMoved", x, y });
-  await debuggerSend(tabId, "Input.dispatchMouseEvent", { type: "mousePressed", x, y, button: "left", buttons: 1, clickCount: 1 });
-  await debuggerSend(tabId, "Input.dispatchMouseEvent", { type: "mouseReleased", x, y, button: "left", buttons: 0, clickCount: 1 });
+  try {
+    await debuggerSend(tabId, "Input.dispatchMouseEvent", { type: "mouseMoved", x, y });
+    await debuggerSend(tabId, "Input.dispatchMouseEvent", { type: "mousePressed", x, y, button: "left", buttons: 1, clickCount: 1 });
+    await debuggerSend(tabId, "Input.dispatchMouseEvent", { type: "mouseReleased", x, y, button: "left", buttons: 0, clickCount: 1 });
+  } finally {
+    // Grok solo necesita CDP para que el click sea trusted. Retener la sesion durante los 20-360s de
+    // generacion hacia que la pestana y otras ventanas se sintieran lentas y podia ocupar el limite CDP.
+    if (releaseAfterClick) detachDebugger(tabId);
+  }
 }
 
 function detachDebuggers() {
@@ -2897,7 +2962,11 @@ async function detachProvider(provider) {
 chrome.debugger?.onDetach?.addListener((src) => {
   if (src?.tabId != null) attachedTabs.delete(src.tabId);
 });
-chrome.tabs?.onRemoved?.addListener((tabId) => attachedTabs.delete(tabId));
+chrome.tabs?.onRemoved?.addListener((tabId) => {
+  attachedTabs.delete(tabId);
+  if (providerTabIds.grok === tabId) providerTabIds.grok = null;
+  if (providerTabIds.flow === tabId) providerTabIds.flow = null;
+});
 
 // ---------------------------------------------------------------------------
 // Reporte final de fallos
@@ -3119,8 +3188,15 @@ async function ensureIngredientsBeforeSceneLoop(reason = "arrancar escenas") {
     return false;
   });
   if (!ok) {
-    log(LOG_LEVEL.ERROR, `No arranco escenas: ingredientes incompletos (${reason}).`);
     await ensureState();
+    const ingredientFailed = (state.project?.ingredients || []).some((g) => g.status === SCENE_STATUS.ERROR);
+    if (state.queue?.paused && !ingredientFailed) {
+      // Una pausa solicitada mientras Grok termina el item actual es una salida normal. Antes se pintaba
+      // como ERROR y el panel parecia averiado aunque el asset en vuelo se hubiera guardado bien.
+      log(LOG_LEVEL.INFO, `Escenas en espera: fase de ingredientes pausada (${reason}).`);
+    } else {
+      log(LOG_LEVEL.ERROR, `No arranco escenas: ingredientes incompletos (${reason}).`);
+    }
     emitState();
     return false;
   }
@@ -3253,6 +3329,7 @@ async function runIngredientsPhase(options = {}) {
         }
         const img = await sendGrokGenerateImageWithUiRetry(tab.id, {
           prompt: ing.prompt,
+          aspectRatio,
           cfg: driverCfg(),
         }, { refPaths, label: `Ingrediente ${ing.id}` });
         if (!img?.imageUrl) throw new Error("Grok no devolvio URL de imagen");
@@ -3293,7 +3370,7 @@ async function runIngredientsPhase(options = {}) {
       // Reintento REACTIVO (solo Grok, imagenes gratis): la causa tipica es la pestana colgada. Antes se
       // pausaba TODO al primer error sin recargar; ahora recarga de cero y reintenta 1 vez antes de pausar.
       const tries = ingRetries.get(ing.id) || 0;
-      if (provider === "grok" && tries < 1) {
+      if (provider === "grok" && tries < 1 && !e?.noAutoRetry) {
         ingRetries.set(ing.id, tries + 1);
         log(LOG_LEVEL.WARN, `Ingrediente ${ing.id} fallo (${e?.message ?? e}); recargo Grok de cero y reintento (2/2).`);
         try { await hardReloadGrok(tab.id); } catch (re) { log(LOG_LEVEL.WARN, `Recarga de Grok fallo (${re?.message ?? re}); reintento igual.`); }
@@ -3305,6 +3382,7 @@ async function runIngredientsPhase(options = {}) {
         ingIndex--;   // repite este mismo ingrediente
         continue;
       }
+      if (e?.noAutoRetry) log(LOG_LEVEL.WARN, `Ingrediente ${ing.id}: no re-genero automaticamente porque Grok pudo haber creado ya el asset.`);
       log(LOG_LEVEL.ERROR, `Ingrediente ${ing.id} fallo: ${e?.message ?? e}`);
       await pauseForError(`ingrediente ${ing.id}: ${e?.message ?? e}`, null);
       return false;
@@ -3347,7 +3425,17 @@ async function onRunAll() {
   catch (e) { log(LOG_LEVEL.ERROR, `AUTOPILOTO detenido: ${e?.message ?? e}`); return; }
 
   // FASE 0: ingredientes (si el JSON los trae). Antes de imagenes; no-op si no hay. Parada dura -> detener.
-  try { if (!(await runIngredientsPhase())) { log(LOG_LEVEL.ERROR, "AUTOPILOTO detenido en ingredientes."); return; } }
+  try {
+    if (!(await runIngredientsPhase())) {
+      await ensureState();
+      const ingredientFailed = (state.project?.ingredients || []).some((g) => g.status === SCENE_STATUS.ERROR);
+      log(state.queue?.paused && !ingredientFailed ? LOG_LEVEL.INFO : LOG_LEVEL.ERROR,
+        state.queue?.paused && !ingredientFailed
+          ? "AUTOPILOTO pausado durante ingredientes."
+          : "AUTOPILOTO detenido en ingredientes.");
+      return;
+    }
+  }
   catch (e) { log(LOG_LEVEL.ERROR, `AUTOPILOTO detenido en ingredientes: ${e?.message ?? e}`); return; }
 
   // image-only (historias): el paralelo no aplica (no hay carril de animacion); forzar secuencial.
