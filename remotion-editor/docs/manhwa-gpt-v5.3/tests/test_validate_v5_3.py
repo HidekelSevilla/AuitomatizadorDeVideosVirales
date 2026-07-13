@@ -167,7 +167,7 @@ def configure_plans() -> list[dict]:
     beats = {
         0: "HOOK", 4: "DETONATOR", 6: "THREAT", 8: "BOND", 12: "DECISION",
         16: "PERCEPTION", 17: "MANIFESTATION", 22: "PRESSURE", 27: "PREPARATION",
-        30: "PAYOFF", 34: "COST", 35: "CONSEQUENCE", 39: "CLIFFHANGER",
+        29: "PAYOFF", 34: "COST", 35: "CONSEQUENCE", 39: "CLIFFHANGER",
     }
     for index, beat in beats.items():
         plans[index]["beat"] = beat
@@ -195,7 +195,7 @@ def configure_plans() -> list[dict]:
         plans[index]["shot_scale"] = "EXTREME_CLOSE" if subject in {"EYES", "MOUTH_JAW"} else "MACRO"
         plans[index]["subject_pct"] = 80
 
-    reaction_map = {5: 4, 7: 6, 13: 12, 18: 17, 31: 30, 35: 34}
+    reaction_map = {5: 4, 7: 6, 13: 12, 18: 17, 31: 29, 35: 34}
     for index, target in reaction_map.items():
         mode = "SHOCK" if index in {7, 18} else "REACTION"
         plans[index]["high_tension"] = True
@@ -445,7 +445,7 @@ def make_valid_data() -> dict:
     full_script = "\n".join(item["voiceover"]["text"] for item in scenes)
     scene_seconds = [validator.spoken_words(item["voiceover"]["text"]) * 60 / (150 * 1.4) for item in scenes]
     runtime_estimate = round(sum(scene_seconds), 3)
-    payoff_scene_id = panel_to_scene_id[30]
+    payoff_scene_id = panel_to_scene_id[29]
     payoff_index = next(index for index, item in enumerate(scenes) if item["id"] == payoff_scene_id)
     payoff_start_pct = round(sum(scene_seconds[:payoff_index]) / runtime_estimate, 4)
     return {

@@ -271,7 +271,7 @@ The exhausted female worker reaches for the frightened child as the young cleane
 ### WHITE_ISOLATE de reacción
 
 ```text
-The short-haired young cleaner recoils from the frightened worker, eyebrows lifted, jaw rigid, both hands lowering as his weight shifts backward. Pure white webtoon page with his isolated full-body figure lower-right and 65% blank white field. Eye-level angle, side full-body shot, level camera roll, at rainy midnight. Restrained gray workwear carries one red-black mark accent. Hand-drawn Korean manhwa webtoon illustration, controlled flat cel shading, crisp inked lineart, vertical 9:16 composition, no readable text.
+The short-haired young cleaner recoils from the frightened worker, eyebrows lifted, jaw rigid, both hands lowering as his weight shifts backward. Pure white webtoon page with his isolated full-body figure lower-right and 65% blank white field. Eye-level angle, side view, full-body shot, level camera roll, at rainy midnight. Restrained gray workwear carries one red-black mark accent. Hand-drawn Korean manhwa webtoon illustration, controlled flat cel shading, crisp inked lineart, vertical 9:16 composition, no readable text.
 ```
 
 ### Fragmento de ojos
@@ -289,7 +289,7 @@ The short-haired cleaner advances alone toward the fractured tunnel, shoulders r
 ### TALL_ACTION
 
 ```text
-The cleaner hurls the plated black creature downward while anchoring above, one red-black force ribbon connecting them. Full-height tall action panel, high-angle distant wide side view, level camera roll; both complete bodies occupy separate upper and lower thirds while the movement vector spans 70% of the canvas. Tunnel columns and falling debris prove scale without hiding either silhouette. At rainy midnight, red emergency light enters from screen-left and white concrete sparks rebound from below. Hand-drawn Korean manhwa webtoon illustration, controlled cel shading, crisp inked lineart, vertical 9:16 composition, no readable text.
+The cleaner hurls the plated black creature downward while anchoring above, one red-black force ribbon connecting them. Full-height tall action panel, high-angle wide master, side view, level camera roll; both complete bodies occupy separate upper and lower thirds while the movement vector spans 70% of the canvas. Tunnel columns and falling debris prove scale without hiding either silhouette. At rainy midnight, red emergency light enters from screen-left and white concrete sparks rebound from below. Hand-drawn Korean manhwa webtoon illustration, controlled cel shading, crisp inked lineart, vertical 9:16 composition, no readable text.
 ```
 
 ### Master de acción

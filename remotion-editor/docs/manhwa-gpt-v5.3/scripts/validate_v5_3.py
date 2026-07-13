@@ -1565,6 +1565,13 @@ def validate_references(
             scene_refs = []
         total += len(scene_refs)
         inherited: set[str] = set()
+        inherited_performance: set[str] = set()
+        if scene_refs and not re.search(
+            r"\bSame exact moment and same character positions as the scene reference, now seen from\b",
+            record.get("prompt", ""),
+            re.I,
+        ):
+            add_issue(issues, "references_valid_max_three", "SCENE_REFERENCE_PROMPT_FORMULA", "Prompt con references.scenes necesita fórmula canónica same-moment.", scene_id)
         for ref in scene_refs:
             if not isinstance(ref, dict) or not isinstance(ref.get("scene_id"), str):
                 add_issue(issues, "references_valid_max_three", "SCENE_REFERENCE_INVALID", "Cada scene reference necesita scene_id.", scene_id)
@@ -1575,6 +1582,18 @@ def validate_references(
                 add_issue(issues, "references_valid_max_three", "SCENE_REFERENCE_NOT_PRIOR", f"{target_id} no existe o no es anterior.", scene_id)
                 continue
             inherited.update(as_list(target.get("continuity", {}).get("visible_entities")))
+            target_refs = as_dict(target.get("scene", {}).get("references"))
+            for target_character_ref in as_list(target_refs.get("characters")):
+                if not isinstance(target_character_ref, dict):
+                    continue
+                inherited_id = target_character_ref.get("id")
+                inherited_pose = target_character_ref.get("pose")
+                if (
+                    isinstance(inherited_id, str)
+                    and isinstance(inherited_pose, str)
+                    and pose_roles.get((inherited_id, inherited_pose)) == "performance"
+                ):
+                    inherited_performance.add(inherited_id)
             current_plan, target_plan = record.get("plan", {}), target.get("plan", {})
             if current_plan.get("moment_id") != target_plan.get("moment_id"):
                 add_issue(issues, "references_valid_max_three", "SCENE_REFERENCE_MOMENT", "Scene reference debe conservar moment_id.", scene_id)
@@ -1603,7 +1622,8 @@ def validate_references(
                 continue
             entity_id = performance.get("entity_id")
             entity_refs = [ref for ref in as_list(refs.get("characters")) if isinstance(ref, dict) and ref.get("id") == entity_id]
-            if not entity_refs or pose_roles.get((str(entity_id), str(entity_refs[0].get("pose")))) != "performance":
+            direct_performance = bool(entity_refs) and pose_roles.get((str(entity_id), str(entity_refs[0].get("pose")))) == "performance"
+            if not direct_performance and entity_id not in inherited_performance:
                 add_issue(issues, "asset_registry", "PERFORMANCE_POSE_REQUIRED", f"Humano activo {entity_id} necesita referencia pose_role=performance.", scene_id)
     return max_references
 
@@ -2223,6 +2243,8 @@ def validate_global_visual_rules(
         trajectory = next((item for item in group if as_dict(item.get("plan", {}).get("action")).get("phase") == "TRAJECTORY"), None)
         contact = next((item for item in group if as_dict(item.get("plan", {}).get("action")).get("phase") == "CONTACT"), None)
         if trajectory and contact and trajectory["index"] < contact["index"]:
+            if contact["index"] != trajectory["index"] + 1:
+                add_issue(issues, "action_sequences", "TRAJECTORY_CONTACT_NOT_CONSECUTIVE", "TRAJECTORY y CONTACT deben ser ventanas consecutivas.", contact["id"])
             between = [item for item in records if trajectory["index"] < item["index"] < contact["index"]]
             if any(item["type"] == "narrative_card" or item.get("plan", {}).get("page_layout") in WHITE_LAYOUTS for item in between):
                 add_issue(issues, "action_sequences", "PUNCTUATION_BETWEEN_TRAJECTORY_CONTACT", "No puede haber card/blanco entre trayectoria y contacto.")
