@@ -79,6 +79,8 @@ Cada asset define `prompt_signature` inglesa estable de 4–30 palabras; todo ID
 
 Con 4+ identidades exige: ancla previa de dos figuras y luego master del mismo `moment_id` con esa `references.scenes` + protagonista + criatura, sin plate; o geografía dividida. Una identidad visible sin ref es FAIL.
 
+Toda scene ref exige la fórmula literal `Same exact moment and same character positions as the scene reference, now seen from ...`, cámara distinta y firmas/estados/límites interior-exterior repetidos.
+
 En full/medium especifica manos visibles, pies/rodillas sobre superficie, cabeza/mirada y contacto. En close no exijas cuerpo fuera del crop. Caída: cuerpo `lying ON TOP of` con puntos de contacto. Falla dos impactos, tres tiempos o actor simultáneamente dentro/fuera.
 
 ## 9. Assets

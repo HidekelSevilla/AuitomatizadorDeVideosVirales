@@ -231,6 +231,8 @@ edad + cabello/rostro + outfit + estado + verbo + emoción
 
 Para dos similares contrasta cabello, ropa, herida y posición. No menciones actor identificable sin referencia en panel cargado. En cápsula transparente conserva referencia del ocupante; ocúltalo con reflejo/silueta, nunca asiento vacío. No encadenes tres scene references.
 
+Una scene ref conserva instante/posiciones y abre con `Same exact moment and same character positions as the scene reference, now seen from ...`; luego repite firmas y límites dentro/fuera. No basta `same scene`.
+
 Con 4+ identidades, primero ancla dos figuras. Luego usa esa escena como una referencia heredada del mismo `moment_id`, más protagonista y criatura; omite la plate y describe el escenario. Si no caben, divide la geografía en dos paneles causales. Nunca hagas un master ambiguo con identidades sin referencia.
 
 ## 14. Prompts y estilo

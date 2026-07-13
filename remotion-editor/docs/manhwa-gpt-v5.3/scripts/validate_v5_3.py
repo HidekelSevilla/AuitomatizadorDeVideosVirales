@@ -2,7 +2,7 @@
 """Validador canónico fail-closed para contratos manhwa V5.3.
 
 Uso:
-    python validate_v5_3.py proyecto.json STORY_PACKET.md
+    python validate_v5_3.py proyecto.json STORY_PACKET.md [EXISTING_ASSET_MANIFEST.json]
 
 No usa dependencias externas. Siempre imprime un reporte JSON. Solo devuelve cero
 cuando el contrato completo y todos los gates de preflight producen
@@ -2434,8 +2434,10 @@ def validate(
     absolute: Path,
     packet: dict[str, Any] | None = None,
     packet_issues: list[dict[str, Any]] | None = None,
+    manifest: dict[str, Any] | None = None,
+    manifest_issues: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    issues: list[dict[str, Any]] = list(packet_issues or [])
+    issues: list[dict[str, Any]] = list(packet_issues or []) + list(manifest_issues or [])
     warnings: list[dict[str, Any]] = []
     if not isinstance(data, dict):
         return failure_report(str(absolute), "ROOT_NOT_OBJECT", "La raíz JSON debe ser un objeto.")
@@ -2449,9 +2451,10 @@ def validate(
 
     project, serie = validate_project(data, issues)
     pipeline = validate_pipeline(data, issues)
-    validate_production_lock(data, pipeline, packet, issues)
+    validate_production_lock(data, pipeline, packet, manifest, issues)
     registry, pose_roles, transparent = validate_assets(data, serie, issues)
     scenarios = validate_scenarios(data, serie, issues)
+    has_existing = validate_existing_assets(data, serie, manifest, issues)
     records = build_scene_records(data, registry, issues)
     beat_report = validate_story_beats(records, packet, issues)
     max_references = validate_references(records, registry, pose_roles, scenarios, issues)
@@ -2533,6 +2536,11 @@ def validate(
             "monologue_sha256": packet.get("monologue_sha256") if packet else None,
             "beats": beat_report,
         },
+        "asset_manifest": {
+            "required": has_existing,
+            "path": manifest.get("path") if manifest else None,
+            "sha256": manifest.get("sha256") if manifest else None,
+        },
         "tts": {"audio_tags": TAG_RE.findall(full_script)},
         "validator_version": VALIDATOR_VERSION,
         "scope": "PROMPT_PREFLIGHT_ONLY",
@@ -2540,15 +2548,20 @@ def validate(
 
 
 def main(argv: list[str]) -> int:
-    if len(argv) != 3:
-        report = failure_report("", "USAGE", "Uso: python validate_v5_3.py <proyecto.json> <STORY_PACKET.md>")
+    if len(argv) not in {3, 4}:
+        report = failure_report("", "USAGE", "Uso: python validate_v5_3.py <proyecto.json> <STORY_PACKET.md> [EXISTING_ASSET_MANIFEST.json]")
         print(json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False))
         return 1
     try:
         absolute, data = load_json(argv[1])
         packet_path = Path(argv[2]).expanduser().resolve()
         packet, packet_issues = parse_story_packet(packet_path.read_bytes(), packet_path)
-        report = validate(data, absolute, packet, packet_issues)
+        manifest = None
+        manifest_issues: list[dict[str, Any]] = []
+        if len(argv) == 4:
+            manifest_path = Path(argv[3]).expanduser().resolve()
+            manifest, manifest_issues = parse_asset_manifest(manifest_path.read_bytes(), manifest_path)
+        report = validate(data, absolute, packet, packet_issues, manifest, manifest_issues)
     except FileNotFoundError:
         report = failure_report(str(Path(argv[1]).expanduser()), "FILE_NOT_FOUND", "No se encontró el JSON o Story Packet.")
     except (json.JSONDecodeError, UnicodeDecodeError) as error:

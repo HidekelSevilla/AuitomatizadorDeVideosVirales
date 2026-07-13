@@ -248,6 +248,7 @@ references.scenes:
 - apunta únicamente a una escena anterior
 - conserva el mismo instante y posiciones
 - el prompt fuerza un plano o ángulo diferente
+- el prompt empieza su continuidad con `Same exact moment and same character positions as the scene reference, now seen from ...`
 - no se encadenan tres o más referencias de escena consecutivas
 
 ## 7. Panel

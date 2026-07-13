@@ -65,6 +65,8 @@ Máximo tres referencias. El generador no conoce nombres: describe edad, cabello
 
 Si una geografía necesita 4+ identidades, no elimines refs al azar: crea primero un ancla de dos figuras y después un master del mismo `moment_id` con esa `references.scenes` + protagonista + criatura, sin plate y con lugar literal. Si aún no caben, divide la geografía en dos paneles causales.
 
+Toda scene ref declara literalmente: `Same exact moment and same character positions as the scene reference, now seen from ...`; conserva identidades, estado y límites dentro/fuera.
+
 ## 7. Prompts
 
 Inglés, únicos y de un instante. Orden: sujeto+verbo → actuación → layout → plano+ángulo+distancia+ocupación → roles/eje/contactos → lugar+hora → fuente/dirección de luz+paleta+rebote → estilo.
