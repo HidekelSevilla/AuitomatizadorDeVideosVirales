@@ -34,6 +34,9 @@
   const RES = { CAPTCHA: "res:captcha", NO_CREDITS: "res:no_credits" };
 
   const SEL = () => window.FLOW_SELECTORS || {};
+  const LOCAL_REF_CACHE_KEY = "flow_local_reference_bindings_v1";
+  const localReferenceCache = new Map();
+  let localReferenceCacheLoaded = false;
 
   // ------------------------------------------------------------------ utils ---
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -41,6 +44,33 @@
   // puede importar jitterDelay del modulo, asi que va local.
   const rsleep = (min, max) => sleep(Math.round(min + Math.random() * Math.max(0, max - min)));
   const norm = (s) => (s || "").replace(/\s+/g, " ").trim();
+
+  function projectMediaScope() {
+    return location.pathname.match(/\/flow\/project\/([0-9a-f-]{6,})/i)?.[1] || "unknown";
+  }
+
+  function localReferenceCacheId(filePath) {
+    return `${projectMediaScope()}|${String(filePath || "").replace(/\\/g, "/").toLowerCase()}`;
+  }
+
+  async function loadLocalReferenceCache() {
+    if (localReferenceCacheLoaded) return;
+    localReferenceCacheLoaded = true;
+    try {
+      const saved = (await chrome.storage.local.get(LOCAL_REF_CACHE_KEY))?.[LOCAL_REF_CACHE_KEY] || {};
+      for (const [key, value] of Object.entries(saved)) if (value?.url) localReferenceCache.set(key, value);
+    } catch (_e) { /* cache opcional */ }
+  }
+
+  async function rememberLocalReference(filePath, mediaUrls, fingerprint = "") {
+    const url = (mediaUrls || []).find(Boolean);
+    if (!url) return;
+    await loadLocalReferenceCache();
+    localReferenceCache.set(localReferenceCacheId(filePath), { url, fingerprint, updatedAt: Date.now() });
+    const newest = [...localReferenceCache.entries()]
+      .sort((a, b) => (b[1]?.updatedAt || 0) - (a[1]?.updatedAt || 0)).slice(0, 250);
+    try { await chrome.storage.local.set({ [LOCAL_REF_CACHE_KEY]: Object.fromEntries(newest) }); } catch (_e) { /* opcional */ }
+  }
 
   function visible(el) {
     if (!el || !el.getBoundingClientRect) return false;
@@ -121,15 +151,20 @@
 
   // Click TRUSTED via el background (chrome.debugger / CDP). Necesario para "Generar":
   // Flow exige isTrusted=true (anti-bot) y un click sintetico NO funciona ahi.
-  async function trustedClickEl(el) {
+  async function trustedClickEl(el, { releaseAfterClick = false } = {}) {
     if (!el) throw new Error("trustedClickEl: nodo nulo");
     el.scrollIntoView({ block: "center", inline: "center" });
     await sleep(200);
     const r = el.getBoundingClientRect();
     const x = r.left + r.width / 2;
     const y = r.top + r.height / 2;
-    const resp = await chrome.runtime.sendMessage({ type: "trusted_click", x, y });
+    const resp = await chrome.runtime.sendMessage({ type: "trusted_click", x, y, releaseAfterClick });
     if (!resp || !resp.ok) throw new Error("click trusted fallo: " + (resp?.error || "sin respuesta del background"));
+  }
+
+  async function trustedKeyboard(payload) {
+    const resp = await chrome.runtime.sendMessage({ type: "trusted_keyboard", ...payload });
+    if (!resp || !resp.ok) throw new Error("teclado trusted fallo: " + (resp?.error || "sin respuesta del background"));
   }
 
   function hover(el) {
@@ -178,10 +213,29 @@
     sel.addRange(range);
   }
 
+  function slateValue(el) {
+    return norm([...el?.querySelectorAll?.('[data-slate-string="true"]') || []]
+      .map((n) => n.textContent || "").join(""));
+  }
+
   // Escribe en el editor Slate. CONFIRMADO: Slate IGNORA execCommand/mutaciones directas del
   // DOM; SOLO registra texto via eventos `beforeinput`. A veces no "pega" (foco/timing), asi que
   // verificamos y reintentamos. Devuelve true si el texto quedo escrito.
   async function typeInSlate(el, text, cfg) {
+    // Flow cambio Slate: InputEvent/insertText sintetico puede dejar texto VISIBLE dentro de
+    // data-slate-zero-width sin actualizar el estado React. La flecha sigue aria-disabled=true.
+    // Teclas CDP trusted crean data-slate-string y habilitan Crear (verificado en vivo 2026-07-11).
+    const wanted = String(text || "").replace(/\r?\n/g, " ");
+    try {
+      el.focus();
+      placeCaretEnd(el);
+      await trustedKeyboard({ text: wanted, replace: true });
+      await sleep(250);
+      const slateText = slateValue(el);
+      const gen = resolve(SEL().generateButton);
+      if (norm(slateText) === norm(wanted) && gen?.getAttribute("aria-disabled") !== "true") return true;
+    } catch (_e) { /* cae al metodo legacy para compatibilidad con un Flow anterior */ }
+
     for (let attempt = 0; attempt < 3; attempt++) {
       el.focus();
       placeCaretEnd(el);
@@ -215,6 +269,37 @@
       await rsleep(250, 500);
     }
     return false;
+  }
+
+  async function submitComposer(input, gen, cfg) {
+    let liveInput = resolve(SEL().promptInput) || input;
+    let liveGen = resolve(SEL().generateButton) || gen;
+    if (!liveGen) throw new Error("no encuentro el boton generar");
+    const before = slateValue(liveInput);
+    if (!before) throw new Error("Flow no registro texto antes de enviar");
+    const enabled = await waitFor(() => {
+      const b = resolve(SEL().generateButton);
+      return b && b.getAttribute("aria-disabled") !== "true" ? b : null;
+    }, { timeout: 8000 }).catch(() => null);
+    if (!enabled) throw new Error("Flow mostro el prompt pero no lo registro en Slate (Crear sigue deshabilitado)");
+
+    await rsleep(cfg?.reviewMinMs ?? 1200, cfg?.reviewMaxMs ?? 3500);
+    // Los selectores de referencias dejan el foco en una opcion/CTA y React puede reemplazar Slate.
+    // Re-resolver y enfocar el editor vivo justo antes de Enter evita que la tecla caiga en el dialogo.
+    liveInput = resolve(SEL().promptInput) || liveInput;
+    liveInput.focus();
+    placeCaretEnd(liveInput);
+    await trustedKeyboard({ key: "ENTER", releaseAfterKey: true });
+    const accepted = await waitFor(() => {
+      const after = slateValue(resolve(SEL().promptInput));
+      const b = resolve(SEL().generateButton);
+      return !after || after.length < Math.max(2, before.length / 2)
+        || b?.disabled || b?.getAttribute("aria-disabled") === "true" ? true : null;
+    }, { timeout: 8000 }).catch(() => null);
+    // Enter es el UNICO gesto de envio. Si Flow tarda en limpiar Slate, el caller sigue esperando el
+    // resultado hasta 180 s; nunca hacemos clic despues porque un envio aceptado pero lento gastaria dos
+    // generaciones. Si Enter de verdad no entro, termina en timeout recuperable sin doble gasto.
+    return !!accepted;
   }
 
   async function dataUrlToFile(dataUrl, name) {
@@ -295,8 +380,19 @@
   // srcs de imagenes generadas actualmente en la grilla. Multi-idioma: alt ES/EN + patron de URL
   // de media de Flow (getMediaUrlRedirect, agnostico). El diff antes/despues en generateImage
   // distingue la imagen NUEVA de las preexistentes (referencias, personaje).
-  function currentResultImgs() {
-    return [...document.querySelectorAll('img[alt="Imagen generada"], img[alt="Generated image"], img[src*="getMediaUrlRedirect"]')];
+  function mediaKey(src) {
+    try {
+      const u = new URL(String(src || ""), location.href);
+      return u.searchParams.get("name") || u.href;
+    } catch (_e) { return String(src || ""); }
+  }
+
+  function currentResultImgs(excludedKeys = null) {
+    const root = composerRoot();
+    return [...document.querySelectorAll('img[alt="Imagen generada"], img[alt="Generated image"], img[src*="getMediaUrlRedirect"]')]
+      .filter((img) => !!img.closest('a[href*="/edit/"]'))
+      .filter((img) => !root?.contains(img) && !img.closest('[role="dialog"]'))
+      .filter((img) => !excludedKeys?.has(mediaKey(img.currentSrc || img.src || "")));
   }
 
   // --------------------------------------------------------- referencias ------
@@ -307,7 +403,28 @@
 
   // Hay al menos un chip de referencia adjunto en el compositor (CONFIRMADO).
   function referenceChipPresent() {
-    return !!resolve(SEL().referenceChip);
+    return referenceChipCount() > 0;
+  }
+
+  function composerRoot() {
+    const input = resolve(SEL().promptInput);
+    const plus = resolve(SEL().openMediaDialogButton);
+    const gen = resolve(SEL().generateButton);
+    let node = input;
+    for (let depth = 0; node && depth < 10; depth++, node = node.parentElement) {
+      if ((!plus || node.contains(plus)) && (!gen || node.contains(gen))) return node;
+    }
+    return input?.parentElement || null;
+  }
+
+  function referenceChipElements() {
+    const chipSel = (SEL().referenceChip || []).filter((x) => x.by === "css").map((x) => x.value).join(",");
+    const root = composerRoot();
+    return chipSel && root ? [...root.querySelectorAll(chipSel)].filter(visible) : [];
+  }
+
+  function referenceChipCount() {
+    return referenceChipElements().length;
   }
 
   // Quita TODOS los chips de referencia del compositor (la "X" de cada chip = boton con icono "cancel").
@@ -316,20 +433,105 @@
   // sube -> "timeout esperando condicion") y se mezclan referencias de otras escenas. Verificado en vivo
   // 2026-06-20: el contenedor del chip trae un boton cuyo 1er token de innerText es "cancel".
   async function clearReferenceChips() {
-    const chipSel = (SEL().referenceChip || []).filter((x) => x.by === "css").map((x) => x.value).join(",");
-    if (!chipSel) return;
-    for (let guard = 0; guard < 12 && document.querySelector(chipSel); guard++) {
-      const chip = document.querySelector(chipSel);
-      let btn = null, n = chip;
-      for (let i = 0; i < 6 && n && !btn; i++) {
-        n = n.parentElement;
-        if (n) btn = [...n.querySelectorAll('button,[role="button"]')]
-          .find((b) => visible(b) && norm(b.innerText).split(/\s+/)[0].toLowerCase() === "cancel");
+    for (let guard = 0; guard < 20 && referenceChipElements().length; guard++) {
+      const chip = referenceChipElements()[0];
+      const root = composerRoot();
+      const isRemoveButton = (b) => {
+        const label = `${norm(b?.innerText)} ${norm(b?.getAttribute?.("aria-label") || "")}`;
+        return !!b && visible(b) && /(^|\s)(cancel|close|remove|cerrar|quitar)(\s|$)/i.test(label);
+      };
+      let btn = chip.closest('button,[role="button"]');
+      if (!isRemoveButton(btn)) btn = null;
+      let n = chip.parentElement;
+      for (let i = 0; !btn && i < 6 && n && n !== root; i++, n = n.parentElement) {
+        btn = [...n.querySelectorAll('button,[role="button"]')].find(isRemoveButton) || null;
       }
-      if (!btn) return;            // no hallo la X: no insistir (evita bucle)
+      if (!btn || (root && !root.contains(btn))) {
+        throw new Error(`Flow conserva ${referenceChipCount()} referencia(s), pero no expone su boton para quitarlas`);
+      }
+      const before = referenceChipCount();
       realClick(clickable(btn));
-      await sleep(250);
+      const removed = await waitFor(() => referenceChipCount() < before ? true : null, { timeout: 5000 }).catch(() => null);
+      if (!removed) throw new Error(`Flow no quito una referencia heredada (${before} siguen visibles)`);
     }
+    if (referenceChipCount()) throw new Error(`Flow no limpio todas las referencias heredadas (${referenceChipCount()} restantes)`);
+    return true;
+  }
+
+  // Sube una referencia LOCAL al selector multimedia de Flow usando CDP en el background y la
+  // adjunta solo cuando Flow ya creo una opcion real. Nunca acepta input.files como confirmacion:
+  // eso cambia antes de que React termine de consumir/subir el archivo.
+  async function attachLocalReference(filePath) {
+    const s = SEL();
+    const plus = resolve(s.openMediaDialogButton);
+    if (!plus) throw new Error('no encuentro el boton "+" para subir la referencia local');
+    await loadLocalReferenceCache();
+    const fingerprintReply = await chrome.runtime.sendMessage({ type: "flow_file_fingerprint", filePath }).catch(() => null);
+    const fingerprint = fingerprintReply?.ok ? fingerprintReply.fingerprint : "";
+    const cached = localReferenceCache.get(localReferenceCacheId(filePath));
+    if (cached?.url && fingerprint && cached.fingerprint === fingerprint) {
+      const cachedTile = await findResultImageScrolling(cached.url, allProjectImgs).catch(() => null);
+      if (cachedTile) {
+        const attached = await attachTileToPrompt(cachedTile);
+        await rememberLocalReference(filePath, attached?.mediaUrls || [cached.url], fingerprint);
+        return attached;
+      }
+    }
+    try { const sc = findResultsScroller(); if (sc) sc.scrollTo({ top: 0 }); await sleep(250); } catch (_e) {}
+    const chipsBefore = referenceChipCount();
+    const projectKeysBefore = new Set(currentResultImgs().map((i) => mediaKey(i.currentSrc || i.src || "")));
+    realClick(clickable(plus));
+    let dialog = await waitFor(() => [...document.querySelectorAll('[role="dialog"]')].find(visible), { timeout: 6000 });
+    const optionKey = (o) => `${norm(o.innerText)}|${[...o.querySelectorAll("img")].map((i) => i.currentSrc || i.src || "").join("|")}`;
+    const beforeOptions = new Set([...dialog.querySelectorAll('[role="option"]')].map(optionKey));
+    const beforeImgs = new Set([...dialog.querySelectorAll("img")].map((i) => i.currentSrc || i.src || "").filter(Boolean));
+    const filename = String(filePath || "").split(/[\\/]/).pop() || "";
+    const stem = filename.replace(/\.[^.]+$/, "").toLowerCase();
+    const upload = await chrome.runtime.sendMessage({
+      type: "flow_set_file_input",
+      files: [filePath],
+      selector: '[role="dialog"] input[type="file"][accept*="image"]',
+    });
+    if (!upload?.ok) throw new Error(`Flow no pudo colocar '${filename}' en el selector (${upload?.error || "sin respuesta"})`);
+
+    let candidate = await waitFor(() => {
+      const freshProject = currentResultImgs().filter((i) => !projectKeysBefore.has(mediaKey(i.currentSrc || i.src || "")));
+      if (referenceChipCount() > chipsBefore && freshProject.length) {
+        return { attached: true, mediaUrls: freshProject.map((i) => i.currentSrc || i.src || "").filter(Boolean) };
+      }
+      dialog = [...document.querySelectorAll('[role="dialog"]')].find(visible) || dialog;
+      const opts = [...dialog.querySelectorAll('[role="option"]')].filter(visible);
+      // El basename no demuestra identidad: P1/a/foo.jpg y P2/b/foo.jpg pueden ser imagenes distintas.
+      // Exigimos una opcion nueva con una imagen nueva ya decodificada antes de permitir el adjunto.
+      const fresh = opts.filter((o) => {
+        const imgs = [...o.querySelectorAll("img")];
+        return !beforeOptions.has(optionKey(o)) && imgs.some((i) => i.naturalWidth > 0
+          && !beforeImgs.has(i.currentSrc || i.src || ""));
+      });
+      const named = fresh.filter((o) => stem && norm(o.innerText).toLowerCase().includes(stem));
+      return named.find((o) => o.getAttribute("aria-selected") === "true") || named[0]
+        || fresh.find((o) => o.getAttribute("aria-selected") === "true") || fresh[0] || null;
+    }, { timeout: 30000 }).catch(() => null);
+    if (candidate?.attached) {
+      await rememberLocalReference(filePath, candidate.mediaUrls, fingerprint);
+      return { mediaUrls: candidate.mediaUrls };
+    }
+    if (!candidate) throw new Error(`Flow no termino de subir '${filename}' (no aparecio como recurso nuevo)`);
+    const mediaUrls = [...candidate.querySelectorAll("img")].map((i) => i.currentSrc || i.src || "").filter(Boolean);
+    if (candidate.getAttribute("aria-selected") !== "true") { realClick(clickable(candidate)); await sleep(350); }
+
+    const findCta = () => resolve(s.addToPromptButton)
+      || [...document.querySelectorAll('button,[role="button"]')].find((b) => visible(b)
+        && /a.adir a la petic|agregar a la (petic|instrucc)|add to (prompt|instruction)/i.test(norm(b.innerText)));
+    const cta = await waitFor(() => {
+      const b = findCta();
+      return b && !b.disabled && b.getAttribute("aria-disabled") !== "true" ? b : null;
+    }, { timeout: 8000 }).catch(() => null);
+    if (!cta) throw new Error(`Flow subio '${filename}', pero no habilito "Añadir a la peticion"`);
+    realClick(clickable(cta));
+    await waitFor(() => referenceChipCount() > chipsBefore, { timeout: 8000 });
+    await rememberLocalReference(filePath, mediaUrls, fingerprint);
+    return { mediaUrls };
   }
 
   // Encuentra el ⋮ ("more_vert") del TILE indicado: hace hover sobre el tile y toma el boton
@@ -366,6 +568,8 @@
   // ⋮ -> "Añadir a la petición" -> espera el chip en el compositor. CONFIRMADO 2026-06-14.
   async function attachTileToPrompt(tileImg) {
     const s = SEL();
+    const before = referenceChipCount();
+    const mediaUrls = [tileImg.currentSrc || tileImg.src || ""].filter(Boolean);
     const more = await tileMoreButton(tileImg);
     if (!more) throw new Error("no encuentro el ⋮ de este tile (hover/grilla)");
     realClick(clickable(more));
@@ -379,7 +583,8 @@
     }
     if (!add) throw new Error('no encuentro "Añadir a la petición"/"Add to prompt" en el menu (¿es este tile un Personaje real, no una plantilla?)');
     realClick(clickable(add));
-    await waitFor(() => referenceChipPresent(), { timeout: 5000 });
+    await waitFor(() => referenceChipCount() > before, { timeout: 5000 });
+    return { mediaUrls };
   }
 
   // Adjunta el PERSONAJE de Flow al prompt via el SELECTOR DE RECURSOS (boton "+"). CONFIRMADO
@@ -432,7 +637,11 @@
       const rows = [...pickerRoot.querySelectorAll('[role="option"],[role="menuitem"],li,button,div,span')]
         .filter((e) => {
           const t = norm(e.innerText);
-          return visible(e) && t.length > 0 && t.length < 30 && (!nameLc || t.toLowerCase().includes(nameLc));
+          const tl = t.toLowerCase();
+          const alts = [...e.querySelectorAll("img")].map((i) => norm(i.alt).toLowerCase());
+          const exact = alts.includes(nameLc) || tl === nameLc || tl.startsWith(`${nameLc} ${nameLc} `)
+            || t.split(/\r?\n/).some((line) => norm(line).toLowerCase() === nameLc);
+          return visible(e) && t.length > 0 && t.length < 80 && (!nameLc || exact);
         });
       if (!rows.length) return null;
       // El PERSONAJE: contiene "Personaje"/"Carácter"/"Character" y NO la palabra imagen/.png (eso
@@ -458,11 +667,14 @@
       }
     }
     if (!result) throw new Error(`no encuentro el personaje "${characterName || ""}" en el selector "+" (¿esta creado en ESTE proyecto con ese nombre?)`);
+    const mediaUrls = [...result.querySelectorAll("img")].map((i) => i.currentSrc || i.src || "").filter(Boolean);
     // Cuenta chips ANTES de adjuntar (el exito = aparece uno NUEVO; correcto con varios personajes).
-    const chipSel = (s.referenceChip || []).filter((x) => x.by === "css").map((x) => x.value).join(",");
-    const countChips = () => (chipSel ? document.querySelectorAll(chipSel).length : (referenceChipPresent() ? 1 : 0));
+    const countChips = () => referenceChipCount();
     const before = countChips();
-    realClick(clickable(result));
+    // La busqueda actual de Flow preselecciona automaticamente el unico resultado. Clicarlo otra vez
+    // lo deselecciona; solo hacemos clic cuando aun no esta seleccionado.
+    const resultOption = result.closest?.('[role="option"]') || result;
+    if (resultOption.getAttribute("aria-selected") !== "true") realClick(clickable(result));
 
     // 4) Adjuntar la referencia. La UI de Flow tiene DOS variantes (verificado en vivo 2026-06-20):
     //  (a) ACTUAL: al clicar el resultado del Personaje lo adjunta DIRECTO y CIERRA el picker -> NO hay
@@ -488,10 +700,11 @@
       realClick(clickable(addBtn));
       await waitFor(() => countChips() > before, { timeout: 6000 });
     }
+    return { mediaUrls };
   }
 
   // ------------------------------------------------------------- acciones -----
-  async function generateImage({ prompt, characterNames, sceneRefImageUrls, ingredientRefs, useCharacterRef, characterName, aspectRatio, count, cfg }) {
+  async function generateImage({ prompt, characterNames, sceneRefImageUrls, ingredientRefs, localReferencePaths, useCharacterRef, characterName, aspectRatio, count, cfg }) {
     const s = SEL();
     const hs = detectHardStop(); if (hs) return hs;
 
@@ -510,45 +723,54 @@
     // Limpia chips heredados (de la escena previa o de un intento fallido) ANTES de adjuntar los de
     // ESTA escena: Flow no los limpia solo y arrastrarlos rompe el conteo de chips y mezcla referencias.
     await clearReferenceChips();
+    const referenceKeys = new Set();
+    const rememberReference = (attached) => {
+      for (const url of (attached?.mediaUrls || [])) {
+        const key = mediaKey(url);
+        if (key) referenceKeys.add(key);
+      }
+    };
 
-    // PERSONAJES: lista de nombres (Personaje de Flow). Cada uno se adjunta via el selector "+".
-    // (El usuario crea cada Personaje una vez por proyecto; subir un archivo por script es imposible.)
+    // REFERENCIAS LOCALES (escenarios/sistema/continuidad cross-provider): se suben por el mismo
+    // DOM.setFileInputFiles que Grok y se confirman como chips reales antes de continuar.
+    for (const filePath of (Array.isArray(localReferencePaths) ? localReferencePaths : [])) {
+      try { rememberReference(await attachLocalReference(filePath)); await sleep(300); }
+      catch (e) { return { ok: false, error: `referencia local "${filePath}": ${e.message}` }; }
+    }
+
+    // PERSONAJES: lista de nombres guardados en la memoria "Caracteres" del proyecto.
     // Compat: si llega useCharacterRef+characterName (esquema viejo), se trata como [characterName].
     const names = (Array.isArray(characterNames) && characterNames.length)
       ? characterNames
       : (useCharacterRef && characterName ? [characterName] : []);
     for (const name of names) {
-      try { await attachCharacterReference(name); await sleep(300); }
+      try { rememberReference(await attachCharacterReference(name)); await sleep(300); }
       catch (e) { return { ok: false, error: `referencia personaje "${name}": ${e.message}` }; }
     }
 
-    // INGREDIENTES (entity/location_plate) con reuso por serie: 1) por NOMBRE (id renombrado en el proyecto,
-    // reusable entre Partes); 2) si no esta por nombre, por su TILE generado en este run (flujo actual). La
-    // FASE INGREDIENTES ya los genero al inicio, asi que el tile existe (no se llega a "generar de nuevo").
+    // Los ingredientes generados en ESTA corrida se adjuntan por identidad de tile. Los rehidratados de
+    // otra Parte llegan por localReferencePaths: entity/location_plate no son Personajes de Flow.
     for (const ref of (ingredientRefs || [])) {
       if (!ref || !ref.name) continue;
-      let attached = false;
-      try { await attachCharacterReference(ref.name); attached = true; await sleep(300); }
-      catch (_e) { pressEscape(); await sleep(300); }   // no esta por nombre: cierra el "+" y cae al tile
-      if (attached) continue;
-      if (!ref.imageUrl) return { ok: false, error: `ingrediente "${ref.name}": no esta por nombre y sin tile generado` };
+      if (!ref.imageUrl) return { ok: false, error: `ingrediente "${ref.name}": sin tile ni archivo local` };
       try {
         const tile = await findResultImageScrolling(ref.imageUrl, allProjectImgs);
         if (!tile) throw new Error("no aparece ni con scroll");
-        await attachTileToPrompt(tile);
+        rememberReference(await attachTileToPrompt(tile));
         await sleep(300);
-      } catch (e2) { return { ok: false, error: `ingrediente "${ref.name}": ni por nombre ni por tile (${e2.message})` }; }
+      } catch (e2) { return { ok: false, error: `ingrediente "${ref.name}": no pude adjuntar su tile exacto (${e2.message})` }; }
     }
 
     // ESCENAS PREVIAS: imagenes YA en el proyecto -> su ⋮ -> "Añadir a la peticion" (attachTileToPrompt).
     // Se ubican por su media-name (name=<id>) ya que las imagenes generadas no tienen nombre visible.
     const sceneUrls = Array.isArray(sceneRefImageUrls) ? sceneRefImageUrls.filter(Boolean) : [];
     for (const url of sceneUrls) {
+      const refKey = mediaKey(url); if (refKey) referenceKeys.add(refKey);
       try {
         // Busca la imagen de la escena previa haciendo scroll (puede haberse salido del DOM).
         const tile = await findResultImageScrolling(url, allProjectImgs);
         if (!tile) throw new Error("la imagen de la escena referenciada no aparece ni con scroll (¿se genero antes?)");
-        await attachTileToPrompt(tile);
+        rememberReference(await attachTileToPrompt(tile));
         await sleep(300);
       } catch (e) { return { ok: false, error: `referencia escena: ${e.message}` }; }
     }
@@ -557,21 +779,26 @@
     // Tras adjuntar referencias (que pudieron hacer scroll), volvemos arriba: la imagen NUEVA aparece
     // al tope y la deteccion before/after la lee del DOM; si quedaramos abajo no la veriamos.
     try { const sc = findResultsScroller(); if (sc) sc.scrollTo({ top: 0 }); await sleep(300); } catch (_e) {}
-    const before = new Set(currentResultImgs().map((i) => i.src));
+    const before = new Set(currentResultImgs(referenceKeys).map((i) => mediaKey(i.currentSrc || i.src || "")));
     const gen = resolve(s.generateButton);
     if (!gen) throw new Error("no encuentro el boton generar (generateButton)");
-    await rsleep(cfg?.reviewMinMs ?? 1200, cfg?.reviewMaxMs ?? 3500);   // pausa de "revisar" antes de generar (config.reviewPause)
-    await trustedClickEl(gen);
+    await submitComposer(input, gen, cfg);
 
     // Espera el nuevo resultado o una parada dura.
+    let stableKey = "", stableSince = 0;
     const result = await waitFor(() => {
       const stop = detectHardStop(); if (stop) return stop;
-      const fresh = currentResultImgs().filter((i) => i.naturalWidth > 0 && !before.has(i.src));
-      return fresh.length ? { img: fresh[fresh.length - 1] } : null;
+      const fresh = currentResultImgs(referenceKeys).filter((i) => i.complete && i.naturalWidth >= 256
+        && i.naturalHeight >= 256 && !before.has(mediaKey(i.currentSrc || i.src || "")));
+      if (!fresh.length) { stableKey = ""; stableSince = 0; return null; }
+      const img = fresh[0];
+      const key = mediaKey(img.currentSrc || img.src || "");
+      if (key !== stableKey) { stableKey = key; stableSince = Date.now(); return null; }
+      return Date.now() - stableSince >= 800 ? { img } : null;
     }, { timeout: 180000 });
 
     if (result.type) return result; // parada dura
-    return { ok: true, data: { imageUrl: result.img.src } };
+    return { ok: true, data: { imageUrl: result.img.currentSrc || result.img.src } };
   }
 
   // Selecciona el modelo de video en el dropdown del compositor (chip -> dropdown -> opcion).
@@ -673,7 +900,10 @@
   // escenas (las primeras se descargan del DOM). Devuelve el img centrado, o null si no aparece.
   async function findResultImageScrolling(imageUrl, pool = currentResultImgs) {
     const want = mediaName(imageUrl);
-    const match = () => pool().find((i) => i.src === imageUrl || mediaName(i.src) === want);
+    const match = () => pool().find((i) => {
+      const src = i.currentSrc || i.src || "";
+      return src === imageUrl || mediaName(src) === want;
+    });
     let hit = match();
     if (hit) { hit.scrollIntoView({ block: "center" }); await sleep(250); return match() || hit; }
 
@@ -733,8 +963,7 @@
 
     const gen = resolve(s.generateButton);
     if (!gen) throw new Error("no encuentro el boton generar para animar");
-    await rsleep(cfg?.reviewMinMs ?? 1200, cfg?.reviewMaxMs ?? 3500);   // pausa de "revisar" antes de animar (config.reviewPause)
-    await trustedClickEl(gen);
+    await submitComposer(input, gen, cfg);
 
     // FIRE-AND-FORGET: NO esperamos NADA (ni poster ni video). En la grilla el poster/video recien
     // aparece casi al terminar, asi que esperar aqui = secuencial. Solo damos un respiro para que la
@@ -913,9 +1142,8 @@
   }
 
   // ------------------------------------------------- proyecto / personaje -----
-  // PENDIENTE DE MAPEAR EN VIVO (sesion con Flow abierto + modo inspector): la UI de
-  // "nuevo proyecto" y "crear Personaje" de Flow no esta mapeada. Hasta entonces estos
-  // devuelven no-implementado y el autopiloto degrada (usa el proyecto/personaje ya hechos).
+  // Mapeado en vivo: Flow guarda cada personaje en /character/<id>, permite renombrarlo con
+  // "Nombre del personaje" + "Hecho" y lo reutiliza por nombre desde el selector "+".
 
   // Crea un proyecto nuevo: clic "Nuevo proyecto" (pagina de inicio) -> Flow navega a /project/<id>.
   // El background debe dejar la pestana en la home antes de llamar esto.
@@ -931,25 +1159,47 @@
     return { ok: true, data: { url: location.href } };
   }
 
-  // El input[type=file] de subida es OCULTO -> resolve() (que exige visible) no lo ve; lo tomamos directo.
-  function fileInputEl() {
-    return document.querySelector('input[type="file"][accept*="image"]') || document.querySelector('input[type="file"]');
+  // El input de PERSONAJE es oculto y acepta exactamente image/*. No usar el primer file input global:
+  // el proyecto mantiene otro input multimedia (video+image) y antes CDP podia cargar ahi el personaje.
+  function characterFileInputEl() {
+    return [...document.querySelectorAll('input[type="file"]')].find((i) =>
+      norm(i.getAttribute("accept") || "").toLowerCase() === "image/*",
+    ) || null;
+  }
+
+  function onNewCharacterPage() {
+    if (/\/character\/(?:new|create)(?:\/|$)/i.test(location.pathname)) return true;
+    return [...document.querySelectorAll("h1,h2,main")].some((e) =>
+      /crea y reutiliza personajes|create and reuse characters/i.test(norm(e.innerText)),
+    );
+  }
+
+  function characterCards() {
+    return [...document.querySelectorAll('a[href*="/character/"]')]
+      .filter(visible)
+      .map((a) => a.closest("button") || a);
   }
 
   // Navega a la seccion Caracteres del proyecto actual (SPA, sin recargar).
   async function gotoCharacters() {
     const s = SEL();
     const sec = resolve(s.charactersSection);
-    if (sec) { realClick(clickable(sec)); await sleep(1500); }
+    if (sec) {
+      realClick(clickable(sec));
+      const reached = await waitFor(() => onNewCharacterPage() || resolve(s.newCharacterTile)
+        || characterCards().length > 0, { timeout: 6000 }).catch(() => null);
+      if (!reached) throw new Error("Flow no termino de abrir la biblioteca de Caracteres");
+    }
   }
 
   // ¿Existe ya un Personaje con ese nombre en el proyecto? Va a Caracteres y busca el nombre exacto.
   async function hasCharacter({ name }) {
     await gotoCharacters();
     const want = (name || "").trim().toLowerCase();
-    const exists = [...document.querySelectorAll("span,div,p,h3")].some((e) => {
-      if (e.childNodes.length !== 1 || e.firstChild?.nodeType !== 3) return false;
-      return (e.innerText || "").trim().toLowerCase() === want;
+    const exists = characterCards().some((card) => {
+      const labels = [...[...card.querySelectorAll("img")].map((i) => norm(i.alt)),
+        ...norm(card.innerText).split(/\r?\n/).map(norm)];
+      return labels.some((label) => label.toLowerCase() === want);
     });
     return { ok: true, data: { exists } };
   }
@@ -960,13 +1210,13 @@
   async function revealUploadInput() {
     const s = SEL();
     await gotoCharacters();
-    if (!fileInputEl()) {
+    if (!onNewCharacterPage() || !characterFileInputEl()) {
       const tile = resolve(s.newCharacterTile);
       if (tile) { realClick(clickable(tile)); await sleep(1500); }
     }
-    const input = await waitFor(() => fileInputEl(), { timeout: 8000 }).catch(() => null);
+    const input = await waitFor(() => onNewCharacterPage() && characterFileInputEl(), { timeout: 8000 }).catch(() => null);
     if (!input) throw new Error("no aparecio el input[type=file] de personaje (Caracteres)");
-    return { ok: true, data: { ready: true } };
+    return { ok: true, data: { ready: true, accept: input.getAttribute("accept") || "" } };
   }
 
   // Tras subir la imagen (el background la puso via CDP), espera el editor, escribe el NOMBRE
@@ -985,9 +1235,12 @@
     await sleep(600);
     const done = resolve(s.characterDoneButton);
     if (!done) throw new Error('no encuentro el boton "Hecho" del personaje');
-    realClick(clickable(done));
-    await waitFor(() => !/\/character\//.test(location.href), { timeout: 8000 }).catch(() => {});
-    await sleep(1000);
+    const beforeUrl = location.href;
+    await trustedClickEl(done, { releaseAfterClick: true });
+    await waitFor(() => location.href !== beforeUrl && !/\/character\//.test(location.href), { timeout: 12000 });
+    await sleep(700);
+    const verified = await hasCharacter({ name });
+    if (!verified?.data?.exists) throw new Error(`Flow salio del editor, pero no confirmo el personaje "${name}" en la biblioteca`);
     return { ok: true, data: { name } };
   }
 

@@ -11,12 +11,16 @@
 // Luego envia: chrome.runtime.sendMessage({ type: "extract_last_frame", url, sceneId })
 // y recibe:    { ok:true, dataUrl, lastFrameFilename } | { ok:false, error }.
 
+import { analyzeGrokImagePixels } from "../shared/grok-image-quality.mjs";
+
 // La funcion pura no usa chrome.*; el handler de mensajes si.
 // "extract_last_frame" no esta en lib/messaging.js (es interno background<->offscreen);
 // igual usamos el string literal acordado en CONTRACT.md.
 
 const EXTRACT_LAST_FRAME = "extract_last_frame";          // { url, sceneId }
 const EXTRACT_LAST_FRAME_BUF = "extract_last_frame_buf";  // { buf:ArrayBuffer, mime, sceneId }
+const INSPECT_IMAGE_BUF = "inspect_image_buf";             // { buf:ArrayBuffer, mime, thresholds? }
+export const IMAGE_INSPECTION_MAX_EDGE = 128;
 
 // Margen (s) que restamos a duration para evitar el frame negro/vacio del final exacto.
 const SEEK_EPSILON = 0.05;
@@ -40,6 +44,85 @@ export function extractLastFrameFromVideoEl(videoEl, canvasEl) {
   if (!ctx) throw new Error("No se pudo obtener contexto 2d del canvas");
   ctx.drawImage(videoEl, 0, 0, w, h);
   return canvasEl.toDataURL("image/png");
+}
+
+// Calcula una muestra pequena preservando aspecto. No ampliamos imagenes pequenas: el caller puede
+// usar sourceWidth/sourceHeight del diagnostico para aplicar aparte su piso de dimensiones.
+export function imageInspectionSize(sourceWidth, sourceHeight, maxEdge = IMAGE_INSPECTION_MAX_EDGE) {
+  const sw = Math.trunc(Number(sourceWidth));
+  const sh = Math.trunc(Number(sourceHeight));
+  const cap = Math.max(3, Math.trunc(Number(maxEdge)) || IMAGE_INSPECTION_MAX_EDGE);
+  if (sw <= 0 || sh <= 0) throw new TypeError("Imagen sin dimensiones validas");
+  const scale = Math.min(1, cap / Math.max(sw, sh));
+  return {
+    width: Math.max(3, Math.round(sw * scale)),
+    height: Math.max(3, Math.round(sh * scale)),
+  };
+}
+
+// Funcion separada para poder probar el muestreo/analisis sin Blob, DOM real ni chrome.*.
+export function inspectDecodedImage(image, canvas, thresholds = {}) {
+  const sourceWidth = Number(image?.naturalWidth || image?.width || 0);
+  const sourceHeight = Number(image?.naturalHeight || image?.height || 0);
+  const sample = imageInspectionSize(sourceWidth, sourceHeight);
+  canvas.width = sample.width;
+  canvas.height = sample.height;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) throw new Error("No se pudo obtener contexto 2d para inspeccionar imagen");
+  ctx.drawImage(image, 0, 0, sample.width, sample.height);
+  const pixels = ctx.getImageData(0, 0, sample.width, sample.height).data;
+  const quality = analyzeGrokImagePixels(pixels, sample.width, sample.height, thresholds);
+  return {
+    ...quality,
+    sourceWidth,
+    sourceHeight,
+    sampleWidth: sample.width,
+    sampleHeight: sample.height,
+  };
+}
+
+async function decodeImageBlob(blob) {
+  if (typeof globalThis.createImageBitmap === "function") {
+    const bitmap = await globalThis.createImageBitmap(blob);
+    return { image: bitmap, dispose: () => bitmap.close?.() };
+  }
+  // Fallback para Chrome donde createImageBitmap no este disponible en el documento offscreen.
+  return await new Promise((resolve, reject) => {
+    const image = new Image();
+    const objectUrl = URL.createObjectURL(blob);
+    const timer = setTimeout(() => finish(new Error("Timeout decodificando imagen")), EXTRACT_TIMEOUT_MS);
+    let done = false;
+    const dispose = () => { try { URL.revokeObjectURL(objectUrl); } catch (_e) {} };
+    const finish = (error) => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      image.onload = null;
+      image.onerror = null;
+      if (error) { dispose(); reject(error); }
+      else resolve({ image, dispose });
+    };
+    image.onload = () => finish(null);
+    image.onerror = () => finish(new Error("No se pudo decodificar la imagen"));
+    image.src = objectUrl;
+  });
+}
+
+// Bytes remotos/locales -> Blob de origen-extension -> bitmap -> canvas legible. Esta ruta evita que
+// assets.grok.com/imagine-public deje el canvas tainted por CORS en el content script.
+export async function inspectImageBuffer(buf, mime = "image/jpeg", thresholds = {}) {
+  const bytes = buf instanceof ArrayBuffer
+    ? buf
+    : (ArrayBuffer.isView(buf) ? buf : null);
+  if (!bytes || bytes.byteLength <= 0) throw new TypeError("inspect_image_buf recibio un buffer vacio");
+  const blob = new Blob([bytes], { type: mime || "image/jpeg" });
+  const decoded = await decodeImageBlob(blob);
+  try {
+    const canvas = document.createElement("canvas");
+    return inspectDecodedImage(decoded.image, canvas, thresholds);
+  } finally {
+    decoded.dispose?.();
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -148,6 +231,12 @@ if (typeof chrome !== "undefined" && chrome.runtime?.onMessage) {
         try { URL.revokeObjectURL(objectUrl); } catch (_e) {}
         sendResponse(res);
       });
+      return true;
+    }
+    if (message.type === INSPECT_IMAGE_BUF) {
+      inspectImageBuffer(message.buf, message.mime, message.thresholds)
+        .then((data) => sendResponse({ ok: true, data }))
+        .catch((e) => sendResponse({ ok: false, error: e?.message || String(e) }));
       return true;
     }
     return; // no es para nosotros

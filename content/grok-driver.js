@@ -77,6 +77,49 @@
     if (!resp || !resp.ok) throw new Error("click trusted fallo: " + (resp?.error || "sin respuesta del background"));
   }
 
+  // Teclado real por CDP. A diferencia de execCommand/insertText sintetico, actualiza el estado
+  // interno del editor React y permite enviar con Enter sin depender de coordenadas que quedan
+  // obsoletas mientras terminan de procesarse las referencias.
+  async function trustedKeyboard(payload) {
+    const resp = await chrome.runtime.sendMessage({ type: "trusted_keyboard", ...(payload || {}) });
+    if (!resp || !resp.ok) throw new Error("teclado trusted fallo: " + (resp?.error || "sin respuesta del background"));
+  }
+
+  // Barrera durable AT-MOST-ONCE para imagenes. El background persiste el intento y el snapshot
+  // `before` ANTES de que este content script pulse Enter. Si el service worker muere despues del ACK,
+  // al volver solo intentara recoger/validar esa generacion; nunca enviara otro Enter automaticamente.
+  async function persistImageSubmitIntent(grokAttempt, beforeResultIds, preUrl) {
+    if (!grokAttempt?.id || !grokAttempt?.ownerType || !grokAttempt?.ownerId) {
+      throw new Error("Grok: falta marcador durable del intento; no envio Enter para evitar una generacion duplicada");
+    }
+    const resp = await chrome.runtime.sendMessage({
+      type: "grok_image_submit_intent",
+      attemptId: grokAttempt.id,
+      ownerType: grokAttempt.ownerType,
+      ownerId: grokAttempt.ownerId,
+      before: [...beforeResultIds],
+      preUrl,
+    });
+    if (!resp?.ok) {
+      throw new Error("Grok: no pude persistir el intento antes de Enter; no envie la generacion (" + (resp?.error || "sin respuesta del background") + ")");
+    }
+  }
+
+  async function reportImageSubmitObserved(grokAttempt, accepted, preUrl) {
+    if (!grokAttempt?.id) return;
+    const postUrl = location.href !== preUrl && /\/imagine\/post\//.test(location.href) ? location.href : null;
+    try {
+      await chrome.runtime.sendMessage({
+        type: "grok_image_submit_observed",
+        attemptId: grokAttempt.id,
+        ownerType: grokAttempt.ownerType,
+        ownerId: grokAttempt.ownerId,
+        acceptedReason: accepted?.reason || null,
+        postUrl,
+      });
+    } catch (_e) { /* best-effort: submitIssued ya quedo durable antes de Enter */ }
+  }
+
   // Quita las referencias adjuntas (chips con boton aria-label "Remove image") del compositor, para
   // que el SW pueda setear un set nuevo por CDP sin acumular las de la escena previa.
   const REMOVE_IMAGE_LABELS = new Set(["Remove image", "Quitar imagen", "Eliminar imagen"]);
@@ -115,27 +158,44 @@
   // puede conservar los File, o React puede consumirlos y reemplazarlos por previews/chips combinados.
   function composerAttachmentState() {
     const form = composeForm();
-    if (!form) return { count: 0, fileCount: 0, removeCount: 0, previewCount: 0 };
+    if (!form) return { count: 0, confirmedCount: 0, fileCount: 0, removeCount: 0, previewCount: 0 };
     const input = form.querySelector('input[type="file"][name="files"],input[type="file"]');
     const fileCount = Number(input?.files?.length || 0);
     const removeCount = removeImageButtons(form).length;
-    const previewImages = [...form.querySelectorAll("img")].filter((img) => visible(img)).length;
     const labelledPreviewButtons = [...form.querySelectorAll("button")].filter((b) =>
       /miniatura del elemento multimedia|input media thumbnail|image preview|vista previa de imagen/i
         .test(norm(b.getAttribute("aria-label"))),
     ).length;
-    const previewCount = Math.max(previewImages, labelledPreviewButtons);
-    return { count: Math.max(fileCount, removeCount, previewCount), fileCount, removeCount, previewCount };
+    // input.files cambia INSTANTANEAMENTE al usar DOM.setFileInputFiles, antes de que Grok haya
+    // consumido/subido la referencia. Solo un chip removible o preview etiquetado confirma que React
+    // la acepto. Contar cualquier <img> del formulario producia falsos positivos por iconos/avatar.
+    const previewCount = labelledPreviewButtons;
+    // Los chips de una misma version de la UI usan una representacion consistente. Cuando existen
+    // botones Remove son la fuente autoritativa para TODOS los adjuntos; previews queda como fallback
+    // para una variante de UI que no exponga Remove (no se suman: ambos pueden describir el mismo chip).
+    const confirmedCount = removeCount > 0 ? removeCount : previewCount;
+    return { count: confirmedCount, confirmedCount, fileCount, removeCount, previewCount };
   }
 
-  async function waitForRefs({ expected = 1, timeoutMs = 15000 } = {}) {
+  async function waitForRefs({ expected = 1, timeoutMs = 20000, stableMs = 700 } = {}) {
     const want = Math.max(1, Number(expected) || 1);
-    const state = await waitFor(() => {
+    const deadline = Date.now() + Math.max(100, Number(timeoutMs) || 20000);
+    let stableSince = 0;
+    let lastSignature = "";
+    while (Date.now() < deadline) {
       const current = composerAttachmentState();
-      return current.count >= want ? current : null;
-    }, { timeout: timeoutMs }).catch(() => null);
-    if (!state) return { ok: false, error: `Grok no confirmo ${want} referencia(s) adjunta(s)` };
-    return { ok: true, data: state };
+      const signature = `${current.removeCount}:${current.previewCount}`;
+      if (current.confirmedCount >= want) {
+        if (signature !== lastSignature) { lastSignature = signature; stableSince = Date.now(); }
+        if (Date.now() - stableSince >= Math.max(0, Number(stableMs) || 0)) return { ok: true, data: current };
+      } else {
+        stableSince = 0;
+        lastSignature = signature;
+      }
+      await sleep(150);
+    }
+    const current = composerAttachmentState();
+    return { ok: false, error: `Grok no confirmo ${want} referencia(s) procesada(s) (File=${current.fileCount}, chips=${current.confirmedCount})` };
   }
 
   // Tiles de error de Grok ("Hemos detectado actividad inusual" = rate-limit anti-abuso).
@@ -186,12 +246,16 @@
   };
   function currentResultGenIds() { return new Set(resultImageEls().map((i) => genId(i.src))); }
 
-  function resultCardReady(img) {
+  function resultStillGenerating(img) {
+    const generating = /\b(?:generando|generating)(?:\s+(?:imagen|image))?(?:\s+\d{1,3}\s*%)?/i;
     let node = img;
     for (let depth = 0; node && depth < 7; depth++, node = node.parentElement) {
-      if (node.querySelector?.('button[aria-label="Guardar"],button[aria-label="Save"]')) return true;
+      if (generating.test(String(node.innerText || ""))) return true;
+      if (node.querySelector?.('[role="progressbar"],[aria-busy="true"]')) return true;
     }
-    return false;
+    // En la vista dedicada el progreso puede vivir en la barra lateral, fuera del arbol de <img>.
+    return /\/imagine\/post\//.test(location.pathname)
+      && generating.test(String(document.body?.innerText || ""));
   }
 
   function pickResultImage(exclude = new Set()) {
@@ -214,6 +278,80 @@
       && Math.min(Number(img.naturalWidth) || 0, Number(img.naturalHeight) || 0) >= minShortEdge;
   }
 
+  function imageNoiseMetrics(data, w, h) {
+    if (!data || data.length < w * h * 4 || w < 3 || h < 3) return null;
+    const yv = new Float64Array(w * h);
+    for (let i = 0, p = 0; p < yv.length; i += 4, p++) {
+      yv[p] = 0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2];
+    }
+    const a = [], b = [];
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+      const i = y * w + x;
+      if (x > 0) { a.push(yv[i]); b.push(yv[i - 1]); }
+      if (y > 0) { a.push(yv[i]); b.push(yv[i - w]); }
+    }
+    const mean = (xs) => xs.reduce((sum, v) => sum + v, 0) / Math.max(1, xs.length);
+    const variance = (xs, m = mean(xs)) => xs.reduce((sum, v) => sum + (v - m) ** 2, 0) / Math.max(1, xs.length);
+    const ma = mean(a), mb = mean(b), va = variance(a, ma), vb = variance(b, mb);
+    let cov = 0, neighborDiff = 0;
+    for (let i = 0; i < a.length; i++) { cov += (a[i] - ma) * (b[i] - mb); neighborDiff += Math.abs(a[i] - b[i]); }
+    const rho = va < 1e-6 || vb < 1e-6 ? 1 : (cov / Math.max(1, a.length)) / Math.sqrt(va * vb);
+    const my = mean([...yv]), sigmaY = Math.sqrt(variance([...yv], my));
+
+    const original = [], blurred = [];
+    for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+      const i = y * w + x;
+      original.push(yv[i]);
+      let sum = 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) sum += yv[i + dy * w + dx];
+      blurred.push(sum / 9);
+    }
+    const blurRatio = variance(blurred) / Math.max(variance(original), 1e-6);
+    const roughness = (neighborDiff / Math.max(1, a.length)) / Math.max(sigmaY, 1);
+    return { rho, blurRatio, roughness };
+  }
+
+  function pixelBufferLooksFinal(data, w, h, cfg) {
+    const metrics = imageNoiseMetrics(data, w, h);
+    if (!metrics) return false;
+    // Umbrales calibrados contra 4,068 imagenes legitimas del repo: minimo abs(rho)=.500,
+    // minimo blurRatio=.391 y maximo roughness=.646. El AND evita confundir escenas detalladas,
+    // bordes duros o patrones periodicos con el grano provisional de Grok.
+    const maxRho = Number(cfg?.grokNoiseMaxAbsRho) || 0.45;
+    const maxBlurRatio = Number(cfg?.grokNoiseMaxBlurRatio) || 0.34;
+    const minRoughness = Number(cfg?.grokNoiseMinRoughness) || 0.75;
+    const isNoise = Math.abs(metrics.rho) < maxRho
+      && metrics.blurRatio < maxBlurRatio
+      && metrics.roughness > minRoughness;
+    return !isNoise;
+  }
+
+  function elementPixelInspection(img, cfg) {
+    if (!imageDimensionsLookFinal(img, cfg)) return { looksFinal: false, fingerprint: "dimensions" };
+    const w = 96, h = 96;
+    const c = document.createElement("canvas");
+    c.width = w; c.height = h;
+    const ctx = c.getContext("2d", { willReadFrequently: true });
+    if (!ctx) return null;
+    try {
+      ctx.drawImage(img, 0, 0, w, h);
+      const data = ctx.getImageData(0, 0, w, h).data;
+      // Huella de PIXELES, no del src: assets.grok.com muta bytes bajo la misma URL/post.
+      let hash = 2166136261;
+      for (let i = 0; i < data.length; i++) { hash ^= data[i]; hash = Math.imul(hash, 16777619); }
+      return { looksFinal: pixelBufferLooksFinal(data, w, h, cfg), fingerprint: (hash >>> 0).toString(16).padStart(8, "0") };
+    } catch (_e) {
+      // assets.grok.com puede bloquear lectura de canvas por CORS. `null` significa desconocido,
+      // no "ruido": en ese caso exigimos las senales DOM de finalizacion antes de aceptar.
+      return null;
+    }
+  }
+
+  function elementPixelsLookFinal(img, cfg) {
+    const inspection = elementPixelInspection(img, cfg);
+    return inspection === null ? null : inspection.looksFinal;
+  }
+
   async function dataImageLooksFinal(src, cfg) {
     if (!/^data:image/.test(src || "")) return true;
     // Una imagen valida minimalista puede pesar 50-80KB (confirmado en vivo); el viejo piso de 160KB
@@ -230,29 +368,32 @@
     } catch (_e) {
       return false;
     }
-    if (!imageDimensionsLookFinal(img, cfg)) return false;
+    return elementPixelsLookFinal(img, cfg) === true;
+  }
 
-    const w = 96, h = 96;
-    const c = document.createElement("canvas");
-    c.width = w; c.height = h;
-    const ctx = c.getContext("2d", { willReadFrequently: true });
-    if (!ctx) return false;
-    ctx.drawImage(img, 0, 0, w, h);
-    let data;
-    try { data = ctx.getImageData(0, 0, w, h).data; } catch (_e) { return false; }
-
-    // Placeholder de Grok = grano multicolor: mucha diferencia pixel-a-pixel en casi toda la imagen.
-    let diff = 0, n = 0;
-    for (let y = 0; y < h; y++) {
-      for (let x = 1; x < w; x++) {
-        const a = (y * w + x) * 4, b = a - 4;
-        diff += Math.abs(data[a] - data[b]) + Math.abs(data[a + 1] - data[b + 1]) + Math.abs(data[a + 2] - data[b + 2]);
-        n += 3;
+  async function validatedImageCandidates(exclude, settledSrc, cfg) {
+    const out = [];
+    const seen = new Set();
+    const push = (imageUrl, requiresByteValidation) => {
+      if (!imageUrl || seen.has(imageUrl) || out.length >= 4) return;
+      seen.add(imageUrl);
+      out.push({ imageUrl, requiresByteValidation: !!requiresByteValidation });
+    };
+    // El frame que completo el settle va primero. Los demas se prueban sin otro Enter si la descarga
+    // revela ruido; data: se puede inspeccionar aqui, URL servidor se marca obligatoriamente para bytes.
+    const settledIsData = /^data:image/.test(settledSrc || "");
+    push(settledSrc, !settledIsData);
+    for (const el of resultImageEls()) {
+      const src = el.currentSrc || el.src || "";
+      if (!src || exclude.has(genId(src)) || seen.has(src) || resultStillGenerating(el)) continue;
+      if (/^data:image/.test(src)) {
+        if (await dataImageLooksFinal(src, cfg)) push(src, false);
+      } else if (imageDimensionsLookFinal(el, cfg)) {
+        const pixels = elementPixelsLookFinal(el, cfg);
+        if (pixels !== false) push(src, pixels !== true);
       }
     }
-    const avgDiff = diff / Math.max(1, n);
-    const maxAvgDiff = Number(cfg?.grokImageMaxNoiseAvgDiff) || 60;
-    return avgDiff <= maxAvgDiff;
+    return out;
   }
 
   async function openImage({ before = [] } = {}) {
@@ -324,36 +465,17 @@
     return norm(aspectBtn()?.innerText || "").startsWith(want);
   }
 
-  // Escribe el prompt en el contenteditable (execCommand registra en el editor React; .innerText no basta).
+  // Escribe el prompt con teclas TRUSTED. innerText por si solo no prueba que React lo registro:
+  // execCommand podia dejar el texto visible pero Enviar seguia usando un estado vacio/antiguo.
   async function setPrompt(text, cfg) {
     const ed = promptEditable();
     if (!ed) throw new Error("no encuentro el prompt (contenteditable) de Grok");
     ed.focus();
-    const sel = window.getSelection();
-    sel.selectAllChildren(ed);
-    document.execCommand("delete");
-    const t = text || "";
-    // config.humanTyping OFF -> RAPIDO pero por FRAGMENTOS (Grok habilita "Enviar" por EVENTO de insercion;
-    // un insert UNICO de todo el texto NO lo registra -> falla "el Enviar no registro"). ON (default) ->
-    // fragmentos de 2-5 chars con jitter humano. Lo decide la config avanzada (la pasa el SW en driverCfg).
-    if (cfg && cfg.humanTyping === false) {
-      // PEGADO RAPIDO: en trozos GRANDES (cap 200, minimo 2 trozos). Antes era de a 12 chars -> en un prompt
-      // largo de historias eran ~50-60 inserciones, cada execCommand re-renderiza el editor React (se veia
-      // "tecleando" lento). Pocos trozos = casi instantaneo. Sigue fragmentado: un insert UNICO de todo no
-      // registra el prompt en Grok (-> "el Enviar no registro").
-      const step = Math.max(1, Math.min(200, Math.ceil(t.length / 2)));
-      for (let i = 0; i < t.length; i += step) document.execCommand("insertText", false, t.slice(i, i + step));
-    } else {
-      for (let i = 0, typed = 0; i < t.length;) {
-        const n = 2 + Math.floor(Math.random() * 4);
-        const chunk = t.slice(i, i + n);
-        document.execCommand("insertText", false, chunk);
-        i += chunk.length; typed += chunk.length;
-        await rsleep(40, 140);
-        if (typed % 40 < n) await rsleep(200, 500);
-      }
-    }
-    const actual = norm(ed.innerText);
+    const t = String(text || "").replace(/\r?\n/g, " ");
+    void cfg;
+    await trustedKeyboard({ text: t, replace: true });
+    await sleep(250);
+    const actual = norm(promptEditable()?.innerText || "");
     if (actual !== norm(t)) {
       throw new Error(`el prompt de Grok no se pudo reemplazar completo (${actual.length}/${norm(t).length}); reintenta`);
     }
@@ -363,21 +485,27 @@
   // Dispara "Enviar" (trusted). Grok ya no siempre vacia el prompt al aceptar una generacion, asi que
   // confirmamos con varias senales: prompt reducido, boton deshabilitado/desmontado, navegacion, texto
   // Generando o un resultado nuevo. Solo fallamos cuando el prompt queda y NO aparece ninguna senal.
-  async function fire(cfg, beforeResultIds = new Set()) {
+  async function fire(cfg, beforeResultIds = new Set(), grokAttempt = null) {
     const ed = promptEditable();
     const before = norm(ed?.innerText || "").length;
     const preUrl = location.href;
     // El boton aparece deshabilitado mientras React termina de registrar el contenteditable. Esperarlo
     // evita un click trusted prematuro que luego parece un fallo aleatorio de envio.
-    const btn = await waitFor(() => {
+    const ready = await waitFor(() => {
       const b = sendButton();
       return (b && b.getAttribute("aria-disabled") !== "true" && !b.disabled) ? b : null;
     }, { timeout: 12000 }).catch(() => null);
-    if (!btn) throw new Error('el boton "Enviar" de Grok no se habilito; reintenta');
+    if (!ready) throw new Error('el boton "Enviar" de Grok no se habilito; reintenta');
     ed && ed.focus();
     await rsleep(cfg?.reviewMinMs ?? 1200, cfg?.reviewMaxMs ?? 3500);   // pausa de "revisar" antes de enviar (config.reviewPause, anti-deteccion)
-    await trustedClickEl(btn, { releaseAfterClick: true });
-    const accepted = await waitFor(() => {
+    // El ACK de storage es la frontera de gasto: solo despues se permite Enter. Un crash entre el ACK y
+    // la tecla queda deliberadamente como intento ambiguo y exige recuperacion/revision manual; es mas
+    // seguro bloquear una regeneracion que pagar/generar dos veces.
+    await persistImageSubmitIntent(grokAttempt, beforeResultIds, preUrl);
+    // Enter es primario: no depende de coordenadas ni de conservar un nodo que React puede reemplazar
+    // durante la pausa de revision. Verificado que el mismo mecanismo corrige Slate de Flow.
+    await trustedKeyboard({ key: "ENTER", releaseAfterKey: true });
+    const acceptedSignal = () => {
       const promptLen = norm(promptEditable()?.innerText || "").length;
       if (promptLen < Math.max(1, before - 3)) return { reason: "prompt liberado" };
       if (location.href !== preUrl && /\/imagine\/post\//.test(location.href)) return { reason: "navegacion a post" };
@@ -386,13 +514,17 @@
       const currentButton = sendButton();
       if (!currentButton || currentButton.disabled || currentButton.getAttribute("aria-disabled") === "true") return { reason: "submit ocupado" };
       return null;
-    }, { timeout: 12000 }).catch(() => null);
+    };
+    const accepted = await waitFor(acceptedSignal, { timeout: 20000 }).catch(() => null);
+    // AT-MOST-ONCE: nunca hacemos Enter + clic para el mismo intento. Si Grok acepto Enter pero
+    // tarda en pintar la senal, el SW realiza un probe largo de resultados antes de recargar/reintentar.
     if (!accepted) throw new Error("el Enviar de Grok no registro (prompt retenido y sin senal de generacion); reintenta");
+    await reportImageSubmitObserved(grokAttempt, accepted, preUrl);
     return accepted;
   }
 
   // GENERATE_IMAGE: modo Imagen -> prompt -> Enviar -> espera una imagen de resultado NUEVA.
-  async function generateImage({ prompt, aspectRatio, cfg }) {
+  async function generateImage({ prompt, aspectRatio, cfg, rejectImageKeys = [], grokAttempt = null }) {
     const hs0 = detectHardStop(); if (hs0) return hs0;
     // tras navegar al composer fresco, espera a que React monte prompt + boton Enviar
     await waitFor(() => promptEditable() && sendButton(), { timeout: 20000 });
@@ -403,8 +535,15 @@
       catch (e) { console.warn("[grok-driver] setAspect:", e?.message ?? e); }
     }
     await setPrompt(prompt, cfg);
+    // La lista persistida viene del SW y contiene resultados YA asignados a ingredientes/escenas.
+    // Es indispensable tras un hard reload: la grilla DOM puede quedar vacia y luego Grok volver a
+    // montar el post anterior; sin esta memoria, ese asset viejo parece "nuevo" y termina asignado a
+    // la escena actual (scene_01 repetida en scene_02, observado 2026-07-12).
     const before = currentResultGenIds();
-    await fire(cfg, before);
+    for (const key of (Array.isArray(rejectImageKeys) ? rejectImageKeys : [])) {
+      if (key) before.add(String(key));
+    }
+    await fire(cfg, before, grokAttempt);
     // Espera a que aparezca la PRIMERA imagen nueva (cargada: naturalWidth>=400).
     const found = await waitFor(() => {
       const hs = detectHardStop(); if (hs) return hs;
@@ -415,41 +554,54 @@
     // del mismo generado), desempate por orden DOM (en el grid sin-ref: izquierda->derecha = 1a variacion).
     const pickFresh = () => pickResultImage(before);
     // CRITICO: Grok muestra un PLACEHOLDER de RUIDO mientras genera, y SOLO al final aparece la imagen real.
-    // El placeholder de ruido es ESTATICO (su `data:` src NO muta) y CHICO (~77KB) vs la imagen final GRANDE
-    // (~200-400KB). "Esperar a que el src se estabilice" NO basta: el ruido fijo ya esta estable -> se descargaba
-    // ruido (scene_15, scene_30). Senal robusta: el TAMANO del dato (largo del data: url) CRECE de ruido->final.
-    // Aceptamos cuando: el largo CRECIO al menos una vez (ruido->detalle) Y luego se estabilizo QUIET_DATA_MS. Para
-    // URLs de servidor (/generated/) tambien esperamos estabilidad larga: Grok puede exponer un asset intermedio.
-    // Re-consultamos el
-    // nodo por si Grok lo reemplaza. isData = data: url (grid sin-ref); el resto = URL de servidor.
-    // OJO: la difusion data: NO es ruido->final atomico; muestra frames PROGRESIVOS (ruido->medio->nitido). Si hace
-    // una PAUSA a media difusion mas larga que el settle, se descargaba un frame medio (todavia con grano, ej. b41).
-    // Por eso el settle del caso data: es mayor (QUIET_DATA_MS): que la pausa tenga que durar mas para colarse.
+    // El placeholder de ruido puede ser ESTATICO y ya tener dimensiones finales. Tambien hay frames
+    // progresivos cuyo `src` cambia sin crecer (mismo largo/uno mas corto), por eso reiniciamos el reloj
+    // ante CUALQUIER cambio de URL y validamos pixeles; el boton Guardar por si solo no prueba nitidez.
+    // Re-consultamos el nodo porque React puede reemplazarlo durante la difusion.
     const isData = (s) => /^data:/.test(s || "");
-    const QUIET_SERVER_MS = Number(cfg?.grokImageServerQuietMs) || 10000;
-    const QUIET_DATA_MS = 10000, MAX_MS = 180000, IDLE_DONE = 20000, t0 = Date.now();
-    let maxLen = -1, lastGrow = Date.now(), grew = false, settled = false;
+    const QUIET_SERVER_MS = Number(cfg?.grokImageServerQuietMs) || 15000;
+    const QUIET_DATA_MS = Number(cfg?.grokImageDataQuietMs) || 10000;
+    const MAX_MS = 180000, t0 = Date.now();
+    let lastSrc = "", lastPixelFingerprint = "", lastChange = Date.now(), settledSrc = "", settledNeedsByteValidation = false;
     while (Date.now() - t0 < MAX_MS) {
       const hs = detectHardStop(); if (hs) return hs;
       const el = pickFresh();
       const cur = el ? (el.currentSrc || el.src || "") : "";
-      if (cur.length > maxLen) { if (maxLen >= 0) grew = true; maxLen = cur.length; lastGrow = Date.now(); }
-      const idle = Date.now() - lastGrow;
-      if (cur && !isData(cur) && idle >= QUIET_SERVER_MS && imageDimensionsLookFinal(el, cfg)) { settled = true; break; } // URL final + dimensiones finales
-      else if (cur && isData(cur) && grew && idle >= QUIET_DATA_MS && (resultCardReady(el) || await dataImageLooksFinal(cur, cfg))) { settled = true; break; } // data: crecio y la tarjeta ya ofrece Guardar
-      else if (cur && isData(cur) && !grew && idle >= IDLE_DONE && (resultCardReady(el) || await dataImageLooksFinal(cur, cfg))) { settled = true; break; } // minimalistas pueden quedar en 50-80KB sin crecer
+      const pixelInspection = cur && !isData(cur) ? elementPixelInspection(el, cfg) : null;
+      const pixelFingerprint = pixelInspection?.fingerprint || "";
+      if (cur !== lastSrc || (pixelFingerprint && pixelFingerprint !== lastPixelFingerprint)) {
+        lastSrc = cur; lastPixelFingerprint = pixelFingerprint; lastChange = Date.now();
+      }
+      const idle = Date.now() - lastChange;
+      if (cur && !resultStillGenerating(el)) {
+        if (isData(cur) && idle >= QUIET_DATA_MS && await dataImageLooksFinal(cur, cfg)) { settledSrc = cur; break; }
+        if (!isData(cur) && idle >= QUIET_SERVER_MS && imageDimensionsLookFinal(el, cfg)) {
+          const pixels = pixelInspection === null ? null : pixelInspection.looksFinal;
+          // CORS=null NO equivale a aprobado. Solo devolvemos un candidato en cuarentena para que el
+          // SW valide sus bytes descargados; nunca se asigna ni se mueve a canonical en este punto.
+          if (pixels === true || pixels === null) {
+            settledSrc = cur; settledNeedsByteValidation = pixels !== true; break;
+          }
+        }
+      }
       await sleep(400);
     }
     const freshEls = resultImageEls().filter((i) => !before.has(genId(i.src)));
-    const chosen = pickFresh();
-    if (!chosen) return { ok: false, error: "no aparecio imagen nueva en Grok tras generar" };
-    if (!settled) return { ok: false, error: "la imagen nueva de Grok no se estabilizo (evito guardar ruido o un frame intermedio)" };
+    if (!pickFresh()) return { ok: false, error: "no aparecio imagen nueva en Grok tras generar" };
+    if (!settledSrc) return { ok: false, error: "la imagen nueva de Grok no se estabilizo (evito guardar ruido o un frame intermedio)" };
     // Captura la URL del POST de esta imagen (Grok navega a /imagine/post/<id> al generar). Es la pagina
     // donde luego esta el boton "Hacer video"; guardarla evita derivarla mal de la URL del asset.
     let postUrl = null;
     try { postUrl = await waitFor(() => /\/imagine\/post\/[^/]+/.test(location.href) ? location.href : null, { timeout: 8000 }); }
     catch (_e) { /* no navego a /post: el SW derivara del genId como fallback */ }
-    return { ok: true, data: { imageUrl: chosen.currentSrc || chosen.src, postUrl, variantCount: freshEls.length } };
+    // Devuelve EXACTAMENTE el src que supero la validacion. Antes se volvia a leer el nodo y un
+    // re-render entre ambas lineas podia sustituirlo por otro frame aun no validado.
+    const candidateImages = await validatedImageCandidates(before, settledSrc, cfg);
+    return { ok: true, data: {
+      imageUrl: settledSrc, postUrl, variantCount: freshEls.length,
+      requiresByteValidation: settledNeedsByteValidation,
+      candidateImages,
+    } };
   }
 
   // COLLECT_IMAGE: via de RECUPERACION (canal caido / SW reiniciado a media generacion). Aplica las
@@ -466,31 +618,45 @@
     }, { timeout: timeoutMs });
     if (found.type) return found;
     const isData = (s) => /^data:/.test(s || "");
-    const QUIET_SERVER_MS = Number(cfg?.grokImageServerQuietMs) || 10000;
-    const QUIET_DATA_MS = 10000;
+    const QUIET_SERVER_MS = Number(cfg?.grokImageServerQuietMs) || 15000;
+    const QUIET_DATA_MS = Number(cfg?.grokImageDataQuietMs) || 10000;
     const settleMax = Math.max(30000, timeoutMs);
     const t0 = Date.now();
-    let maxLen = -1, lastGrow = Date.now(), settled = false;
+    let lastSrc = "", lastPixelFingerprint = "", lastChange = Date.now(), settledSrc = "", settledNeedsByteValidation = false;
     while (Date.now() - t0 < settleMax) {
       const hs = detectHardStop(); if (hs) return hs;
       const el = pickResultImage(exclude);
       const cur = el ? (el.currentSrc || el.src || "") : "";
-      if (cur.length > maxLen) { maxLen = cur.length; lastGrow = Date.now(); }
-      const idle = Date.now() - lastGrow;
-      if (cur && !isData(cur) && idle >= QUIET_SERVER_MS && imageDimensionsLookFinal(el, cfg)) { settled = true; break; }
-      if (cur && isData(cur) && idle >= QUIET_DATA_MS && (resultCardReady(el) || await dataImageLooksFinal(cur, cfg))) { settled = true; break; }
+      const pixelInspection = cur && !isData(cur) ? elementPixelInspection(el, cfg) : null;
+      const pixelFingerprint = pixelInspection?.fingerprint || "";
+      if (cur !== lastSrc || (pixelFingerprint && pixelFingerprint !== lastPixelFingerprint)) {
+        lastSrc = cur; lastPixelFingerprint = pixelFingerprint; lastChange = Date.now();
+      }
+      const idle = Date.now() - lastChange;
+      if (cur && !resultStillGenerating(el)) {
+        if (isData(cur) && idle >= QUIET_DATA_MS && await dataImageLooksFinal(cur, cfg)) { settledSrc = cur; break; }
+        if (!isData(cur) && idle >= QUIET_SERVER_MS && imageDimensionsLookFinal(el, cfg)) {
+          const pixels = pixelInspection === null ? null : pixelInspection.looksFinal;
+          if (pixels === true || pixels === null) {
+            settledSrc = cur; settledNeedsByteValidation = pixels !== true; break;
+          }
+        }
+      }
       await sleep(400);
     }
     const chosen = pickResultImage(exclude);
     if (!chosen) return { ok: false, error: "no encontre imagen generada actual en Grok" };
-    if (!settled) return { ok: false, error: "la imagen recuperada no se estabilizo (posible ruido/frame intermedio); reintenta" };
+    if (!settledSrc) return { ok: false, error: "la imagen recuperada no se estabilizo (posible ruido/frame intermedio); reintenta" };
+    const candidateImages = await validatedImageCandidates(exclude, settledSrc, cfg);
     return {
       ok: true,
       data: {
-        imageUrl: chosen.currentSrc || chosen.src,
+        imageUrl: settledSrc,
         postUrl: /\/imagine\/post\//.test(location.href) ? location.href : null,
         variantCount: resultImageEls().filter((i) => !exclude.has(genId(i.currentSrc || i.src))).length,
         recovered: true,
+        requiresByteValidation: settledNeedsByteValidation,
+        candidateImages,
       },
     };
   }

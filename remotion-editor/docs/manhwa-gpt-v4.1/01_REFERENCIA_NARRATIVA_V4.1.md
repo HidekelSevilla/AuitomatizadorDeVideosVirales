@@ -172,6 +172,10 @@ No necesita conocer todavía:
 
 Cuando un nombre propio será el golpe del cliffhanger, debe haberse explicado antes qué representa. Una etiqueta sin significado no produce impacto.
 
+La primera mención de un lugar técnico usa una función cotidiana comprensible. Prefiere “el pasillo de mantenimiento donde limpiábamos” a una etiqueta aislada como “zona de servicio”.
+
+Cuando la evidencia imposible depende de un movimiento, declara su causa y recorrido normal antes de la alteración: quién empujó el agua, desde dónde entró y cómo regresó. El espectador no debe reconstruir fuera de cámara por qué el objeto se movía.
+
 ## 10. Presentación de personajes
 
 La primera mención útil incluye función o relación:

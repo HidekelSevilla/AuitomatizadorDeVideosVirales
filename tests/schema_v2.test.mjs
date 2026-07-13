@@ -68,22 +68,28 @@ assert.ok(s2refs.includes("scene_01 (escena)"), "dry-run scene_02 muestra ref a 
 // (i1) ingredientes validos: se parsean a project.ingredients y references.ingredients -> scene.ingredientRefs.
 {
   const r = parseProject({
-    project: { title: "Huesito P1" },
+    project: { title: "Huesito P1", serie: "huesito", part: 2 },
     characters: { huesito: { display_name: "Huesito", reference_asset: "assets/characters/huesito_ref.png" } },
     ingredients: [
       { id: "huesito_green", type: "character_edited", base: "huesito", edit_prompt: "green hoodie", output_file: "assets/ingredients/huesito_green.png" },
-      { id: "alien", type: "entity", generation_prompt: "black alien", output_file: "assets/ingredients/alien.png" },
-      { id: "plate_reforma", type: "location_plate", generation_prompt: "reforma empty", output_file: "assets/ingredients/plate_reforma.png" },
+      { id: "alien", type: "entity", generation_prompt: "black alien", output_file: "assets/ingredients/alien.png", persistent: true, regenerate: false },
+      { id: "plate_reforma", type: "location_plate", generation_prompt: "reforma empty", output_file: "assets/ingredients/plate_reforma.png", regenerate: true },
     ],
     scenes: [{ id: "s1", visual: { image_prompt: "p", animation_prompt: "a" }, references: { characters: ["huesito_green"], ingredients: ["plate_reforma", "alien"], scenes: [] } }],
   });
   assert.equal(r.ok, true, `i1: ok. errores: ${JSON.stringify(r.errors)}`);
   assert.equal(r.warnings.length, 0, `i1: sin warnings. ${JSON.stringify(r.warnings)}`);
   assert.equal(r.project.ingredients.length, 3, "i1: 3 ingredientes en el proyecto");
+  assert.equal(r.project.seriesId, "huesito"); assert.equal(r.project.part, 2,
+    "i1: serie/parte se conservan para asociar el proyecto Flow de P2");
   const ce = r.project.ingredients.find((g) => g.id === "huesito_green");
   assert.equal(ce.type, "character_edited"); assert.equal(ce.base, "huesito");
   assert.equal(ce.prompt, "green hoodie", "i1: edit_prompt -> prompt");
   assert.equal(ce.imageUrl, null); assert.equal(ce.imageFilePath, null, "i1: campos runtime arrancan null");
+  assert.equal(r.project.ingredients.find((g) => g.id === "alien").persistent, true,
+    "i1: la intencion de persistencia no se pierde al normalizar");
+  assert.equal(r.project.ingredients.find((g) => g.id === "plate_reforma").regeneratePending, true,
+    "i1: regenerate:true debe impedir rehidratar el asset episodico viejo");
   assert.deepEqual(r.scenes[0].ingredientRefs, ["plate_reforma", "alien"], "i1: ingredientRefs por escena");
   // references.characters con un id de character_edited NO debe warnear (es valido, no es base).
   assert.deepEqual(r.scenes[0].characterRefIds, ["huesito_green"], "i1: characterRefIds conserva el id editado");
@@ -107,7 +113,7 @@ assert.ok(s2refs.includes("scene_01 (escena)"), "dry-run scene_02 muestra ref a 
   assert.ok(r.errors.some((e) => /bad3.*base.*no esta/.test(e)), "i2: base inexistente");
 }
 
-// (i3) warnings (no fallan): colision de output_file, ref a ingrediente fantasma, references.scenes con ingredientes.
+// (i3) una colision de output_file es fatal: P2 no puede decidir que identidad debe hidratar.
 {
   const r = parseProject({
     project: { title: "X" }, characters: { huesito: { display_name: "Huesito" } },
@@ -117,10 +123,37 @@ assert.ok(s2refs.includes("scene_01 (escena)"), "dry-run scene_02 muestra ref a 
     ],
     scenes: [{ id: "s1", visual: { image_prompt: "p", animation_prompt: "a" }, references: { ingredients: ["fantasma"], scenes: [{ scene_id: "s1" }] } }],
   });
-  assert.equal(r.ok, true, "i3: ok:true (solo warnings)");
-  assert.ok(r.warnings.some((w) => /colisiona/.test(w)), "i3: colision de output_file");
-  assert.ok(r.warnings.some((w) => /fantasma.*no esta en 'ingredients'/.test(w)), "i3: ref a ingrediente inexistente");
-  assert.ok(r.warnings.some((w) => /references\.scenes junto al flujo de ingredientes/.test(w)), "i3: aviso references.scenes");
+  assert.equal(r.ok, false, "i3: ok:false por identidad de output_file ambigua");
+  assert.ok(r.errors.some((e) => /colisiona/.test(e)), "i3: colision de output_file fatal");
+}
+
+// (i4) contratos que anidan project.series tambien deben conservar el enlace P1 -> P2.
+{
+  const r = parseProject({
+    project: { title: "Saga P2", series: { id: "saga_nested", part: 2 } },
+    scenes: [{ id: "s1", visual: { image_prompt: "p", animation_prompt: "a" } }],
+  });
+  assert.equal(r.ok, true); assert.equal(r.project.seriesId, "saga_nested"); assert.equal(r.project.part, 2);
+}
+
+// (i5) el grafo manhwa generado tampoco puede escribir dos identidades al mismo asset.
+{
+  const duplicate = "assets/characters/saga/pose_duplicada.png";
+  const r = parseProject({
+    project: { title: "Saga", preset: "manhwa" },
+    characters: {
+      hero: {
+        display_name: "Hero", reference_asset: "assets/characters/saga/hero.jpg",
+        poses: {
+          uno: { mode: "generate", asset: duplicate, prompt: "pose one" },
+          dos: { mode: "generate", asset: duplicate, prompt: "pose two" },
+        },
+      },
+    },
+    scenes: [{ id: "s1", visual: { image_prompt: "p", animation_prompt: "a" } }],
+  });
+  assert.equal(r.ok, false, "i5: dos nodos generados con el mismo output deben fallar");
+  assert.ok(r.errors.some((e) => /asset generado.*colisiona/.test(e)));
 }
 
 console.log("OK schema v2: prompts, personajes, refs de escena, metadatos y FLUJO DE INGREDIENTES cableados correctamente.");

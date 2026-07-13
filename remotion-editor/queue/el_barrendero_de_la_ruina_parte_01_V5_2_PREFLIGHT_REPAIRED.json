@@ -1,0 +1,2236 @@
+{
+  "project": {
+    "title": "El Barrendero de la Ruina - Parte 1",
+    "preset": "manhwa",
+    "serie": "el_barrendero_de_la_ruina",
+    "slug": "el_barrendero_de_la_ruina_parte_01",
+    "language": "es-419",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "part": 1
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "elevenlabs",
+      "voice_id": "452WrNT9o8dphaYW5YGU",
+      "language": "es-419"
+    },
+    "editing": {
+      "tool": "capcut"
+    }
+  },
+  "characters": {
+    "seo_jun": {
+      "display_name": "Seo Jun",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/seo_jun_base.png"
+        },
+        "barrendero_lluvia": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/seo_jun_barrendero_lluvia.png"
+        },
+        "heredero_marcado": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/seo_jun_heredero_marcado.png"
+        },
+        "alerta_lluvia": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/seo_jun_alerta_lluvia.png",
+          "reference_pose": "barrendero_lluvia",
+          "prompt": "Same identity as the existing short-haired twenty-four-year-old Korean cleaner reference: lean Korean man, gray reflective coverall, worn gloves, repaired black boots, rain-darkened fabric and blank work badge. Full-body three-quarter eye-level performance sheet on seamless medium-gray background. He snaps into danger alert: eyebrows lifted inward, eyes locked forward, jaw tight, shoulders raised, one open gloved hand warning others back, weight shifted onto the rear boot. Both feet visible, no power, no scenery."
+        },
+        "rescate_esfuerzo": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/seo_jun_rescate_esfuerzo.png",
+          "reference_pose": "barrendero_lluvia",
+          "prompt": "Same identity as the existing short-haired twenty-four-year-old Korean cleaner reference: lean Korean man, gray reflective coverall, worn gloves, repaired black boots, rain-darkened fabric and blank work badge. Full-body three-quarter eye-level performance sheet on seamless medium-gray background. He strains through a rescue pull: brows pressed down, eyes focused hard, teeth clenched, shoulders forward, right arm reaching low to grip someone, left arm counterbalancing, front knee bent and rear boot sliding. Both feet visible, no power, no scenery."
+        },
+        "dolor_poder": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/seo_jun_dolor_poder.png",
+          "reference_pose": "heredero_marcado",
+          "prompt": "Same identity as the existing short-haired twenty-four-year-old Korean cleaner marked-state reference: lean Korean man, wet gray reflective coverall, worn gloves, repaired black boots, charcoal fissures with faint red glow under one forearm. Full-body three-quarter eye-level performance sheet on seamless medium-gray background. He twists under internal pain: eyebrows pulled tight, eyes wide, teeth clenched, shoulders hunched, spine arched, both open hands trembling outward and weight uneven on both boots. No attack, no scenery."
+        },
+        "agotado_desafiante": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/seo_jun_agotado_desafiante.png",
+          "reference_pose": "heredero_marcado",
+          "prompt": "Same identity as the existing short-haired twenty-four-year-old Korean cleaner marked-state reference: lean Korean man, wet gray reflective coverall, worn gloves, repaired black boots, charcoal fissures with faint red glow under one forearm. Full-body three-quarter eye-level performance sheet on seamless medium-gray background. He stands exhausted but defiant: brows low, eyes fixed forward, mouth parted from harsh breathing, shoulders squared despite pain, both empty hands visible at chest height, knees slightly bent, weight planted through both boots. No scenery."
+        },
+        "trabajo_cansado": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/seo_jun_trabajo_cansado.png",
+          "reference_pose": "barrendero_lluvia",
+          "prompt": "Same identity as the existing short-haired twenty-four-year-old Korean cleaner rain-state reference: lean Korean man, gray reflective coverall, worn gloves, repaired black boots, rain-darkened fabric and blank work badge. Full-body three-quarter eye-level performance sheet on seamless medium-gray background. He works under pressure with tired low brows, attentive eyes, closed tense mouth, shoulders slightly bent forward, one hand ready to guide cleanup work and the other balancing his weight, both boots planted with visible soles. Both hands and both feet visible, no power, no scenery."
+        },
+        "recibe_transferencia": {
+          "mode": "generate",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/seo_jun_recibe_transferencia.png",
+          "reference_pose": "dolor_poder",
+          "prompt": "Same Seo Jun identity as marked-state reference: short-haired lean Korean man in wet gray reflective coverall, worn gloves, repaired boots, charcoal fissures under one forearm. Full-body three-quarter eye-level performance sheet on seamless medium-gray. He receives a painful chest transfer: eyes wide, brows pinched, jaw clenched, spine recoiling, one hand flaring open, both boots braced, no capsule, no scenery."
+        },
+        "lanza_poder": {
+          "mode": "generate",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/seo_jun_lanza_poder.png",
+          "reference_pose": "dolor_poder",
+          "prompt": "Same Seo Jun identity as marked-state reference: short-haired lean Korean man in wet gray reflective coverall, worn gloves, repaired boots, charcoal fissures under one forearm. Full-body three-quarter eye-level performance sheet on seamless medium-gray. He launches power forward: brows locked, teeth clenched, shoulders driving, both arms thrust straight ahead, fingers spread, stance wide and planted, no target, no scenery."
+        }
+      }
+    },
+    "park_mira": {
+      "display_name": "Park Mira",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/park_mira_base.png"
+        },
+        "barrendera_lluvia": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/park_mira_barrendera_lluvia.png"
+        },
+        "proteccion_panico": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/park_mira_proteccion_panico.png",
+          "reference_pose": "barrendera_lluvia",
+          "prompt": "Same identity as the existing Park Mira rain-state reference: sturdy Korean woman in her late twenties, black hair tied back, gray Barrendero coverall with yellow reflective strips, work gloves, reinforced boots. Full-body three-quarter eye-level performance sheet on seamless medium-gray background. She crouches protectively over a smaller space: eyebrows knitted, eyes wide toward danger, mouth open mid-command, shoulders hunched, one arm shielding downward and the other braced on the ground, weight low on bent knees. No child, no rubble, no scenery."
+        },
+        "shock_retroceso": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/park_mira_shock_retroceso.png",
+          "reference_pose": "barrendera_lluvia",
+          "prompt": "Same identity as the existing Park Mira rain-state reference: sturdy Korean woman in her late twenties, black hair tied back, gray Barrendero coverall with yellow reflective strips, work gloves, reinforced boots. Full-body three-quarter eye-level performance sheet on seamless medium-gray background. She recoils in frightened recognition: eyebrows raised high, eyes fixed to her left, lips parted, shoulders pulled back, both gloved hands half-raised between defense and disbelief, one boot stepping backward with clear distance. No child, no scenery."
+        },
+        "trabajo_tenso": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/park_mira_trabajo_tenso.png",
+          "reference_pose": "barrendera_lluvia",
+          "prompt": "Same identity as the existing Park Mira rain-state reference: sturdy Korean woman in her late twenties, tied-back black hair, gray Barrendero coverall with yellow reflective strips, work gloves and reinforced boots. Full-body three-quarter eye-level performance sheet on seamless medium-gray background. She works alertly with knitted brows, focused eyes, tight mouth, shoulders forward, one gloved hand measuring danger distance and the other braced low, knees bent in a stable cleanup stance. Both hands and both feet visible, no child, no rubble, no scenery."
+        },
+        "alivio_miedo_transicion": {
+          "mode": "generate",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/park_mira_alivio_miedo_transicion.png",
+          "reference_pose": "shock_retroceso",
+          "prompt": "Same Park Mira identity as rain-state reference: sturdy Korean woman, tied-back black hair, gray-and-yellow Barrendero coverall, gloves, reinforced boots. Full-body three-quarter eye-level performance sheet on seamless medium-gray. She shifts from relief to fear: one arm still protective near her chest, brows rising, eyes fixed ahead, lips parted, shoulders pulling back, one boot retreating, no child, no scenery."
+        }
+      }
+    },
+    "kang_muyeol": {
+      "display_name": "Kang Muyeol",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/kang_muyeol_base.png"
+        },
+        "prisionero_herido": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/kang_muyeol_prisionero_herido.png"
+        },
+        "moribundo_intenso": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/kang_muyeol_moribundo_intenso.png",
+          "reference_pose": "prisionero_herido",
+          "prompt": "Same identity as the existing long-haired bloodied Korean prisoner reference: older Korean man, shoulder-length black hair stuck with blood, torn black clothing, white restraint harness, metal inhibitor collar, pale injured face. Full-body three-quarter eye-level performance sheet on seamless medium-gray background. He fights through dying urgency: sunken eyes focused forward, brows tense, mouth barely open, jaw trembling, shoulders pinned back, one bleeding hand stretching outward from a broken restraint while the other remains trapped. Both feet visible, no capsule, no scenery."
+        },
+        "reconoce_heredero": {
+          "mode": "generate",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/kang_muyeol_reconoce_heredero.png",
+          "reference_pose": "moribundo_intenso",
+          "prompt": "Same Kang Muyeol identity as injured-prisoner reference: older long-haired Korean man, bloodied face, torn black clothing, white restraint harness, metal inhibitor collar. Full-body restrained three-quarter eye-level performance sheet on seamless medium-gray. He recognizes someone with dying urgency: sunken eyes fixed, brows tense, mouth barely open, one shoulder straining, one hand reaching weakly from restraint, no capsule, no scenery."
+        },
+        "rompe_y_alcanza": {
+          "mode": "generate",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/kang_muyeol_rompe_y_alcanza.png",
+          "reference_pose": "moribundo_intenso",
+          "prompt": "Same Kang Muyeol identity as injured-prisoner reference: older long-haired Korean man, bloodied face, torn black clothing, white restraint harness, metal inhibitor collar. Full-body restrained three-quarter eye-level performance sheet on seamless medium-gray. He breaks one wrist strap and reaches outward through pain: teeth clenched, brows crushed, one bloodied arm extended, torso still pinned, no capsule, no scenery."
+        },
+        "oculto_en_capsula": {
+          "mode": "generate",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/kang_muyeol_oculto_en_capsula.png",
+          "reference_pose": "moribundo_intenso",
+          "prompt": "Same Kang Muyeol identity as injured-prisoner reference: older long-haired Korean man, bloodied face, torn black clothing, white restraint harness, metal inhibitor collar. Full-body restrained three-quarter eye-level state sheet on seamless medium-gray. He is strapped low and partially obscured by imagined reflective glare, body readable as an occupant without facial performance, both feet visible, no capsule, no scenery."
+        }
+      }
+    },
+    "ryu_haejin": {
+      "display_name": "Capitana Ryu Haejin",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/ryu_haejin_base.png"
+        },
+        "armadura_convoy": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/ryu_haejin_armadura_convoy.png"
+        },
+        "escaneo_frio": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/ryu_haejin_escaneo_frio.png",
+          "reference_pose": "armadura_convoy",
+          "prompt": "Same identity as the existing Captain Ryu Haejin convoy-armor reference: Korean woman in her early thirties, athletic build, sharp jaw, focused dark eyes, short black hair, white-and-black containment armor, black joint seals and plain boots. Full-body three-quarter eye-level performance sheet on seamless medium-gray background. She aims a compact blank-screen scanner with cold authority: brows low, eyes narrowed, jaw rigid, shoulders squared, right arm fully extended, left hand held ready near her side, feet planted evenly. No rifle, no scenery, no readable text."
+        },
+        "orden_ejecucion": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/ryu_haejin_orden_ejecucion.png",
+          "reference_pose": "armadura_convoy",
+          "prompt": "Same identity as the existing Captain Ryu Haejin convoy-armor reference: Korean woman in her early thirties, athletic build, sharp jaw, focused dark eyes, short black hair, white-and-black containment armor, black joint seals and plain boots. Full-body three-quarter eye-level performance sheet on seamless medium-gray background. She gives a kill order with controlled severity: brows pressed low, eyes fixed forward, mouth open in a short command, jaw firm, shoulders squared, one hand lowering a compact scanner and the other hand cutting the air in a restrained command gesture. Both feet visible, no rifle, no scenery, no readable text."
+        }
+      }
+    },
+    "nino_atrapado": {
+      "display_name": "Niño atrapado",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/nino_atrapado_base.png"
+        },
+        "atrapado_lluvia": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/nino_atrapado_lluvia.png"
+        },
+        "terror_agachado": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/nino_atrapado_terror_agachado.png",
+          "reference_pose": "atrapado_lluvia",
+          "prompt": "Same identity as the existing trapped-boy rain-state reference: small Korean boy about eight years old, short dark bowl-cut hair, mustard rain jacket, navy trousers and dusty gray sneakers. Full-body three-quarter eye-level performance sheet on seamless medium-gray background. He crouches in terror: eyebrows lifted, eyes very wide, mouth pressed tight to avoid screaming, shoulders tucked up, one hand reaching forward for help, the other hugging his chest, knees drawn close and both feet visible. No rubble, no adult, no scenery."
+        }
+      }
+    },
+    "agente_contencion": {
+      "display_name": "Agente de Contención",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/agente_contencion_base.png"
+        },
+        "rifle_ready": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/agente_contencion_rifle_ready.png"
+        }
+      }
+    },
+    "resto_perro_negro": {
+      "display_name": "Resto activo: perro negro",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/resto_perro_negro_base.png"
+        },
+        "grieta_activa": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/resto_perro_negro_grieta_activa.png"
+        },
+        "pinned_struggling": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/resto_perro_negro_pinned_struggling.png",
+          "reference_pose": "grieta_activa",
+          "prompt": "Same eyeless black dog-remnant identity and matte armor-plate geometry as the existing active-crack reference. Isolated three-quarter eye-level creature state on seamless medium-gray background. The torso is compressed low as if trapped under heavy concrete, front claws scraping forward, rear body pinned, plates misaligned, head lifted toward danger, and a weak electric-purple chest crack glows between armor seams. All visible limbs accounted for, no standing pose, no environment."
+        },
+        "charging_pinned": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/resto_perro_negro_charging_pinned.png",
+          "reference_pose": "pinned_struggling",
+          "prompt": "Same eyeless black dog-remnant identity and pinned body geometry as the pinned-struggling reference. Isolated three-quarter eye-level creature state on seamless medium-gray background. It remains trapped in the same low position, but its spine arches, shoulder plates separate, claws brace against the ground, and the electric-purple chest crack widens and brightens as if charging a pulse. No release, no standing pose, no rubble, no environment."
+        },
+        "impact_airborne": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/resto_perro_negro_impact_airborne.png",
+          "reference_pose": "charging_pinned",
+          "prompt": "Same eyeless black dog-remnant identity and armor plates as the charging-pinned reference. Isolated side-view impact state on seamless medium-gray background. The complete quadruped is blasted sideways through the air, limbs splayed, torso extended, chest plates breaking outward from the purple crack, small black fragments trailing from the impact point. The purple glow is being overwhelmed from the center, no ground contact, no scenery."
+        },
+        "collapsed_broken": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/resto_perro_negro_collapsed_broken.png",
+          "reference_pose": "impact_airborne",
+          "prompt": "Same eyeless black dog-remnant identity and armor-plate geometry as the impact-airborne reference. Isolated side-view aftermath state on seamless medium-gray background. The creature lies collapsed ON TOP of the ground plane, all visible limbs supported by the surface, chest and shoulder plates shattered, fragments scattered close to the body, and the purple crack completely dark. No sitting posture, no glow, no attack, no scenery."
+        }
+      }
+    },
+    "escoba_industrial": {
+      "display_name": "Escoba industrial",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/escoba_industrial_base.png"
+        }
+      }
+    },
+    "carrito_limpieza": {
+      "display_name": "Carrito gris de limpieza",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/carrito_limpieza_base.png"
+        }
+      }
+    },
+    "capsula_contencion": {
+      "display_name": "Cápsula transparente de contención",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/capsula_contencion_base.png"
+        },
+        "abierta_golpeada": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/capsula_contencion_abierta_golpeada.png"
+        }
+      }
+    },
+    "convoy_estatal": {
+      "display_name": "Vehículo del convoy estatal",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/convoy_estatal_base.png"
+        }
+      }
+    },
+    "escaner_firmas": {
+      "display_name": "Escáner de firmas",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/escaner_firmas_base.png"
+        }
+      }
+    },
+    "aro_inhibidor": {
+      "display_name": "Aro inhibidor del Orquestador",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/el_barrendero_de_la_ruina/aro_inhibidor_base.png"
+        }
+      }
+    }
+  },
+  "escenarios": {
+    "tunel_reforzado": {
+      "display_name": "Túnel urbano reforzado",
+      "views": {
+        "entrada_jerarquia_wide": {
+          "mode": "existing",
+          "asset": "assets/escenarios/el_barrendero_de_la_ruina/tunel_reforzado_entrada_jerarquia_wide.png"
+        },
+        "ruta_master_eye": {
+          "mode": "existing",
+          "asset": "assets/escenarios/el_barrendero_de_la_ruina/tunel_reforzado_ruta_master_eye.png"
+        },
+        "ruta_high_oblique": {
+          "mode": "existing",
+          "asset": "assets/escenarios/el_barrendero_de_la_ruina/tunel_reforzado_ruta_high_oblique.png"
+        },
+        "hazard_side_axis": {
+          "mode": "existing",
+          "asset": "assets/escenarios/el_barrendero_de_la_ruina/tunel_reforzado_hazard_side_axis.png"
+        },
+        "convoy_low_oblique": {
+          "mode": "existing",
+          "asset": "assets/escenarios/el_barrendero_de_la_ruina/tunel_reforzado_convoy_low_oblique.png"
+        },
+        "capsule_zone_oblique": {
+          "mode": "existing",
+          "asset": "assets/escenarios/el_barrendero_de_la_ruina/tunel_reforzado_capsule_zone_oblique.png"
+        },
+        "execution_circle_high_oblique": {
+          "mode": "existing",
+          "asset": "assets/escenarios/el_barrendero_de_la_ruina/tunel_reforzado_execution_circle_high_oblique.png"
+        }
+      }
+    },
+    "departamento_seo": {
+      "display_name": "Departamento de Seo Jun y Seo Ara",
+      "views": {
+        "mesa_cocina_eye": {
+          "mode": "existing",
+          "asset": "assets/escenarios/el_barrendero_de_la_ruina/departamento_seo_mesa_cocina_eye.png"
+        }
+      }
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Kang Muyeol lies fading inside an open transparent transport capsule while Seo Jun stands outside watching, high-oblique medium-wide shot in a reinforced tunnel at rainy night near midnight. Kang is an older long-haired bloodied Korean prisoner in torn black clothing, white restraint harness and metal collar; he is the ONLY person INSIDE the capsule. Seo is a short-haired Korean cleaner in wet gray coverall, gloves and repaired boots, completely OUTSIDE on wet pavement. Clinical white convoy light and red alert reflections shape the shell. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low] El villano más grande de Corea murió cuando lo capturaron.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.05,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "kang_muyeol",
+            "pose": "moribundo_intenso"
+          },
+          {
+            "id": "seo_jun",
+            "pose": "heredero_marcado"
+          }
+        ],
+        "assets": [
+          {
+            "id": "capsula_contencion",
+            "pose": "abierta_golpeada"
+          }
+        ]
+      },
+      "transition_in": "dip_black"
+    },
+    {
+      "id": "scene_02",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Kang Muyeol reaches weakly from the open capsule toward Seo Jun, eye-level medium shot across the capsule opening at rainy night near midnight. Kang is the ONLY person INSIDE: older, long-haired, bloodied, black clothing, white restraints, metal collar. Seo remains completely OUTSIDE on wet pavement: younger, short-haired, gray cleaner coverall, gloves, repaired boots. Their age, hair length and costumes separate them clearly. White convoy spill, dark red reflections on polycarbonate, controlled black shadows. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Pero antes me eligió como heredero.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_pull_out",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "kang_muyeol",
+            "pose": "reconoce_heredero"
+          },
+          {
+            "id": "seo_jun",
+            "pose": "recibe_transferencia"
+          }
+        ],
+        "assets": [
+          {
+            "id": "capsula_contencion",
+            "pose": "abierta_golpeada"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_03",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "TRUE LONG SHOT, high-oblique wide shot from 16 meters away and 4 meters above wet tunnel pavement at rainy night near midnight. Foreground puddles and red reflections fill the lower frame; midground shows small full-body Seo Jun centered inside a wide rifle ring; background holds tunnel braces and white beams. The visible subject group occupies 10–18% of frame height, while the environment covers more than 65%. Helmeted containment agents aim inward with coherent scale. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Y ahora el Estado quiere ejecutarme.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_left_to_top_right",
+        "zoom": 1.04,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "heredero_marcado"
+          },
+          {
+            "id": "agente_contencion",
+            "pose": "rifle_ready"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "execution_circle_high_oblique"
+        }
+      }
+    },
+    {
+      "id": "scene_04",
+      "type": "narrative_card",
+      "card": {
+        "text": "EL BARRENDERO DE LA RUINA",
+        "mode": "editor"
+      },
+      "voiceover": {
+        "text": "[pause]\n\nEL BARRENDERO DE LA RUINA\n"
+      }
+    },
+    {
+      "id": "scene_05",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white page with exactly two simple panels and no generated text. Upper wide panel: eye-level full-body Seo Jun in clean gray coverall, gloves and repaired boots stands beside one industrial broom and one gray cleanup cart. Lower inset: macro shot of an apartment key and overdue bill shapes under warm light. Late rainy night memory, clean editorial breathing space, no extra panels. Korean manhwa, crisp ink, restrained flat color, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Yo era un Barrendero sin poderes.\n"
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "base"
+          }
+        ],
+        "assets": [
+          {
+            "id": "escoba_industrial",
+            "pose": "base"
+          },
+          {
+            "id": "carrito_limpieza",
+            "pose": "base"
+          }
+        ]
+      },
+      "transition_in": "dip_black"
+    },
+    {
+      "id": "scene_06",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Seo Jun and Park Mira enter after distant unidentifiable fighters have left, eye-level wide shot in the reinforced tunnel at rainy night near midnight. Seo wears a wet gray reflective coverall, gloves and repaired boots, moving with tired low brows and bent shoulders. Mira follows in gray-and-yellow work gear with tied-back hair and tense cleanup posture. Blue rain spills from the entrance, yellow lamps cover the workers, white authority light fades in the background. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Los combatientes mataban monstruos. Nosotros limpiábamos después.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.05,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "trabajo_cansado"
+          },
+          {
+            "id": "park_mira",
+            "pose": "trabajo_tenso"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "entrada_jerarquia_wide"
+        }
+      }
+    },
+    {
+      "id": "scene_07",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "White composite with exactly two simple insets and no generated text. Left inset: macro shot of a wet gloved thumb checking a timecard near midnight. Right inset: eye-level apartment table with two empty chairs, unpaid bills and a key. The economic pressure reads through objects, not captions. Rainy late night, yellow work light against muted blue city rain, wide white breathing space. Korean manhwa, crisp ink, restrained flat color, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Esa noche necesitaba terminar el turno para pagar la renta.\n"
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "trabajo_cansado"
+          }
+        ],
+        "escenario": {
+          "id": "departamento_seo",
+          "view": "mesa_cocina_eye"
+        }
+      }
+    },
+    {
+      "id": "scene_08",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "The white-and-black six-wheel convoy waits at the uncleared tunnel edge while Seo Jun raises one gloved stop hand, eye-level wide shot on the side axis at rainy night near midnight. Foreground red tape and wet pavement establish distance; midground shows Seo braced in a wet gray coverall; background holds the armored truck with all wheel contacts and the broken column deeper inside. White headlights, yellow work lamps, red reflections. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El convoy del Orquestador debía esperar a que despejáramos el túnel.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "top_right_to_bottom_left",
+        "zoom": 1.03,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "alerta_lluvia"
+          }
+        ],
+        "assets": [
+          {
+            "id": "convoy_estatal",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "hazard_side_axis"
+        }
+      }
+    },
+    {
+      "id": "scene_08a",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Two-panel sequence, eye-level medium shot on the side axis at rainy night near midnight. First panel: the white-and-black six-wheel convoy ignores Seo Jun and rolls past the red hazard boundary. Second panel: Seo recoils one step in his wet gray coverall, stop hand raised, mouth tense. Wheel contacts stay readable as the vehicle advances toward the broken column. White headlights dominate, yellow work light catches his coverall, red reflections streak through puddles. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "La Autoridad entró antes. No iba a retrasarse por trabajadores como nosotros.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "top_right_to_bottom_left",
+        "zoom": 1.03,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "trabajo_cansado"
+          }
+        ],
+        "assets": [
+          {
+            "id": "convoy_estatal",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "hazard_side_axis"
+        }
+      }
+    },
+    {
+      "id": "scene_09",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Seo Jun discovers the black dog remnant under the broken column, low-oblique medium shot at rainy night near midnight. He freezes in a wet gray coverall, brows lifted, one open hand warning the lane. The creature is a tall eyeless dog of matte-black plates, pinned low with a weak purple chest crack. Cold blue spill, yellow tunnel lamps and purple reflections mark the threat. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Entonces vi al perro negro.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.05,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "alerta_lluvia"
+          },
+          {
+            "id": "resto_perro_negro",
+            "pose": "pinned_struggling"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "hazard_side_axis"
+        }
+      }
+    },
+    {
+      "id": "scene_10",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "TRUE LONG SHOT, two-panel high-oblique wide composite from 15 meters away and 4 meters high at rainy night near midnight. Foreground red tape, wet lane seams and puddles occupy the lower frame; midground shows small full-body Seo Jun well back from the hazard; background holds the pinned eyeless black dog under the broken column. The visible subject pair occupies 10–20% of frame height, while the environment covers over 65%. Purple chest crack, yellow lamps, blue-gray concrete. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Era alto, no tenía ojos y seguía atrapado bajo una columna. Una grieta morada latía en su pecho.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_pull_out",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "alerta_lluvia"
+          },
+          {
+            "id": "resto_perro_negro",
+            "pose": "pinned_struggling"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "ruta_high_oblique"
+        }
+      }
+    },
+    {
+      "id": "scene_11",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "The pinned black dog pulses damage through connected surfaces, eye-level medium shot at rainy night near midnight. Its purple chest crack feeds visible seams in wet concrete, then steel, then puddles; the creature stays trapped low under the broken column. The causal path is floor-bound, not airborne. Yellow tunnel light, electric purple on wet ground, controlled shadows. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Cuando esa luz pulsaba, el daño corría por todo lo conectado.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_left_to_top_right",
+        "zoom": 1.04,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "resto_perro_negro",
+            "pose": "pinned_struggling"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "hazard_side_axis"
+        }
+      }
+    },
+    {
+      "id": "scene_12",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Two-panel protective reaction, high-oblique medium shot at rainy night near midnight. First panel: Park Mira, compact Korean woman in wet gray-and-yellow workwear, crouches over the smaller boy inside the tape. Second panel: the small Korean boy in a mustard rain jacket curls low with wide eyes beside her. Wet pavement dominates, purple threat glow leaks from the column, yellow work light isolates them. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Mi compañera estaba dentro de la cinta. Un niño seguía atrapado junto a ella.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "top_right_to_bottom_left",
+        "zoom": 1.03,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "park_mira",
+            "pose": "proteccion_panico"
+          },
+          {
+            "id": "nino_atrapado",
+            "pose": "terror_agachado"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "ruta_high_oblique"
+        }
+      }
+    },
+    {
+      "id": "scene_13",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "The black dog remnant charges its purple chest crack, eye-level close-up at rainy night near midnight. Its eyeless head stays rigid, spine arched, black plates separating around the glowing seam. No projectile leaves yet. Vivid purple internal light, thin yellow highlights on matte plates, rain droplets lifting at the edge. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[urgent] La grieta se encendió.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.05,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "resto_perro_negro",
+            "pose": "charging_pinned"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_14",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Environmental transition: wet pavement splits along connected seams, ground-level macro shot at rainy night near midnight. Purple-lit cracks rip through concrete and throw water and grit toward the convoy lane; no characters crowd the frame. Yellow light catches flying debris while puddles reflect the spreading fracture. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El pavimento se abrió.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_pull_out",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "assets": [
+          {
+            "id": "convoy_estatal",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "convoy_low_oblique"
+        }
+      }
+    },
+    {
+      "id": "scene_15",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "The bent support column drops toward Mira and the child while the black dog remains pinned beyond them, high-oblique medium shot at rainy night near midnight. Mira covers the boy’s head; he curls tighter; concrete dust falls between them and the column. The dog stays trapped in charging state, purple crack glowing but body pinned. Yellow work light, purple underglow, red puddle glints. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "La columna empezó a caer.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_left_to_top_right",
+        "zoom": 1.04,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "park_mira",
+            "pose": "proteccion_panico"
+          },
+          {
+            "id": "nino_atrapado",
+            "pose": "terror_agachado"
+          },
+          {
+            "id": "resto_perro_negro",
+            "pose": "charging_pinned"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_16",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Seo Jun crosses the red tape, eye-level medium shot at rainy night near midnight. His jaw is set, one boot enters the danger zone, one gloved hand reaches forward, and the tape bends around his leg. Mira and the child remain deeper under the column. Yellow light catches him, purple fracture light rises from below, wet pavement shows the boundary. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Yo crucé la cinta.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "top_right_to_bottom_left",
+        "zoom": 1.03,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "rescate_esfuerzo"
+          },
+          {
+            "id": "park_mira",
+            "pose": "trabajo_tenso"
+          },
+          {
+            "id": "nino_atrapado",
+            "pose": "atrapado_lluvia"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_17",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Two-panel rescue pull, eye-level medium shot at rainy night near midnight. First panel: Seo Jun grips the boy’s arm and leans back with visible strain. Second panel: Park Mira pushes from the far side as the child slides across the shared wet ground. The hanging column stays overhead and motion directs toward safety. Yellow lamp on the child, purple glow below. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Tomé al niño del brazo mientras mi compañera lo empujaba hacia mí.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.05,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "rescate_esfuerzo"
+          },
+          {
+            "id": "park_mira",
+            "pose": "trabajo_tenso"
+          },
+          {
+            "id": "nino_atrapado",
+            "pose": "terror_agachado"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_18",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "The same pulse bucks the convoy wheels, low-oblique close-up at rainy night near midnight. Two armored wheels lift off wet pavement and the suspension strains. The violence reads through the ground, not from a separate blast. White headlights flare, purple reflections cross tires and water, red warning streaks run along bodywork. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El mismo pulso golpeó las ruedas del convoy.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_pull_out",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "assets": [
+          {
+            "id": "convoy_estatal",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "convoy_low_oblique"
+        }
+      }
+    },
+    {
+      "id": "scene_19",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "TRUE LONG SHOT, side-axis wide shot from 18 meters away at rainy night near midnight. Foreground puddles and lane seams fill the lower frame; midground shows the six-wheel convoy at left and the transparent capsule flying through center; background holds the broken column at right. The visible subject capsule occupies 10–20% of frame height, while the environment covers over 65%. Kang Muyeol is the ONLY person INSIDE, hidden by hard reflections; no exterior person visible. White convoy spill, red beacon streaks, purple ground glow. Korean manhwa, crisp ink, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "La cápsula salió despedida\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_left_to_top_right",
+        "zoom": 1.04,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "kang_muyeol",
+            "pose": "oculto_en_capsula"
+          }
+        ],
+        "assets": [
+          {
+            "id": "capsula_contencion",
+            "pose": "base"
+          },
+          {
+            "id": "convoy_estatal",
+            "pose": "base"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_19a",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "The transparent capsule hits the broken column and snaps open, low-oblique medium shot at rainy night near midnight. Foreground chips fall from the dented white rib; midground shows the clear shell forced open; background holds wet tunnel braces and purple underglow. Kang Muyeol is the ONLY person INSIDE, still hidden by red-white reflections; no exterior person visible. Clinical white impact light, red beacon reflections. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "y se abrió contra la columna.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_left_to_top_right",
+        "zoom": 1.04,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "kang_muyeol",
+            "pose": "oculto_en_capsula"
+          }
+        ],
+        "assets": [
+          {
+            "id": "capsula_contencion",
+            "pose": "abierta_golpeada"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "capsule_zone_oblique"
+        }
+      }
+    },
+    {
+      "id": "scene_20",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Two-panel reveal with controlled negative space, low-oblique medium shot at rainy night near midnight. First panel: Kang Muyeol is alive inside the jammed open capsule, the ONLY person INSIDE: long-haired, bloodied, torn black clothing, white restraints, metal collar. Second panel: Seo Jun stands completely OUTSIDE on wet pavement near the opening, younger and short-haired in a gray cleaner coverall. Clinical white light, dark red shell reflections, wet ground. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Dentro estaba el Orquestador. Vivo. Herido. Atado con correas blancas y un collar de metal.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "top_right_to_bottom_left",
+        "zoom": 1.03,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "kang_muyeol",
+            "pose": "moribundo_intenso"
+          },
+          {
+            "id": "seo_jun",
+            "pose": "agotado_desafiante"
+          }
+        ],
+        "assets": [
+          {
+            "id": "capsula_contencion",
+            "pose": "abierta_golpeada"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_21",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Seo Jun sees Kang recognize him from inside the open capsule, over-the-shoulder medium shot at rainy night near midnight. Kang is the ONLY person INSIDE, older, long-haired, bloodied, restrained in black clothing and metal collar. Seo stands completely OUTSIDE on wet pavement, short-haired, gray coverall, tense shoulders. White capsule spill separates their faces; black tunnel depth frames the look. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Me miró directo.\n"
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "kang_muyeol",
+            "pose": "reconoce_heredero"
+          },
+          {
+            "id": "seo_jun",
+            "pose": "agotado_desafiante"
+          }
+        ],
+        "assets": [
+          {
+            "id": "capsula_contencion",
+            "pose": "abierta_golpeada"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_22",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Kang Muyeol speaks from inside the open capsule, tight eye-level close-up at rainy night near midnight. He is the ONLY person INSIDE, with long black hair, bloodied face, torn black clothing, white restraint harness and metal collar visible at the edges. His hollow eyes and barely open mouth deliver the line. Clinical white underlight, restrained red reflections, clear shell edges. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Tú también cargas lo que ellos dejan atrás.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.05,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "kang_muyeol",
+            "pose": "reconoce_heredero"
+          }
+        ],
+        "assets": [
+          {
+            "id": "capsula_contencion",
+            "pose": "abierta_golpeada"
+          },
+          {
+            "id": "aro_inhibidor",
+            "pose": "base"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_23",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "The support column gives way over Seo Jun, Park Mira and the child, high-oblique medium shot at rainy night near midnight. The three bodies tighten beneath falling debris; wet pavement dominates the frame and the danger is directly overhead. Seo braces in a gray coverall; Mira shields the boy; the child curls inward. Yellow work light, cold white spill, purple fracture glow. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "La columna cedió sobre nosotros.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_pull_out",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "rescate_esfuerzo"
+          },
+          {
+            "id": "park_mira",
+            "pose": "proteccion_panico"
+          },
+          {
+            "id": "nino_atrapado",
+            "pose": "atrapado_lluvia"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_24",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Kang Muyeol breaks one wrist restraint inside the open capsule, eye-level body-detail close-up at rainy night near midnight. He is the ONLY person INSIDE. Blood marks the buckle and torn strap fibers; his teeth clench, brows crush and shoulder strains against the white harness. No other person enters the frame. Clinical white capsule light, dark red reflections on clear plastic. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[strained] El Orquestador rompió una mano contra la correa\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_left_to_top_right",
+        "zoom": 1.04,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "kang_muyeol",
+            "pose": "rompe_y_alcanza"
+          }
+        ],
+        "assets": [
+          {
+            "id": "capsula_contencion",
+            "pose": "abierta_golpeada"
+          },
+          {
+            "id": "aro_inhibidor",
+            "pose": "base"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_24a",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Kang Muyeol reaches from the open capsule and touches Seo Jun’s chest, eye-level medium shot at rainy night near midnight. Kang is the ONLY person INSIDE, older and restrained in black clothing, white harness and metal collar. Seo stands completely OUTSIDE with both boots on wet pavement, recoiling in a gray cleaner coverall. The contact point is single and unobstructed. Hard white spill, deep red reflections on wet fabric and plastic. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "y me tocó el pecho.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_left_to_top_right",
+        "zoom": 1.04,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "kang_muyeol",
+            "pose": "rompe_y_alcanza"
+          },
+          {
+            "id": "seo_jun",
+            "pose": "recibe_transferencia"
+          }
+        ],
+        "assets": [
+          {
+            "id": "capsula_contencion",
+            "pose": "abierta_golpeada"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_25",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Red-black force enters Seo Jun’s chest at the exact touch point, eye-level close-up at rainy night near midnight. Seo stands completely OUTSIDE the capsule with boots on wet pavement, eyes wide, shoulders tense and one gloved hand flaring open. Kang remains the ONLY person INSIDE the transparent capsule behind the contact. The energy travels inward, not outward. White flash, dense red-black light, wet concrete reflections. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Algo rojo y negro entró en mí.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "top_right_to_bottom_left",
+        "zoom": 1.03,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "kang_muyeol",
+            "pose": "rompe_y_alcanza"
+          },
+          {
+            "id": "seo_jun",
+            "pose": "recibe_transferencia"
+          }
+        ],
+        "assets": [
+          {
+            "id": "capsula_contencion",
+            "pose": "abierta_golpeada"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_26",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Two-panel body detail sequence, high-oblique medium shot at rainy night near midnight. First panel: Seo Jun stands alone in a gray coverall with widened eyes, clenched jaw and trembling hands. Second panel: red-black damage lines appear inside the column and wet pavement beneath his boots. Unreferenced people stay out of frame. Yellow and white sources dim under the internal map. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "De pronto vi el daño dentro de la columna y bajo nuestros pies.\n"
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "dolor_poder"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "ruta_high_oblique"
+        }
+      }
+    },
+    {
+      "id": "scene_27",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Seo Jun extends both hands for the first time, eye-level medium shot at rainy night near midnight. His fingers spread, jaw clenches and marked arm shakes while he faces the trapped dog off-screen. This is the moment before extraction, not the launch. Yellow tunnel light on wet gray coverall, faint red-black glow near his forearms. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Extendí las manos.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.05,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "dolor_poder"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_28",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "TRUE LONG SHOT, two-panel high-oblique wide composite from 16 meters away and 4 meters above wet ground at rainy night near midnight. Foreground puddles and stopped crack tips fill the lower frame; midground shows small full-body Seo Jun left with both hands extended; background shows Mira and the child safe on the opposite side. The visible subject trio occupies 10–20% of frame height, while the environment covers over 65%. Red-black lines leave concrete and halt the cracks. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Las líneas rojas salieron del concreto. Las grietas dejaron de avanzar bajo el niño y mi compañera.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_pull_out",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "dolor_poder"
+          },
+          {
+            "id": "park_mira",
+            "pose": "alivio_miedo_transicion"
+          },
+          {
+            "id": "nino_atrapado",
+            "pose": "atrapado_lluvia"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_29",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Extracted red-black damage coils around Seo Jun’s forearms, eye-level medium shot at rainy night near midnight. He fights to hold it with tight brows, strained eyes and clenched teeth; the loops orbit his arms without becoming a vague aura. Wet gray sleeves and gloves catch red light; black shadows deepen behind him. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Todo ese daño giró alrededor de mis brazos.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_left_to_top_right",
+        "zoom": 1.04,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "lanza_poder"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_30",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Seo Jun launches the concentrated damage straight at the eyeless black dog, eye-level medium shot on the side axis at rainy night near midnight. He thrusts both arms forward from a planted stance; the red-black line runs cleanly to the target’s purple chest crack. No other people visible. Yellow lamps define surfaces, red trajectory cuts across wet pavement. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[impact] Y lo lancé directo al perro.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "top_right_to_bottom_left",
+        "zoom": 1.03,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "lanza_poder"
+          },
+          {
+            "id": "resto_perro_negro",
+            "pose": "charging_pinned"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "hazard_side_axis"
+        }
+      }
+    },
+    {
+      "id": "scene_31",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "TRUE LONG SHOT, two-panel side-axis wide composite from 18 meters away at rainy night near midnight. Foreground puddles mirror the strike; midground shows small full-body Seo Jun launching from left; background shows the eyeless dog blasted free from the column. The visible subject pair occupies 10–20% of frame height, while the environment covers over 65%. Plates burst from the dog’s chest and impact direction stays clear. White flash, red-black recoil, wet pavement reflections. Korean manhwa, crisp ink, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El golpe lo arrancó de la columna. Sus placas negras reventaron.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.05,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "lanza_poder"
+          },
+          {
+            "id": "resto_perro_negro",
+            "pose": "impact_airborne"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "hazard_side_axis"
+        }
+      }
+    },
+    {
+      "id": "scene_31a",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "The black dog remnant lands broken with its purple chest crack dark, eye-level wide shot at rainy night near midnight. Foreground wet pavement and scattered plate fragments create quiet space; midground shows the collapsed eyeless body lying ON TOP of the ground with all limbs supported; background holds the stable column and fading red reflections. No impact is still occurring. Yellow work light returns, blue-gray puddles calm. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "La luz morada se apagó.\n"
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "resto_perro_negro",
+            "pose": "collapsed_broken"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "hazard_side_axis"
+        }
+      }
+    },
+    {
+      "id": "scene_32",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Park Mira hugs the rescued boy while the broken dog lies far behind, eye-level reaction medium shot at rainy night near midnight. Wide negative space separates relief from danger. Mira, in gray-and-yellow workwear, holds the small boy in the mustard jacket close and checks him; the collapsed dog is only a distant dark shape. Yellow light returns to their faces, puddles calm from purple to blue-gray. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El niño estaba a salvo.\n"
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "park_mira",
+            "pose": "alivio_miedo_transicion"
+          },
+          {
+            "id": "nino_atrapado",
+            "pose": "atrapado_lluvia"
+          },
+          {
+            "id": "resto_perro_negro",
+            "pose": "collapsed_broken"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_33",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Seo Jun’s marked arm jerks from internal cost, eye-level macro shot at rainy night near midnight. His wet glove tightens, tendons strain and the forearm twists with a cracking physical pain. Keep the image concrete, not abstract. Yellow lamp and red-black afterglow reveal rain-dark gray fabric and skin. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Pero mi brazo crujió.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_pull_out",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "heredero_marcado"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_34",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Black fissures climb under Seo Jun’s forearm and neck, eye-level body detail close-up at rainy night near midnight. The wet gray collar and worn glove identify him; faint red ember points glow beneath the skin as his breathing tightens. Restrained white and yellow light, charcoal marks, dark red glints. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Marcas negras subieron bajo mi piel.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_left_to_top_right",
+        "zoom": 1.04,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "heredero_marcado"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_35",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Quiet white page with exactly two simple panels, eye-level medium reaction shot at rainy night near midnight. Upper panel: Park Mira backs away from Seo Jun with the child partly behind her, compact Korean woman in wet gray-and-yellow workwear, eyes widened, lips parted, one boot retreating. Lower panel: Seo stands opposite in a gray coverall with black fissures under his skin, cold negative space between them. Yellow work light on faces, tunnel shadows in the gap. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Mi compañera me miró como si yo fuera el siguiente monstruo.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "top_right_to_bottom_left",
+        "zoom": 1.03,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "park_mira",
+            "pose": "shock_retroceso"
+          },
+          {
+            "id": "seo_jun",
+            "pose": "heredero_marcado"
+          },
+          {
+            "id": "nino_atrapado",
+            "pose": "atrapado_lluvia"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_36",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Kang Muyeol goes slack inside the transparent capsule, eye-level body detail medium close-up at rainy night near midnight. He is the ONLY person INSIDE; his head rests on the cradle, white straps cross torn black clothing, and the metal collar remains visible. Clinical white underlight fades while deep shadows close around the capsule interior. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El Orquestador dejó caer la cabeza dentro de la cápsula.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.05,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "kang_muyeol",
+            "pose": "moribundo_intenso"
+          }
+        ],
+        "assets": [
+          {
+            "id": "capsula_contencion",
+            "pose": "abierta_golpeada"
+          },
+          {
+            "id": "aro_inhibidor",
+            "pose": "base"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_37",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Captain Ryu lifts a compact scanner toward Seo Jun, device shot at eye-level medium shot at rainy night near midnight. Ryu is a short-haired Korean woman in white-and-black command armor, low brows and squared stance; the scanner display stays blank. Seo faces her in a wet gray coverall, marked and breathing hard. Clinical white spill, red reflections on armor and wet pavement. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "La capitana levantó su escáner.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_pull_out",
+        "zoom": 1.02,
+        "pan": 2
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "ryu_haejin",
+            "pose": "escaneo_frio"
+          },
+          {
+            "id": "seo_jun",
+            "pose": "heredero_marcado"
+          }
+        ],
+        "assets": [
+          {
+            "id": "escaner_firmas",
+            "pose": "base"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scene_38",
+      "type": "narrative_card",
+      "card": {
+        "text": "FIRMA DEL ORQUESTADOR",
+        "mode": "editor"
+      },
+      "voiceover": {
+        "text": "La pantalla marcó: FIRMA DEL ORQUESTADOR.\n"
+      }
+    },
+    {
+      "id": "scene_39",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Helmeted containment agents snap rifles toward Seo Jun in one synchronized turn, high-oblique wide shot at rainy night near midnight. Seo remains centered and exposed in a wet gray coverall while white-and-black armored figures complete the line of fire around him with clear boot contacts. Keep secondary props outside the crop. White beams converge, red alert reflections cut the puddles, black pockets separate bodies. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[tense] Todos los rifles giraron hacia mí.\n"
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "bottom_left_to_top_right",
+        "zoom": 1.04,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jun",
+            "pose": "heredero_marcado"
+          },
+          {
+            "id": "agente_contencion",
+            "pose": "rifle_ready"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "execution_circle_high_oblique"
+        }
+      }
+    },
+    {
+      "id": "scene_40",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Captain Ryu seals Seo Jun inside the rifle circle, over-the-shoulder medium shot from behind her at rainy night near midnight. Her partial profile is readable as the scanner lowers. Seo faces her with empty hands visible, black fissures rising under his skin and wet gray coverall catching red light. White convoy light outlines armor; tunnel shadows close behind him. Korean manhwa, crisp ink, controlled cel shading, vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Objetivo de ejecución confirmado."
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "top_right_to_bottom_left",
+        "zoom": 1.03,
+        "pan": 3
+      },
+      "references": {
+        "characters": [
+          {
+            "id": "ryu_haejin",
+            "pose": "orden_ejecucion"
+          },
+          {
+            "id": "seo_jun",
+            "pose": "agotado_desafiante"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_reforzado",
+          "view": "execution_circle_high_oblique"
+        }
+      }
+    }
+  ],
+  "editing": {
+    "caption_style": {
+      "enabled": true,
+      "font": "Montserrat ExtraBold",
+      "size": 64,
+      "position": "center_lower",
+      "max_words_on_screen": 4
+    },
+    "narrative_card_style": {
+      "font": "Montserrat",
+      "size": 72,
+      "max_width": "72%",
+      "max_lines": 4
+    },
+    "panel_motion": {
+      "enabled": true,
+      "apply_to": "all_panels",
+      "static_zoom": 1.04,
+      "static_pan": 4,
+      "animated_zoom": 1.02,
+      "animated_pan": 2,
+      "cycle": [
+        "bottom_to_top",
+        "top_to_bottom",
+        "bottom_left_to_top_right",
+        "top_right_to_bottom_left",
+        "slow_push_in"
+      ]
+    },
+    "timing_budget": {
+      "runtime_target_sec": [
+        90,
+        100
+      ],
+      "runtime_allowed_sec": [
+        80,
+        105
+      ],
+      "runtime_estimate_sec": 97.75,
+      "voice_runtime_estimate_sec": 96.85,
+      "final_visual_tail_sec": 0.9,
+      "payoff_scene_id": "scene_31",
+      "payoff_start_sec": 71.998,
+      "payoff_start_pct": 0.7366,
+      "breath_events": 10,
+      "breath_sec_estimate": 23.76,
+      "real_breath_ratio": 0.2431,
+      "scene_timing": [
+        {
+          "scene_id": "scene_01",
+          "type": "panel",
+          "words": 10,
+          "duration_est_sec": 2.299,
+          "start_sec": 0.0,
+          "end_sec": 2.299,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_02",
+          "type": "panel",
+          "words": 6,
+          "duration_est_sec": 1.886,
+          "start_sec": 2.299,
+          "end_sec": 4.185,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_03",
+          "type": "panel",
+          "words": 6,
+          "duration_est_sec": 2.243,
+          "start_sec": 4.185,
+          "end_sec": 6.428,
+          "true_long_shot": true
+        },
+        {
+          "scene_id": "scene_04",
+          "type": "narrative_card",
+          "words": 5,
+          "duration_est_sec": 2.616,
+          "start_sec": 6.428,
+          "end_sec": 9.044,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_05",
+          "type": "panel",
+          "words": 6,
+          "duration_est_sec": 1.886,
+          "start_sec": 9.044,
+          "end_sec": 10.93,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_06",
+          "type": "panel",
+          "words": 7,
+          "duration_est_sec": 1.99,
+          "start_sec": 10.93,
+          "end_sec": 12.92,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_07",
+          "type": "panel",
+          "words": 10,
+          "duration_est_sec": 2.299,
+          "start_sec": 12.92,
+          "end_sec": 15.219,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_08",
+          "type": "panel",
+          "words": 11,
+          "duration_est_sec": 2.402,
+          "start_sec": 15.219,
+          "end_sec": 17.621,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_08a",
+          "type": "panel",
+          "words": 12,
+          "duration_est_sec": 2.505,
+          "start_sec": 17.621,
+          "end_sec": 20.126,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_09",
+          "type": "panel",
+          "words": 5,
+          "duration_est_sec": 1.783,
+          "start_sec": 20.126,
+          "end_sec": 21.909,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_10",
+          "type": "panel",
+          "words": 18,
+          "duration_est_sec": 3.481,
+          "start_sec": 21.909,
+          "end_sec": 25.39,
+          "true_long_shot": true
+        },
+        {
+          "scene_id": "scene_11",
+          "type": "panel",
+          "words": 11,
+          "duration_est_sec": 2.402,
+          "start_sec": 25.39,
+          "end_sec": 27.792,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_12",
+          "type": "panel",
+          "words": 14,
+          "duration_est_sec": 2.711,
+          "start_sec": 27.792,
+          "end_sec": 30.503,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_13",
+          "type": "panel",
+          "words": 4,
+          "duration_est_sec": 1.838,
+          "start_sec": 30.503,
+          "end_sec": 32.341,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_14",
+          "type": "panel",
+          "words": 4,
+          "duration_est_sec": 1.68,
+          "start_sec": 32.341,
+          "end_sec": 34.021,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_15",
+          "type": "panel",
+          "words": 5,
+          "duration_est_sec": 1.783,
+          "start_sec": 34.021,
+          "end_sec": 35.804,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_16",
+          "type": "panel",
+          "words": 4,
+          "duration_est_sec": 1.68,
+          "start_sec": 35.804,
+          "end_sec": 37.484,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_17",
+          "type": "panel",
+          "words": 12,
+          "duration_est_sec": 2.505,
+          "start_sec": 37.484,
+          "end_sec": 39.989,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_18",
+          "type": "panel",
+          "words": 8,
+          "duration_est_sec": 2.093,
+          "start_sec": 39.989,
+          "end_sec": 42.082,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_19",
+          "type": "panel",
+          "words": 4,
+          "duration_est_sec": 2.037,
+          "start_sec": 42.082,
+          "end_sec": 44.119,
+          "true_long_shot": true
+        },
+        {
+          "scene_id": "scene_19a",
+          "type": "panel",
+          "words": 6,
+          "duration_est_sec": 1.886,
+          "start_sec": 44.119,
+          "end_sec": 46.005,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_20",
+          "type": "panel",
+          "words": 15,
+          "duration_est_sec": 2.815,
+          "start_sec": 46.005,
+          "end_sec": 48.82,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_21",
+          "type": "panel",
+          "words": 3,
+          "duration_est_sec": 1.577,
+          "start_sec": 48.82,
+          "end_sec": 50.397,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_22",
+          "type": "panel",
+          "words": 8,
+          "duration_est_sec": 2.093,
+          "start_sec": 50.397,
+          "end_sec": 52.49,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_23",
+          "type": "panel",
+          "words": 5,
+          "duration_est_sec": 1.783,
+          "start_sec": 52.49,
+          "end_sec": 54.273,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_24",
+          "type": "panel",
+          "words": 8,
+          "duration_est_sec": 2.251,
+          "start_sec": 54.273,
+          "end_sec": 56.524,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_24a",
+          "type": "panel",
+          "words": 5,
+          "duration_est_sec": 1.783,
+          "start_sec": 56.524,
+          "end_sec": 58.307,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_25",
+          "type": "panel",
+          "words": 7,
+          "duration_est_sec": 1.99,
+          "start_sec": 58.307,
+          "end_sec": 60.297,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_26",
+          "type": "panel",
+          "words": 13,
+          "duration_est_sec": 2.608,
+          "start_sec": 60.297,
+          "end_sec": 62.905,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_27",
+          "type": "panel",
+          "words": 3,
+          "duration_est_sec": 1.577,
+          "start_sec": 62.905,
+          "end_sec": 64.482,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_28",
+          "type": "panel",
+          "words": 17,
+          "duration_est_sec": 3.378,
+          "start_sec": 64.482,
+          "end_sec": 67.86,
+          "true_long_shot": true
+        },
+        {
+          "scene_id": "scene_29",
+          "type": "panel",
+          "words": 8,
+          "duration_est_sec": 2.093,
+          "start_sec": 67.86,
+          "end_sec": 69.953,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_30",
+          "type": "panel",
+          "words": 6,
+          "duration_est_sec": 2.045,
+          "start_sec": 69.953,
+          "end_sec": 71.998,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_31",
+          "type": "panel",
+          "words": 11,
+          "duration_est_sec": 2.45,
+          "start_sec": 71.998,
+          "end_sec": 74.448,
+          "true_long_shot": true
+        },
+        {
+          "scene_id": "scene_31a",
+          "type": "panel",
+          "words": 5,
+          "duration_est_sec": 1.124,
+          "start_sec": 74.448,
+          "end_sec": 75.572,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_32",
+          "type": "panel",
+          "words": 5,
+          "duration_est_sec": 2.131,
+          "start_sec": 75.572,
+          "end_sec": 77.703,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_33",
+          "type": "panel",
+          "words": 4,
+          "duration_est_sec": 2.031,
+          "start_sec": 77.703,
+          "end_sec": 79.734,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_34",
+          "type": "panel",
+          "words": 6,
+          "duration_est_sec": 2.231,
+          "start_sec": 79.734,
+          "end_sec": 81.965,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_35",
+          "type": "panel",
+          "words": 11,
+          "duration_est_sec": 2.729,
+          "start_sec": 81.965,
+          "end_sec": 84.694,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_36",
+          "type": "panel",
+          "words": 10,
+          "duration_est_sec": 2.63,
+          "start_sec": 84.694,
+          "end_sec": 87.324,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_37",
+          "type": "panel",
+          "words": 5,
+          "duration_est_sec": 2.131,
+          "start_sec": 87.324,
+          "end_sec": 89.455,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_38",
+          "type": "narrative_card",
+          "words": 6,
+          "duration_est_sec": 2.975,
+          "start_sec": 89.455,
+          "end_sec": 92.43,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_39",
+          "type": "panel",
+          "words": 6,
+          "duration_est_sec": 2.385,
+          "start_sec": 92.43,
+          "end_sec": 94.815,
+          "true_long_shot": false
+        },
+        {
+          "scene_id": "scene_40",
+          "type": "panel",
+          "words": 4,
+          "duration_est_sec": 2.031,
+          "start_sec": 94.815,
+          "end_sec": 96.846,
+          "true_long_shot": false
+        }
+      ],
+      "breath_treatments": [
+        {
+          "scene_id": "scene_04",
+          "type": "card"
+        },
+        {
+          "scene_id": "scene_05",
+          "type": "white_composite_two_panels"
+        },
+        {
+          "scene_id": "scene_07",
+          "type": "white_composite_two_insets"
+        },
+        {
+          "scene_id": "scene_14",
+          "type": "environmental_transition"
+        },
+        {
+          "scene_id": "scene_24",
+          "type": "body_detail"
+        },
+        {
+          "scene_id": "scene_33",
+          "type": "body_detail"
+        },
+        {
+          "scene_id": "scene_34",
+          "type": "close_body_detail"
+        },
+        {
+          "scene_id": "scene_32",
+          "type": "reaction_negative_space"
+        },
+        {
+          "scene_id": "scene_37",
+          "type": "device_shot"
+        },
+        {
+          "scene_id": "scene_38",
+          "type": "card"
+        }
+      ]
+    },
+    "final_render": {
+      "fps": 30
+    }
+  },
+  "tts_export": {
+    "language": "es-419",
+    "mode": "single",
+    "model_id": "eleven_v3",
+    "voice_settings": {
+      "speed": 1.0
+    },
+    "edit_speed": 1.4,
+    "full_script": "[low] El villano más grande de Corea murió cuando lo capturaron.\n\nPero antes me eligió como heredero.\n\nY ahora el Estado quiere ejecutarme.\n\n[pause]\n\nEL BARRENDERO DE LA RUINA\n\nYo era un Barrendero sin poderes.\n\nLos combatientes mataban monstruos. Nosotros limpiábamos después.\n\nEsa noche necesitaba terminar el turno para pagar la renta.\n\nEl convoy del Orquestador debía esperar a que despejáramos el túnel.\n\nLa Autoridad entró antes. No iba a retrasarse por trabajadores como nosotros.\n\nEntonces vi al perro negro.\n\nEra alto, no tenía ojos y seguía atrapado bajo una columna. Una grieta morada latía en su pecho.\n\nCuando esa luz pulsaba, el daño corría por todo lo conectado.\n\nMi compañera estaba dentro de la cinta. Un niño seguía atrapado junto a ella.\n\n[urgent] La grieta se encendió.\n\nEl pavimento se abrió.\n\nLa columna empezó a caer.\n\nYo crucé la cinta.\n\nTomé al niño del brazo mientras mi compañera lo empujaba hacia mí.\n\nEl mismo pulso golpeó las ruedas del convoy.\n\nLa cápsula salió despedida\n\ny se abrió contra la columna.\n\nDentro estaba el Orquestador. Vivo. Herido. Atado con correas blancas y un collar de metal.\n\nMe miró directo.\n\n—Tú también cargas lo que ellos dejan atrás.\n\nLa columna cedió sobre nosotros.\n\n[strained] El Orquestador rompió una mano contra la correa\n\ny me tocó el pecho.\n\nAlgo rojo y negro entró en mí.\n\nDe pronto vi el daño dentro de la columna y bajo nuestros pies.\n\nExtendí las manos.\n\nLas líneas rojas salieron del concreto. Las grietas dejaron de avanzar bajo el niño y mi compañera.\n\nTodo ese daño giró alrededor de mis brazos.\n\n[impact] Y lo lancé directo al perro.\n\nEl golpe lo arrancó de la columna. Sus placas negras reventaron.\n\nLa luz morada se apagó.\n\nEl niño estaba a salvo.\n\nPero mi brazo crujió.\n\nMarcas negras subieron bajo mi piel.\n\nMi compañera me miró como si yo fuera el siguiente monstruo.\n\nEl Orquestador dejó caer la cabeza dentro de la cápsula.\n\nLa capitana levantó su escáner.\n\nLa pantalla marcó: FIRMA DEL ORQUESTADOR.\n\n[tense] Todos los rifles giraron hacia mí.\n\n—Objetivo de ejecución confirmado."
+  },
+  "audio": {
+    "mode": "generate",
+    "regenerate_tts": true,
+    "legacy_locked_audio": false,
+    "proof_cut_runtime_estimate_sec": 97.75,
+    "final_visual_tail_sec": 0.9,
+    "real_breath_ratio_estimate": 0.2431,
+    "tts_proof_required": [
+      {
+        "scene_id": "scene_30",
+        "tag": "[impact]",
+        "reason": "retain and test impact tag in new TTS generation"
+      }
+    ]
+  }
+}

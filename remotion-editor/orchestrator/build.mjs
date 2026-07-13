@@ -518,18 +518,32 @@ function videoSpeed(job) {
   } catch { return 1; }
 }
 
+// Remotion renderiza al FPS del proyecto. El finalizador debe conservarlo cuando aplica setpts; antes
+// forzaba 24 fps y descartaba cuadros de proyectos manhwa declarados a 30 fps.
+function projectFps(job) {
+  try {
+    const p = readJson(job.jsonPath);
+    const requested = Number(p.project?.fps);
+    if (Number.isFinite(requested) && requested >= 1 && requested <= 120) return requested;
+  } catch { /* JSON ya fue validado; fallback defensivo */ }
+  return 24;
+}
+
 // Finaliza el mp4: loudnorm a -14 LUFS SIEMPRE (feed consistente) + VELOCIDAD si speed != 1.0. A 1.0 solo
 // re-codifica audio (-c:v copy = rapido). Con velocidad: setpts (video) + atempo (audio, mismo tono) -> 1 solo
 // re-encode (crf 18, casi sin perdida en stills). IMPORTANTE: loudnorm RESAMPLEA a 96kHz por defecto -> forzar
 // -ar 48000 y -b:a 192k o el AAC queda sub-codificado y la voz suena "vibrosa".
-function finalizeVideo(slug, speed = 1) {
+function finalizeVideo(slug, speed = 1, requestedFps = 24) {
   const src = path.join(OUT, `${slug}.mp4`);
   if (!fs.existsSync(src)) return;
   const tmp = path.join(OUT, `${slug}.norm.mp4`);
   const fast = !speed || Math.abs(speed - 1) < 0.001;
+  const fps = Number.isFinite(requestedFps) && requestedFps >= 1 && requestedFps <= 120
+    ? requestedFps
+    : 24;
   const cmd = fast
     ? `ffmpeg -y -i "${src}" -af loudnorm=I=-14:TP=-1.5:LRA=11 -ar 48000 -c:v copy -c:a aac -b:a 192k "${tmp}"`
-    : `ffmpeg -y -i "${src}" -filter_complex "[0:v]setpts=PTS/${speed}[v];[0:a]atempo=${speed},loudnorm=I=-14:TP=-1.5:LRA=11[a]" -map "[v]" -map "[a]" -r 24 -ar 48000 -c:v libx264 -crf 18 -preset medium -pix_fmt yuv420p -c:a aac -b:a 192k "${tmp}"`;
+    : `ffmpeg -y -i "${src}" -filter_complex "[0:v]setpts=PTS/${speed}[v];[0:a]atempo=${speed},loudnorm=I=-14:TP=-1.5:LRA=11[a]" -map "[v]" -map "[a]" -r ${fps} -ar 48000 -c:v libx264 -crf 18 -preset medium -pix_fmt yuv420p -c:a aac -b:a 192k "${tmp}"`;
   const r = spawnSync(cmd, { cwd: ROOT, stdio: "inherit", shell: true });
   if (r.status === 0 && fs.existsSync(tmp) && fs.statSync(tmp).size > 1024) {
     fs.rmSync(src, { force: true });
@@ -602,7 +616,7 @@ function processOnce() {
       whisperAlignFull(job);   // historias: timestamps completos con whisper antes de mapear ventanas
       injectWords(job);
       if (render(job, info.slug)) {
-        finalizeVideo(info.slug, videoSpeed(job));   // loudnorm + velocidad explicita si el JSON la pide
+        finalizeVideo(info.slug, videoSpeed(job), projectFps(job)); // loudnorm + velocidad, conservando FPS del proyecto
         writeRenderMeta(job, info.slug);             // sella el mp4 con la firma del JSON (fresco vs viejo)
         console.log(`OK ${job.name}: out/${info.slug}.mp4`);
         moveDone(job);

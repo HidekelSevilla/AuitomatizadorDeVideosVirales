@@ -225,9 +225,8 @@ window.FLOW_SELECTORS = {
     { by: "textExact", value: "Listo", tag: "button" },  // ES alt
   ],
 
-  // PERSONAJE DE REFERENCIA: el navegador NO deja que la extension suba un archivo local
-  // (seguridad). Por eso el usuario sube el personaje a Flow UNA vez (arrastrando el archivo
-  // o con + -> "Subir archivos multimedia"), y el driver lo REUTILIZA desde la seccion
+  // PERSONAJE DE REFERENCIA: el background sube el archivo local al input oculto mediante CDP,
+  // Flow lo guarda UNA vez en la memoria "Caracteres" del proyecto y el driver lo REUTILIZA
   // "Subidas" via ⋮ -> "Añadir a la petición" en cada escena. CONFIRMADO 2026-06-14:
   // la imagen subida ("descarga (1).png") aparece en Subidas con su ⋮ y "Añadir a la petición".
 

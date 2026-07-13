@@ -10,20 +10,24 @@
 import http from "node:http";
 import crypto from "node:crypto";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync, spawn } from "node:child_process";
 import { slugify } from "../shared/slug.mjs";   // FUENTE UNICA del slug (debe coincidir con la extension y el render)
 import { getMediaRequirements, projectMediaSignature, minMediaBytes } from "../shared/media-requirements.mjs";
 import { validateQueueProject } from "../lib/queue-validator.js";
+import { analyzeGrokImagePixels } from "../shared/grok-image-quality.mjs";
 
 const PORT = Number(process.env.FLOW_DEV_PORT) || 35729;
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const DOWNLOADS_DIR = path.resolve(os.homedir(), "Downloads");
 const WS_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
 // Carpetas/archivos que NO disparan reload. (remotion-editor incluido: escribir audio/clips ahi
 // NO debe recargar la extension.)
-const IGNORE = [/[\\/]dev[\\/]/, /[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/, /[\\/]tests[\\/]/, /[\\/]remotion-editor[\\/]/, /\.output$/];
+const IGNORE = [/[\\/]dev[\\/]/, /[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/, /[\\/]tests[\\/]/,
+  /[\\/]assets[\\/]__asset_store_test_/, /[\\/]remotion-editor[\\/]/, /\.output$/];
 
 // Solo se permite escribir dentro de esta carpeta via POST /save (sink de medios de la extension).
 const PUBLIC_DIR = path.join(ROOT, "remotion-editor", "public");
@@ -34,6 +38,67 @@ const V3_AUDIO_CLEANUP_FILTER = process.env.ELEVENLABS_V3_AUDIO_CLEANUP_FILTER
   + "alimiter=limit=0.95";
 
 const clients = new Set();
+
+const pathKey = (p) => process.platform === "win32" ? String(p).toLowerCase() : String(p);
+const isWithin = (candidate, parent) => pathKey(candidate) === pathKey(parent)
+  || pathKey(candidate).startsWith(pathKey(parent) + path.sep);
+// En uso normal, /move y /asset/move solo reciben archivos creados por chrome.downloads. CORS esta
+// abierto para la extension, asi que no permitimos que una pagina copie archivos arbitrarios del repo.
+// La excepcion ROOT existe unicamente para el servidor efimero de las pruebas de integracion.
+const ALLOW_TEST_MOVE_SOURCES = process.env.FLOW_DEV_ALLOW_TEST_SOURCES === "1";
+const allowedMoveSource = (candidate) => isWithin(candidate, DOWNLOADS_DIR)
+  || (ALLOW_TEST_MOVE_SOURCES && isWithin(candidate, ROOT));
+const mayDeleteMoveSource = (candidate) => isWithin(candidate, DOWNLOADS_DIR);
+const samePath = (a, b) => pathKey(a) === pathKey(b);
+
+// Pillow solo decodifica/reduce; la decision vive en shared/grok-image-quality.mjs para que los
+// umbrales calibrados sean una sola fuente de verdad. Salida JSON/base64 mantiene el helper Node
+// independiente del formato original (JPG/PNG/WebP).
+const IMAGE_SAMPLE_PY = String.raw`
+import base64, json, sys
+from PIL import Image
+p = sys.argv[1]
+with Image.open(p) as src:
+    src.load()
+    original = src.size
+    im = src.convert("RGBA")
+    try:
+        method = Image.Resampling.LANCZOS
+    except AttributeError:
+        method = Image.LANCZOS
+    im.thumbnail((128, 128), method)
+    print(json.dumps({"originalWidth": original[0], "originalHeight": original[1],
+      "width": im.width, "height": im.height,
+      "rgba": base64.b64encode(im.tobytes()).decode("ascii")}))
+`;
+
+function inspectImageFile(abs) {
+  const ext = path.extname(abs).toLowerCase();
+  if (![".png", ".jpg", ".jpeg", ".webp"].includes(ext)) throw new Error("formato de imagen no soportado");
+  if (!fs.existsSync(abs) || !fs.statSync(abs).isFile() || !fileOk(abs)) throw new Error("imagen incompleta o demasiado pequena");
+  // La venv de Eleven puede no incluir Pillow; el runtime de imagen es independiente y configurable.
+  const py = process.env.FLOW_IMAGE_PYTHON || "python";
+  const decoded = spawnSync(py, ["-c", IMAGE_SAMPLE_PY, abs], { encoding: "utf8", windowsHide: true, maxBuffer: 2 * 1024 * 1024 });
+  if (decoded.status !== 0) throw new Error(`no pude decodificar imagen: ${(decoded.stderr || decoded.error?.message || "Pillow fallo").trim()}`);
+  let sample;
+  try { sample = JSON.parse(String(decoded.stdout || "").trim()); }
+  catch { throw new Error("el decodificador de imagen devolvio datos invalidos"); }
+  if (Math.min(Number(sample.originalWidth) || 0, Number(sample.originalHeight) || 0) < 640) {
+    return { accepted: false, isNoise: false, reason: "resolucion_intermedia", sample };
+  }
+  const rgba = Buffer.from(sample.rgba || "", "base64");
+  const analysis = analyzeGrokImagePixels(rgba, sample.width, sample.height);
+  return { accepted: analysis.looksFinal, ...analysis,
+    sha256: crypto.createHash("sha256").update(fs.readFileSync(abs)).digest("hex"), sample: {
+    originalWidth: sample.originalWidth, originalHeight: sample.originalHeight,
+    width: sample.width, height: sample.height,
+  } };
+}
+
+function imageInspectionError(result) {
+  if (result?.isNoise) return `imagen rechazada: ruido de difusion (${JSON.stringify(result.metrics)})`;
+  return `imagen rechazada: ${result?.reason || "no parece final"}`;
+}
 
 // --- WebSocket minimo (solo enviamos frames de texto del server al cliente) ---
 
@@ -121,6 +186,32 @@ const server = http.createServer((req, res) => {
 
   // POST /save?path=<rel> : la extension escribe un medio (ej. audio mp3) en la carpeta del proyecto.
   const u = new URL(req.url, `http://localhost:${PORT}`);
+
+  // POST /image/validate?path=<abs> : inspecciona los BYTES ya descargados en cuarentena.
+  // Falla cerrado: el SW no asigna imageUrl ni mueve a canonical hasta recibir accepted:true.
+  if (req.method === "POST" && u.pathname === "/image/validate") {
+    const raw = u.searchParams.get("path") || "";
+    const abs = path.resolve(raw);
+    if (!raw || !(isWithin(abs, ROOT) || isWithin(abs, DOWNLOADS_DIR))) {
+      sendJson(res, { ok: false, accepted: false, error: "ruta de imagen no permitida" }, 403);
+      return;
+    }
+    try {
+      const result = inspectImageFile(abs);
+      if (!result.accepted) {
+        const error = imageInspectionError(result);
+        log(`RECHAZADO image/validate ${path.basename(abs)}: ${error}`);
+        sendJson(res, { ok: false, ...result, error }, 422);
+        return;
+      }
+      sendJson(res, { ok: true, ...result, path: abs });
+    } catch (e) {
+      const error = String(e?.message || e);
+      log(`ERROR image/validate ${path.basename(abs)}: ${error}`);
+      sendJson(res, { ok: false, accepted: false, error }, 422);
+    }
+    return;
+  }
 
   if (req.method === "GET" && u.pathname === "/remote/state") {
     sendJson(res, { ok: true, updatedAt: remote.stateUpdatedAt, state: remote.state });
@@ -390,6 +481,7 @@ const server = http.createServer((req, res) => {
   // a la carpeta del proyecto. `from` = ruta absoluta (la da chrome.downloads.search en la extension).
   if (req.method === "POST" && u.pathname === "/move") {
     const from = u.searchParams.get("from") || "";
+    const fromAbs = from ? path.resolve(from) : "";
     const rel = u.searchParams.get("to") || "";
     const dest = path.resolve(ROOT, rel);
     if (dest !== PUBLIC_DIR && !dest.startsWith(PUBLIC_DIR + path.sep)) {
@@ -399,13 +491,32 @@ const server = http.createServer((req, res) => {
       return;
     }
     try {
-      if (!from || !fs.existsSync(from)) {
+      if (!fromAbs || !allowedMoveSource(fromAbs)) {
+        res.writeHead(403, { "content-type": "text/plain" });
+        res.end("origen no permitido");
+        log(`RECHAZADO move (origen no permitido): ${from}`);
+        return;
+      }
+      if (samePath(fromAbs, dest)) {
+        sendJson(res, { ok: true, noop: true, path: path.relative(ROOT, dest) });
+        return;
+      }
+      if (!fs.existsSync(fromAbs)) {
         res.writeHead(404, { "content-type": "text/plain" });
         res.end("origen no existe");
         return;
       }
+      if ([".png", ".jpg", ".jpeg", ".webp"].includes(path.extname(dest).toLowerCase())) {
+        const quality = inspectImageFile(fromAbs);
+        if (!quality.accepted) {
+          res.writeHead(422, { "content-type": "text/plain" });
+          res.end(imageInspectionError(quality));
+          log(`RECHAZADO move por calidad visual: ${path.basename(from)} (canonical intacto)`);
+          return;
+        }
+      }
       fs.mkdirSync(path.dirname(dest), { recursive: true });
-      fs.copyFileSync(from, dest);
+      fs.copyFileSync(fromAbs, dest);
       // Integridad: si el archivo movido es sospechosamente pequeno (truncado/corrupto), lo descartamos
       // y NO borramos el origen (queda en Descargas para reintentar) -> savedOk=false aguas arriba.
       if (!fileOk(dest)) {
@@ -416,10 +527,12 @@ const server = http.createServer((req, res) => {
         log(`RECHAZADO move (${sz}B < minimo): ${path.relative(ROOT, dest)} (origen conservado)`);
         return;
       }
-      try { fs.unlinkSync(from); } catch { /* si Chrome aun lo tiene tomado, no es critico: queda copia en Descargas */ }
+      if (mayDeleteMoveSource(fromAbs)) {
+        try { fs.unlinkSync(fromAbs); } catch { /* si Chrome aun lo tiene tomado, no es critico: queda copia en Descargas */ }
+      }
       res.writeHead(200, { "content-type": "application/json" });
       res.end(JSON.stringify({ ok: true, path: path.relative(ROOT, dest) }));
-      log(`movido ${path.basename(from)} -> ${path.relative(ROOT, dest)}`);
+      log(`${mayDeleteMoveSource(fromAbs) ? "movido" : "copiado"} ${path.basename(fromAbs)} -> ${path.relative(ROOT, dest)}`);
     } catch (e) {
       res.writeHead(500, { "content-type": "text/plain" });
       res.end(String(e?.message || e));
@@ -433,10 +546,12 @@ const server = http.createServer((req, res) => {
   // el mismo basename como .jpg; el pipeline resuelve variantes de extension al consumirlo.
   if (req.method === "POST" && u.pathname === "/asset/move") {
     const from = u.searchParams.get("from") || "";
+    const fromAbs = from ? path.resolve(from) : "";
     const rel = u.searchParams.get("to") || "";
     const requested = path.resolve(ROOT, rel);
     const ASSETS = path.join(ROOT, "assets");
-    const requestedExt = path.extname(requested).toLowerCase();
+    const actualRequestedExt = path.extname(requested);
+    const requestedExt = actualRequestedExt.toLowerCase();
     if (requested === ASSETS || !requested.startsWith(ASSETS + path.sep) || ![".png", ".jpg", ".jpeg", ".webp"].includes(requestedExt)) {
       res.writeHead(403, { "content-type": "text/plain" });
       res.end("destino asset no permitido");
@@ -444,28 +559,71 @@ const server = http.createServer((req, res) => {
       return;
     }
     try {
-      if (!from || !fs.existsSync(from)) {
+      if (!fromAbs || !allowedMoveSource(fromAbs)) {
+        res.writeHead(403, { "content-type": "text/plain" });
+        res.end("origen asset no permitido");
+        log(`RECHAZADO asset/move (origen no permitido): ${from}`);
+        return;
+      }
+      if (!fs.existsSync(fromAbs)) {
         res.writeHead(404, { "content-type": "text/plain" });
         res.end("origen no existe");
         return;
       }
-      const sourceExt = path.extname(from).toLowerCase();
+      const sourceExt = path.extname(fromAbs).toLowerCase();
       const finalExt = [".png", ".jpg", ".jpeg", ".webp"].includes(sourceExt) ? sourceExt : requestedExt;
-      const dest = path.join(path.dirname(requested), path.basename(requested, requestedExt) + finalExt);
+      const dest = path.join(path.dirname(requested), path.basename(requested, actualRequestedExt) + finalExt);
+      if (samePath(fromAbs, dest)) {
+        sendJson(res, { ok: true, noop: true, path: path.relative(ROOT, dest), abspath: dest });
+        return;
+      }
+      recoverAssetSwap(requested);
       fs.mkdirSync(path.dirname(dest), { recursive: true });
-      fs.copyFileSync(from, dest);
-      if (!fileOk(dest)) {
-        const sz = (() => { try { return fs.statSync(dest).size; } catch { return 0; } })();
-        try { fs.rmSync(dest, { force: true }); } catch { /* noop */ }
+      // Primero copia y valida un temporal. Nunca se toca el canonical bueno si la descarga nueva esta
+      // truncada. Despues se intercambia con backup restaurable y se eliminan variantes hermanas viejas.
+      const temp = path.join(path.dirname(dest),
+        `${path.basename(dest, finalExt)}.tmp-${process.pid}-${Date.now()}${finalExt}`);
+      const backup = `${dest}.bak-${process.pid}-${Date.now()}`;
+      fs.copyFileSync(fromAbs, temp);
+      if (!fileOk(temp)) {
+        const sz = (() => { try { return fs.statSync(temp).size; } catch { return 0; } })();
+        try { fs.rmSync(temp, { force: true }); } catch { /* noop */ }
         res.writeHead(422, { "content-type": "text/plain" });
         res.end("asset demasiado pequeno (posible corrupto/incompleto)");
         log(`RECHAZADO asset/move (${sz}B < minimo): ${path.relative(ROOT, dest)}`);
         return;
       }
-      try { fs.unlinkSync(from); } catch { /* no critico */ }
+      const quality = inspectImageFile(temp);
+      if (!quality.accepted) {
+        try { fs.rmSync(temp, { force: true }); } catch { /* noop */ }
+        res.writeHead(422, { "content-type": "text/plain" });
+        res.end(imageInspectionError(quality));
+        log(`RECHAZADO asset/move por calidad visual: ${path.relative(ROOT, dest)} (canonical intacto)`);
+        return;
+      }
+      let hadBackup = false;
+      try {
+        if (fs.existsSync(dest)) { fs.renameSync(dest, backup); hadBackup = true; }
+        fs.renameSync(temp, dest);
+      } catch (replaceError) {
+        try { fs.rmSync(temp, { force: true }); } catch { /* noop */ }
+        if (hadBackup && fs.existsSync(backup) && !fs.existsSync(dest)) {
+          try { fs.renameSync(backup, dest); } catch { /* el error original se reporta */ }
+        }
+        throw replaceError;
+      }
+      if (hadBackup) { try { fs.rmSync(backup, { force: true }); } catch { /* la nueva version ya es valida */ } }
+      const base = path.basename(requested, actualRequestedExt);
+      for (const ext of [".png", ".jpg", ".jpeg", ".webp"]) {
+        const sibling = path.join(path.dirname(requested), base + ext);
+        if (!samePath(sibling, dest) && !(samePath(sibling, fromAbs) && !mayDeleteMoveSource(fromAbs))) {
+          try { fs.rmSync(sibling, { force: true }); } catch { /* noop */ }
+        }
+      }
+      if (mayDeleteMoveSource(fromAbs)) { try { fs.unlinkSync(fromAbs); } catch { /* no critico */ } }
       res.writeHead(200, { "content-type": "application/json" });
       res.end(JSON.stringify({ ok: true, path: path.relative(ROOT, dest), abspath: dest }));
-      log(`asset guardado ${path.relative(ROOT, dest)}`);
+      log(`asset guardado ${path.relative(ROOT, dest)} (${mayDeleteMoveSource(fromAbs) ? "origen movido" : "origen preservado"})`);
     } catch (e) {
       res.writeHead(500, { "content-type": "text/plain" });
       res.end(String(e?.message || e));
@@ -543,19 +701,21 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({ ok: false, error: "fuera de assets/" }));
       return;
     }
-    // Agnostico a la extension: si la ruta exacta no existe, prueba el mismo nombre con otras
-    // extensiones de imagen (asi da igual si el personaje es .png/.jpg/.jpeg/.webp).
-    let found = fs.existsSync(abs) ? abs : null;
-    if (!found) {
-      const dir = path.dirname(abs);
-      const base = path.basename(abs, path.extname(abs));
-      for (const ext of [".png", ".jpg", ".jpeg", ".webp"]) {
-        const alt = path.join(dir, base + ext);
-        if (fs.existsSync(alt) && alt.startsWith(ASSETS + path.sep)) { found = alt; break; }
-      }
-    }
+    // Las variantes de extension representan la misma identidad. Elegimos la valida mas reciente en
+    // lugar de preferir ciegamente la extension declarada: evita que un .png viejo gane a un .jpg nuevo.
+    const dir = path.dirname(abs);
+    const base = path.basename(abs, path.extname(abs));
+    recoverAssetSwap(abs);
+    const candidates = [...new Set([abs, ...[".png", ".jpg", ".jpeg", ".webp"].map((ext) => path.join(dir, base + ext))])]
+      .filter((p) => p.startsWith(ASSETS + path.sep) && fs.existsSync(p) && fs.statSync(p).isFile() && fileOk(p))
+      .map((p) => ({ path: p, stat: fs.statSync(p) }))
+      .sort((a, b) => b.stat.mtimeMs - a.stat.mtimeMs);
+    const found = candidates[0] || null;
     res.writeHead(200, { "content-type": "application/json" });
-    res.end(JSON.stringify(found ? { ok: true, abspath: found } : { ok: false, error: "no existe" }));
+    res.end(JSON.stringify(found ? {
+      ok: true, abspath: found.path, size: found.stat.size, mtimeMs: found.stat.mtimeMs,
+      sha256: crypto.createHash("sha256").update(fs.readFileSync(found.path)).digest("hex"),
+    } : { ok: false, error: "no existe o no supera la validacion minima" }));
     return;
   }
 
@@ -574,7 +734,10 @@ const server = http.createServer((req, res) => {
     }
     const st = fs.statSync(abs);
     // abspath: el SW lo usa para subir el archivo por CDP (DOM.setFileInputFiles exige ruta absoluta).
-    sendJson(res, { ok: true, size: st.size, mtimeMs: st.mtimeMs, path: path.relative(ROOT, abs), abspath: abs });
+    sendJson(res, {
+      ok: true, size: st.size, mtimeMs: st.mtimeMs, path: path.relative(ROOT, abs), abspath: abs,
+      sha256: crypto.createHash("sha256").update(fs.readFileSync(abs)).digest("hex"),
+    });
     return;
   }
 
@@ -624,6 +787,47 @@ function fileOk(p) {
   // driver antes de descargar; aqui solo atrapamos truncados/0-byte, por eso el piso de imagen es bajo
   // (paneles oscuros legitimos pesan poco). Override: env MIN_STILL_BYTES.
   try { return fs.statSync(p).size >= minMediaBytes(p); } catch { return false; }
+}
+
+function fileOkForCanonical(candidate, canonical) {
+  try { return fs.statSync(candidate).isFile() && fs.statSync(candidate).size >= minMediaBytes(canonical); }
+  catch { return false; }
+}
+
+// Recupera un intercambio interrumpido por apagado entre canonical->bak y temp->canonical. Los nombres
+// son privados de /asset/move; si falta/invalida el canonical, gana el temporal nuevo ya validado y luego
+// el backup. Si el canonical esta sano, solo elimina residuos de una operacion ya completada.
+function recoverAssetSwap(requested) {
+  const dir = path.dirname(requested);
+  if (!fs.existsSync(dir)) return;
+  const requestedActualExt = path.extname(requested);
+  const base = path.basename(requested, requestedActualExt);
+  let names = [];
+  try { names = fs.readdirSync(dir); } catch { return; }
+  for (const ext of [".png", ".jpg", ".jpeg", ".webp"]) {
+    const canonical = path.join(dir, base + ext);
+    const tempPrefix = `${base}.tmp-`;
+    const backupPrefix = `${base}${ext}.bak-`;
+    const temps = names.filter((name) => name.startsWith(tempPrefix) && name.toLowerCase().endsWith(ext))
+      .map((name) => path.join(dir, name)).filter((p) => fileOkForCanonical(p, canonical))
+      .sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs);
+    const backups = names.filter((name) => name.startsWith(backupPrefix))
+      .map((name) => path.join(dir, name)).filter((p) => fileOkForCanonical(p, canonical))
+      .sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs);
+    const canonicalOk = fileOkForCanonical(canonical, canonical);
+    if (!canonicalOk) {
+      const winner = temps[0] || backups[0];
+      if (winner) {
+        try { fs.rmSync(canonical, { force: true }); } catch { /* noop */ }
+        try { fs.renameSync(winner, canonical); } catch { /* el endpoint reportara si sigue ausente */ }
+      }
+    }
+    if (fileOkForCanonical(canonical, canonical)) {
+      for (const residue of [...temps, ...backups]) {
+        if (residue !== canonical) { try { fs.rmSync(residue, { force: true }); } catch { /* noop */ } }
+      }
+    }
+  }
 }
 
 const GENERATED_DIRS = ["images", "clips", "clips_raw", "voice"];

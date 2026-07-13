@@ -168,12 +168,56 @@ No uses door_front_eye como referencia de un top-down, POV o low-angle. Si no ex
 
 Llegar a tres referencias es un warning. Revisa compatibilidad, no solo cantidad.
 
-## 8. Shot plan
+## 8. Dirección visual antes de elegir cámara
+
+El panel debe expresar el significado dramático de la voz, no copiar automáticamente el sustantivo mencionado. Para cada micro-beat elige una estrategia:
+
+- acontecimiento visible
+- causa
+- consecuencia
+- contexto de mundo
+- recuerdo
+- reacción
+- contraste
+
+Una imagen puede ser literalmente correcta y narrativamente inútil. Si la voz habla de una institución, una pérdida o una leyenda pública, un detalle de herramienta asociada no basta para comunicarla.
+
+Errores diagnosticados:
+
+- “murió mi padre” convertido en otro close del utensilio heredado
+- “los defensores cerraban portales” convertido en un pasillo vacío
+- “el poder más temido” convertido en una mano trabajando
+
+Soluciones:
+
+- la pérdida usa recuerdo, ausencia, fotografía, expediente o consecuencia humana
+- la institución usa escala, personal, huella de operación o contraste social
+- la leyenda usa memoria pública, propaganda visual o consecuencias reconocibles
+
+El prop close se reserva para una pista, una manipulación o un símbolo ya establecido. El mismo prop no protagoniza más de dos paneles dentro de cualquier ventana de ocho, salvo una acción continua imposible de comprender de otro modo.
+
+### Paneles ancla
+
+Antes del shot plan declara cinco imágenes que deben funcionar como fotogramas promocionales:
+
+1. promesa visual del hook
+2. escala o contradicción del mundo
+3. revelación de la amenaza
+4. clímax o precio
+5. cliffhanger
+
+Cada ancla tiene acción dominante, jerarquía visual, luz dramática y una silueta legible. Al menos tres son medium-wide o wide con foreground, midground y background. Un ancla no puede ser un prop aislado, un pasillo vacío ni alguien quieto mirando.
+
+Una plate apoya la acción; nunca la sustituye. Si la geometría, escala o estado del lugar cambia radicalmente, omite la plate normal o usa una referencia compatible con la transformación. Una puerta normal no sirve de plate para revelar una habitación imposible.
+
+### Shot plan
 
 Cada fila decide:
 
 - micro-beat
+- estrategia semántica: acontecimiento, causa, consecuencia, contexto, recuerdo, reacción o contraste
 - función: establecer, anticipar, reacción, acción, impacto, consecuencia o transición
+- ancla: sí/no y cuál
 - sujeto
 - tamaño de plano
 - ángulo
@@ -197,6 +241,8 @@ Secuencia útil:
 6. consecuencia
 
 Un bird's-eye extremo es un acento. Normalmente cero a dos por parte, usado para orientación, reanclaje, consecuencia o cliffhanger.
+
+No encadenes más de dos close/macro ni dos paneles con el mismo sujeto principal. Un master sigue mostrando el acontecimiento que narra la voz; “reorientar” no autoriza reemplazar la amenaza por personajes posando.
 
 ## 9. Plano, ángulo y movimiento
 
@@ -245,7 +291,13 @@ No combines manos en primerísimo plano, pies completos y arquitectura dominante
 
 ## 11. Estructura del prompt
 
-Objetivo normal: 45–70 palabras descriptivas antes del ancla. Ochenta es un techo diagnóstico.
+Longitud según función, antes del ancla estilística:
+
+- detalle simple: 45–70 palabras
+- panel estándar: 60–90
+- ancla, master o transformación compleja: 80–120
+
+La longitud no sustituye la dirección. Un ancla necesita acción, composición, escala, capas, atmósfera y luz; un detalle necesita precisión y aire.
 
 Orden:
 
@@ -276,7 +328,11 @@ Elige el instante culminante:
 
 Si la voz contiene varios cambios irreducibles, divide el micro-beat en varios paneles sin alterar sus palabras.
 
-## 13. Traducción literal de la voz
+## 13. Traducción visual de la voz
+
+La correspondencia es semántica, no palabra por palabra. La imagen puede mostrar causa, contexto, recuerdo, reacción, contraste o consecuencia si comunica mejor la idea y la secuencia conserva claridad.
+
+La primera mención de un rol, lugar o concepto inventado recibe una imagen orientadora. Debe permitir que un espectador nuevo entienda su función sin conocer la biblia.
 
 La voz puede decir:
 
@@ -427,7 +483,9 @@ Funciones:
 - absorción del impacto
 - transición
 
-Diagnóstico durante el JSON: reporta el conteo, los scene_id y la clase soportada de cada tratamiento respirable: narrative_card, white inset, body detail o device shot. La proporción por área se evalúa únicamente después de renderizar o cuando el editor disponga de metadata de layout.
+En una parte de 35–50 escenas planifica de cinco a ocho puntuaciones visuales y mezcla al menos tres clases: narrative_card, white inset, reacción con espacio negativo, recuerdo sepia, device shot o transición ambiental. Un impact panel y un close ordinario no cuentan como respiro.
+
+Reporta conteo, scene_id, clase y función. La proporción por área se evalúa únicamente después del render o cuando el editor disponga de metadata de layout.
 
 Con el contrato actual:
 
@@ -468,14 +526,11 @@ Antes de producir toda la parte:
 1. Genera assets base y derivados.
 2. Revisa cabeza, manos, pies, fondo, outfit y estado.
 3. Genera una muestra de paneles críticos:
-   - hook
-   - detalle de objeto
-   - master
-   - escala humana
-   - interacción de dos personajes
-   - poder o efecto
-   - POV
-   - cliffhanger
-4. Continúa solo si la muestra conserva identidad, escala y cámara.
+   - las cinco anclas
+   - un respiro
+   - una interacción de dos personajes
+   - un detalle decisivo
+4. Comprueba sin audio que la muestra comunica promesa, mundo, amenaza, clímax y cliffhanger.
+5. Continúa solo si conserva identidad, escala, cámara y fuerza dramática.
 
 Un prompt correcto no garantiza un asset correcto. El render final debe pasar inspección visual. Si no se adjuntaron renders, informa `NOT_RUN`; nunca certifiques identidad, manos, escala o cámara a partir del texto del prompt.

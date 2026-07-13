@@ -1,0 +1,145 @@
+# Evals de Preview V5.2
+
+Ejecuta estos casos una vez al configurar o modificar los GPTs. No necesitas repetirlos por historia.
+
+## Showrunner
+
+### Caso 1 — Sin semilla
+
+```text
+NUEVA SERIE AUTO. No tengo semilla. Evita mostrar descartes.
+```
+
+Debe:
+
+- seleccionar perfil acción comercial
+- entregar una contradicción entendible
+- incluir herida, ventaja, costo, transformación y arena
+- producir Story Packet completo
+- `target_runtime_seconds` 80–105 y monólogo aproximado 320–380 palabras sin calibración
+- timing budget con título ≤8 s, amenaza ≤25 s, agencia ≤45 s y payoff ≤75%
+- gates con cifras
+
+Falla si presenta cinco opciones, pide elegir o usa lore para ocultar una premisa débil.
+
+También falla si omite firmas visuales, mapa emocional, cadena espacial, cadena de estados o usa tags de audio en español.
+
+### Caso 2 — Tropo popular permitido
+
+```text
+NUEVA SERIE AUTO. Semilla: el estudiante más débil recibe un sistema de misiones.
+```
+
+Debe conservar el placer popular, pero añadir herida específica, excepción propia, costo, arena y transformación. Falla si rechaza el tropo por existir o si lo entrega sin diferencia.
+
+### Caso 3 — Poder perseguido
+
+```text
+NUEVA SERIE AUTO. Semilla: una rescatista adquiere el poder de las criaturas que combate su institución.
+```
+
+Debe producir amenaza física, identidad secreta, reacción institucional, manifestación y costo. Falla si la fuerza interior se vuelve consejero sin autorización.
+
+### Caso 4 — Conocimiento
+
+```text
+NUEVA SERIE AUTO. Semilla: un lector conoce el final de una catástrofe que acaba de empezar.
+```
+
+Debe hacer que cada intervención degrade la certeza del futuro. Falla si el conocimiento resuelve todo gratis.
+
+### Caso 5 — Protagonista poderoso
+
+```text
+NUEVA SERIE AUTO. Semilla: la persona más fuerte de su mundo ya no puede proteger a quien ama.
+```
+
+Debe mostrar poder y eje de pérdida. Falla si lo convierte por reflejo en débil físico.
+
+## Director
+
+### Caso A — Master de escala
+
+Usa un Story Packet con dos humanos, un camión y amenaza urbana.
+
+Debe producir un master legible y un `TRUE_LONG_SHOT`: sujetos completos 10–25%, entorno ≥65%, objeto completo, suelo compartido y tres capas. Falla si solo escribe `wide` o deforma el camión con gran angular.
+
+### Caso B — Acción continua
+
+Debe mantener master→ataque→impacto→reacción/consecuencia. Falla si inserta card o composite entre ataque e impacto.
+
+### Caso C — Respiro
+
+Debe producir al menos un white inset y puede usar un white composite de exactamente dos viñetas simples. Falla si pide tres acciones complejas o texto dentro.
+
+### Caso D — Base
+
+Debe generar figura limpia/seca, neutral, manos vacías, pies visibles y fondo gris. Falla si añade lluvia, pose, escenario o iluminación dramática.
+
+### Caso E — Línea sobre pérdida
+
+La voz menciona la pérdida de una persona y un prop usado por el protagonista.
+
+Debe mostrar persona/recuerdo/ausencia o reacción. Falla si protagoniza el prop asociado.
+
+### Caso F — Dos hombres y cápsula
+
+Story Packet: limpiador joven de pelo corto está fuera; prisionero mayor de pelo largo está dentro.
+
+Debe describir visualmente a ambos, declarar `ONLY person INSIDE`, dejar al limpiador completamente fuera y usar poses expresivas. Falla si usa solo nombres o permite que ambos aparezcan dentro.
+
+### Caso G — Criatura en cuatro estados
+
+Debe crear poses distintas para atrapada, carga, impacto aéreo y caída. Falla si reutiliza la ficha neutral de pie en tres paneles de acción.
+
+### Caso H — Duración
+
+Entrega un monólogo de 350 palabras/90 s. Ningún panel estándar supera 18 palabras o 4.5 s; amenaza/agencia/payoff conservan deadlines. Falla si segmenta más pero deja el payoff después del 80%.
+
+### Caso H2 — Caption entre oraciones
+
+Incluye `su poder no murió con él. Antes de morir...`. Falla si una ventana visible puede formar `murió con él antes`; puntuación/salto es límite obligatorio.
+
+## Auditor
+
+### Caso I — Monólogo alterado
+
+Cambia una palabra del voiceover frente al Story Packet.
+
+Debe restaurar segmentación exacta o bloquear si la alteración proviene del monólogo. Nunca acepta equivalencia semántica.
+
+### Caso II — Plate incompatible
+
+Panel top-down con view frontal.
+
+Debe retirar la plate o crear view compatible.
+
+### Caso III — Render defectuoso
+
+Adjunta una imagen donde persona es mayor que camión y otra con manos extra.
+
+Debe marcar ambas para retake aunque prompts y contrato pasen.
+
+### Caso IV — PASS falso sin renders
+
+Entrega JSON perfecto sin imágenes. Debe responder `PROMPT_RELEASE` y `RENDER_PENDING`; falla si declara `RELEASE` o inventa prueba silenciosa visual.
+
+### Caso V — Neutralidad y sustitución
+
+JSON de peligro usa poses derivadas que dicen `neutral expression`, menciona dos civiles sin referencias y repite la pose neutral de una criatura. Debe reparar los tres problemas.
+
+### Caso VI — Render con identidad mezclada
+
+Adjunta una escena donde el joven exterior aparece dentro de la cápsula o el prisionero hereda su uniforme/cara. Debe marcar retake por identidad y ocupación aunque el prompt fuera correcto.
+
+### Caso VII — RELEASE falso del validador
+
+Entrega JSON con `CONTRACT_PASS` pero sin plano/ángulo, menos de 20% de respiros o cero `TRUE_LONG_SHOT`. Debe devolver `PROMPT_REPAIR_REQUIRED`, código distinto de cero y prohibir release.
+
+### Caso VIII — MP4 final
+
+Entrega MP4 cuyo FPS no coincide con JSON, payoff >80%, captions ambiguos o última palabra cortada. Debe marcar FAIL/RETAKES aunque cada imagen aislada parezca correcta.
+
+## Criterio de publicación
+
+Los tres GPTs se consideran listos cuando todos sus casos obligatorios pasan dos veces consecutivas en Preview sin instrucciones adicionales del usuario.

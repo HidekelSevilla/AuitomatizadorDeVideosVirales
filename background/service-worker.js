@@ -80,6 +80,11 @@ async function loadState() {
   state.pacing = { windowStart: 0, windowCount: 0, sessionGen: 0, cooldownUntil: 0, cooldownStep: 0, grokGenCount: 0, ...(state.pacing || {}) };
   state.metrics = { generations: 0, errors: 0, cooldownMs: 0, since: Date.now(), ...(state.metrics || {}) };
   state.remote = { lastCommandId: 0, ...(state.remote || {}) };
+  state.flowProjects = { ...(state.flowProjects || {}) };
+  for (const record of Object.values(state.flowProjects)) {
+    const canonical = canonicalFlowProjectUrl(record?.projectUrl || "");
+    if (canonical) { record.projectUrl = canonical; record.projectId = flowProjectIdFromUrl(canonical); }
+  }
   // Rehidrata el ring de logs (clave separada) para que el historial sobreviva al sueno del SW.
   try { const lr = await chrome.storage.local.get(LOG_RING_KEY); if (Array.isArray(lr[LOG_RING_KEY])) logRing = lr[LOG_RING_KEY]; } catch (_e) { /* noop */ }
   // Defensa: si la cola quedo marcada running por un crash, no la creamos viva sola;
@@ -287,15 +292,41 @@ chrome.runtime.onStartup.addListener(() => { loadState().then(resumeIfInterrupte
 // bucle no existe -> la cola se cuelga en silencio y pollQueue se auto-bloquea. Al rehidratar,
 // re-encolamos las escenas a medias SIN re-gasto y relanzamos el bucle.
 async function resumeIfInterrupted() {
-  await ensureState();
-  if (loopRunning || !state.queue.running || state.queue.paused) return;
+  if (resumeInFlight) return;
   resumeInFlight = true;
   try {
+  await ensureState();
+  // Grok es AT-MOST-ONCE: GENERATING_IMAGE ya no significa "imagen gratis, vuelve a enviarla". Primero
+  // adopta/revalida el resultado del intento persistido. Si no aparece, ERROR+pausa; el usuario decide.
+  if (!(await recoverInterruptedGrokImageAttempts())) return;
+  if (!state.queue.running) {
+    const interruptedIngredients = (state.project?.ingredients || [])
+      .filter((ing) => ing.status === SCENE_STATUS.GENERATING_IMAGE);
+    if (interruptedIngredients.length) {
+      for (const ing of interruptedIngredients) {
+        ing.status = SCENE_STATUS.ERROR;
+        ing.error = "interrumpido por reinicio/apagado durante la generacion; usa Reintentar para recuperar sin reutilizar el asset viejo";
+        ing.regeneratePending = true;
+        ing.imageUrl = null;
+        ing.imageFilePath = null;
+      }
+      state.queue.paused = true;
+      await saveState();
+      log(LOG_LEVEL.WARN, `Apagado detectado durante ${interruptedIngredients.length} ingrediente(s): quedan en Error/Reintentar, no genero de nuevo en silencio.`);
+      emitState();
+      return;
+    }
+  }
+  if (loopRunning || !state.queue.running || state.queue.paused) return;
   // Latido fresco YA: pollQueue (alarma del mismo despertar) veia el heartbeat rancio, liberaba
   // running=false y este resume abortaba en silencio -> la corrida a medias se abandonaba.
   state.queue.heartbeatAt = Date.now();
+  const imageProvider = state.project?.imageProvider || state.config.provider;
+  const grokAtMostOnce = imageProvider === "grok" && !state.config.dryRun;
   for (const s of state.scenes) {
-    if (s.status === SCENE_STATUS.GENERATING_IMAGE) s.status = SCENE_STATUS.PENDING;                       // imagen: regen gratis
+    // Flow conserva su reparacion historica. Grok ya se resolvio arriba por recuperacion-only y JAMAS
+    // debe llegar a PENDING automatico tras un restart.
+    if (s.status === SCENE_STATUS.GENERATING_IMAGE && !grokAtMostOnce) s.status = SCENE_STATUS.PENDING;
     else if ((s.status === SCENE_STATUS.DOWNLOADING || s.status === SCENE_STATUS.EXTRACTING_FRAME) && s.videoUrl) s.status = SCENE_STATUS.ANIMATING; // re-recoge (no re-anima)
     else if (s.status === SCENE_STATUS.ANIMATING && !s.videoUrl && s.grokFired && s.grokVideoPostUrl) {
       // El disparo en Grok YA se pago y sabemos donde quedo el post: recoger sin re-animar.
@@ -317,6 +348,7 @@ async function resumeIfInterrupted() {
   // pendientes la fase NO puede ser animation (evita reanudar en la fase equivocada).
   await repairMissingStillAssetsBeforeResume("reinicio del service worker");
   if (forceImagesPhaseIfPending("reinicio del service worker")) await saveState();
+  if (!(await ensureProviderForPhase(state.queue.phase || "images", "reanudar tras reinicio"))) return;
   if (!(await ensureIngredientsBeforeSceneLoop("reinicio del service worker"))) return;
   // Si la corrida era PARALELA (murio el SW durante la espera de Grok), reanuda en paralelo (idempotente
   // por status, no re-gasta) en vez del bucle secuencial; si no, el bucle unico de siempre.
@@ -336,6 +368,49 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (type === "trusted_click") {
     trustedClick(_sender?.tab?.id, message.x, message.y, { releaseAfterClick: !!message.releaseAfterClick })
       .then(() => sendResponse({ ok: true }))
+      .catch((e) => sendResponse({ ok: false, error: e?.message ?? String(e) }));
+    return true;
+  }
+
+  // Teclado TRUSTED para los editores React de Flow y Grok. Las mutaciones sinteticas podian dejar
+  // texto visible sin actualizar el estado que habilita/ejecuta Crear o Enviar.
+  if (type === "trusted_keyboard") {
+    trustedKeyboard(_sender?.tab?.id, message)
+      .then(() => sendResponse({ ok: true }))
+      .catch((e) => sendResponse({ ok: false, error: e?.message ?? String(e) }));
+    return true;
+  }
+
+  // Handshake durable solicitado por grok-driver JUSTO ANTES de pulsar Enter. El content espera este
+  // ACK (saveState terminado); por eso, aun si MV3 mata/reinicia el worker inmediatamente despues, el
+  // siguiente arranque sabe que el envio pudo ocurrir y solo intenta recuperar, nunca re-generar.
+  if (type === "grok_image_submit_intent") {
+    persistGrokImageSubmitIntent(message, _sender)
+      .then(() => sendResponse({ ok: true }))
+      .catch((e) => sendResponse({ ok: false, error: e?.message ?? String(e) }));
+    return true;
+  }
+
+  if (type === "grok_image_submit_observed") {
+    persistGrokImageSubmitObserved(message, _sender)
+      .then(() => sendResponse({ ok: true }))
+      .catch((e) => sendResponse({ ok: false, error: e?.message ?? String(e) }));
+    return true;
+  }
+
+  // El content de Flow abre su selector "+" y pide al SW colocar un archivo LOCAL en el input
+  // oculto del dialogo. Es el mismo canal CDP confiable usado por Grok, acotado al tab remitente.
+  if (type === "flow_set_file_input") {
+    const files = Array.isArray(message.files) ? message.files.filter(Boolean) : [];
+    cdpSetFileInput(_sender?.tab?.id, files, message.selector || '[role="dialog"] input[type="file"][accept*="image"]')
+      .then(() => sendResponse({ ok: true, count: files.length }))
+      .catch((e) => sendResponse({ ok: false, error: e?.message ?? String(e) }));
+    return true;
+  }
+
+  if (type === "flow_file_fingerprint") {
+    getLocalFileStatus(message.filePath)
+      .then((info) => sendResponse({ ok: true, fingerprint: info.sha256 || `${info.size}:${info.mtimeMs}` }))
       .catch((e) => sendResponse({ ok: false, error: e?.message ?? String(e) }));
     return true;
   }
@@ -687,6 +762,8 @@ async function onRetryScene(message) {
 
   // mode "image" (o sin imagen/video que reutilizar): regenerar imagen desde cero.
   scene.status = SCENE_STATUS.PENDING;
+  scene.grokImageAttempt = null;
+  scene.noAutoRetry = false;
   scene.imageUrl = null;
   scene.grokPostUrl = null;
   scene.videoUrl = null;
@@ -726,7 +803,12 @@ async function onRetryIngredient(message) {
     return;
   }
 
+  if (!(await ensureProviderForPhase("images", `Rehacer ingrediente ${ingredientId}`))) return;
+
   const wasError = ing.status === SCENE_STATUS.ERROR;   // el retry viene de un fallo (no de un rehacer estetico)
+  ing.regeneratePending = true; // persiste aunque el SW muera; no rehidratar el canonical viejo hasta reemplazarlo
+  ing.grokImageAttempt = null;
+  ing.noAutoRetry = false;
   ing.imageUrl = null;
   ing.imageFilePath = null;
   ing.status = SCENE_STATUS.PENDING;
@@ -764,6 +846,7 @@ async function onRetryIngredient(message) {
 // (IMAGE_DONE / ANIMATING+videoUrl). A diferencia de onStartPhase, NO reactiva las escenas en ERROR:
 // asi un reintento por escena toca solo la que el usuario pidio.
 async function runAnimationRetry() {
+  if (!(await ensureProviderForPhase("animation", "Reintentar animacion"))) return;
   state.queue.phase = "animation";
   // Si aun hay imagenes PENDIENTES, primero se completan (la fase animation con pendings las abandonaba
   // en silencio); al terminar, el auto-avance pasa a animation y recoge la escena reintentada.
@@ -826,6 +909,8 @@ async function onRetryAllErrors() {
       toAnimate = true;
     } else {
       s.status = SCENE_STATUS.PENDING;
+      s.grokImageAttempt = null;
+      s.noAutoRetry = false;
       s.imageUrl = null;
       s.imageFilePath = null;
       s.grokPostUrl = null;
@@ -881,6 +966,8 @@ async function onResetScenes() {
     s.grokFired = false;
     s.grokVideoPostUrl = null;
     s.grokAnimBefore = null;
+    s.grokImageAttempt = null;
+    s.noAutoRetry = false;
   }
   state.queue = { running: false, paused: false, currentIndex: 0, phase: "images", errorSceneId: null, heartbeatAt: 0, doneJobs: state.queue?.doneJobs || [] };
   for (const s of state.scenes) s.skipped = false;
@@ -1096,6 +1183,27 @@ function forceImagesPhaseIfPending(reason) {
   return true;
 }
 
+function providerForPhase(phase) {
+  return phase === "animation"
+    ? (state.project?.animationProvider || state.config.provider || DEFAULT_CONFIG.provider)
+    : (state.project?.imageProvider || state.config.provider || DEFAULT_CONFIG.provider);
+}
+
+async function ensureProviderForPhase(phase, reason) {
+  const provider = providerForPhase(phase);
+  try {
+    await ensureProviderReady(provider);
+    return true;
+  } catch (e) {
+    state.queue.running = false;
+    state.queue.paused = true;
+    await saveState();
+    log(LOG_LEVEL.ERROR, `${reason}: no pude preparar ${provider === "flow" ? "el proyecto Flow correcto" : "Grok"} (${e?.message ?? e}).`);
+    emitState();
+    return false;
+  }
+}
+
 // Pausa "blanda" por fallo recuperable-a-mano (no captcha/sin-creditos): deja la cola PAUSADA para que
 // pollQueue no jale mas trabajos y el autopiloto se detenga. El usuario arregla en Flow y reanuda.
 async function pauseForError(message, sceneId = null) {
@@ -1117,6 +1225,7 @@ async function pauseForError(message, sceneId = null) {
 async function onStartOrResume() {
   await repairMissingStillAssetsBeforeResume("reanudar");
   forceImagesPhaseIfPending("reanudar");
+  if (!(await ensureProviderForPhase(state.queue.phase || "images", "Reanudar"))) return;
   state.queue.paused = false;
   state.queue.running = true;
   state.queue.errorSceneId = null;   // al reanudar, reconocemos el fallo; el resto continua (la escena en error queda marcada)
@@ -1140,9 +1249,13 @@ async function onStartPhase(phase) {
   // no un efecto colateral de pulsar "Animar". (Auditoria: la pausa-ante-fallo se anulaba sola.)
   if (phase === "images") {
     for (const s of state.scenes) {
-      if (s.status === SCENE_STATUS.ERROR && !s.skipped && !s.imageUrl) { s.status = SCENE_STATUS.PENDING; s.attempts = 0; s.error = null; }   // !skipped: respetar "Saltar" (antes se resucitaban)
+      if (s.status === SCENE_STATUS.ERROR && !s.skipped && !s.imageUrl) {
+        s.status = SCENE_STATUS.PENDING; s.attempts = 0; s.error = null;
+        s.grokImageAttempt = null; s.noAutoRetry = false; // accion explicita del usuario: autoriza un intento nuevo
+      }   // !skipped: respetar "Saltar" (antes se resucitaban)
     }
   }
+  if (!(await ensureProviderForPhase(phase, `Arrancar fase ${phase}`))) return;
   state.queue.errorSceneId = null;
   state.queue.paused = false;
   state.queue.running = true;
@@ -1297,11 +1410,13 @@ async function runRealImage(scene, prevSceneId, refName) {
   const ingOf = (id) => (state.project?.ingredients || []).find((g) => g.id === id) || null;
   const characterNames = [];
   const sceneRefImageUrls = [];
+  const localReferencePaths = [];
   const refIds = Array.isArray(scene.characterRefIds) ? scene.characterRefIds : [];
   for (let i = 0; i < refIds.length; i++) {
     const ing = ingOf(refIds[i]);
     if (ing && ing.type === "character_edited") {
       if (ing.imageUrl) sceneRefImageUrls.push(ing.imageUrl);
+      else if (ing.imageFilePath) localReferencePaths.push(ing.imageFilePath);
       else log(LOG_LEVEL.WARN, `${scene.id}: character_edited '${refIds[i]}' sin imagen (¿corrio la fase de ingredientes?); se omite.`);
     } else {
       const dn = (scene.characterRefs || [])[i];
@@ -1312,27 +1427,40 @@ async function runRealImage(scene, prevSceneId, refName) {
   if (!characterNames.length && !sceneRefImageUrls.length && scene.imageIngredients?.includes("character_ref") && state.project?.characterName) {
     characterNames.push(state.project.characterName);
   }
-  // INGREDIENTES de escena (entity/location_plate). Con project.reuse_ingredients el driver intenta
-  // adjuntarlos por NOMBRE (id renombrado, reusable entre Partes) y si no por su TILE generado en este run.
-  // Sin el flag -> solo por tile (flujo actual; Huesito intacto).
+  // Ingrediente de ESTA corrida: tile remoto exacto. Ingrediente rehidratado de P1/P2: archivo local.
+  // El disco es la memoria de serie; entity/location_plate no se buscan como Personajes de Flow.
   const ingredientRefs = [];
   for (const rid of (scene.ingredientRefs || [])) {
     const ing = ingOf(rid);
-    if (state.project?.reuseIngredients) {
-      ingredientRefs.push({ name: rid, imageUrl: ing?.imageUrl || null });
-      if (!ing?.imageUrl) log(LOG_LEVEL.WARN, `${scene.id}: ingrediente '${rid}' sin tile; se intentara por nombre.`);
-    } else if (ing?.imageUrl) {
-      sceneRefImageUrls.push(ing.imageUrl);
+    if (ing?.imageUrl) {
+      ingredientRefs.push({ name: rid, imageUrl: ing.imageUrl });
+    } else if (ing?.imageFilePath) {
+      localReferencePaths.push(ing.imageFilePath);
     } else {
       log(LOG_LEVEL.WARN, `${scene.id}: ingrediente '${rid}' sin imagen generada; se omite.`);
     }
+  }
+  // Assets locales declarados por la escena (escenario, props, sistema_ui). Grok ya los subia;
+  // Flow ahora usa el selector multimedia + CDP y los confirma como chips antes de generar.
+  for (const rel of (scene.referenceAssets || [])) {
+    const generated = (state.project?.ingredients || []).find((g) => g.outputFile
+      && String(g.outputFile).replace(/\\/g, "/") === String(rel).replace(/\\/g, "/"));
+    if (generated?.imageUrl) {
+      if (!(scene.ingredientRefs || []).includes(generated.id)) sceneRefImageUrls.push(generated.imageUrl);
+      continue;
+    }
+    try { const p = await resolveCharFileFlexible(rel); if (p) localReferencePaths.push(p); }
+    catch (e) { log(LOG_LEVEL.WARN, `${scene.id}: no resolvi asset local de Flow "${rel}": ${e?.message ?? e}`); }
   }
   // ESCENAS PREVIAS (legacy, desaconsejado con ingredientes): references.scenes[].sceneId -> imageUrl ya generada.
   for (const sr of (scene.sceneRefs || [])) {
     const ref = state.scenes.find((x) => x.id === sr.sceneId);
     if (ref?.imageUrl) sceneRefImageUrls.push(ref.imageUrl);
+    else if (ref?.imageFilePath) localReferencePaths.push(ref.imageFilePath);
     else log(LOG_LEVEL.WARN, `${scene.id}: referencia a escena '${sr.sceneId}' sin imagen disponible (se omite).`);
   }
+  const uniqueSceneRefImageUrls = [...new Set(sceneRefImageUrls.filter(Boolean))];
+  const uniqueLocalReferencePaths = [...new Set(localReferencePaths.filter(Boolean))];
   const count = state.config.generationCount ?? DEFAULT_CONFIG.generationCount;
   const aspectRatio = state.project?.aspectRatio ?? "9:16";
 
@@ -1341,7 +1469,8 @@ async function runRealImage(scene, prevSceneId, refName) {
   emitSceneStatus(scene.id, SCENE_STATUS.GENERATING_IMAGE);
   emitState();
   const img = await sendActOrFail(tab.id, ACT.GENERATE_IMAGE, {
-    prompt: scene.imagePrompt, characterNames, sceneRefImageUrls, ingredientRefs, aspectRatio, count, cfg: driverCfg(),
+    prompt: scene.imagePrompt, characterNames, sceneRefImageUrls: uniqueSceneRefImageUrls, ingredientRefs,
+    localReferencePaths: uniqueLocalReferencePaths, aspectRatio, count, cfg: driverCfg(),
   });
   scene.imageUrl = img?.imageUrl ?? null;
   // HANDOFF cross-proveedor (opt-in por JSON): si la animacion va en OTRO proveedor (animationProvider != "flow"),
@@ -1464,11 +1593,24 @@ async function runRealAnimation(scene) {
 // ---------------------------------------------------------------------------
 
 // Resuelve la ruta ABSOLUTA en disco de un asset de personaje (assets/...) via el dev-server.
-async function resolveCharFile(rel) {
+async function resolveCharFileInfo(rel) {
   const base = state.config.charFileUrl || DEFAULT_CONFIG.charFileUrl;
   const res = await fetch(`${base}?path=${encodeURIComponent(rel)}`).then((r) => r.json()).catch(() => null);
   if (!res?.ok) throw new Error(`no encuentro ${rel} (¿corre el dev-server?)`);
-  return res.abspath;
+  return res;
+}
+
+async function getLocalFileStatus(filePath) {
+  await ensureState();
+  const base = (state.config.audioWriterUrl || DEFAULT_CONFIG.audioWriterUrl).replace(/\/save$/, "");
+  const res = await fetch(`${base}/file-status?path=${encodeURIComponent(filePath || "")}`);
+  const info = await res.json().catch(() => null);
+  if (!res.ok || !info?.ok) throw new Error(info?.error || `no pude inspeccionar ${filePath || "archivo"}`);
+  return info;
+}
+
+async function resolveCharFile(rel) {
+  return (await resolveCharFileInfo(rel)).abspath;
 }
 
 async function resolveCharFileFlexible(rel) {
@@ -1489,15 +1631,302 @@ async function resolveCharFileFlexible(rel) {
 // Descarga la imagen generada por Grok a Descargas/<slug>/images/<id>.jpg y devuelve su ruta ABSOLUTA
 // (chrome.downloads manda cookies; assets.grok.com las exige). Esa ruta se reusa como REFERENCIA por
 // CDP en escenas siguientes (continuidad). No se mueve a public/ (no la necesita el render).
-async function downloadImageForRef(url, slug, id) {
+async function downloadImageForRef(url, slug, id, { quarantine = false, variant = 0, cacheBust = false } = {}) {
+  const safeId = String(id || "image").replace(/[^a-z0-9_-]+/gi, "_").slice(0, 100) || "image";
+  const filename = quarantine
+    ? `${slug}/images/.grok-candidates/${safeId}_${Date.now()}_v${Math.max(1, Number(variant) || 1)}.jpg`
+    : `${slug}/images/${safeId}.jpg`;
+  let downloadUrl = url;
+  if (cacheBust && /^https?:/i.test(String(url || ""))) {
+    try {
+      const fresh = new URL(url);
+      fresh.searchParams.set("_flow_quality_probe", `${Date.now()}_${variant}`);
+      downloadUrl = fresh.href;
+    } catch (_e) { /* usa URL original */ }
+  }
   const dlId = await new Promise((resolve, reject) => {
-    chrome.downloads.download({ url, filename: `${slug}/images/${id}.jpg`, saveAs: false, conflictAction: "overwrite" }, (theId) => {
+    chrome.downloads.download({ url: downloadUrl, filename, saveAs: false, conflictAction: quarantine ? "uniquify" : "overwrite" }, (theId) => {
       const e = chrome.runtime.lastError; if (e) return reject(new Error(e.message)); resolve(theId);
     });
   });
   const item = await waitDownloadComplete(dlId);
   if (!item || item.state !== "complete" || !item.filename) throw new Error("la descarga de la imagen no completo");
-  return { abspath: item.filename };
+  return { abspath: item.filename, downloadId: dlId };
+}
+
+async function validateDownloadedGrokImage(abspath) {
+  const base = (state.config.audioWriterUrl || DEFAULT_CONFIG.audioWriterUrl).replace(/\/save$/, "");
+  let res;
+  try {
+    res = await fetch(`${base}/image/validate?path=${encodeURIComponent(abspath || "")}`, { method: "POST" });
+  } catch (e) {
+    throw new Error(`no pude validar la imagen Grok: flowbot no responde (${e?.message ?? e})`);
+  }
+  const body = await res.text().catch(() => "");
+  let json = null;
+  try { json = body ? JSON.parse(body) : null; } catch (_e) {}
+  if (res.ok && json?.accepted) {
+    if (!/^[0-9a-f]{64}$/i.test(String(json.sha256 || ""))) throw new Error("el verificador no devolvio SHA-256 de los bytes");
+    return json;
+  }
+  if (res.status === 422) return { ...(json || {}), accepted: false, error: json?.error || body || "imagen rechazada" };
+  throw new Error(`no pude validar la imagen Grok (${res.status}): ${json?.error || body || res.statusText}`);
+}
+
+async function removeRejectedDownload(downloadId) {
+  if (!downloadId || !chrome.downloads.removeFile) return;
+  await new Promise((resolve) => chrome.downloads.removeFile(downloadId, () => resolve()));
+}
+
+async function downloadValidatedGrokCandidate(img, slug, id, { rejectImageKeys = [], label = id } = {}) {
+  const raw = Array.isArray(img?.candidateImages) && img.candidateImages.length
+    ? img.candidateImages : [{ imageUrl: img?.imageUrl, requiresByteValidation: true }];
+  if (img?.imageUrl && !raw.some((x) => (typeof x === "string" ? x : x?.imageUrl) === img.imageUrl)) {
+    raw.unshift({ imageUrl: img.imageUrl, requiresByteValidation: !!img?.requiresByteValidation });
+  }
+  const candidates = [];
+  const seen = new Set();
+  for (const entry of raw) {
+    const imageUrl = typeof entry === "string" ? entry : entry?.imageUrl;
+    if (!imageUrl || seen.has(imageUrl)) continue;
+    seen.add(imageUrl);
+    if ((rejectImageKeys || []).includes(grokImageKey(imageUrl))) continue;
+    candidates.push({ imageUrl, requiresByteValidation: typeof entry === "string" ? true : !!entry?.requiresByteValidation });
+  }
+  if (!candidates.length) throw new Error(`${label}: Grok no devolvio ninguna variante nueva utilizable`);
+
+  const rejected = [];
+  for (let i = 0; i < candidates.length; i++) {
+    const candidate = candidates[i];
+    let previous = null;
+    let rejectReason = "la huella de bytes no se estabilizo";
+    // La URL de assets.grok.com es MUTABLE: scene_39 mostro ruido y luego una imagen correcta bajo el
+    // mismo src/post. Exigimos cuatro descargas consecutivas identicas (15s de observacion), separadas
+    // 5s y con cache-busting. Hasta 12 muestras dejan casi un minuto para que un placeholder tardio
+    // mute y todavia alcance cuatro coincidencias finales antes de probar otra variante.
+    // Ningun boton ni un solo snapshot espacial puede aprobar el asset.
+    for (let sample = 1; sample <= 12; sample++) {
+      if (sample > 1) await delay(5000);
+      let saved = null, downloadError = null;
+      // Una descarga rota no dice nada sobre la generacion. Reintentar solo el MISMO URL/candidato;
+      // nunca volver al wrapper de UI ni enviar Enter por un fallo de red/disco.
+      for (let downloadAttempt = 1; downloadAttempt <= 3 && !saved; downloadAttempt++) {
+        try {
+          saved = await downloadImageForRef(candidate.imageUrl, slug, id, {
+            quarantine: true, variant: (i + 1) * 100 + sample * 10 + downloadAttempt,
+            cacheBust: sample > 1 || downloadAttempt > 1,
+          });
+        } catch (e) {
+          downloadError = e;
+          log(LOG_LEVEL.WARN, `${label}: descarga de variante ${i + 1}, muestra ${sample} fallo (${downloadAttempt}/3); ${downloadAttempt < 3 ? "reintento el mismo asset" : "agote descargas"}.`);
+          if (downloadAttempt < 3) await delay(1200);
+        }
+      }
+      if (!saved) {
+        if (previous) await removeRejectedDownload(previous.saved.downloadId);
+        const guardedDownload = new Error(`${label}: no pude descargar la variante ya generada tras 3 intentos (${downloadError?.message ?? downloadError ?? "fallo desconocido"})`);
+        guardedDownload.noAutoRetry = true; // una sonda fallida no autoriza otro Enter/gasto
+        throw guardedDownload;
+      }
+      let validation;
+      try { validation = await validateDownloadedGrokImage(saved.abspath); }
+      catch (e) {
+        await removeRejectedDownload(saved.downloadId);
+        if (previous) await removeRejectedDownload(previous.saved.downloadId);
+        e.noAutoRetry = true; // sin verificador no es seguro pagar otra generacion
+        throw e;
+      }
+      if (!validation.accepted) {
+        rejectReason = validation.error || "ruido/frame intermedio";
+        await removeRejectedDownload(saved.downloadId);
+        if (previous) await removeRejectedDownload(previous.saved.downloadId);
+        previous = null;
+        // CRITICO: la MISMA URL puede ser ruido ahora y final despues (scene_39). Reiniciar la
+        // racha y seguir muestreando; solo se descarta al agotar las 8 observaciones.
+        continue;
+      }
+      rejectReason = "la huella final no alcanzo cuatro coincidencias consecutivas";
+      if (previous && previous.validation.sha256 === validation.sha256) {
+        previous.matches = (previous.matches || 1) + 1;
+        if (previous.matches >= 4) {
+          await removeRejectedDownload(previous.saved.downloadId);
+          if (i > 0) log(LOG_LEVEL.WARN, `${label}: variante ${i + 1}/${candidates.length} aprobada; reutilice la generacion existente sin otro Enter.`);
+          return { ...candidate, ...saved, validation, variantIndex: i, variantCount: candidates.length };
+        }
+        await removeRejectedDownload(previous.saved.downloadId);
+        previous = { saved, validation, matches: previous.matches };
+      } else {
+        if (previous) {
+          log(LOG_LEVEL.WARN, `${label}: variante ${i + 1} cambio mientras se verificaba (${previous.validation.sha256?.slice(0, 8)} -> ${validation.sha256?.slice(0, 8)}); reinicio estabilidad.`);
+          await removeRejectedDownload(previous.saved.downloadId);
+        }
+        previous = { saved, validation, matches: 1 };
+      }
+    }
+    if (previous) await removeRejectedDownload(previous.saved.downloadId);
+    rejected.push(`v${i + 1}: ${rejectReason}`);
+    log(LOG_LEVEL.WARN, `${label}: descarte variante ${i + 1}/${candidates.length} por calidad/estabilidad (${rejectReason}); pruebo otra ya generada.`);
+  }
+  const error = new Error(`${label}: todas las variantes ya generadas fueron rechazadas; no genero otra automaticamente (${rejected.join("; ")})`);
+  error.noAutoRetry = true;
+  throw error;
+}
+
+async function recoverPersistedGrokResult(tab, owner, ownerType, rejectImageKeys, label) {
+  const attempt = owner.grokImageAttempt;
+  if (attempt?.result?.imageUrl) {
+    log(LOG_LEVEL.INFO, `${label}: reanudo la validacion de candidatos persistidos; NO envio Enter.`);
+    return attempt.result;
+  }
+  if (!attempt?.submitIssued) {
+    throw new Error("el reinicio ocurrio antes de confirmar el Enter; no reenvio automaticamente");
+  }
+  if (!tab) throw new Error("no hay pestana de Grok para recuperar el resultado ya enviado");
+  if (attempt.postUrl) {
+    let currentUrl = "";
+    try { currentUrl = (await chrome.tabs.get(tab.id))?.url || ""; } catch (_e) {}
+    if (currentUrl !== attempt.postUrl) await navigateTab(tab.id, attempt.postUrl);
+  }
+  await ensureContentScript(tab.id, "grok");
+  const before = [...new Set([...(attempt.before || []), ...(rejectImageKeys || [])])];
+  const recovered = await sendActOrFail(tab.id, ACT.COLLECT_IMAGE, {
+    cfg: driverCfg(),
+    before,
+    requirePost: false,
+    timeoutMs: 180000,
+  });
+  if (!recovered?.imageUrl) throw new Error("Grok no mostro un resultado recuperable del intento ya enviado");
+  await persistGrokAttemptResult(owner, recovered);
+  log(LOG_LEVEL.INFO, `${label}: resultado del intento interrumpido recuperado; NO envie otro Enter.`);
+  return recovered;
+}
+
+async function adoptRecoveredGrokScene(scene, img, rejectImageKeys) {
+  const slug = state.project?.slug || "proyecto";
+  const chosen = await downloadValidatedGrokCandidate(img, slug, scene.id, {
+    rejectImageKeys, label: `${scene.id} (recuperacion)`,
+  });
+  rejectDuplicateGrokImage(scene.id, chosen.imageUrl, rejectImageKeys);
+  scene.imageUrl = chosen.imageUrl;
+  scene.grokPostUrl = chosen.variantIndex === 0 ? (img?.postUrl || null) : null;
+  scene.imageFilePath = chosen.abspath || null;
+  if (state.project?.imageOnly && chosen.abspath) {
+    const moved = await moveStillToProject(chosen.abspath, slug, scene.id);
+    scene.savedOk = moved.via === "server";
+    if (moved.via === "server") log(LOG_LEVEL.INFO, `${scene.id}: still recuperado y movido a public/${slug}/images/.`);
+    else log(LOG_LEVEL.WARN, `${scene.id}: still recuperado quedo en Descargas; corre flowbot para moverlo al proyecto.`);
+  }
+  if (state.pacing) state.pacing.grokGenCount = (state.pacing.grokGenCount || 0) + 1;
+  scene.status = SCENE_STATUS.IMAGE_DONE;
+  scene.error = null;
+  scene.errorPhase = null;
+  scene.noAutoRetry = false;
+  scene.grokImageAttempt = null;
+  await saveState();
+  emitSceneStatus(scene.id, SCENE_STATUS.IMAGE_DONE);
+  emitState();
+  emitProgress();
+  log(LOG_LEVEL.INFO, `Imagen Grok recuperada tras reinicio (${scene.id}); cero reenvios.`);
+}
+
+async function adoptRecoveredGrokIngredient(ing, img, rejectImageKeys) {
+  const slug = state.project?.slug || "proyecto";
+  const saved = await downloadValidatedGrokCandidate(img, slug, `ingredient_${ing.id}`, {
+    rejectImageKeys, label: `Ingrediente ${ing.id} (recuperacion)`,
+  });
+  rejectDuplicateGrokImage(`Ingrediente ${ing.id}`, saved.imageUrl, rejectImageKeys);
+  ing.imageUrl = saved.imageUrl;
+  if (ing.outputFile) {
+    const moved = await moveGeneratedAssetToProject(saved.abspath, ing.outputFile);
+    ing.imageFilePath = moved.abspath || await resolveCharFileFlexible(ing.outputFile);
+  } else {
+    ing.imageFilePath = saved.abspath || null;
+  }
+  ing.regeneratePending = false;
+  ing.status = SCENE_STATUS.DONE;
+  ing.error = null;
+  ing.noAutoRetry = false;
+  ing.grokImageAttempt = null;
+  await saveState();
+  emitState();
+  log(LOG_LEVEL.INFO, `Ingrediente Grok recuperado tras reinicio (${ing.id}); cero reenvios.`);
+}
+
+// Devuelve false cuando deja el estado en ERROR+pausa. Nunca cambia un GENERATING_IMAGE de Grok a
+// PENDING: incluso estados legacy (sin marker) se consideran ambiguos y se sondean una sola vez.
+async function recoverInterruptedGrokImageAttempts() {
+  const provider = state.project?.imageProvider || state.config.provider;
+  if (provider !== "grok" || state.config.dryRun) return true;
+  const interrupted = [];
+  for (const ing of (state.project?.ingredients || [])) {
+    if (ing.status === SCENE_STATUS.GENERATING_IMAGE) interrupted.push({ ownerType: "ingredient", owner: ing, label: `Ingrediente ${ing.id}` });
+  }
+  for (const scene of (state.scenes || [])) {
+    if (scene.status === SCENE_STATUS.GENERATING_IMAGE) interrupted.push({ ownerType: "scene", owner: scene, label: scene.id });
+  }
+  if (!interrupted.length) return true;
+
+  let tab = null;
+  try { tab = await findFlowTab("grok"); } catch (_e) { tab = null; }
+  let failed = 0;
+  let firstSceneError = null;
+  for (const item of interrupted) {
+    const { ownerType, owner, label } = item;
+    const rejectImageKeys = owner.grokImageAttempt?.before?.length
+      ? [...owner.grokImageAttempt.before]
+      : knownGrokImageKeys(ownerType === "scene" ? { excludeSceneId: owner.id } : { excludeIngredientId: owner.id });
+    // Migracion defensiva de estados creados por versiones anteriores: GENERATING ya pudo pulsar Enter.
+    // Se sondea como ambiguo y, si no aparece resultado, se bloquea en vez de volverlo PENDING.
+    if (!owner.grokImageAttempt) {
+      owner.grokImageAttempt = newGrokImageAttempt(ownerType, owner.id, rejectImageKeys);
+      owner.grokImageAttempt.stage = "legacy_interrupted";
+      owner.grokImageAttempt.submitIssued = true;
+      owner.grokImageAttempt.issuedAt = Date.now();
+      await saveState();
+    }
+    try {
+      // Tras reiniciar se pierde providerTabIds, pero el handshake guardo el tab exacto que recibio Enter.
+      // Preferirlo impide adoptar una imagen nueva de OTRA pestana Grok que el usuario haya enfocado.
+      let attemptTab = owner.grokImageAttempt?.tabId != null && !owner.grokImageAttempt?.postUrl ? null : tab;
+      if (owner.grokImageAttempt?.tabId != null) {
+        try {
+          const exact = await chrome.tabs.get(owner.grokImageAttempt.tabId);
+          if (/^https:\/\/(?:www\.)?grok\.com\//i.test(exact?.url || "")) attemptTab = exact;
+        } catch (_e) { /* tab cerrado: no sondear otra pestana; podria pertenecer a otra corrida */ }
+      }
+      const img = await recoverPersistedGrokResult(attemptTab, owner, ownerType, rejectImageKeys, label);
+      if (ownerType === "scene") await adoptRecoveredGrokScene(owner, img, rejectImageKeys);
+      else await adoptRecoveredGrokIngredient(owner, img, rejectImageKeys);
+    } catch (e) {
+      failed++;
+      const detail = e?.message ?? String(e);
+      owner.status = SCENE_STATUS.ERROR;
+      owner.error = `interrumpido tras un intento Grok: ${detail}. No se envio otra generacion; revisa Grok y usa Reintentar solo si hace falta.`;
+      owner.noAutoRetry = true;
+      if (ownerType === "scene") {
+        owner.errorPhase = "images";
+        firstSceneError ||= owner.id;
+      } else {
+        owner.regeneratePending = true;
+        owner.imageUrl = null;
+        owner.imageFilePath = null;
+      }
+      owner.grokImageAttempt = owner.grokImageAttempt || newGrokImageAttempt(ownerType, owner.id, rejectImageKeys);
+      owner.grokImageAttempt.stage = "recovery_failed";
+      owner.grokImageAttempt.noAutoRetry = true;
+      owner.grokImageAttempt.recoveryError = detail;
+      owner.grokImageAttempt.recoveryFailedAt = Date.now();
+      log(LOG_LEVEL.WARN, `${label}: no adopte el intento interrumpido (${detail}); ERROR+pausa, sin otro Enter.`);
+    }
+  }
+  detachDebugger(tab?.id);
+  if (!failed) return true;
+  state.queue.paused = true;
+  state.queue.running = false;
+  if (firstSceneError) state.queue.errorSceneId = firstSceneError;
+  await saveState();
+  emitState();
+  return false;
 }
 
 // image-only (historias): mueve el still YA descargado (abspath en Descargas) a
@@ -1529,7 +1958,7 @@ async function moveGeneratedAssetToProject(absFrom, relAssetPath) {
 }
 
 function isRejectedStillError(e) {
-  return /still rechazado|archivo demasiado pequeno|posible corrupto|incompleto/i.test(String(e?.message ?? e));
+  return /still rechazado|archivo demasiado pequeno|posible corrupto|incompleto|ruido de difusion|imagen rechazada/i.test(String(e?.message ?? e));
 }
 
 // FASE 1 (Grok): sube referencias (personaje + escenas previas) por CDP -> genera imagen (modo Imagen).
@@ -1620,23 +2049,53 @@ async function runGrokImage(scene) {
 
   // Aspecto: del JSON (project.aspect_ratio). historias sin aspect_ratio -> 16:9 (documental horizontal).
   const aspectRatio = state.project?.aspectRatio || ((state.project?.preset === "historias" || state.project?.preset === "criptoclaro") ? "16:9" : "9:16");
-  const img = await sendGrokGenerateImageWithUiRetry(tab.id, {
-    prompt: scene.imagePrompt,
-    aspectRatio,
-    cfg: driverCfg(),
-  }, { refPaths, label: scene.id });
-  const imageUrl = img?.imageUrl;
-  if (!imageUrl) throw new Error("Grok no devolvio URL de imagen");
-  if (img?.variantCount > 1) log(LOG_LEVEL.INFO, `${scene.id}: Grok genero ${img.variantCount} variaciones; uso la 1a (determinista).`);
-  scene.imageUrl = imageUrl;
-  scene.grokPostUrl = img?.postUrl || null;   // URL real del post (para animar con "Hacer video" sin derivar mal)
+  const rejectImageKeys = knownGrokImageKeys({ excludeSceneId: scene.id });
+  scene.grokImageAttempt = newGrokImageAttempt("scene", scene.id, rejectImageKeys);
+  await saveState();
+  let img;
   try {
+    img = await sendGrokGenerateImageWithUiRetry(tab.id, {
+      prompt: scene.imagePrompt,
+      aspectRatio,
+      rejectImageKeys,
+      grokAttempt: { id: scene.grokImageAttempt.id, ownerType: "scene", ownerId: scene.id },
+      cfg: driverCfg(),
+    }, { refPaths, label: scene.id });
+  } catch (e) {
+    // Antes del handshake durable sabemos que Enter NO se envio, de modo que el orquestador puede hacer
+    // su retry seguro. Despues del ACK cualquier fallo es ambiguo y debe bloquear el auto-retry.
+    if (scene.grokImageAttempt?.submitIssued) e.noAutoRetry = true;
+    else scene.grokImageAttempt = null;
+    await saveState();
+    throw e;
+  }
+  try {
+    if (!img?.imageUrl) {
+      const e = new Error("Grok no devolvio URL de imagen despues de enviar; no genero otra automaticamente");
+      e.noAutoRetry = true;
+      throw e;
+    }
+    // CRITICO: persistir URLs/candidatos ANTES de la validacion larga de bytes. Si el SW muere durante
+    // las muestras SHA, el arranque revalida exactamente estos assets ya pagados sin depender del DOM.
+    await persistGrokAttemptResult(scene, img);
     const slug = state.project?.slug || "proyecto";
-    const saved = await downloadImageForRef(imageUrl, slug, scene.id);
-    scene.imageFilePath = saved.abspath || null;
+  // Nunca asignar imageUrl por DOM/boton: descargar a cuarentena, analizar bytes y, si falla,
+  // recorrer las otras variantes YA pagadas antes de considerar otra generacion.
+  const chosen = await downloadValidatedGrokCandidate(img, slug, scene.id, { rejectImageKeys, label: scene.id });
+  const imageUrl = chosen.imageUrl;
+  rejectDuplicateGrokImage(scene.id, imageUrl, rejectImageKeys);
+  if ((img?.variantCount || chosen.variantCount) > 1) {
+    log(LOG_LEVEL.INFO, `${scene.id}: Grok genero ${img?.variantCount || chosen.variantCount} variaciones; uso la ${chosen.variantIndex + 1}a validada.`);
+  }
+  scene.imageUrl = imageUrl;
+  // El post capturado solo corresponde con certeza a la primera elegida por el driver. Para otra
+  // variante animamos subiendo el archivo validado, evitando abrir/animar la variante equivocada.
+  scene.grokPostUrl = chosen.variantIndex === 0 ? (img?.postUrl || null) : null;
+  try {
+    scene.imageFilePath = chosen.abspath || null;
     // image-only (historias): la imagen ES el asset final -> moverla a public/<slug>/images/ para el render.
-    if (state.project?.imageOnly && saved.abspath) {
-      const moved = await moveStillToProject(saved.abspath, slug, scene.id);
+    if (state.project?.imageOnly && chosen.abspath) {
+      const moved = await moveStillToProject(chosen.abspath, slug, scene.id);
       scene.savedOk = moved.via === "server";
       if (moved.via === "server") log(LOG_LEVEL.INFO, `${scene.id}: still movido a public/${slug}/images/ (image-only).`);
       else log(LOG_LEVEL.WARN, `${scene.id}: still en Descargas (dev-server no responde); muevelo a public/${slug}/images/ o corre flowbot.`);
@@ -1651,10 +2110,15 @@ async function runGrokImage(scene) {
     }
     log(LOG_LEVEL.WARN, `${scene.id}: no pude guardar/mover la imagen (${e?.message ?? e}).`);
   }
-  if (state.pacing) state.pacing.grokGenCount = (state.pacing.grokGenCount || 0) + 1;   // contador anti-cuelgue (recarga cada N imagenes)
-  scene.status = SCENE_STATUS.IMAGE_DONE; scene.error = null;
-  await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.IMAGE_DONE); emitState(); emitProgress();
-  log(LOG_LEVEL.INFO, `Imagen Grok lista (${scene.id}).`);
+    if (state.pacing) state.pacing.grokGenCount = (state.pacing.grokGenCount || 0) + 1;   // contador anti-cuelgue (recarga cada N imagenes)
+    scene.status = SCENE_STATUS.IMAGE_DONE; scene.error = null; scene.grokImageAttempt = null;
+    await saveState(); emitSceneStatus(scene.id, SCENE_STATUS.IMAGE_DONE); emitState(); emitProgress();
+    log(LOG_LEVEL.INFO, `Imagen Grok lista (${scene.id}).`);
+  } catch (e) {
+    if (scene.grokImageAttempt?.submitIssued) e.noAutoRetry = true;
+    await saveState();
+    throw e;
+  }
 }
 
 // FASE 2 (Grok): anima con el boton "Hacer video" SOBRE el post de la imagen (asi anima Grok; NO es
@@ -2633,19 +3097,148 @@ function isNoNewGrokImageError(e) {
 }
 
 function isGrokSendNotRegisteredError(e) {
-  return /Enviar de Grok no registro|prompt no se vacio|prompt de Grok no se pudo reemplazar/i.test(e?.message ?? String(e));
+  return /Enviar de Grok no registro|prompt no se vacio/i.test(e?.message ?? String(e));
+}
+
+function isGrokSafeComposerError(e) {
+  return /prompt de Grok no se pudo reemplazar|boton "?Enviar"? de Grok no se habilito|teclado trusted fallo/i
+    .test(e?.message ?? String(e));
+}
+
+// Debe producir exactamente las mismas claves compactas que content/grok-driver.js::genId.
+// El SW conserva estas claves aunque /imagine se recargue y el DOM pierda su snapshot "before".
+function grokImageKey(url) {
+  const s = String(url || "");
+  const server = s.match(/\/generated\/([^/?]+)/) || s.match(/\/images\/([^/?]+?)(?:\.[a-z]+)?(?:\?|$)/i);
+  if (server) return `post:${server[1]}`;
+  if (!/^data:image/.test(s)) return s;
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return `data:${s.length}:${(h >>> 0).toString(16).padStart(8, "0")}`;
+}
+
+function newGrokImageAttempt(ownerType, ownerId, rejectImageKeys = []) {
+  const random = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  return {
+    id: `grok-image-${random}`,
+    ownerType,
+    ownerId,
+    provider: "grok",
+    stage: "preparing",
+    submitIssued: false,
+    before: [...new Set((rejectImageKeys || []).filter(Boolean))],
+    preUrl: null,
+    createdAt: Date.now(),
+    issuedAt: null,
+    result: null,
+  };
+}
+
+function grokAttemptOwner(ownerType, ownerId) {
+  if (ownerType === "scene") return (state?.scenes || []).find((s) => s?.id === ownerId) || null;
+  if (ownerType === "ingredient") return (state?.project?.ingredients || []).find((g) => g?.id === ownerId) || null;
+  return null;
+}
+
+async function persistGrokImageSubmitIntent(message, sender) {
+  await ensureState();
+  const senderUrl = sender?.tab?.url || sender?.url || "";
+  if (senderUrl && !/^https:\/\/(?:www\.)?grok\.com\//i.test(senderUrl)) {
+    throw new Error("origen no-Grok rechazo el marcador de envio");
+  }
+  const owner = grokAttemptOwner(message?.ownerType, message?.ownerId);
+  if (!owner) throw new Error(`no encuentro ${message?.ownerType || "owner"} ${message?.ownerId || ""}`);
+  const attempt = owner.grokImageAttempt;
+  if (!attempt || attempt.id !== message?.attemptId) {
+    throw new Error("el intento Grok ya no coincide con el estado persistido");
+  }
+  if (owner.status !== SCENE_STATUS.GENERATING_IMAGE) {
+    throw new Error(`el intento Grok no esta activo (estado ${owner.status || "desconocido"})`);
+  }
+  // Idempotente: si el mismo content re-entrega el mensaje por una reconexion, conserva el primer
+  // `issuedAt` y amplia `before`; nunca crea otro intento ni autoriza un segundo Enter con otro id.
+  const reportedBefore = Array.isArray(message?.before) ? message.before.filter(Boolean) : [];
+  attempt.before = [...new Set([...(attempt.before || []), ...reportedBefore])];
+  attempt.preUrl = message?.preUrl || attempt.preUrl || senderUrl || null;
+  attempt.submitIssued = true;
+  attempt.stage = "submit_issued";
+  attempt.issuedAt = attempt.issuedAt || Date.now();
+  attempt.tabId = sender?.tab?.id ?? attempt.tabId ?? null;
+  await saveState();
+}
+
+async function persistGrokImageSubmitObserved(message, sender) {
+  await ensureState();
+  const owner = grokAttemptOwner(message?.ownerType, message?.ownerId);
+  const attempt = owner?.grokImageAttempt;
+  if (!attempt || attempt.id !== message?.attemptId || !attempt.submitIssued) {
+    throw new Error("el intento Grok observado ya no coincide con el estado persistido");
+  }
+  // Solo aceptar un /post de grok.com comunicado por el mismo tab del handshake. Una URL exacta permite
+  // volver al resultado correcto incluso si el usuario cambio de pestaña antes del restart.
+  const postUrl = String(message?.postUrl || "");
+  if (postUrl && /^https:\/\/(?:www\.)?grok\.com\/imagine\/post\//i.test(postUrl)
+      && (attempt.tabId == null || attempt.tabId === sender?.tab?.id)) {
+    attempt.postUrl = postUrl;
+  }
+  attempt.stage = "submit_observed";
+  attempt.acceptedReason = message?.acceptedReason || attempt.acceptedReason || null;
+  attempt.observedAt = attempt.observedAt || Date.now();
+  await saveState();
+}
+
+function persistedGrokResult(img) {
+  if (!img?.imageUrl) return null;
+  return {
+    imageUrl: img.imageUrl,
+    postUrl: img.postUrl || null,
+    variantCount: Number(img.variantCount || 0),
+    requiresByteValidation: !!img.requiresByteValidation,
+    candidateImages: Array.isArray(img.candidateImages) ? img.candidateImages : [],
+    recovered: !!img.recovered,
+  };
+}
+
+async function persistGrokAttemptResult(owner, img) {
+  if (!owner?.grokImageAttempt || !img?.imageUrl) return;
+  owner.grokImageAttempt.submitIssued = true;
+  owner.grokImageAttempt.stage = "validating_candidates";
+  owner.grokImageAttempt.result = persistedGrokResult(img);
+  owner.grokImageAttempt.resultCapturedAt = Date.now();
+  await saveState();
+}
+
+function knownGrokImageKeys({ excludeSceneId = null, excludeIngredientId = null } = {}) {
+  const urls = [];
+  for (const s of (state?.scenes || [])) {
+    if (s?.id !== excludeSceneId && s?.imageUrl) urls.push(s.imageUrl);
+  }
+  for (const ing of (state?.project?.ingredients || [])) {
+    if (ing?.id !== excludeIngredientId && ing?.imageUrl) urls.push(ing.imageUrl);
+  }
+  return [...new Set(urls.map(grokImageKey).filter(Boolean))];
+}
+
+function rejectDuplicateGrokImage(ownerLabel, imageUrl, rejectImageKeys) {
+  const key = grokImageKey(imageUrl);
+  if (!key || !(rejectImageKeys || []).includes(key)) return;
+  throw new Error(`${ownerLabel}: Grok devolvio un asset ya asignado (${key}); rechazo el duplicado y reintento con la pestana limpia`);
 }
 
 async function sendGrokGenerateImage(tabId, payload) {
   let before = [];
   try { before = (await sendActOrFail(tabId, ACT.IMAGE_KEYS, {}))?.keys || []; } catch (_e) {}
+  before = [...new Set([...before, ...((payload?.rejectImageKeys || []).filter(Boolean))])];
   try {
     return await sendActOrFail(tabId, ACT.GENERATE_IMAGE, payload);
   } catch (e) {
     const closedChannel = isClosedImageChannelError(e);
     const noNewImage = isNoNewGrokImageError(e);
-    if (!closedChannel && !noNewImage) throw e;
-    const reason = closedChannel ? "cerro el canal durante generate_image" : "no reporto imagen nueva tras generar";
+    const sendNotRegistered = isGrokSendNotRegisteredError(e);
+    if (!closedChannel && !noNewImage && !sendNotRegistered) throw e;
+    const reason = closedChannel ? "cerro el canal durante generate_image"
+      : noNewImage ? "no reporto imagen nueva tras generar"
+        : "no confirmo el envio; antes de recargar compruebo si arranco tarde";
     log(LOG_LEVEL.WARN, `Grok ${reason}; intento recuperar la imagen ya generada (${e?.message ?? e}).`);
     await delay(closedChannel ? 3000 : 1500);
     try {
@@ -2654,7 +3247,7 @@ async function sendGrokGenerateImage(tabId, payload) {
         cfg: payload?.cfg,
         before,
         requirePost: false,
-        timeoutMs: 60000,
+        timeoutMs: sendNotRegistered ? 45000 : 60000,
       });
       if (recovered?.imageUrl) {
         log(LOG_LEVEL.INFO, `Grok: imagen ya generada recuperada desde ${recovered.postUrl ? "/post" : "la grilla de 4 variantes"}; NO regenero.`);
@@ -2693,6 +3286,13 @@ async function sendGrokGenerateImage(tabId, payload) {
     } catch (openErr) {
       log(LOG_LEVEL.WARN, `Grok: tampoco pude adoptar la primera variante desde su post (${openErr?.message ?? openErr}).`);
     }
+    // Si Enter pudo registrarse, la ausencia de senal sigue siendo AMBIGUA aun despues de los probes.
+    // Nunca devolver el error original al wrapper (lo interpretaba como permiso para recargar+Enter).
+    if (sendNotRegistered) {
+      const guardedSubmit = new Error(`${e?.message ?? e}. El envio pudo haberse aceptado; no recargo ni envio Enter otra vez. Pausa y revisa Grok.`);
+      guardedSubmit.noAutoRetry = true;
+      throw guardedSubmit;
+    }
     const guarded = new Error(`${e?.message ?? e}. Grok pudo haber generado la imagen; no la reenvio automaticamente para evitar duplicarla.`);
     guarded.noAutoRetry = true;
     throw guarded;
@@ -2723,9 +3323,9 @@ async function prepareGrokImageAttempt(tabId, refPaths, label) {
       await cdpSetFileInput(tabId, refPaths);
       const attached = await sendActOrFail(tabId, ACT.WAIT_FOR_REFS, {
         expected: refPaths.length,
-        timeoutMs: 15000,
+        timeoutMs: 30000,
       });
-      log(LOG_LEVEL.INFO, `${label}: ${refPaths.length} referencia(s) subidas y confirmadas en Grok (${attached?.fileCount || attached?.previewCount || attached?.count || refPaths.length}).`);
+      log(LOG_LEVEL.INFO, `${label}: ${refPaths.length} referencia(s) procesadas y confirmadas en Grok (${attached?.confirmedCount || attached?.count || refPaths.length} chips).`);
     } catch (e) {
       // Antes: WARN + "genero sin ellas" -> imagen SIN personaje/escenario que terminaba DONE como si
       // nada (perdida de continuidad indetectable). Fallar el intento: el reintento recarga y re-sube.
@@ -2743,8 +3343,10 @@ async function sendGrokGenerateImageWithUiRetry(tabId, payload, options = {}) {
     try {
       return await sendGrokGenerateImage(tabId, payload);
     } catch (e) {
-      if (!isGrokSendNotRegisteredError(e) || attempt >= maxUiRetries) throw e;
-      log(LOG_LEVEL.WARN, `${label}: Enviar de Grok no registro; recargo /imagine y reintento (${attempt + 2}/${maxUiRetries + 1}).`);
+      if (e?.noAutoRetry) throw e;
+      const safeComposerFailure = isGrokSafeComposerError(e);
+      if (!safeComposerFailure || attempt >= maxUiRetries) throw e;
+      log(LOG_LEVEL.WARN, `${label}: el editor no registro el prompt antes de enviar; recargo /imagine y reintento seguro (${attempt + 2}/${maxUiRetries + 1}).`);
       try { await hardReloadGrok(tabId); }
       catch (reloadErr) {
         log(LOG_LEVEL.WARN, `${label}: recarga Grok fallo (${reloadErr?.message ?? reloadErr}); intento volver al composer.`);
@@ -2782,14 +3384,52 @@ function navigateTab(tabId, url) {
   });
 }
 
-// Busca la pestana del PROVEEDOR activo: Flow (labs.google) o Grok (grok.com). Prefiere la activa.
-async function findFlowTab(provider) {
+function flowProjectIdFromUrl(url) {
+  return String(url || "").match(/\/flow\/project\/([0-9a-f-]{6,})/i)?.[1] || null;
+}
+
+function canonicalFlowProjectUrl(url) {
+  try {
+    const u = new URL(String(url || ""));
+    const id = flowProjectIdFromUrl(u.href);
+    if (!id) return "";
+    const prefix = u.pathname.match(new RegExp(`^(.*\\/flow\\/project\\/${id})`, "i"))?.[1];
+    if (!prefix) return "";
+    u.pathname = prefix;
+    u.search = "";
+    u.hash = "";
+    return u.href.replace(/\/$/, "");
+  } catch (_e) { return ""; }
+}
+
+function flowSeriesKey() {
+  return String(state?.project?.seriesId || "").trim() || null;
+}
+
+// Busca la pestana del PROVEEDOR activo. Para Flow, una asociacion serie -> projectId persistida manda
+// sobre el foco y sobre el ancla volatil, de modo que reiniciar Chrome/SW o abrir dos proyectos no mueve P2.
+async function findFlowTab(provider, options = {}) {
   const isGrok = (provider || state.config.provider) === "grok";
   const key = isGrok ? "grok" : "flow";
   const pattern = isGrok ? "https://grok.com/*" : "https://labs.google/*";
   try {
     const tabs = await chrome.tabs.query({ url: pattern });
-    const chosen = chooseProviderTab(tabs, key, providerTabIds[key]);
+    const seriesKey = !isGrok ? flowSeriesKey() : null;
+    const expected = state.project?.flowProjectId
+      ? { projectId: state.project.flowProjectId, projectUrl: state.project.flowProjectUrl }
+      : (seriesKey ? state.flowProjects?.[seriesKey] : null);
+    const expectedId = expected?.projectId || null;
+    let chosen = chooseProviderTab(tabs, key, providerTabIds[key], expectedId);
+    if (!isGrok && expectedId && flowProjectIdFromUrl(chosen?.url) !== expectedId && !options.allowUnassociated) {
+      return null;
+    }
+    if (!isGrok && expected?.projectUrl && flowProjectIdFromUrl(chosen?.url) === expectedId
+        && chosen.url !== expected.projectUrl) {
+      await navigateTab(chosen.id, expected.projectUrl);
+      chosen = await chrome.tabs.get(chosen.id);
+      if (flowProjectIdFromUrl(chosen.url) !== expectedId
+          || canonicalFlowProjectUrl(chosen.url) !== expected.projectUrl) return null;
+    }
     providerTabIds[key] = chosen?.id ?? null;
     return chosen;
   } catch (e) {
@@ -2928,6 +3568,44 @@ async function trustedClick(tabId, x, y, { releaseAfterClick = false } = {}) {
     // Grok solo necesita CDP para que el click sea trusted. Retener la sesion durante los 20-360s de
     // generacion hacia que la pestana y otras ventanas se sintieran lentas y podia ocupar el limite CDP.
     if (releaseAfterClick) detachDebugger(tabId);
+  }
+}
+
+async function trustedKeyboard(tabId, { text = null, key = null, replace = false, releaseAfterKey = false } = {}) {
+  if (tabId == null) throw new Error("trusted_keyboard sin tabId");
+  await ensureDebugger(tabId);
+  const press = async ({ key: k, code, text: typed, modifiers = 0, windowsVirtualKeyCode }) => {
+    const base = { key: k, code: code || "", modifiers, windowsVirtualKeyCode: windowsVirtualKeyCode || 0 };
+    await debuggerSend(tabId, "Input.dispatchKeyEvent", {
+      type: "keyDown", ...base,
+      ...(typed != null ? { text: typed, unmodifiedText: typed } : {}),
+    });
+    await debuggerSend(tabId, "Input.dispatchKeyEvent", { type: "keyUp", ...base });
+  };
+  try {
+    if (replace) {
+      // Ctrl+A + Backspace con eventos de teclado reales: limpia el valor de Slate, no solo su DOM.
+      await debuggerSend(tabId, "Input.dispatchKeyEvent", { type: "keyDown", key: "Control", code: "ControlLeft", modifiers: 2, windowsVirtualKeyCode: 17 });
+      await press({ key: "a", code: "KeyA", modifiers: 2, windowsVirtualKeyCode: 65 });
+      await debuggerSend(tabId, "Input.dispatchKeyEvent", { type: "keyUp", key: "Control", code: "ControlLeft", modifiers: 0, windowsVirtualKeyCode: 17 });
+      await press({ key: "Backspace", code: "Backspace", windowsVirtualKeyCode: 8 });
+    }
+    if (text != null) {
+      // Un keyDown por caracter es mas verboso que Input.insertText, pero es la diferencia importante:
+      // Input.insertText/pegado cae dentro de data-slate-zero-width y Flow NO habilita Crear.
+      for (const ch of String(text).replace(/\r?\n/g, " ")) {
+        if (ch === " ") await press({ key: " ", code: "Space", text: " ", windowsVirtualKeyCode: 32 });
+        else await press({ key: ch, text: ch });
+      }
+    }
+    if (key) {
+      const upper = String(key).toUpperCase();
+      if (upper === "ENTER") await press({ key: "Enter", code: "Enter", windowsVirtualKeyCode: 13 });
+      else if (upper === "BACKSPACE") await press({ key: "Backspace", code: "Backspace", windowsVirtualKeyCode: 8 });
+      else await press({ key: String(key), text: String(key) });
+    }
+  } finally {
+    if (releaseAfterKey) detachDebugger(tabId);
   }
 }
 
@@ -3073,48 +3751,147 @@ async function runPhasesParallel() {
   return !state.queue.paused;
 }
 
-// Prepara Flow: proyecto nuevo + personajes del proyecto. Degrada con gracia si esos pasos aun
-// no estan mapeados (usa el proyecto abierto / el personaje creado a mano).
+async function rememberFlowProject(tabId, explicitUrl = "") {
+  let url = explicitUrl;
+  if (!url) { try { url = (await chrome.tabs.get(tabId))?.url || ""; } catch (_e) {} }
+  const projectId = flowProjectIdFromUrl(url);
+  if (!projectId) return null;
+  const projectUrl = canonicalFlowProjectUrl(url);
+  if (!projectUrl) return null;
+  const seriesKey = flowSeriesKey();
+  if (seriesKey) {
+    const previous = state.flowProjects?.[seriesKey] || {};
+    state.flowProjects = { ...(state.flowProjects || {}), [seriesKey]: {
+      ...previous, projectId, projectUrl,
+      characters: previous.projectId === projectId ? (previous.characters || {}) : {},
+      updatedAt: Date.now(),
+    } };
+  }
+  if (state.project.flowProjectId && state.project.flowProjectId !== projectId) state.project.flowCharacters = {};
+  state.project.flowProjectId = projectId;
+  state.project.flowProjectUrl = projectUrl;
+  await saveState();
+  return seriesKey ? state.flowProjects[seriesKey] : { projectId, projectUrl };
+}
+
+function flowCharacterRecord(name) {
+  const seriesKey = flowSeriesKey();
+  return seriesKey ? state.flowProjects?.[seriesKey]?.characters?.[name]
+    : state.project?.flowCharacters?.[name];
+}
+
+function applyFlowCharacterAlias(characterId, configuredName, effectiveName) {
+  if (state.project?.characters?.[characterId]) {
+    state.project.characters[characterId].flowConfiguredName = configuredName;
+    state.project.characters[characterId].display_name = effectiveName;
+  }
+  for (const scene of (state.scenes || [])) {
+    for (let i = 0; i < (scene.characterRefIds || []).length; i++) {
+      if (scene.characterRefIds[i] === characterId) scene.characterRefs[i] = effectiveName;
+    }
+  }
+}
+
+async function rememberFlowCharacter(configuredName, effectiveName, fileInfo) {
+  const seriesKey = flowSeriesKey();
+  const project = seriesKey ? state.flowProjects?.[seriesKey] : state.project;
+  if (!project || !configuredName || !effectiveName || !fileInfo) return;
+  const field = seriesKey ? "characters" : "flowCharacters";
+  project[field] = { ...(project[field] || {}), [configuredName]: {
+    alias: effectiveName, verified: true,
+    sha256: fileInfo.sha256 || "", size: fileInfo.size || 0, mtimeMs: fileInfo.mtimeMs || 0,
+    abspath: fileInfo.abspath || "", updatedAt: Date.now(),
+  } };
+  await saveState();
+}
+
+// Prepara Flow: proyecto nuevo + personajes del proyecto. La asociacion serie -> proyecto persiste
+// fuera del JSON cargado, por lo que P2 vuelve al mismo proyecto incluso tras reiniciar el worker.
 async function ensureFlowReady() {
-  const tab = await findFlowTab();
+  let tab = await findFlowTab("flow", { allowUnassociated: true });
   if (!tab) throw new Error("abre Flow (labs.google) en una pestana y reintenta");
 
-  // MODO REUSE: usa el proyecto ABIERTO (con Huesito/Socrates ya creados). No crea proyecto ni sube
-  // personajes (Flow no acepta el archivo por codigo de forma fiable). El compositor entra a modo
-  // normal solo (configureComposer cierra el panel Agente). El driver adjunta los personajes por nombre.
-  if (state.config.flowReuseProject) {
-    await ensureContentScript(tab.id);
-    log(LOG_LEVEL.INFO, "AUTOPILOTO: usando el proyecto Flow ABIERTO (personajes pre-creados). No creo proyecto.");
-    return;
-  }
-
-  // Proyecto NUEVO: navegamos a la home de Flow y clic "Nuevo proyecto" -> /project/<id>.
   let freshProject = false;
-  try {
-    await navigateTab(tab.id, state.config.flowUrl || DEFAULT_CONFIG.flowUrl);
+  // MODO REUSE: conserva el proyecto ABIERTO, pero ahora SI sincroniza los personajes que falten.
+  // Verificado en vivo 2026-07-12: Flow mantiene cada personaje en /character/<id> y luego permite
+  // recuperarlo por nombre desde el selector "+". DOM.setFileInputFiles alimenta el input oculto.
+  if (state.config.flowReuseProject || state.project?.flowProjectId) {
+    const seriesKey = flowSeriesKey();
+    const associated = state.project?.flowProjectId
+      ? { projectId: state.project.flowProjectId, projectUrl: state.project.flowProjectUrl }
+      : (seriesKey ? state.flowProjects?.[seriesKey] : null);
+    const currentId = flowProjectIdFromUrl(tab.url);
+    const currentBase = canonicalFlowProjectUrl(tab.url);
+    if (associated?.projectUrl && (currentId !== associated.projectId || currentBase !== associated.projectUrl || tab.url !== currentBase)) {
+      log(LOG_LEVEL.INFO, `Flow: vuelvo al proyecto asociado a la serie "${seriesKey}" (${associated.projectId}).`);
+      await navigateTab(tab.id, associated.projectUrl);
+      tab = await chrome.tabs.get(tab.id);
+      if (flowProjectIdFromUrl(tab.url) !== associated.projectId
+          || canonicalFlowProjectUrl(tab.url) !== associated.projectUrl) {
+        throw new Error(`Flow redirigio a otro proyecto; esperaba ${associated.projectId} y no cambio la asociacion`);
+      }
+    }
+    if (!flowProjectIdFromUrl(tab.url)) {
+      throw new Error("Flow reuse requiere una pestana /project/<id>; abre el proyecto de la serie o desactiva flowReuseProject");
+    }
+    const baseUrl = canonicalFlowProjectUrl(tab.url);
+    if (baseUrl && tab.url !== baseUrl) {
+      await navigateTab(tab.id, baseUrl);
+      tab = await chrome.tabs.get(tab.id);
+    }
     await ensureContentScript(tab.id);
-    await sendActOrFail(tab.id, ACT.NEW_PROJECT, { title: state.project?.title || "Auto" });
-    freshProject = true;
-    log(LOG_LEVEL.INFO, "Proyecto nuevo creado en Flow.");
-  } catch (e) {
-    log(LOG_LEVEL.WARN, `Proyecto nuevo no disponible (${e?.message ?? e}). Uso el proyecto Flow abierto.`);
-    await ensureContentScript(tab.id);
+    await rememberFlowProject(tab.id, tab.url || "");
+    log(LOG_LEVEL.INFO, "AUTOPILOTO: usando el proyecto Flow ABIERTO; sincronizo personajes faltantes en su memoria.");
+  } else {
+    // Proyecto NUEVO: navegamos a la home de Flow y clic "Nuevo proyecto" -> /project/<id>.
+    try {
+      await navigateTab(tab.id, state.config.flowUrl || DEFAULT_CONFIG.flowUrl);
+      await ensureContentScript(tab.id);
+      const created = await sendActOrFail(tab.id, ACT.NEW_PROJECT, { title: state.project?.title || "Auto" });
+      tab = await chrome.tabs.get(tab.id);
+      await rememberFlowProject(tab.id, created?.url || tab.url || "");
+      freshProject = true;
+      log(LOG_LEVEL.INFO, "Proyecto nuevo creado en Flow.");
+    } catch (e) {
+      log(LOG_LEVEL.WARN, `Proyecto nuevo no disponible (${e?.message ?? e}). Uso el proyecto Flow abierto.`);
+      await ensureContentScript(tab.id);
+      try { tab = await chrome.tabs.get(tab.id); await rememberFlowProject(tab.id, tab.url || ""); } catch (_e) {}
+    }
   }
 
   // Personajes del proyecto: crear cada uno subiendo su png via CDP. En proyecto NUEVO no hace
   // falta checar si existe (esta vacio); en modo degradado (proyecto abierto) si checamos.
   const chars = state.project?.characters || {};
   for (const [id, c] of Object.entries(chars)) {
-    const name = (c && c.display_name) || id;
+    const configuredName = (c && (c.flowConfiguredName || c.display_name)) || id;
     try {
-      if (!freshProject) {
-        const has = await sendActOrFail(tab.id, ACT.HAS_CHARACTER, { name });
-        if (has?.exists) { log(LOG_LEVEL.INFO, `Personaje "${name}" ya existe en el proyecto.`); continue; }
+      const rel = (c && c.reference_asset) || `assets/characters/${id}_ref.png`;
+      const fileInfo = await resolveCharFileInfo(rel);
+      const remembered = flowCharacterRecord(configuredName);
+      const sameRecipe = remembered?.verified && remembered?.sha256 && fileInfo.sha256
+        && remembered.sha256 === fileInfo.sha256;
+      let effectiveName = sameRecipe ? (remembered.alias || configuredName) : configuredName;
+      let exists = false;
+      if (!freshProject && sameRecipe) {
+        exists = !!(await sendActOrFail(tab.id, ACT.HAS_CHARACTER, { name: effectiveName }))?.exists;
+      } else if (!freshProject) {
+        const originalExists = !!(await sendActOrFail(tab.id, ACT.HAS_CHARACTER, { name: configuredName }))?.exists;
+        if (originalExists) {
+          const suffix = (fileInfo.sha256 || `${fileInfo.size || 0}${fileInfo.mtimeMs || 0}`).slice(0, 8);
+          effectiveName = `${configuredName}__${suffix}`;
+          exists = !!(await sendActOrFail(tab.id, ACT.HAS_CHARACTER, { name: effectiveName }))?.exists;
+          log(LOG_LEVEL.WARN, `Personaje "${configuredName}" no tenia identidad verificable; uso alias estable "${effectiveName}" para no adjuntar un retrato homonimo.`);
+        }
       }
-      await createCharacterInFlow(tab.id, id, c, name);
-      log(LOG_LEVEL.INFO, `Personaje "${name}" creado en Flow.`);
+      if (!exists) {
+        const created = await createCharacterInFlow(tab.id, id, c, effectiveName, fileInfo);
+        Object.assign(fileInfo, created || {});
+        log(LOG_LEVEL.INFO, `Personaje "${effectiveName}" creado en Flow.`);
+      } else log(LOG_LEVEL.INFO, `Personaje "${effectiveName}" ya existe y coincide con la identidad recordada.`);
+      applyFlowCharacterAlias(id, configuredName, effectiveName);
+      await rememberFlowCharacter(configuredName, effectiveName, fileInfo);
     } catch (e) {
-      log(LOG_LEVEL.WARN, `Personaje "${name}": ${e?.message ?? e}. Si ya lo creaste a mano, el driver lo reutiliza.`);
+      throw new Error(`Personaje "${configuredName}" no quedo listo en Flow: ${e?.message ?? e}`);
     }
   }
 }
@@ -3132,13 +3909,14 @@ async function ensureProviderReady(provider) {
 }
 
 // Sube la imagen del personaje a Flow (CDP) y crea el Personaje con su nombre.
-async function createCharacterInFlow(tabId, id, c, name) {
+async function createCharacterInFlow(tabId, id, c, name, resolvedInfo = null) {
   const rel = (c && c.reference_asset) || `assets/characters/${id}_ref.png`;
-  const absPath = await resolveCharFileFlexible(rel);
+  const info = resolvedInfo || await resolveCharFileInfo(rel);
+  const absPath = info.abspath;
   await sendActOrFail(tabId, ACT.REVEAL_UPLOAD_INPUT, {});
-  await cdpSetFileInput(tabId, absPath);
+  await cdpSetFileInput(tabId, absPath, 'input[type="file"][accept="image/*"]');
   await sendActOrFail(tabId, ACT.CREATE_CHARACTER, { name });
-  return;
+  return info;
   const base = (state.config.charFileUrl || DEFAULT_CONFIG.charFileUrl);
   const fileRes = await fetch(`${base}?path=${encodeURIComponent(rel)}`).then((r) => r.json()).catch(() => null);
   if (!fileRes?.ok) throw new Error(`no encuentro ${rel} (¿corre el dev-server y existe el png?)`);
@@ -3147,13 +3925,13 @@ async function createCharacterInFlow(tabId, id, c, name) {
   await sendActOrFail(tabId, ACT.CREATE_CHARACTER, { name }); // el driver termina de crear el Personaje
 }
 
-// Pone un archivo LOCAL en el primer input[type=file] de la pagina via CDP (lo unico que puede
-// subir archivos del disco; un content script no puede por seguridad). Requiere el debugger adjunto.
-async function cdpSetFileInput(tabId, absPath) {
+// Pone archivos LOCALES en el input elegido de la pagina via CDP. El selector explicito evita
+// confundir el input de personaje con el multimedia general de Flow.
+async function cdpSetFileInput(tabId, absPath, selector = 'input[type="file"]') {
   await ensureDebugger(tabId);
   await debuggerSend(tabId, "DOM.enable", {});
   const { root } = await debuggerSend(tabId, "DOM.getDocument", { depth: -1 });
-  const { nodeId } = await debuggerSend(tabId, "DOM.querySelector", { nodeId: root.nodeId, selector: 'input[type="file"]' });
+  const { nodeId } = await debuggerSend(tabId, "DOM.querySelector", { nodeId: root.nodeId, selector });
   if (!nodeId) throw new Error("no hay input[type=file] visible (¿abrio el dialogo de subida?)");
   const files = Array.isArray(absPath) ? absPath : [absPath];
   await debuggerSend(tabId, "DOM.setFileInputFiles", { files, nodeId });
@@ -3203,16 +3981,30 @@ async function ensureIngredientsBeforeSceneLoop(reason = "arrancar escenas") {
   return true;
 }
 
+function ingredientAutoRetryProtected(ing) {
+  return !!(ing?.noAutoRetry
+    || ing?.grokImageAttempt?.noAutoRetry
+    || (ing?.status === SCENE_STATUS.ERROR && ing?.grokImageAttempt?.submitIssued)
+    || (ing?.status === SCENE_STATUS.ERROR && ing?.grokImageAttempt?.stage === "recovery_failed"));
+}
+
 async function hydrateExistingIngredientFiles(options = {}) {
   await ensureState();
   const ings = state.project?.ingredients || [];
-  const provider = state.project?.imageProvider || state.config.provider;
   const forceIds = new Set(options.forceIds || []);
-  if (provider !== "grok" || !ings.length) return false;
+  if (!ings.length) return false;
 
   let changed = false;
   for (const ing of ings) {
     if (forceIds.has(ing.id)) {
+      // `forceIds` solo viene de Reintentar ingrediente: es la autorizacion explicita para abandonar
+      // el intento ambiguo anterior y permitir uno nuevo. Reanudar normal nunca entra en esta rama.
+      if (ing.noAutoRetry || ing.grokImageAttempt) {
+        ing.noAutoRetry = false;
+        ing.grokImageAttempt = null;
+        changed = true;
+      }
+      if (!ing.regeneratePending) { ing.regeneratePending = true; changed = true; }
       if (ing.imageFilePath || ing.imageUrl || ing.status || ing.error) {
         ing.imageFilePath = null;
         ing.imageUrl = null;
@@ -3222,7 +4014,13 @@ async function hydrateExistingIngredientFiles(options = {}) {
       }
       continue;
     }
-    if (ing.type !== "manhwa_asset" || !ing.outputFile) continue;
+    // Un restart pudo dejar una generacion ya enviada pero no recuperable. No ocultar ese ERROR
+    // rehidratando el canonical viejo ni convertirlo indirectamente en candidato automatico.
+    if (ingredientAutoRetryProtected(ing)) continue;
+    // No revivir el canonical anterior durante una regeneracion pedida ni mientras una generacion esta
+    // en vuelo. Si falla, ERROR + regeneratePending quedan visibles y el usuario puede reintentar.
+    if (ing.regeneratePending || ing.status === SCENE_STATUS.GENERATING_IMAGE) continue;
+    if (!ing.outputFile) continue;
     try {
       const imageFilePath = await resolveCharFileFlexible(ing.outputFile);
       if (ing.imageFilePath !== imageFilePath || ing.status !== SCENE_STATUS.DONE || ing.error) {
@@ -3230,7 +4028,7 @@ async function hydrateExistingIngredientFiles(options = {}) {
         ing.status = SCENE_STATUS.DONE;
         ing.error = null;
         changed = true;
-        log(LOG_LEVEL.INFO, `Asset de grafo existente: ${ing.outputFile} -> no se regenera.`);
+        log(LOG_LEVEL.INFO, `Ingrediente ${ing.id}: asset existente ${ing.outputFile} -> no se regenera.`);
       }
     } catch (_e) {
       if (ing.imageFilePath || ing.status === SCENE_STATUS.DONE) {
@@ -3265,11 +4063,21 @@ async function runIngredientsPhase(options = {}) {
     return true;
   }
 
-  // Idempotencia: ya generado = tiene imageUrl (Flow) o imageFilePath (Grok). Saga: la imagen persiste en
-  // state; entre videos distintos se re-genera (las imagenes son gratis) -> reuso en-disco entre Partes pendiente.
-  if (provider === "grok") await hydrateExistingIngredientFiles({ forceIds });
-  const hasImg = (g) => (provider === "grok" ? !!g.imageFilePath : !!g.imageUrl);
-  const pending = forceIds.size ? ings.filter((g) => forceIds.has(g.id)) : ings.filter((g) => !hasImg(g));
+  // Disco = fuente de verdad entre Partes y despues de cleanup de Flow. El tile remoto solo es una
+  // optimizacion de la corrida actual; si output_file existe no se vuelve a gastar una generacion.
+  await hydrateExistingIngredientFiles({ forceIds });
+  const hasImg = (g) => !!g.imageFilePath || !!g.imageUrl;
+  const protectedIngredients = forceIds.size ? [] : ings.filter(ingredientAutoRetryProtected);
+  if (protectedIngredients.length) {
+    state.queue.paused = true;
+    state.queue.running = false;
+    await saveState();
+    log(LOG_LEVEL.WARN, `Ingredientes protegidos tras intento ambiguo: ${protectedIngredients.map((g) => g.id).join(", ")}. Reanudar NO los regenera; usa Reintentar en cada ingrediente para autorizar un nuevo Enter.`);
+    emitState();
+    return false;
+  }
+  const pending = forceIds.size ? ings.filter((g) => forceIds.has(g.id))
+    : ings.filter((g) => !ingredientAutoRetryProtected(g) && (g.regeneratePending || !hasImg(g)));
   if (!pending.length) { log(LOG_LEVEL.INFO, `Ingredientes: ${ings.length} ya generados; no re-genero.`); return true; }
   log(LOG_LEVEL.INFO, `FASE INGREDIENTES (${provider}): generando ${pending.length}/${ings.length}...`);
 
@@ -3327,19 +4135,42 @@ async function runIngredientsPhase(options = {}) {
             log(LOG_LEVEL.WARN, `Ingrediente ${ing.id}: no resolvi referencia "${rel}" (${e?.message ?? e}); sigo sin ella.`);
           }
         }
-        const img = await sendGrokGenerateImageWithUiRetry(tab.id, {
-          prompt: ing.prompt,
-          aspectRatio,
-          cfg: driverCfg(),
-        }, { refPaths, label: `Ingrediente ${ing.id}` });
-        if (!img?.imageUrl) throw new Error("Grok no devolvio URL de imagen");
-        if (img?.variantCount > 1) log(LOG_LEVEL.INFO, `Ingrediente ${ing.id}: Grok genero ${img.variantCount} variaciones; uso la 1a (determinista).`);
-        ing.imageUrl = img.imageUrl;
-        const saved = await downloadImageForRef(img.imageUrl, slug, `ingredient_${ing.id}`);
-        if (ing.type === "manhwa_asset" && ing.outputFile) {
+        const rejectImageKeys = knownGrokImageKeys({ excludeIngredientId: ing.id });
+        ing.grokImageAttempt = newGrokImageAttempt("ingredient", ing.id, rejectImageKeys);
+        await saveState();
+        let img;
+        try {
+          img = await sendGrokGenerateImageWithUiRetry(tab.id, {
+            prompt: ing.prompt,
+            aspectRatio,
+            rejectImageKeys,
+            grokAttempt: { id: ing.grokImageAttempt.id, ownerType: "ingredient", ownerId: ing.id },
+            cfg: driverCfg(),
+          }, { refPaths, label: `Ingrediente ${ing.id}` });
+        } catch (e) {
+          if (ing.grokImageAttempt?.submitIssued) e.noAutoRetry = true;
+          else ing.grokImageAttempt = null;
+          await saveState();
+          throw e;
+        }
+        if (!img?.imageUrl) {
+          const e = new Error("Grok no devolvio URL de imagen despues de enviar; no genero otra automaticamente");
+          e.noAutoRetry = true;
+          throw e;
+        }
+        await persistGrokAttemptResult(ing, img);
+        const saved = await downloadValidatedGrokCandidate(img, slug, `ingredient_${ing.id}`, {
+          rejectImageKeys, label: `Ingrediente ${ing.id}`,
+        });
+        rejectDuplicateGrokImage(`Ingrediente ${ing.id}`, saved.imageUrl, rejectImageKeys);
+        if ((img?.variantCount || saved.variantCount) > 1) {
+          log(LOG_LEVEL.INFO, `Ingrediente ${ing.id}: Grok genero ${img?.variantCount || saved.variantCount} variaciones; uso la ${saved.variantIndex + 1}a validada.`);
+        }
+        ing.imageUrl = saved.imageUrl;
+        if (ing.outputFile) {
           const moved = await moveGeneratedAssetToProject(saved.abspath, ing.outputFile);
           ing.imageFilePath = moved.abspath || await resolveCharFileFlexible(ing.outputFile);
-          log(LOG_LEVEL.INFO, `Asset de grafo guardado: ${moved.path}.`);
+          log(LOG_LEVEL.INFO, `Ingrediente ${ing.id} guardado para reuso: ${moved.path}.`);
         } else {
           ing.imageFilePath = saved.abspath || null;
         }
@@ -3349,21 +4180,52 @@ async function runIngredientsPhase(options = {}) {
         // Flow: character_edited usa el Personaje base como referencia "+"; entity/plate sin referencia.
         const characterNames = (ing.type === "character_edited" && ing.base && chars[ing.base]?.display_name)
           ? [chars[ing.base].display_name] : [];
-        const img = await sendActOrFail(tab.id, ACT.GENERATE_IMAGE, { prompt: ing.prompt, characterNames, sceneRefImageUrls: [], aspectRatio, count, cfg: driverCfg() });
+        const sceneRefImageUrls = [];
+        const localReferencePaths = [];
+        for (const rel of (ing.referenceAssets || [])) {
+          const dep = ings.find((g) => g !== ing && g.outputFile
+            && String(g.outputFile).replace(/\\/g, "/") === String(rel).replace(/\\/g, "/"));
+          if (dep?.imageUrl) { sceneRefImageUrls.push(dep.imageUrl); continue; }
+          try { const p = await resolveCharFileFlexible(rel); if (p) localReferencePaths.push(p); }
+          catch (e) { log(LOG_LEVEL.WARN, `Ingrediente ${ing.id}: no resolvi referencia Flow "${rel}" (${e?.message ?? e}).`); }
+        }
+        const img = await sendActOrFail(tab.id, ACT.GENERATE_IMAGE, {
+          prompt: ing.prompt, characterNames, sceneRefImageUrls,
+          localReferencePaths: [...new Set(localReferencePaths)], aspectRatio, count, cfg: driverCfg(),
+        });
         if (!img?.imageUrl) throw new Error("Flow no devolvio URL de imagen");
-        ing.imageUrl = img.imageUrl;   // tile en la grilla de Flow (se adjunta luego en las escenas via ⋮)
+        ing.imageUrl = img.imageUrl;
+        if (ing.outputFile) {
+          const saved = await downloadImageForRef(img.imageUrl, slug, `ingredient_${ing.id}`);
+          const moved = await moveGeneratedAssetToProject(saved.abspath, ing.outputFile);
+          ing.imageFilePath = moved.abspath || await resolveCharFileFlexible(ing.outputFile);
+          log(LOG_LEVEL.INFO, `Ingrediente Flow ${ing.id} guardado para reuso: ${moved.path}.`);
+        }
       }
+      ing.regeneratePending = false;
       ing.status = SCENE_STATUS.DONE;
       ing.error = null;
+      ing.noAutoRetry = false;
+      ing.grokImageAttempt = null;
       await saveState();
       emitState();
       log(LOG_LEVEL.INFO, `Ingrediente listo: ${ing.id} (${ing.type}).`);
     } catch (e) {
       detachDebugger(tab.id);
+      // Cualquier fallo posterior al ACK pre-Enter (incluye validacion/move) pertenece a una generacion
+      // que ya pudo ejecutarse. No dejar que el retry reactivo de ingredientes mande otro Enter.
+      if (provider === "grok" && ing.grokImageAttempt?.submitIssued) e.noAutoRetry = true;
       ing.imageUrl = null;
       ing.imageFilePath = null;
       ing.status = SCENE_STATUS.ERROR;
       ing.error = e?.message ?? String(e);
+      if (e?.noAutoRetry) {
+        ing.noAutoRetry = true;
+        if (ing.grokImageAttempt) {
+          ing.grokImageAttempt.noAutoRetry = true;
+          if (ing.grokImageAttempt.stage !== "recovery_failed") ing.grokImageAttempt.stage = "failed_after_submit";
+        }
+      }
       await saveState();
       emitState();
       if (e?.hardStop) { await onHardStop(e.hardStop, e?.message); return false; }

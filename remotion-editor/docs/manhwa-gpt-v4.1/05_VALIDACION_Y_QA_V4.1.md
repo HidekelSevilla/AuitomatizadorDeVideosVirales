@@ -72,6 +72,8 @@ Cada panel:
 - hora o franja temporal
 - sujeto y acción identificables
 - un instante fotografiable
+- estrategia semántica identificable: acontecimiento, causa, consecuencia, contexto, recuerdo, reacción o contraste
+- correspondencia con el significado dramático de la voz
 - texto visible controlado
 
 Rechaza:
@@ -182,11 +184,30 @@ Gate visual:
 - persona no mayor que vehículo
 - sujetos del fondo reducen tamaño de forma coherente
 
+## 6.1 Dirección visual y anclas
+
+La Parte declara cinco paneles ancla: hook, mundo, amenaza, clímax/precio y cliffhanger.
+
+Cada uno debe:
+
+- comunicar su función sin depender del audio
+- tener sujeto o acontecimiento dominante
+- usar jerarquía, escala, capas y luz dramática
+- evitar prop aislado, pasillo vacío o personaje posando
+
+Al menos tres anclas son medium-wide o wide. Si una referencia de escenario conserva el estado normal e impide mostrar la transformación narrada, la referencia es incompatible.
+
+Prueba semántica por escena:
+
+> Si oculto el voiceover, ¿esta imagen comunica la idea o solo ilustra un sustantivo asociado?
+
+Rechaza sustituciones como pérdida humana → herramienta, institución → habitación vacía o leyenda temida → mano cotidiana.
+
 ## 7. Warnings editoriales
 
 ### Racha cerrada
 
-Warning si hay más de cuatro a seis macro/close sin reanclaje, consecuencia o tratamiento respirable.
+Warning con más de dos macro/close consecutivos o dos paneles seguidos con el mismo sujeto principal.
 
 ### Falta de master
 
@@ -194,7 +215,15 @@ Warning si una secuencia de acción empieza con detalles sin orientación.
 
 ### Respiración
 
-Reporta conteo, scene_id y clase soportada: narrative_card, white inset, body detail o device shot. Un impacto no cuenta como respiro. La proporción por área queda `NOT_RUN` hasta disponer de renders o metadata real de layout.
+En 35–50 escenas exige de cinco a ocho puntuaciones visuales, con al menos tres clases entre narrative_card, white inset, reacción con espacio negativo, recuerdo sepia, device shot y transición ambiental. Un impacto y un close común no cuentan. Reporta scene_id, clase y función. El área queda `NOT_RUN` sin renders o metadata de layout.
+
+### Prop dominante
+
+Warning si el mismo prop protagoniza más de dos escenas dentro de cualquier ventana de ocho, salvo manipulación continua indispensable.
+
+### Prompts de longitud uniforme
+
+Warning si casi todos los prompts caen en una banda de diez palabras: suele indicar plantilla mecánica. Rangos orientativos antes del ancla: detalle 45–70, estándar 60–90, ancla/master 80–120.
 
 ### View dominante
 
@@ -228,7 +257,11 @@ La salida de validación declara:
 - prompts duplicados
 - cards con campos prohibidos
 - racha más larga sin reanclaje
-- tratamientos respirables: conteo, scene_id y clase
+- paneles ancla: scene_id, función, plano y prueba silenciosa PASS/FAIL
+- tratamientos respirables: conteo, scene_id, clase y función
+- máximo de close/macro consecutivos
+- máxima repetición del mismo prop en una ventana de ocho
+- distribución de longitud por función de prompt
 - assets nuevos y existentes
 - warnings justificados
 

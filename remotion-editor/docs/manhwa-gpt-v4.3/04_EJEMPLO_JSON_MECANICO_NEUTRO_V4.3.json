@@ -1,0 +1,271 @@
+{
+  "project": {
+    "title": "Ejemplo mecánico neutral - Parte 1",
+    "preset": "manhwa",
+    "serie": "ejemplo_mecanico_neutral",
+    "slug": "ejemplo_mecanico_neutral_parte_01",
+    "language": "es-419",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "part": 1
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "elevenlabs",
+      "voice_id": "452WrNT9o8dphaYW5YGU",
+      "language": "es-419"
+    },
+    "editing": {
+      "tool": "capcut"
+    }
+  },
+  "characters": {
+    "han_areum": {
+      "display_name": "Han Areum",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/ejemplo_mecanico_neutral/han_areum_base.png",
+          "prompt": "Character identity reference sheet of Han Areum. Exactly one thirty-year-old Korean woman, full body from hair to soles, orthographic front eye-level view, centered at seventy percent of canvas height, oval face, calm dark-brown eyes, straight chin-length black hair, neutral relaxed expression, plain cream blouse and charcoal trousers, both open empty hands beside her hips, both feet visible, minimal foreshortening, even soft studio illumination, seamless medium-gray background, crisp inked Korean manhwa character design, 2D flat cel shading."
+        },
+        "archivista": {
+          "mode": "generate",
+          "asset": "assets/characters/ejemplo_mecanico_neutral/han_areum_archivista.png",
+          "reference_pose": "base",
+          "prompt": "Same character identity as Han Areum base reference, same face, hair, body proportions and dark-brown eyes. Full-body orthographic front eye-level reference sheet on the same seamless medium-gray background. Change only the outfit to a clean navy municipal archivist jacket, pale identification badge without readable text, charcoal trousers and flat black shoes. Both hands remain open and empty, both feet visible, even studio illumination, clean unobstructed silhouette."
+        }
+      }
+    },
+    "sobre_rojo": {
+      "display_name": "Sobre rojo",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/ejemplo_mecanico_neutral/sobre_rojo_base.png",
+          "prompt": "Object identity reference sheet of one matte dark-red paper envelope, rectangular standard letter size, one circular black wax seal centered on the flap, clean sharp edges, blank front and back surfaces, centered alone on a seamless medium-gray background, even soft studio illumination, crisp inked Korean manhwa prop design, restrained 2D flat cel shading, no readable text or additional labels."
+        },
+        "sello_roto": {
+          "mode": "generate",
+          "asset": "assets/characters/ejemplo_mecanico_neutral/sobre_rojo_sello_roto.png",
+          "reference_pose": "base",
+          "prompt": "Same matte dark-red envelope identity as the base reference, same dimensions, paper texture and circular black wax seal. Change only the state: the wax seal is split once through the center and the flap is lifted two centimeters. The envelope remains centered alone on the same seamless medium-gray background under even studio illumination, crisp inked Korean manhwa prop design, no readable text."
+        }
+      }
+    }
+  },
+  "escenarios": {
+    "archivo_municipal": {
+      "display_name": "Archivo municipal",
+      "views": {
+        "pasillo_front_eye": {
+          "mode": "generate",
+          "asset": "assets/escenarios/ejemplo_mecanico_neutral/archivo_pasillo_front_eye.png",
+          "prompt": "Empty municipal archive corridor, eye-level wide front view with near-orthographic perspective, stable vertical shelving on both sides, gray tile floor, closed compact-storage doors at the far end, pale early-morning window light entering from frame-left and cool ceiling fixtures above, architecture and permanent furniture only, bare unmarked surfaces, hand-drawn Korean manhwa environment concept art, crisp inked lineart, restrained flat cel shading, vertical 9:16 environment plate, painted background."
+        },
+        "mesa_high_oblique": {
+          "mode": "generate",
+          "asset": "assets/escenarios/ejemplo_mecanico_neutral/archivo_mesa_high_oblique.png",
+          "prompt": "Empty municipal archive with tall steel shelving, gray tile floor and one fixed gray sorting desk, high-oblique medium-wide view from the left ceiling corner toward the desk beside the shelving, stable verticals, clear shared floor plane, pale early-morning window light from screen-left and cool ceiling light above, permanent furniture only, bare unmarked surfaces, hand-drawn Korean manhwa environment concept art, crisp inked lineart, restrained flat cel shading, vertical 9:16 environment plate, painted background."
+        }
+      }
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "han_areum",
+            "pose": "archivista"
+          }
+        ],
+        "assets": [
+          {
+            "id": "sobre_rojo",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "archivo_municipal",
+          "view": "mesa_high_oblique"
+        }
+      },
+      "editor_motion": {
+        "enabled": true,
+        "preset": "slow_push_in",
+        "zoom": 1.04,
+        "pan": 2
+      },
+      "visual": {
+        "image_prompt": "Han Areum stops beside the sorting desk and lowers her right hand toward a dark-red envelope resting alone at its center, high-oblique medium-wide shot from frame-left, her body screen-left and the desk screen-right on one shared floor plane. Early-morning municipal archive under pale window light from left and cool ceiling light above. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition, painted background."
+      },
+      "voiceover": {
+        "text": "[serious] El sobre apareció en mi escritorio antes de que abrieran el archivo."
+      }
+    },
+    {
+      "id": "scene_02",
+      "type": "narrative_card",
+      "card": {
+        "text": "SIN REMITENTE",
+        "mode": "editor"
+      },
+      "voiceover": {
+        "text": "[low] Sin remitente. [pause]"
+      }
+    },
+    {
+      "id": "scene_03",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "han_areum",
+            "pose": "archivista"
+          }
+        ],
+        "assets": [
+          {
+            "id": "sobre_rojo",
+            "pose": "base"
+          }
+        ]
+      },
+      "visual": {
+        "image_prompt": "Han Areum holds the same dark-red envelope flat on her open left palm while her right thumb traces the unbroken black wax seal, OTS close-up from behind her right shoulder, exactly two hands visible and the envelope filling the lower center. Early-morning archive tones with pale light from screen-left, simple gray shelving shapes behind her. Korean webtoon body-detail panel, crisp inked lineart, restrained flat cel shading, high contrast, vertical 9:16 composition."
+      },
+      "voiceover": {
+        "text": "No tenía nombre, sello oficial ni una sola huella."
+      }
+    },
+    {
+      "id": "scene_04",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "han_areum",
+            "pose": "archivista"
+          }
+        ],
+        "assets": [
+          {
+            "id": "sobre_rojo",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "archivo_municipal",
+          "view": "pasillo_front_eye"
+        }
+      },
+      "visual": {
+        "image_prompt": "Han Areum turns her head toward the still-locked archive entrance while keeping the envelope against her chest with her left hand, rear medium shot along the corridor axis, her gaze directed toward the closed doors in the background and her right hand hanging open. Early-morning interior with pale side light from frame-left and cold ceiling light above. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition, painted background."
+      },
+      "voiceover": {
+        "text": "La puerta principal seguía cerrada y yo tenía la única llave."
+      }
+    },
+    {
+      "id": "scene_05",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "assets": [
+          {
+            "id": "sobre_rojo",
+            "pose": "sello_roto"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The same black wax seal lies split through its center while the dark-red envelope flap lifts two centimeters, extreme macro from a slight side angle, paper fibers and one clean fracture line filling the framed illustration. Early-morning pale light touches the upper edge. Korean webtoon inset panel on a clean pure-white page, one rectangular black frame, clean white margin, crisp inked lineart, restrained flat cel shading, high contrast, vertical 9:16 composition."
+      },
+      "voiceover": {
+        "text": "Aun así, rompí el sello."
+      }
+    },
+    {
+      "id": "scene_06",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "han_areum",
+            "pose": "archivista"
+          }
+        ],
+        "assets": [
+          {
+            "id": "sobre_rojo",
+            "pose": "sello_roto"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Han Areum freezes beside the sorting desk, red envelope in her left hand and a blank white card in her right, medium profile from screen-left, both hands fully visible, eyes fixed on the empty card. Early-morning archive under pale window light from left and cool ceiling light above, desk and shelving behind her. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 webtoon panel composition, painted background."
+      },
+      "voiceover": {
+        "text": "[flat] La hoja interior estaba completamente en blanco."
+      }
+    }
+  ],
+  "editing": {
+    "caption_style": {
+      "enabled": true,
+      "font": "Montserrat ExtraBold",
+      "size": 64,
+      "position": "center_lower",
+      "max_words_on_screen": 4
+    },
+    "narrative_card_style": {
+      "font": "Montserrat",
+      "size": 72,
+      "max_width": "72%",
+      "max_lines": 4
+    },
+    "panel_motion": {
+      "enabled": true,
+      "apply_to": "all_panels",
+      "static_zoom": 1.04,
+      "static_pan": 4,
+      "animated_zoom": 1.02,
+      "animated_pan": 2,
+      "cycle": [
+        "bottom_to_top",
+        "top_to_bottom",
+        "bottom_left_to_top_right",
+        "top_right_to_bottom_left",
+        "slow_push_in"
+      ]
+    }
+  },
+  "tts_export": {
+    "language": "es-419",
+    "mode": "single",
+    "model_id": "eleven_v3",
+    "voice_settings": {
+      "speed": 1.0
+    },
+    "edit_speed": 1.4,
+    "full_script": "[serious] El sobre apareció en mi escritorio antes de que abrieran el archivo.\n[low] Sin remitente. [pause]\nNo tenía nombre, sello oficial ni una sola huella.\nLa puerta principal seguía cerrada y yo tenía la única llave.\nAun así, rompí el sello.\n[flat] La hoja interior estaba completamente en blanco."
+  }
+}

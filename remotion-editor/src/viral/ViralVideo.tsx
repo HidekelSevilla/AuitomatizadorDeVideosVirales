@@ -54,6 +54,7 @@ const SYSTEM_SFX = "ding.mp3";      // ding al APARECER la ventana del sistema (
 const SYSTEM_SFX_VOL = 0.7;
 const MANHWA_XFADE_S = 0.4;         // crossfade de scene.transition_in="crossfade" (recuerdos)
 const MANHWA_CUE_XFADE_S = 1.5;     // crossfade entre camas al cambiar de pista (audio.music_cues)
+const MANHWA_END_TAIL_S = 0.45;      // cola FINAL tras aplicar edit_speed; evita cortar la liberacion de la ultima silaba/remate
 const DIP_BLACK_S = 0.35;           // fundido a negro de "dip_black" (saltos de tiempo): pre-roll + salida
 const MANHWA_CAPTION_WORDS = 4;     // karaoke por grupos: palabras visibles a la vez (la activa resaltada)
 
@@ -78,6 +79,26 @@ const cleanWord = (w: string): string => w.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}
 // esto es la red de seguridad para el fallback sin timestamps (texto crudo) y para el hook.
 const stripTags = (s?: string): string =>
   (s ?? "").replace(/\[[^\]]*\]|\([^)]*\)/g, " ").replace(/\s+/g, " ").trim();
+
+// Para construir grupos de captions necesitamos conservar los saltos de parrafo y la puntuacion del
+// guion. Los timestamps de alineacion suelen traer solo palabras y, si se usan como texto fuente,
+// un grupo fijo puede terminar mezclando el final de una oracion con el comienzo de la siguiente.
+const stripTagsForCaptions = (s?: string): string =>
+  (s ?? "")
+    .replace(/\[[^\]]*\]|\([^)]*\)/g, " ")
+    .replace(/[ \t\f\v]+/g, " ")
+    .replace(/ *\r?\n */g, "\n")
+    .trim();
+
+const CAPTION_TOKEN_RE = /[\p{L}\p{M}\p{N}]+(?:['’_-][\p{L}\p{M}\p{N}]+)*/gu;
+
+const dropLeadingCaptionWords = (text: string, count: number): string => {
+  if (!text || count <= 0) return text;
+  const matches = [...text.matchAll(CAPTION_TOKEN_RE)];
+  if (count >= matches.length) return "";
+  const start = matches[count].index ?? 0;
+  return text.slice(start).trimStart();
+};
 
 const NUMWORDS = new Set(
   ("uno una un dos tres cuatro cinco seis siete ocho nueve diez once doce trece catorce quince dieciseis diecisiete dieciocho diecinueve veinte veintiuno veintiun veintiuna veintidos veintitres veinticuatro veinticinco veintiseis veintisiete veintiocho veintinueve treinta cuarenta cincuenta sesenta setenta ochenta noventa cien ciento cientos doscientos trescientos cuatrocientos quinientos seiscientos setecientos ochocientos novecientos mil millon millones y primero primer segundo tercero cuarto quinto").split(" ")
@@ -127,11 +148,16 @@ const stripLabelWords = (
   if (!label) return { words, text };
   const labelToks = labelTokens(label);
   if (words && words.length) {
-    const sliced = words.slice(labelLeadCount(words.map((w) => w.word), labelToks));
-    return { words: sliced, text: sliced.map((w) => w.word).join(" ") };
+    const lead = labelLeadCount(words.map((w) => w.word), labelToks);
+    const sliced = words.slice(lead);
+    return {
+      words: sliced,
+      text: text ? dropLeadingCaptionWords(text, lead) : sliced.map((w) => w.word).join(" "),
+    };
   }
   const toks = (text ?? "").trim().split(/\s+/).filter(Boolean);
-  return { words: undefined, text: toks.slice(labelLeadCount(toks, labelToks)).join(" ") };
+  const lead = labelLeadCount(toks, labelToks);
+  return { words: undefined, text: dropLeadingCaptionWords(text ?? "", lead) };
 };
 
 // ¿la VOZ narra el time_label? (la primera palabra hablada es la unidad: "Dia", "Minuto"...).
@@ -281,8 +307,21 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
       return { id, cardFrames: 0, sceneFrames: frames, clipWindow: frames, playbackRate: 1, introFrames: 0, startFrame: startF };
     });
     const lastEnd = cont.length ? cont[cont.length - 1].startFrame + cont[cont.length - 1].sceneFrames : 1;
-    const totalFrames = Math.max(Math.round((fullDur / voiceRate) * fps), lastEnd, 1);
-    // la ultima imagen se queda hasta el fin del audio (sin cola negra mientras suena el remate).
+    // El orchestrator acelera el MP4 DESPUES de Remotion. Para conservar 0.45 s en el archivo final,
+    // la cola cruda debe multiplicarse por esa velocidad (0.45*1.40 -> 0.63 s antes de finalizeVideo).
+    const declaredFinalSpeed = props.project.speed
+      ?? props.project.speed_final
+      ?? props.tts_export?.edit_speed
+      ?? props.tts_export?.video_speed
+      ?? 1;
+    const safeFinalSpeed = Number.isFinite(declaredFinalSpeed) ? Math.max(0.5, Math.min(3, declaredFinalSpeed)) : 1;
+    const endTailFrames = isManhwa(props)
+      ? Math.max(1, Math.round(MANHWA_END_TAIL_S * safeFinalSpeed * fps))
+      : 0;
+    // manhwa conserva una cola DESPUES del audio. Antes el MP4 terminaba practicamente en el ultimo fonema
+    // (40 ms de margen en un caso real), y el cierre se percibia truncado aunque el source MP3 estuviera entero.
+    const totalFrames = Math.max(Math.round((fullDur / voiceRate) * fps), lastEnd, 1) + endTailFrames;
+    // la ultima imagen sostiene el remate y la cola; nunca aparece negro al final.
     if (cont.length) { const L = cont[cont.length - 1]; L.sceneFrames = Math.max(1, totalFrames - L.startFrame); L.clipWindow = L.sceneFrames; }
     return {
       durationInFrames: totalFrames,
@@ -362,6 +401,69 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
 const OUTLINE =
   "-5px -5px 0 #000,5px -5px 0 #000,-5px 5px 0 #000,5px 5px 0 #000,0 0 10px #000,0 8px 16px rgba(0,0,0,.6)";
 
+type CaptionWordGroup = { words: WordTs[]; startIndex: number; endIndex: number };
+
+// Asigna cada palabra alineada al segmento (oracion/parrafo) del guion original. La busqueda es
+// monotona y tolera que el alineador omita o altere alguna palabra: una coincidencia posterior puede
+// avanzar de segmento, pero ningun grupo visual vuelve a cruzar hacia el segmento anterior.
+const captionWordGroups = (
+  words: WordTs[],
+  punctuatedText: string | undefined,
+  maxWords: number
+): CaptionWordGroup[] => {
+  if (!words.length) return [];
+  const cap = Math.max(1, Math.floor(maxWords));
+  if (cap === 1) return words.map((word, i) => ({ words: [word], startIndex: i, endIndex: i + 1 }));
+
+  const text = punctuatedText ?? "";
+  const matches = [...text.matchAll(CAPTION_TOKEN_RE)];
+  const source: { normalized: string; segment: number }[] = [];
+  let segment = 0;
+  for (let i = 0; i < matches.length; i++) {
+    const match = matches[i];
+    source.push({ normalized: norm(match[0]), segment });
+    const end = (match.index ?? 0) + match[0].length;
+    const next = i + 1 < matches.length ? (matches[i + 1].index ?? text.length) : text.length;
+    const separator = text.slice(end, next);
+    if (/[.!?…]|\r?\n/u.test(separator)) segment++;
+  }
+
+  const segmentByWord: number[] = [];
+  let sourceCursor = 0;
+  let currentSegment = 0;
+  for (const word of words) {
+    const target = norm(cleanWord(word.word));
+    let found = -1;
+    // Un margen amplio tolera pequeñas diferencias entre el libreto y el forced alignment sin perder
+    // el siguiente limite de oracion.
+    for (let i = sourceCursor; i < Math.min(source.length, sourceCursor + 12); i++) {
+      if (source[i].normalized === target) { found = i; break; }
+    }
+    if (found >= 0) {
+      currentSegment = Math.max(currentSegment, source[found].segment);
+      sourceCursor = found + 1;
+    } else if (sourceCursor < source.length) {
+      // Si el alineador sustituyo justo la primera palabra tras un punto/salto, el cursor ya conoce
+      // el nuevo segmento. Asignarlo aqui impide que esa palabra dudosa se pegue a la frase anterior.
+      currentSegment = Math.max(currentSegment, source[sourceCursor].segment);
+    }
+    segmentByWord.push(currentSegment);
+    // Red de seguridad cuando no existe texto puntuado pero el alineador conserva el signo.
+    if (!source.length && /[.!?…]["'”’\])}]*$/u.test(word.word)) currentSegment++;
+  }
+
+  const groups: CaptionWordGroup[] = [];
+  let start = 0;
+  while (start < words.length) {
+    const groupSegment = segmentByWord[start];
+    let end = start + 1;
+    while (end < words.length && end - start < cap && segmentByWord[end] === groupSegment) end++;
+    groups.push({ words: words.slice(start, end), startIndex: start, endIndex: end });
+    start = end;
+  }
+  return groups;
+};
+
 const Karaoke: React.FC<{
   text?: string;
   words?: WordTs[];
@@ -387,6 +489,10 @@ const Karaoke: React.FC<{
   );
 
   const timed = list.length > 0 && list[0].start >= 0;
+  const groups = useMemo(
+    () => captionWordGroups(list, text, maxWords),
+    [list, text, maxWords]
+  );
 
   if (list.length === 0) return null;
 
@@ -404,8 +510,8 @@ const Karaoke: React.FC<{
       if (maxWords > 1) {
         // modo GRUPOS: la frase completa se sostiene mientras la pausa caiga DENTRO de su chunk (si no,
         // una pausa dramatica entre palabra 2 y 3 apagaba y re-encendia toda la frase).
-        const cIdx = Math.floor(lastIdx / maxWords);
-        const chunkEnd = list[Math.min(cIdx * maxWords + maxWords, list.length) - 1].end;
+        const activeGroup = groups.find((g) => lastIdx >= g.startIndex && lastIdx < g.endIndex);
+        const chunkEnd = activeGroup?.words[activeGroup.words.length - 1]?.end ?? list[lastIdx].end;
         if (audioT > chunkEnd + CAPTION_GAP_HOLD_S) return null;
       } else if (audioT > list[lastIdx].end + CAPTION_GAP_HOLD_S) return null;
       idx = lastIdx;
@@ -420,12 +526,12 @@ const Karaoke: React.FC<{
   // ---- modo GRUPOS (manhwa, 2026-07): chunk fijo de maxWords palabras; la activa se pinta del color hot.
   // A 1.4x el modo una-palabra parpadea (palabras de ~100ms); el grupo da una frase estable que leer.
   if (maxWords > 1) {
-    const chunkIdx = Math.floor(idx / maxWords);
-    const chunk = list.slice(chunkIdx * maxWords, chunkIdx * maxWords + maxWords);
-    const activeInChunk = idx - chunkIdx * maxWords;
+    const activeGroup = groups.find((g) => idx >= g.startIndex && idx < g.endIndex) ?? groups[0];
+    const chunk = activeGroup.words;
+    const activeInChunk = idx - activeGroup.startIndex;
     const chunkStartFrame = timed
       ? (chunk[0].start / voiceRate) * fps
-      : chunkIdx * maxWords * (windowFrames / list.length);
+      : activeGroup.startIndex * (windowFrames / list.length);
     const popG = spring({ frame: frame - chunkStartFrame, fps, config: { damping: 26, stiffness: 140, mass: 0.6 } });
     const chars = Math.max(6, chunk.reduce((a, w) => a + cleanWord(w.word).length + 1, 0));
     const fitG = Math.max(46, Math.min(size, Math.floor((width * 1.55) / (chars * 0.6))));
@@ -949,7 +1055,7 @@ const Scene: React.FC<{
   const contentFrames = sceneFrames - introFrames;
   const sub = stripLabelWords(
     dedupeWords(scene.voiceover?.words),
-    stripTags(scene.voiceover?.text ?? scene.captions?.text),
+    stripTagsForCaptions(scene.voiceover?.text ?? scene.captions?.text),
     scene.time_label
   );
 

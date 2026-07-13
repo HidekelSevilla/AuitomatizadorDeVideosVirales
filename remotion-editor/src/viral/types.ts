@@ -84,6 +84,13 @@ export interface ProjectMeta {
   no_static?: boolean; // remapea cualquier static a un ciclo de paneo (pan_lr/pan_rl/tilt_down): sin frames muertos
   crossfade_s?: number; // historias voz-continua: duracion de la disolvencia entre imagenes (default 0 = corte duro). Subir para re-activar la disolvencia.
   ken_motion?: boolean; // historias: re-activa el Ken Burns (paneo/zoom). Por defecto historias es ESTATICO (sin movimiento).
+  speed?: number; // velocidad final aplicada por orchestrator/finalizeVideo
+  speed_final?: number; // alias de speed
+}
+
+export interface TtsExportData {
+  edit_speed?: number; // velocidad final habitual del preset manhwa (ej. 1.40)
+  video_speed?: number; // alias heredado
 }
 
 export interface AudioData {
@@ -190,6 +197,7 @@ export interface ViralProps {
   opening?: OpeningData;
   scenes: SceneData[];
   audio?: AudioData;
+  tts_export?: TtsExportData;
   editing?: EditingData;
   capcut_export?: CapcutExport;
   render_export?: CapcutExport; // schema nuevo historias: renombrado de capcut_export (mismo shape; el render usa render_export ?? capcut_export)
