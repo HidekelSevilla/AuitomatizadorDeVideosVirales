@@ -1,0 +1,48 @@
+{
+  "schema": "RENDER_AUDIT_V7",
+  "version": "7.0",
+  "template_status": "PENDING_REAL_OBSERVATIONS",
+  "template_notice": "FAIL-CLOSED: inspect one direct Grok-native scene JPG for every factual source record.",
+  "project_sha256": "REPLACE_WITH_REAL_SEMANTIC_PROJECT_SHA256",
+  "project_hash_semantics": "SHA-256 of sorted compact UTF-8 JSON with integral floats and negative zero normalized",
+  "generation_manifest_sha256": "REPLACE_WITH_REAL_BYTE_SHA256",
+  "source_record_schema": {
+    "shot_id": "exact scene.id",
+    "output_path": "real images/scene_XX.jpg path",
+    "output_sha256": "real direct JPG SHA-256",
+    "asset_status": "PASS, RETAKE or HUMAN_REVIEW",
+    "page_result": "MATCH, ACCEPTABLE_VARIANCE or MISS",
+    "observed_page": {
+      "family": "observed WHITE_PAGE, BLACK_PAGE or OTHER",
+      "layout": "observed Grok-native layout enum",
+      "panel_count": "observed integer including any accidental extra panel",
+      "background_pct": "observed reserved white/black background percentage; OTHER normally 0"
+    },
+    "camera_result": "MATCH, ACCEPTABLE_VARIANCE, MISS or NOT_OBSERVED",
+    "identity_status": "PASS, RETAKE or HUMAN_REVIEW",
+    "text_status": "PASS only when no unintended readable text/captions exist",
+    "bubble_status": "PASS only when no unintended speech bubble exists",
+    "crop_status": "PASS, RETAKE or HUMAN_REVIEW",
+    "readability_status": "PASS, RETAKE or HUMAN_REVIEW",
+    "observation": {
+      "type": "AUTOMATED or HUMAN",
+      "observer_id": "actual tool/run ID or human reviewer ID",
+      "evidence": "factual evidence from inspection of this direct JPG"
+    },
+    "confidence": "0.0..1.0",
+    "failure_codes": []
+  },
+  "sources": [],
+  "sequence_review": {
+    "status": "PENDING",
+    "source_shot_ids": [],
+    "checks": {
+      "environment_view_repetition": "PENDING",
+      "weather_overlay_repetition": "PENDING",
+      "pose_repetition": "PENDING",
+      "palette_monotony": "PENDING",
+      "equivalent_composition_run": "PENDING"
+    },
+    "evidence": []
+  }
+}

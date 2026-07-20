@@ -1,0 +1,471 @@
+{
+  "project": {
+    "slug": "titanic_no_habia_lugar_reel",
+    "title": "Titanic: no había lugar para todos",
+    "language": "es-MX",
+    "preset": "historias_reel",
+    "aspect_ratio": "9:16",
+    "orientation": "vertical",
+    "visual_style": "A_rico_pintado",
+    "topic": "El hundimiento del Titanic contado desde el dilema humano de los botes salvavidas insuficientes y la evacuación desigual.",
+    "tone": "documental emocional, tragedia histórica, precisión factual, morbo simbólico, respeto por las víctimas y cierre con eco",
+    "duration_estimate_s": 88.2,
+    "speed_final": 1,
+    "scene_count": 22,
+    "tts_model": "eleven_v3"
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok",
+      "note": "Imágenes verticales por defecto; algunas escenas pueden animarse si render_mode=animated."
+    },
+    "animation": {
+      "tool": "grok_video",
+      "note": "Solo se usa en escenas con render_mode animated; el resto queda estático."
+    },
+    "render": {
+      "tool": "remotion_ffmpeg",
+      "motion": "Movimiento motivado: static por default; push_in para tensión y cierre; pan solo en barco avanzando o banda; no usar shake para evitar sensacionalismo.",
+      "timing": "duration_target_s = duración mínima; congelar imagen en silencio si la narración acaba antes; hold_priority alta = no recortar."
+    },
+    "audio": {
+      "tool": "elevenlabs",
+      "note": "UNA sola voz continua; los voice/scene_NNN.mp3 son rebanadas por timestamps."
+    }
+  },
+  "characters": [
+    {
+      "id": "pasajeros_primera_clase",
+      "name": "Pasajeros de primera clase",
+      "role": "representan lujo, confianza y vulnerabilidad humana durante la evacuación",
+      "visual": "Monitos blancos con ropa eduardiana elegante: vestidos de noche, tuxedos oscuros, abrigos con cuello de piel, sombreros, guantes y joyería discreta."
+    },
+    {
+      "id": "pasajeros_tercera_clase",
+      "name": "Pasajeros de segunda y tercera clase",
+      "role": "familias, migrantes y viajeros comunes que enfrentan la misma emergencia desde condiciones más precarias",
+      "visual": "Monitos blancos con abrigos de lana, gorras planas, chales, maletas gastadas, mantas, faldas sencillas y rostros de ansiedad."
+    },
+    {
+      "id": "oficiales_tripulacion",
+      "name": "Oficiales y tripulación del Titanic",
+      "role": "preparan botes, interpretan órdenes y organizan la evacuación bajo presión",
+      "visual": "Monitos blancos con uniformes azul marino, gorras con visera, botones de latón, guantes, silbatos y cuerdas de bote."
+    },
+    {
+      "id": "musicos",
+      "name": "Músicos del Titanic",
+      "role": "tocan durante la evacuación como símbolo de calma y fragilidad",
+      "visual": "Monitos blancos con trajes negros de noche, pequeños instrumentos de cuerda, atriles y expresiones serenas pero tensas."
+    },
+    {
+      "id": "operador_inalambrico",
+      "name": "Operador inalámbrico",
+      "role": "contexto técnico y comunicación, si se necesita en escenas de producción extendida",
+      "visual": "Monito blanco con camisa blanca, chaleco, audífonos antiguos, llave de telégrafo y tiras de papel."
+    },
+    {
+      "id": "narrador",
+      "name": "Narrador visual",
+      "role": "monito presentador para diagramas, comparaciones y cierre",
+      "visual": "Monito blanco liso sin vestuario, cabeza redonda, ojos grandes y gestos expresivos."
+    }
+  ],
+  "ingredients": {
+    "pasajeros_primera_clase": "Monitos blancos con cabeza redonda lisa, sin pelo ni barba. Ropa eduardiana elegante: vestidos de noche, tuxedos, abrigos con cuello de piel, guantes blancos, sombreros y pequeñas joyas.",
+    "pasajeros_tercera_clase": "Monitos blancos con abrigos de lana, gorras planas, chales, maletas gastadas, mantas, faldas sencillas y expresiones de miedo, duda o esperanza.",
+    "oficiales_tripulacion": "Monitos blancos con uniformes azul marino de la White Star Line, gorras con visera, botones de latón, guantes, silbatos, cuerdas y herramientas de bote.",
+    "musicos": "Monitos blancos con trajes negros de noche, pequeños instrumentos de cuerda, atriles y una calma frágil, nunca caricaturesca.",
+    "operador_inalambrico": "Monito blanco con camisa blanca, chaleco, audífonos antiguos, llave de telégrafo, papel y cara de urgencia contenida.",
+    "narrador": "Monito blanco liso sin vestuario, cabeza redonda y ojos grandes, usado solo en láminas, comparaciones y reacciones.",
+    "fuentes_produccion": "Fuentes para caption o documento de producción: NOAA Office of General Counsel, R.M.S. Titanic - History and Significance; Royal Museums Greenwich, RMS Titanic facts; National Archives, They Said It Couldn't Sink; NOAA R.M.S. Titanic Frequently Asked Questions.",
+    "source_urls": {
+      "NOAA_Titanic_history": "https://www.noaa.gov/office-of-general-counsel/gc-international-section/rms-titanic-history-and-significance",
+      "Royal_Museums_Greenwich_Titanic_facts": "https://www.rmg.co.uk/stories/maritime-history/rms-titanic-facts",
+      "National_Archives_Titanic": "https://www.archives.gov/publications/prologue/2012/spring/titanic.html",
+      "NOAA_Titanic_FAQ": "https://www.noaa.gov/office-of-general-counsel/gc-international-section/rms-titanic-frequently-asked-questions"
+    },
+    "caption_sugerido": "El Titanic chocó con un iceberg la noche del catorce de abril de mil novecientos doce y se hundió durante la madrugada del quince. A bordo viajaban alrededor de dos mil doscientas personas, pero el barco llevaba veinte botes salvavidas con capacidad aproximada para mil ciento setenta y ocho. Más de mil quinientas personas murieron. La tragedia no se explica por una sola causa: influyeron el choque, las normas de seguridad de la época, la cantidad insuficiente de botes, la evacuación irregular y la confianza excesiva en los grandes transatlánticos. Fuentes consultadas: NOAA, Royal Museums Greenwich y National Archives.",
+    "notas_precision": "No afirmar que la confianza excesiva causó directamente todas las muertes. Usar el ángulo 'no había lugar para todos' como eje emocional, pero matizar que la magnitud de la tragedia también dependió de normas insuficientes, cálculo de botes por tonelaje, evacuación irregular, botes parcialmente llenos y velocidad del hundimiento. No especificar cuál fue la última canción de la banda. No presentar 'mujeres y niños primero' como una orden aplicada de forma uniforme en toda la cubierta.",
+    "regla_consistencia": "Personajes recurrentes = SIEMPRE el mismo monito; se distinguen por vestuario, postura y props. La muerte y el hundimiento se representan de forma simbólica: siluetas, objetos flotando, sombras, agua oscura y rostros de duelo. Nunca gore, sangre, cuerpos explícitos ni sufrimiento gráfico."
+  },
+  "scenes": [
+    {
+      "scene_id": "scene_001",
+      "panel_type": "diagrama",
+      "beat_type": "misterio",
+      "duration_target_s": 4.2,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "≈2,200 PERSONAS",
+      "label_type": "title",
+      "voiceover": {
+        "text": "[thoughtful] Había unas dos mil doscientas personas a bordo."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — an explainer slide composition: a huge top-down deck diagram of the Titanic packed with tiny white passenger icons, a large counter dominating the upper center, and twenty small lifeboat icons highlighted along both sides of the deck; a SMALL white stick-figure narrator to one side reacts to it with an expressive face, pointing at the main idea; a few clear props/icons illustrate the point; simple background in the video's style. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. SLIDE HERO RULE: the text or diagram is the main subject and dominates the frame; the white stick-figure is present but SMALL and to the side, still expressive with the round white head, big eyes, NO hair; keep some simple styled background and props, never a dead empty wash. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: deep Atlantic navy, icy white, warning red and parchment beige. Camera: flat front-on slide/diagram view. a bold hand-painted Spanish title reads \"≈2,200 PERSONAS\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_002",
+      "panel_type": "diagrama",
+      "beat_type": "misterio",
+      "duration_target_s": 4,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "BOTES: ≈1,178 LUGARES",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Los botes solo podían cargar a poco más de la mitad."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — an explainer slide composition: a clear comparison diagram showing the large crowd count on the left and the much smaller lifeboat capacity on the right, with empty silhouettes fading below the line; a SMALL white stick-figure narrator to one side reacts to it with an expressive face, pointing at the main idea; a few clear props/icons illustrate the point; simple background in the video's style. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. SLIDE HERO RULE: the text or diagram is the main subject and dominates the frame; the white stick-figure is present but SMALL and to the side, still expressive with the round white head, big eyes, NO hair; keep some simple styled background and props, never a dead empty wash. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: cold blue, lifeboat wood brown, red warning arrows and white negative space. Camera: flat front-on slide/diagram view. a bold hand-painted Spanish title reads \"BOTES: ≈1,178 LUGARES\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_003",
+      "panel_type": "cinematica",
+      "beat_type": "misterio",
+      "duration_target_s": 3.6,
+      "hold_priority": "alta",
+      "motion": "push_in",
+      "render_mode": "static",
+      "text_in_image": "LA CUENTA",
+      "label_type": "title",
+      "voiceover": {
+        "text": "[short pause] Ahí empezó el verdadero horror del Titanic."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW passengers on a dark Titanic deck staring at lifeboats while a plain narrator points toward a terrifying count of people versus seats implied by shadowy empty lifejackets; glowing deck lamps, railings, cold ocean and night sky in foreground, midground and background; realization mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: black ocean blue, deck-lamp gold, lifeboat white and anxious red. Camera: DYNAMIC ANGLE MEDIUM SHOT. a bold hand-painted Spanish title reads \"LA CUENTA\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_004",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 3.8,
+      "hold_priority": "normal",
+      "motion": "pan",
+      "render_mode": "animated",
+      "text_in_image": "(sin texto)",
+      "label_type": null,
+      "voiceover": {
+        "text": "La noche del catorce de abril de mil novecientos doce, el barco avanzaba por el Atlántico Norte."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW the Titanic moving through a vast cold Atlantic night, tiny lit windows glowing across the enormous hull while distant stars reflect on dark water; ocean horizon, smoke stacks, lifeboats and moonlit mist; majestic but vulnerable mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: deep midnight blue, cold silver moonlight, warm window gold and black sea. Camera: EXTREME WIDE SHOT. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. Absolutely no text, no letters, no words anywhere.",
+      "animation_prompt": "Slow cinematic pan along the ship as cold mist and smoke drift gently, preserve the exact original composition, characters and style. No morphing, no new objects, no gore."
+    },
+    {
+      "scene_id": "scene_005",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 3.4,
+      "hold_priority": "normal",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "LUJO Y TAMAÑO",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Era uno de los transatlánticos más grandes y lujosos de su tiempo."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW elegant Edwardian passengers walking beneath grand stair railings and polished brass details while crew members guide them, all inside a richly decorated Titanic interior; chandeliers, carpets, wood paneling, coats and luggage; luxury and confidence mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: warm gold, polished wood brown, cream marble and deep navy uniforms. Camera: WIDE INTERIOR SHOT. a bold hand-painted Spanish title reads \"LUJO Y TAMAÑO\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_006",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 3.4,
+      "hold_priority": "normal",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "PARECÍA INSUMERGIBLE",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Para muchos, parecía prácticamente imposible de hundir."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a crowd of passengers proudly looking at a large poster-like silhouette of the Titanic while a crew officer smiles confidently and the narrator raises one skeptical eyebrow; promenade deck, ship railings, smoke stacks and calm ocean behind; overconfidence mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: bright deck cream, optimistic sky blue, navy black and subtle warning red. Camera: LOW-ANGLE MEDIUM SHOT. a bold hand-painted Spanish title reads \"PARECÍA INSUMERGIBLE\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_007",
+      "panel_type": "cinematica",
+      "beat_type": "misterio",
+      "duration_target_s": 3,
+      "hold_priority": "alta",
+      "motion": "push_in",
+      "render_mode": "static",
+      "text_in_image": "ICEBERG",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Entonces apareció el iceberg."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW an enormous iceberg emerging from black water directly ahead of the ship while a lookout stick-figure freezes with huge eyes and points from the crow's nest; dark Atlantic, ship bow, frozen mist and sharp white ice; sudden threat mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: ice white, black-blue ocean, moon silver and alarm red. Camera: LOW-ANGLE EXTREME WIDE SHOT. a bold hand-painted Spanish title reads \"ICEBERG\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_008",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 3.8,
+      "hold_priority": "normal",
+      "motion": "micro_zoom",
+      "render_mode": "static",
+      "text_in_image": "APENAS UNA VIBRACIÓN",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Algunos pasajeros apenas sintieron una vibración extraña bajo sus pies."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW passengers in evening clothes inside a softly lit corridor pausing mid-conversation as a teacup trembles and a small chandelier shakes slightly; polished corridor, carpet, cabin doors and distant engine hum suggested by motion lines; subtle unease mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: warm interior amber, burgundy carpet, polished wood and tiny icy blue hints. Camera: CLOSE-UP. a bold hand-painted Spanish title reads \"APENAS UNA VIBRACIÓN\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_009",
+      "panel_type": "cinematica",
+      "beat_type": "misterio",
+      "duration_target_s": 4,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "BAJO EL AGUA",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Pero bajo el agua, varias secciones del casco quedaron abiertas al mar."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a non-graphic cutaway view of the Titanic hull below the waterline with stylized cracks and cold seawater flowing into separate compartments, while tiny crew figures above remain unaware; dark ocean cross-section, rivets, metal plates and blue water arrows; hidden damage mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: steel gray, icy blue water, black ocean and emergency red arrows. Camera: CUTAWAY WIDE SHOT. a bold hand-painted Spanish title reads \"BAJO EL AGUA\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_010",
+      "panel_type": "cinematica",
+      "beat_type": "misterio",
+      "duration_target_s": 3.4,
+      "hold_priority": "alta",
+      "motion": "push_in",
+      "render_mode": "static",
+      "text_in_image": "SIN FLOTE",
+      "label_type": "title",
+      "voiceover": {
+        "text": "El Titanic ya no podía mantenerse a flote."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW the ship's bow beginning to settle lower in the water while crew and passengers look toward the dark sea with realization, lifeboats still covered nearby; deck slope, ropes, rails and freezing spray; doomed-machine mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: cold black-blue, white spray, muted deck brown and dim gold lights. Camera: DYNAMIC ANGLE WIDE SHOT. a bold hand-painted Spanish title reads \"SIN FLOTE\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_011",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 3.5,
+      "hold_priority": "normal",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "EL PROBLEMA",
+      "label_type": "title",
+      "voiceover": {
+        "text": "[thoughtful] Cuando prepararon los botes, apareció el problema."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW crew members uncovering lifeboats and lowering davits while passengers gather in confused clusters, some holding children and blankets; boat deck, ropes, pulleys, lifejackets and cold night air; tension-before-evacuation mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: lifeboat white, deck brown, navy uniforms, cold blue shadows and lantern gold. Camera: WIDE SHOT. a bold hand-painted Spanish title reads \"EL PROBLEMA\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_012",
+      "panel_type": "diagrama",
+      "beat_type": "narrativa",
+      "duration_target_s": 4.2,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "20 BOTES",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Había veinte, con capacidad para aproximadamente mil ciento setenta y ocho personas."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — an explainer slide composition: a dominant lifeboat capacity diagram with twenty small lifeboat icons arranged in rows, a large number-style capacity area, and tiny passenger silhouettes fitting into only some seats; a SMALL white stick-figure narrator to one side reacts to it with an expressive face, pointing at the main idea; a few clear props/icons illustrate the point; simple background in the video's style. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. SLIDE HERO RULE: the text or diagram is the main subject and dominates the frame; the white stick-figure is present but SMALL and to the side, still expressive with the round white head, big eyes, NO hair; keep some simple styled background and props, never a dead empty wash. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: clean parchment beige, lifeboat white, ocean navy, red arrows and muted gold. Camera: flat front-on slide/diagram view. a bold hand-painted Spanish title reads \"20 BOTES\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_013",
+      "panel_type": "comparacion",
+      "beat_type": "misterio",
+      "duration_target_s": 4,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "MÁS DE MIL FUERA",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Aunque se llenaran todos, más de mil personas quedarían fuera."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a split-screen comparison on the Titanic deck: one side shows filled lifeboat icons, the other shows a large group of passengers represented as worried silhouettes with no seat, divided by a bold red line; deck lamps, railings and cold ocean backdrop; impossible arithmetic mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: dark navy, pale lifeboat white, red divider and cold gold lamps. Camera: flat front-on comparison view. a bold hand-painted Spanish label reads \"MÁS DE MIL FUERA\" in clean bold flat letters, one side marked with a red X and the other with a green check, NOT ornate. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_014",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 3.6,
+      "hold_priority": "normal",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "DUDAS EN CUBIERTA",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Al principio, muchos aún dudaban en abandonar la cubierta iluminada."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW well-dressed passengers hesitating beside a lifeboat while the bright warm ship deck contrasts with the dark freezing ocean below; crew gestures urgently, families clutch blankets and luggage; denial and hesitation mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: warm deck gold, icy ocean black, cream lifeboat and anxious red accents. Camera: MEDIUM WIDE SHOT. a bold hand-painted Spanish title reads \"DUDAS EN CUBIERTA\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_015",
+      "panel_type": "cinematica",
+      "beat_type": "misterio",
+      "duration_target_s": 4,
+      "hold_priority": "alta",
+      "motion": "push_in",
+      "render_mode": "static",
+      "text_in_image": "ASIENTOS VACÍOS",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Por eso varios de los primeros botes se alejaron con asientos vacíos."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW an early lifeboat drifting away from the Titanic with visible empty benches while passengers on deck stare down in disbelief; black water, rope lines, ship lights and open seats clearly visible; tragic missed-chance mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: black water, lifeboat cream, empty bench brown, deck gold and sorrowful blue. Camera: HIGH-ANGLE WIDE SHOT. a bold hand-painted Spanish title reads \"ASIENTOS VACÍOS\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_016",
+      "panel_type": "cinematica",
+      "beat_type": "misterio",
+      "duration_target_s": 3.4,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "DECISIONES HUMANAS",
+      "label_type": "title",
+      "voiceover": {
+        "text": "[appalled] La evacuación se convirtió en decisiones humanas: quién subía, quién esperaba, quién se despedía."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW crew officers at a lifeboat gate deciding who boards while families reach for each other's hands and a child clings to a parent; crowded boat deck, ropes, lifejackets and freezing night; heartbreaking decision mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: cold blue, lifejacket white, lantern gold, deep black shadows and restrained red. Camera: DYNAMIC ANGLE MEDIUM SHOT. a bold hand-painted Spanish title reads \"DECISIONES HUMANAS\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_017",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 4,
+      "hold_priority": "normal",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "NO FUE IGUAL",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Los oficiales priorizaron mujeres y niños, pero no aplicaron la orden igual en toda la cubierta."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW two sides of the boat deck showing different officers interpreting the boarding order differently, one side allowing a few men after women and children, the other holding men back, with confused passengers between them; lifeboats, ropes and deck lamps; uneven order mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: split warm-cold deck lighting, navy uniforms, cream lifeboats and red directional arrows. Camera: WIDE SHOT. a bold hand-painted Spanish title reads \"NO FUE IGUAL\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_018",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 3.8,
+      "hold_priority": "normal",
+      "motion": "pan",
+      "render_mode": "animated",
+      "text_in_image": "(sin texto)",
+      "label_type": null,
+      "voiceover": {
+        "text": "Mientras los botes bajaban, la banda tocaba para mantener la calma."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW the Titanic musicians playing on deck with steady faces while lifeboats descend in the background and passengers look back through cold mist; music stands, instruments, ropes, deck lamps and dark sea; fragile calm mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: warm brass gold, black formal suits, icy blue mist and dim deck amber. Camera: SLOW WIDE SHOT. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. Absolutely no text, no letters, no words anywhere.",
+      "animation_prompt": "Slow gentle pan past the musicians as lifeboats lower in the background and cold mist drifts, preserve the exact original composition, characters and style. No morphing, no new objects, no gore."
+    },
+    {
+      "scene_id": "scene_019",
+      "panel_type": "cinematica",
+      "beat_type": "misterio",
+      "duration_target_s": 4.2,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "SE PARTIÓ",
+      "label_type": "title",
+      "voiceover": {
+        "text": "El barco comenzó a inclinarse, se partió y desapareció bajo el Atlántico."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a distant non-graphic view of the Titanic at a dramatic angle, breaking under a starless sky while lifeboats appear as tiny silhouettes far from the ship; black ocean, smoke, broken lights and moonlit mist; vast final collapse mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: deep black-blue, broken warm lights, ghostly white mist and muted steel gray. Camera: EXTREME WIDE SHOT. a bold hand-painted Spanish title reads \"SE PARTIÓ\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_020",
+      "panel_type": "cinematica",
+      "beat_type": "misterio",
+      "duration_target_s": 3.6,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "MÁS DE 1,500",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Más de mil quinientas personas murieron."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a solemn memorial-like scene of empty lifejackets and floating hats shown symbolically on dark water while a lifeboat crew lowers their heads, no bodies shown; cold ocean, faint dawn line, scattered objects and quiet grief; respectful loss mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: dawn gray-blue, lifejacket white, black water and muted gold horizon. Camera: CENTERED WIDE SHOT. a bold hand-painted Spanish title reads \"MÁS DE 1,500\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_021",
+      "panel_type": "diagrama",
+      "beat_type": "narrativa",
+      "duration_target_s": 4.5,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "RIESGO SUBESTIMADO",
+      "label_type": "title",
+      "voiceover": {
+        "text": "El iceberg inició el desastre, pero normas insuficientes, botes calculados por tonelaje y confianza excesiva ampliaron la tragedia."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — an explainer slide composition: a dominant cause-chain diagram with four icons connected by red arrows: iceberg impact, outdated safety rule scroll, lifeboats counted by ship tonnage, and overconfidence represented by a giant ship shadow over a tiny ocean warning sign; a SMALL white stick-figure narrator to one side reacts to it with an expressive face, pointing at the main idea; a few clear props/icons illustrate the point; simple background in the video's style. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. SLIDE HERO RULE: the text or diagram is the main subject and dominates the frame; the white stick-figure is present but SMALL and to the side, still expressive with the round white head, big eyes, NO hair; keep some simple styled background and props, never a dead empty wash. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: parchment cream, warning red, navy blue, iceberg white and legal ink black. Camera: flat front-on slide/diagram view. a bold hand-painted Spanish title reads \"RIESGO SUBESTIMADO\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_022",
+      "panel_type": "cinematica",
+      "beat_type": "cierre",
+      "duration_target_s": 5.2,
+      "hold_priority": "alta",
+      "motion": "push_in",
+      "render_mode": "static",
+      "text_in_image": "LA CUENTA NO ALCANZABA",
+      "label_type": "title",
+      "voiceover": {
+        "text": "[short pause] El Titanic duele porque, cuando llegó el momento de salvar vidas… la cuenta ya no alcanzaba."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a final symbolic shot of a lifeboat count board on the Titanic deck, with too many passenger silhouettes fading into the cold dawn while a plain narrator looks down in silence; empty benches, ropes, ocean horizon and soft memorial light; haunting emotional closure mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Titanic first-class passengers: elegant Edwardian evening gowns, dark tuxedos, fur-collar coats, pearl necklaces, top hats and white gloves. Second- and third-class passengers: wool coats, flat caps, shawls, simple dresses, worn suitcases, blankets and family bundles. Titanic officers and crew: dark navy uniforms, peaked caps, brass buttons, white gloves, whistles and lifeboat ropes. Musicians: black evening suits, small string instruments, music stands and calm but worried expressions. Wireless operator: white shirt, vest, headphones, telegraph key and paper messages. Lifeboat passengers: heavy coats, blankets, lifejackets and tense faces. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: cold dawn blue, faded gold, lifeboat cream, shadow gray and small red accents. Camera: CENTERED SYMMETRICAL CLOSE-UP. a bold hand-painted Spanish title reads \"LA CUENTA NO ALCANZABA\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    }
+  ],
+  "render_export": {
+    "renderer": "remotion_ffmpeg",
+    "clip_order": [
+      "scene_001",
+      "scene_002",
+      "scene_003",
+      "scene_004",
+      "scene_005",
+      "scene_006",
+      "scene_007",
+      "scene_008",
+      "scene_009",
+      "scene_010",
+      "scene_011",
+      "scene_012",
+      "scene_013",
+      "scene_014",
+      "scene_015",
+      "scene_016",
+      "scene_017",
+      "scene_018",
+      "scene_019",
+      "scene_020",
+      "scene_021",
+      "scene_022"
+    ]
+  },
+  "tts_export": {
+    "engine": "elevenlabs",
+    "model_id": "eleven_v3",
+    "voice_id": "8mBRP99B2Ng2QwsJMFQl",
+    "voice_name": "voz principal del canal",
+    "voice_settings": {
+      "stability": 0,
+      "similarity_boost": 0.75,
+      "style": 0,
+      "speed": 1.2
+    },
+    "language_code": "es",
+    "output_format": "mp3_44100_192",
+    "seed": 19120415,
+    "routing_note": "Reel vertical menor a cinco mil caracteres: usar eleven_v3 con tags simples y pausas de texto, sin SSML.",
+    "pronunciation_notes": "Titanic: Ti-tá-nic en español natural. Atlántico Norte: marcar acento en Atlántico. White Star Line no aparece en voz para evitar pronunciación irregular. Mil ciento setenta y ocho debe leerse completo y no como cifra.",
+    "full_script": "[thoughtful] Había unas dos mil doscientas personas a bordo. Los botes solo podían cargar a poco más de la mitad. [short pause] Ahí empezó el verdadero horror del Titanic. La noche del catorce de abril de mil novecientos doce, el barco avanzaba por el Atlántico Norte. Era uno de los transatlánticos más grandes y lujosos de su tiempo. Para muchos, parecía prácticamente imposible de hundir. Entonces apareció el iceberg. Algunos pasajeros apenas sintieron una vibración extraña bajo sus pies. Pero bajo el agua, varias secciones del casco quedaron abiertas al mar. El Titanic ya no podía mantenerse a flote. [thoughtful] Cuando prepararon los botes, apareció el problema. Había veinte, con capacidad para aproximadamente mil ciento setenta y ocho personas. Aunque se llenaran todos, más de mil personas quedarían fuera. Al principio, muchos aún dudaban en abandonar la cubierta iluminada. Por eso varios de los primeros botes se alejaron con asientos vacíos. [appalled] La evacuación se convirtió en decisiones humanas: quién subía, quién esperaba, quién se despedía. Los oficiales priorizaron mujeres y niños, pero no aplicaron la orden igual en toda la cubierta. Mientras los botes bajaban, la banda tocaba para mantener la calma. El barco comenzó a inclinarse, se partió y desapareció bajo el Atlántico. Más de mil quinientas personas murieron. El iceberg inició el desastre, pero normas insuficientes, botes calculados por tonelaje y confianza excesiva ampliaron la tragedia. [short pause] El Titanic duele porque, cuando llegó el momento de salvar vidas… la cuenta ya no alcanzaba."
+  }
+}

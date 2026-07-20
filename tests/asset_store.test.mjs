@@ -7,6 +7,13 @@ import { spawn, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const reloadServerSource = fs.readFileSync(path.join(ROOT, "dev", "reload-server.mjs"), "utf8");
+assert.match(reloadServerSource, /const EXTENSION_RELOAD_DIRS = new Set/,
+  "el auto-reload debe usar lista blanca de codigo de extension");
+assert.match(reloadServerSource, /if \(!shouldReloadExtensionFile\(rel\)\) return;/,
+  "assets, medios, JSON y .git no deben recargar la extension");
+assert.doesNotMatch(reloadServerSource, /pending\.add\(rel\)[\s\S]{0,120}IGNORE/,
+  "el watcher no debe depender de una lista negra incompleta");
 const testDir = fs.mkdtempSync(path.join(ROOT, "assets", "__asset_store_test_"));
 const relDir = path.relative(ROOT, testDir).replace(/\\/g, "/");
 const publicTestDir = fs.mkdtempSync(path.join(ROOT, "remotion-editor", "public", "__asset_store_test_"));
@@ -22,11 +29,15 @@ const sha = (buf) => crypto.createHash("sha256").update(buf).digest("hex");
 const makeImage = (dest, mode = "smooth") => {
   const script = `
 import os, sys
-from PIL import Image
+from PIL import Image, ImageDraw
 p, mode = sys.argv[1], sys.argv[2]
 w = h = 720
 if mode == "noise":
     im = Image.frombytes("RGB", (w, h), os.urandom(w*h*3))
+elif mode == "distinct":
+    x = Image.linear_gradient("L").rotate(90).resize((w, h))
+    im = Image.merge("RGB", (x.point(lambda v: min(255, 20 + v//2)), x, x.point(lambda v: max(0, 240 - v//2))))
+    ImageDraw.Draw(im).rectangle((100, 180, 620, 540), outline=(245, 210, 40), width=24)
 else:
     y = Image.linear_gradient("L").resize((w, h))
     im = Image.merge("RGB", (y, y.point(lambda v: min(255, 30 + v//2)), y.point(lambda v: min(255, 70 + v//3))))
@@ -71,6 +82,7 @@ try {
   const sameMoveResponse = await fetch(`${base}/move?from=${encodeURIComponent(samePublic)}&to=${encodeURIComponent(`${publicRelDir}/same.jpg`)}`, { method: "POST" });
   const sameMoveJson = await sameMoveResponse.json();
   assert.equal(sameMoveResponse.status, 200); assert.equal(sameMoveJson.noop, true);
+  assert.equal(path.resolve(sameMoveJson.abspath), samePublic, "move debe devolver la ruta absoluta canonica");
   assert.equal(sha(fs.readFileSync(samePublic)), samePublicHash, "move no debe borrar el archivo si from==dest");
 
   // Una descarga truncada no puede destruir el canonical bueno.
@@ -102,6 +114,30 @@ try {
   assert.equal(noiseMove.status, 422);
   assert.equal(sha(fs.readFileSync(qualityCanonical)), canonicalQualityHash,
     "el ruido de tamano completo no debe reemplazar el canonical");
+
+  // Flow rotula un upload como "Imagen generada". Incluso si el DOM cambia, una recompresion/resize
+  // de la referencia no puede superar la barrera de bytes ni convertirse en el still de la escena.
+  const flowReference = path.join(testDir, "flow-reference.jpg");
+  const flowDuplicate = path.join(testDir, "flow-duplicate.jpg");
+  const flowDistinct = path.join(testDir, "flow-distinct.jpg");
+  makeImage(flowReference, "smooth"); makeImage(flowDistinct, "distinct");
+  const recompress = spawnSync("python", ["-c", `
+import sys
+from PIL import Image
+src, dest = sys.argv[1], sys.argv[2]
+with Image.open(src) as im:
+    im.convert("RGB").resize((768, 768)).save(dest, quality=83)
+`, flowReference, flowDuplicate], { encoding: "utf8", windowsHide: true });
+  if (recompress.status !== 0) throw new Error(recompress.stderr || "no pude recomprimir referencia");
+  const duplicateValidation = await fetch(`${base}/image/validate?path=${encodeURIComponent(flowDuplicate)}&reference=${encodeURIComponent(flowReference)}`, { method: "POST" });
+  const duplicateJson = await duplicateValidation.json();
+  assert.equal(duplicateValidation.status, 422, JSON.stringify(duplicateJson));
+  assert.equal(duplicateJson.reason, "duplicates_reference");
+  assert.equal(duplicateJson.duplicateReference.nearExact, true);
+  const distinctValidation = await fetch(`${base}/image/validate?path=${encodeURIComponent(flowDistinct)}&reference=${encodeURIComponent(flowReference)}`, { method: "POST" });
+  const distinctJson = await distinctValidation.json();
+  assert.equal(distinctValidation.status, 200, JSON.stringify(distinctJson));
+  assert.equal(distinctJson.accepted, true);
 
   // Simula apagado entre canonical->backup y temp->canonical; /charfile debe terminar el swap.
   const recovered = path.join(testDir, "recover.png");

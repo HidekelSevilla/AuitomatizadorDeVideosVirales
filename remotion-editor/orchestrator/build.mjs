@@ -6,6 +6,7 @@
 //   node orchestrator/build.mjs            -> procesa todos los trabajos listos (una vez)
 //   node orchestrator/build.mjs --status   -> solo reporta que falta en cada trabajo
 //   node orchestrator/build.mjs --watch     -> daemon: revisa la cola cada 5s
+//   node orchestrator/build.mjs --clips-only ./queue/x.json -> render explicito sin exigir voz externa
 //   node orchestrator/build.mjs ./data/x.json -> procesa ese JSON puntual
 
 import fs from "node:fs";
@@ -27,6 +28,7 @@ const BUILD_LOCK_STALE_MS = Math.max(5 * 60_000, Number(process.env.BUILD_LOCK_S
 const args = process.argv.slice(2);
 const STATUS_ONLY = args.includes("--status");
 const WATCH = args.includes("--watch");
+const CLIPS_ONLY = args.includes("--clips-only");
 const explicit = args.find((a) => !a.startsWith("--"));
 
 const rel = (p) => path.relative(ROOT, p).split(path.sep).join("/");
@@ -108,7 +110,13 @@ const ENHANCE_EXE = path.join(ROOT, "tools", "realesrgan", "realesrgan-ncnn-vulk
 function inspectValidated(job) {
   const p = readJson(job.jsonPath);
   const { slug, requirements } = getMediaRequirements(p, { fallbackName: job.name });
-  const missingRequirements = requirements
+  // Recuperacion dirigida: si el usuario pide editar desde clips existentes, la voz externa deja de
+  // ser una barrera. El render conserva el audio propio de cada clip y NO vuelve a tocar Grok.
+  // Es opt-in por CLI para no convertir silenciosamente todas las novelas futuras en videos sin narrador.
+  const requiredForRun = CLIPS_ONLY
+    ? requirements.filter((r) => !["voice", "voice_hook", "opening_voice"].includes(r.kind))
+    : requirements;
+  const missingRequirements = requiredForRun
     .map((r) => ({ ...r, fullPath: path.join(PUBLIC, r.path) }))
     .filter((r) => !fileOk(r.fullPath, p));
   if (generatedMediaExists(slug) && !mediaSignatureOkOrAdopted(slug, p, missingRequirements.length === 0)) {
@@ -293,11 +301,29 @@ function acquireBuildLock(slug) {
   try {
     if (fs.existsSync(lock)) {
       const age = Date.now() - fs.statSync(lock).mtimeMs;
-      if (age < BUILD_LOCK_STALE_MS) {
+      let lockPid = null;
+      try {
+        const parsed = JSON.parse(fs.readFileSync(lock, "utf8"));
+        const candidate = Number(parsed?.pid);
+        if (Number.isSafeInteger(candidate) && candidate > 0) lockPid = candidate;
+      } catch { /* lock legacy o truncado: conserva el fallback por antiguedad */ }
+      let ownerAlive = null;
+      if (lockPid != null) {
+        try { process.kill(lockPid, 0); ownerAlive = true; }
+        catch (e) { ownerAlive = e?.code === "EPERM"; }
+      }
+      // Un apagado/cierre abrupto no ejecuta releaseBuildLock. Antes ese archivo bloqueaba el slug
+      // durante dos horas aunque su PID ya no existiera. Si el owner murio, retirarlo de inmediato;
+      // para locks legacy sin PID y procesos vivos se conserva el limite temporal anterior.
+      if (ownerAlive === false) {
+        console.log(`... ${slug}: retiro build lock huerfano del PID ${lockPid}`);
+        fs.rmSync(lock, { force: true });
+      } else if (age < BUILD_LOCK_STALE_MS) {
         console.log(`... ${slug}: build/enhance ya esta corriendo en otro proceso; salto este ciclo`);
         return null;
+      } else {
+        fs.rmSync(lock, { force: true });
       }
-      fs.rmSync(lock, { force: true });
     }
     fs.writeFileSync(lock, JSON.stringify({ pid: process.pid, startedAt: new Date().toISOString(), slug }, null, 2));
     return lock;
@@ -323,7 +349,7 @@ function enhanceIfNeeded(job, slug) {
   if (p.project?.enhance === false) return; // opt-out por proyecto
   const preset = p.project?.preset || "";
   if (/^(historias|criptoclaro|habitos|pov-historias)/.test(preset)) return; // image-only base: sin enhance de clips
-  if (preset === "novela-coreana") return; // evita deformar rostros lejanos con Real-ESRGAN/RIFE.
+  if (["novela-coreana", "novelas-coreanas-eng"].includes(preset)) return; // evita deformar rostros lejanos con Real-ESRGAN/RIFE.
   const enhanceEnv = { ...process.env, ENHANCE_STEP_TIMEOUT_MS: process.env.ENHANCE_STEP_TIMEOUT_MS || String(15 * 60_000) };
   if (preset === "manhwa") {
     const animatedClipNames = (p.scenes || [])
@@ -486,9 +512,25 @@ function render(job, slug) {
     } catch (e) { console.log(`  (no pude apartar el mp4 anterior: ${e?.message || e})`); }
   }
   // --concurrency limitado para no saturar la PC (especialmente si se genera en paralelo)
-  const cmd = `npx remotion render ViralVideo "out/${slug}.mp4" --props="${rel(job.jsonPath)}" --concurrency=6`;
+  let propsPath = job.jsonPath;
+  let runtimeProps = null;
+  if (CLIPS_ONLY) {
+    const p = readJson(job.jsonPath);
+    p.audio = { ...(p.audio || {}), _omit_scene_voice: true };
+    const runtimeDir = path.join(ROOT, "tmp", "build-runtime");
+    fs.mkdirSync(runtimeDir, { recursive: true });
+    runtimeProps = path.join(runtimeDir, `${slug}.clips-only.json`);
+    fs.writeFileSync(runtimeProps, JSON.stringify(p, null, 2), "utf8");
+    propsPath = runtimeProps;
+    console.log("  modo clips-only: omito la voz externa y conservo el audio propio de los clips");
+  }
+  const cmd = `npx remotion render ViralVideo "out/${slug}.mp4" --props="${rel(propsPath)}" --concurrency=6`;
   console.log("  > " + cmd);
-  return spawnSync(cmd, { cwd: ROOT, stdio: "inherit", shell: true }).status === 0;
+  try {
+    return spawnSync(cmd, { cwd: ROOT, stdio: "inherit", shell: true }).status === 0;
+  } finally {
+    if (runtimeProps) try { fs.rmSync(runtimeProps, { force: true }); } catch { /* temporal no critico */ }
+  }
 }
 
 // Sello del render: firma del JSON que lo produjo. Permite distinguir un mp4 fresco de uno viejo cuando el
@@ -504,16 +546,19 @@ function writeRenderMeta(job, slug) {
   } catch (e) { console.log(`  (no pude escribir render-meta: ${e?.message || e})`); }
 }
 
-// VELOCIDAD del video final. Por defecto NO acelera; solo aplica velocidad si el JSON trae
-// project.speed o project.speed_final explicito.
+// VELOCIDAD del video final. Historias SIEMPRE se finaliza a 1.20x: ningun valor speed del JSON
+// puede sobrescribir ese ritmo. En los demas presets, los overrides del JSON siguen ganando.
 function videoSpeed(job) {
   try {
     const p = JSON.parse(fs.readFileSync(job.jsonPath, "utf8").replace(/^﻿/, ""));
-    const ov = p.project?.speed ?? p.project?.speed_final;
-    if (typeof ov === "number") return ov;                                        // override explicito por video (speed o speed_final)
+    if (/^historias/.test(p.project?.preset || "")) return 1.20;
+    if (typeof p.project?.speed === "number") return p.project.speed;
+    const finalSpeed = p.project?.speed_final;
+    if (typeof finalSpeed === "number") return finalSpeed;
     const ttsSpeed = p.tts_export?.edit_speed ?? p.tts_export?.video_speed;
     if (typeof ttsSpeed === "number") return ttsSpeed;
-    if (p.project?.preset === "manhwa" && p.tts_export?.mode === "dialogue") return 1.40; // fallback manhwa dialogue sin velocidad declarada
+    if (["novela-coreana", "novelas-coreanas-eng"].includes(p.project?.preset)) return 1.10;
+    if (p.project?.preset === "manhwa" && p.tts_export?.mode === "dialogue") return 1.25; // fallback manhwa dialogue sin velocidad declarada
     return 1;
   } catch { return 1; }
 }

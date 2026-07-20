@@ -37,8 +37,9 @@ window.FLOW_SELECTORS = {
   // Boton "+" del compositor: abre la biblioteca de recursos (para subir/elegir refs).
   // innerText real: "add_2\nCrear" (icono add_2). aria-haspopup="dialog".
   openMediaDialogButton: [
-    { by: "css", value: 'button[aria-haspopup="dialog"]' },  // distingue el "+" del compositor
     { by: "text", value: "add_2", tag: "button" },
+    // Nunca usar el primer button[aria-haspopup=dialog]: Flow 2026-07-19 lo asigna tambien a
+    // "Añadir archivo multimedia" de la barra superior, que abre el picker NATIVO de Windows.
   ],
 
   // Dentro del dialogo de recursos: dispara la subida (revela el input file).

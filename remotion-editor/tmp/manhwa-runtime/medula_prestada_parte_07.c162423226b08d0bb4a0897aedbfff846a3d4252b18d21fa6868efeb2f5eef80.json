@@ -1,0 +1,1660 @@
+{
+  "project": {
+    "preset": "novela-coreana",
+    "title": "Les di mi médula. Me echaron de la casa. - Parte 7",
+    "subtitle": "Tres minutos",
+    "serie": "medula_prestada",
+    "slug": "medula_prestada_parte_07",
+    "series": {
+      "id": "medula_prestada",
+      "part": 7,
+      "is_cliffhanger": true
+    },
+    "language": "es",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "reuse_ingredients": true,
+    "grok_clip_seconds": "6",
+    "scene_target_seconds": 4,
+    "voice_target_seconds": [
+      3,
+      4
+    ],
+    "voice_ceiling_seconds": "5",
+    "hook": "Yu-ri tenía el recibo. A las nueve, la cama estaba vacía.",
+    "motor": "A_injusticia (secundario: L_traicion_intima)",
+    "world": "C_chaebol_corporativo",
+    "allow_supernatural": false,
+    "allow_historical": false
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "fish"
+    }
+  },
+  "characters": {
+    "ji_woo": {
+      "display_name": "Ji-woo",
+      "poses": {
+        "abrigo_calle": {
+          "mode": "existing",
+          "asset": "assets/characters/medula_prestada/ji_woo_abrigo_calle.png"
+        }
+      }
+    },
+    "madam_oh": {
+      "display_name": "Madam Oh",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/medula_prestada/madam_oh_base.png"
+        }
+      }
+    },
+    "han_do_yun": {
+      "display_name": "Han Do-yun",
+      "poses": {
+        "de_pie_traje": {
+          "mode": "existing",
+          "asset": "assets/characters/medula_prestada/han_do_yun_de_pie_traje.png"
+        }
+      }
+    },
+    "se_ra": {
+      "display_name": "Se-ra",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/medula_prestada/se_ra_base.png"
+        },
+        "vestido_novia": {
+          "mode": "generate",
+          "asset": "assets/characters/medula_prestada/se_ra_vestido_novia.png",
+          "reference_pose": "base",
+          "prompt": "Same character Se-ra, same face and light brown wavy hair now pinned up, elegant white satin wedding gown with a long veil, standing upright, both hands holding a small white bouquet at her waist, composed triumphant expression, neutral studio background."
+        }
+      }
+    },
+    "tae_min": {
+      "display_name": "Tae-min",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/medula_prestada/tae_min_base.png"
+        },
+        "traje_novio": {
+          "mode": "generate",
+          "asset": "assets/characters/medula_prestada/tae_min_traje_novio.png",
+          "reference_pose": "base",
+          "prompt": "Same character Tae-min, same face and hair, black formal groom suit with a white boutonniere on the lapel, standing upright, both hands at his sides, tense guilty expression, neutral studio background."
+        }
+      }
+    }
+  },
+  "escenarios": {
+    "cuarto_yu_ri": {
+      "display_name": "Habitación de hospital",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/medula_prestada/cuarto_yu_ri_base.png"
+        },
+        "lado_cama_a": {
+          "mode": "existing",
+          "asset": "assets/escenarios/medula_prestada/cuarto_yu_ri_lado_cama_a.png"
+        },
+        "lado_cama_b": {
+          "mode": "existing",
+          "asset": "assets/escenarios/medula_prestada/cuarto_yu_ri_lado_cama_b.png"
+        },
+        "close_mano": {
+          "mode": "existing",
+          "asset": "assets/escenarios/medula_prestada/cuarto_yu_ri_close_mano.png"
+        }
+      }
+    },
+    "mansion_han": {
+      "display_name": "Salón de la casa Han",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/medula_prestada/mansion_han_base.png"
+        },
+        "lado_sofa_a": {
+          "mode": "existing",
+          "asset": "assets/escenarios/medula_prestada/mansion_han_lado_sofa_a.png"
+        },
+        "lado_sofa_b": {
+          "mode": "existing",
+          "asset": "assets/escenarios/medula_prestada/mansion_han_lado_sofa_b.png"
+        },
+        "desde_la_escalera": {
+          "mode": "existing",
+          "asset": "assets/escenarios/medula_prestada/mansion_han_desde_la_escalera.png"
+        },
+        "close_mesa": {
+          "mode": "existing",
+          "asset": "assets/escenarios/medula_prestada/mansion_han_close_mesa.png"
+        },
+        "hacia_la_puerta": {
+          "mode": "existing",
+          "asset": "assets/escenarios/medula_prestada/mansion_han_hacia_la_puerta.png"
+        }
+      }
+    },
+    "portico_mansion": {
+      "display_name": "Pórtico de la mansión Baek",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/medula_prestada/portico_mansion_base.png"
+        },
+        "close_escalon": {
+          "mode": "existing",
+          "asset": "assets/escenarios/medula_prestada/portico_mansion_close_escalon.png"
+        }
+      }
+    },
+    "comedor_baek": {
+      "display_name": "Comedor de la mansión Baek",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/medula_prestada/comedor_baek_base.png"
+        },
+        "lado_ventana": {
+          "mode": "existing",
+          "asset": "assets/escenarios/medula_prestada/comedor_baek_lado_ventana.png"
+        },
+        "desde_la_cabecera": {
+          "mode": "existing",
+          "asset": "assets/escenarios/medula_prestada/comedor_baek_desde_la_cabecera.png"
+        },
+        "close_mesa": {
+          "mode": "existing",
+          "asset": "assets/escenarios/medula_prestada/comedor_baek_close_mesa.png"
+        },
+        "puerta_servicio": {
+          "mode": "generate",
+          "asset": "assets/escenarios/medula_prestada/comedor_baek_puerta_servicio.png",
+          "reference_view": "base",
+          "prompt": "Same formal Korean mansion dining hall, new camera position at the narrow service door in the side wall looking back into the hall, the plain service doorframe in the foreground, the long table and chandelier deep in the background, warm tungsten glow, empty set, no people, no text."
+        }
+      }
+    }
+  },
+  "ingredients": [
+    {
+      "id": "carnet_donadora",
+      "type": "entity",
+      "generation_prompt": "Single small folded Korean hospital donor card, worn cream paper, faint printed grid lines and a round red hospital stamp, no readable text, neutral dark background, high detail, realistic photography, no text, no logo.",
+      "output_file": "assets/ingredients/medula_prestada/carnet_donadora.png"
+    },
+    {
+      "id": "renuncia_firmada",
+      "type": "entity",
+      "generation_prompt": "Single crisp legal waiver sheet with faint printed ruled lines and one handwritten ink signature at the bottom, a small red seal beside it, no readable text, neutral dark background, high detail, realistic photography, no logo.",
+      "output_file": "assets/ingredients/medula_prestada/renuncia_firmada.png"
+    },
+    {
+      "id": "contrato_fusion",
+      "type": "entity",
+      "generation_prompt": "Single thick bound corporate contract lying open on white linen, heavy cream pages, a red wax-like seal and two black fountain pens laid side by side on top of it, no readable text, warm light, high detail, realistic photography, no logo.",
+      "output_file": "assets/ingredients/medula_prestada/contrato_fusion.png"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_01",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "cuarto_yu_ri",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided hospital room: establishing wide shot from the doorway, floor to ceiling visible, the raised hospital bed EMPTY in the middle of the room with the blanket thrown back, the monitor dark and the IV stand bare, morning light in the tall window, cold blue-grey light, no people. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the thrown-back blanket settles as the empty room stays silent; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, tense] Yu-ri tenía el recibo. A las nueve, la cama estaba vacía.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "LA CAMA VACÍA",
+        "highlight_words": [
+          "vacía"
+        ]
+      }
+    },
+    {
+      "id": "scene_02",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "cuarto_yu_ri",
+          "view": "close_mano"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided hospital bed rail close view: Insert shot: extreme close-up of the bare mattress under a lifted pillow, the sheet creased where something flat used to be, nothing there, cold morning light, shallow depth of field, no people. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the lifted pillow drops back onto the empty sheet; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Debajo de la almohada no quedaba nada.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_03",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_yu_ri",
+          "view": "lado_cama_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided hospital room bedside view: medium shot, camera behind her shoulder (from behind) at the left side of the bed, Ji-woo in the foreground with her back to camera in her wool coat, both hands hanging, the stripped empty bed beyond her, cold morning light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she stands motionless in front of the stripped bed, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Se la llevaron a las seis de la mañana.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_04",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_yu_ri",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided hospital room: full body shot, head to feet in frame, camera from the doorway at eye level, Ji-woo standing alone beside the empty bed, both feet on the floor, one hand on the bare mattress, the dark monitor beside her, cold morning light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her hand presses down once on the bare mattress, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Su madre firmó el traslado. A su propia casa.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_05",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_yu_ri",
+          "view": "lado_cama_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided hospital room bedside view: medium close-up, chest up, camera at the right side of the bed at eye level, Ji-woo standing beyond the empty bed, her face frontal, eyes red-rimmed and dry, both hands closed at her sides, cold morning light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her jaw tightens once and holds, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[soft, trembling, hurt] La salvé para que se la llevaran.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_06",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_yu_ri",
+          "view": "close_mano"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided hospital bed rail close view: Insert shot: close-up of Ji-woo's hand only, no face in frame, her fingers closed white around the cold metal bed rail, the empty mattress blurred beyond, cold morning light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her fingers tighten on the metal rail and hold; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Cinco días para la boda.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "CINCO DÍAS",
+        "highlight_words": [
+          "Cinco"
+        ]
+      }
+    },
+    {
+      "id": "scene_07",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided Han salon: establishing wide shot from the entrance arch, floor to ceiling visible, Ji-woo full body small in the lower third standing on the marble facing the far doors, both hands at her sides, the doors now unguarded and empty, warm tungsten glow, soft haze. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she looks at the empty doorway where the guards used to stand; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Los guardias de mi puerta ya no estaban.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_08",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "se_ra",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "desde_la_escalera"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Se-ra in the provided Han salon staircase view: medium shot, camera halfway up the staircase at eye level, Se-ra coming down the steps in her red dress with a phone at her ear, one hand on the banister, both feet on the marble steps, her face three-quarters to camera, mouth clearly visible, warm lamplight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Se-ra begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Se-ra moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Se-ra bajó con el teléfono en la oreja: —Hoy hay junta.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_09",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "han_do_yun",
+            "pose": "de_pie_traje"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "lado_sofa_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Do-yun in the provided Han salon armchair view: medium close-up, chest up, camera behind the sofa at eye level, Han Do-yun standing beyond the coffee table already in his coat collar, face turned three-quarters to camera, mouth clearly visible, one hand on his cane, warm lamplight on half his face. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Han Do-yun begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Han Do-yun moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El presidente ya salía: —Hoy no salgas de la casa.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_10",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "hacia_la_puerta"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided Han salon door view: medium shot, camera from the far end of the salon looking at the tall doors, Ji-woo standing in the middle of the frame with her back three-quarters to camera, both feet on the marble, the doors open on a bright driveway with blurred anonymous camera crews behind the gate, warm interior light against cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the blurred camera crews shift and lift their lenses beyond the gate, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "A mediodía había cámaras en la reja.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_11",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "madam_oh",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Madam Oh in the provided Han salon: establishing wide shot from the entrance arch, floor to ceiling visible, Madam Oh walking in across the marble in her ivory tweed suit with her ivory handbag under one arm, two blurred anonymous Korean lawyers behind her and blurred press crowding the open doors, warm tungsten glow. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she walks in across the marble while the blurred lawyers fan out behind her; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Y mi suegra entró con abogados y prensa.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_12",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "madam_oh",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "lado_sofa_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Madam Oh in the provided Han salon sofa view: medium close-up, chest up, camera behind the armchair at eye level, Madam Oh standing beyond the coffee table facing camera three-quarters, mouth clearly visible, the ivory handbag held open at her waist, warm lamplight on her silver bun. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Madam Oh begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Madam Oh moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Traigo lo que ella firmó.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_13",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "close_mesa"
+        },
+        "ingredients": [
+          "renuncia_firmada"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided signed waiver in the provided coffee table close view: Insert shot: extreme close-up of the crisp waiver sheet dropped on the stone tabletop, one handwritten ink signature at the bottom and a small red seal beside it, warm lamplight, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the sheet lands flat on the stone and stops dead; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Sacó del bolso el papel del hospital.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_14",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "madam_oh",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "close_mesa"
+        },
+        "ingredients": [
+          "carnet_donadora"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Madam Oh and the provided donor card in the provided coffee table close view: Insert shot: close-up of the open mouth of Madam Oh's ivory handbag tilted over the stone table, no face in frame, the folded donor card with its round red stamp visible inside among her things, warm lamplight, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the bag tilts and the folded card slides one centimetre into view inside it; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Y adentro, doblado, seguía mi carnet.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "MI CARNET",
+        "highlight_words": [
+          "carnet"
+        ]
+      }
+    },
+    {
+      "id": "scene_15",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "madam_oh",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "lado_sofa_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Madam Oh in the provided Han salon sofa view: medium shot, camera behind the armchair looking at the sofa, the armchair back in the foreground, Madam Oh standing beyond the coffee table, both feet on the marble, face frontal, mouth clearly visible, one hand pointing down at the sheet on the table, warm lamplight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Madam Oh begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Madam Oh moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Firmado por ella. Delante de un abogado.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_16",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "madam_oh",
+            "pose": "base"
+          },
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "hacia_la_puerta"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Madam Oh and the provided Ji-woo in the provided Han salon door view: medium close-up, chest up, camera behind Madam Oh's shoulder (over-the-shoulder), her shoulder blurred on frame-left in the foreground, Ji-woo on frame-right facing frame-left, her face three-quarters to camera, mouth clearly visible, blurred press at the doors behind her, cold daylight and warm lamplight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ji-woo begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Ji-woo moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Yo firmé para salvar a su hija.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_17",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "madam_oh",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "lado_sofa_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Madam Oh in the provided Han salon sofa view: medium shot, camera behind the armchair looking at the sofa, Madam Oh standing beyond the coffee table, both feet on the marble, face frontal, mouth clearly visible, both hands closing the clasp of her handbag, warm lamplight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Madam Oh begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Madam Oh moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Tú firmaste. Punto.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_18",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "han_do_yun",
+            "pose": "de_pie_traje"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "lado_sofa_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Do-yun in the provided Han salon armchair view: medium close-up, chest up, camera behind the sofa at eye level, Han Do-yun standing beyond the coffee table facing camera, mouth clearly visible, his face grey and closed, one hand tight on the cane, warm lamplight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Han Do-yun begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Han Do-yun moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—¿Tienes algo que no sea tu palabra?",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_19",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided Han salon: full body shot, head to feet in frame, camera at the entrance arch at eye level, Ji-woo standing alone in the middle of the marble with blurred lawyers and press around the edges of the room, both feet together, both hands empty and open, warm tungsten glow. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her open hands stay empty at her sides while the blurred crowd waits, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[soft, trembling, hurt] Me quedé sin aire delante de todos.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_20",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "hacia_la_puerta"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided Han salon door view: medium shot, camera from the far end of the salon looking at the doors, Ji-woo standing in front of the bright doorway facing camera, both feet on the marble, mouth clearly visible, one hand pressed flat over her own inner elbow, blurred press behind her. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ji-woo begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Ji-woo moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Tengo mi sangre.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "TENGO MI SANGRE",
+        "highlight_words": [
+          "sangre"
+        ]
+      }
+    },
+    {
+      "id": "scene_21",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "madam_oh",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "lado_sofa_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Madam Oh in the provided Han salon sofa view: medium close-up, chest up, camera behind the armchair at eye level, Madam Oh facing camera three-quarters, mouth clearly visible, the smallest smile, both hands folded over the closed handbag, warm lamplight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Madam Oh begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Madam Oh moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—El laboratorio dice otra cosa.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_22",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          },
+          {
+            "id": "han_do_yun",
+            "pose": "de_pie_traje"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "lado_sofa_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo and the provided Han Do-yun in the provided Han salon armchair view: medium shot, camera behind Ji-woo's shoulder (over-the-shoulder), her shoulder blurred on frame-left in the foreground, Han Do-yun on frame-right standing beyond the coffee table facing frame-left but with his eyes down, mouth clearly visible, both hands on his cane, warm lamplight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Han Do-yun begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Han Do-yun moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El presidente no me miró: —Esa mujer firmó que no es nadie.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "NO ES NADIE",
+        "highlight_words": [
+          "nadie"
+        ]
+      }
+    },
+    {
+      "id": "scene_23",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "hacia_la_puerta"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided Han salon door view: establishing wide shot from the far end of the salon, floor to ceiling visible, Ji-woo small in the lower third standing alone facing the bright open doors, blurred anonymous press with raised cameras crowding the doorway in front of her, hard white flashes against the warm interior. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the blurred cameras fire a wave of hard white flashes at her from the doorway; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Las cámaras aprendieron mi cara en un minuto.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_24",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "madam_oh",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "lado_sofa_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Madam Oh in the provided Han salon sofa view: medium shot, camera behind the armchair looking at the sofa, Madam Oh standing beyond the coffee table turned toward the doors, both feet on the marble, face three-quarters to camera, mouth clearly visible, one hand raised toward the press, warm lamplight and hard flashes. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Madam Oh begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Madam Oh moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Mi suegra habló para ellos: —Es una estafadora.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_25",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided Han salon: medium close-up, chest up, camera at the entrance arch at eye level, Ji-woo's face lit in bursts by the blurred camera flashes, her eyes not blinking, one hand still over her inner elbow, warm salon light behind. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): hard flashes burst across her face while she does not blink, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Nadie preguntó por qué una estafadora dona médula.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_26",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "han_do_yun",
+            "pose": "de_pie_traje"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "lado_sofa_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Han Do-yun in the provided Han salon armchair view: medium shot, camera behind the sofa at slight low angle, Han Do-yun standing beyond the coffee table, his body BEHIND the table edge, both feet on the marble, face frontal, mouth clearly visible, one hand lifted to close the room, warm lamplight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Han Do-yun begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Han Do-yun moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Hasta que haya una prueba, no hay hija.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "NO HAY HIJA",
+        "highlight_words": [
+          "hija"
+        ]
+      }
+    },
+    {
+      "id": "scene_27",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided Han salon: full body shot, head to feet in frame, camera at the entrance arch at high angle looking down, Ji-woo standing small on the vast marble as the blurred lawyers and press file out around her, both feet together, both arms at her sides, warm tungsten glow. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the blurred crowd files out around her while she stays planted, mouth closed, not speaking; slow dolly out. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, tense] Perdí un padre por un papel que firmé.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_28",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "close_mesa"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided coffee table close view: Insert shot: close-up of Ji-woo's hand only, no face in frame, a phone buzzing face-up on the stone tabletop with a blank glowing screen and no readable text, her fingers arriving at the edge of it, warm lamplight, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the phone buzzes twice on the stone and her fingers stop beside it; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Mi teléfono vibró once segundos.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_29",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "lado_sofa_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided Han salon sofa view: medium shot, camera behind the armchair looking at the sofa, the armchair back in the foreground, Ji-woo standing beyond the coffee table with the phone pressed hard to her ear, both feet on the marble, her free hand covering her other ear, warm lamplight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she presses the phone harder against her ear, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Un mensaje de voz de Yu-ri.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_30",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "close_mesa"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided coffee table close view: Insert shot: extreme close-up of the lit phone screen held against Ji-woo's jaw, no readable text on the blank glow, the fine hairs at her jawline lit by the screen, warm lamplight, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the blank screen glow trembles slightly against her jaw; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Se oía una respiración y una palabra: casa.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "UNA PALABRA: CASA",
+        "highlight_words": [
+          "casa"
+        ]
+      }
+    },
+    {
+      "id": "scene_31",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided Han salon: full body shot, head to feet in frame, camera at the entrance arch at eye level, Ji-woo standing on the empty marble with the phone lowered in one hand, both feet planted, the salon deserted around her, warm tungsten glow. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she lowers the phone slowly and lifts her head, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Yu-ri estaba en la casa Baek. Con el recibo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_32",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "hacia_la_puerta"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided Han salon door view: medium shot, camera from the far end of the salon looking at the doors, Ji-woo standing with her back three-quarters to camera facing the bright doorway, both feet on the marble, both hands empty, the driveway pale beyond. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she takes one step toward the bright doorway and stops, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Podía esperar mis resultados. Llegaban un día tarde.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_33",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "lado_sofa_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided Han salon sofa view: medium close-up, chest up, camera behind the armchair at eye level, Ji-woo standing beyond the coffee table, her face frontal and hard, both hands closing into fists at her sides, warm lamplight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): both fists close and her chin lifts one centimetre, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "O podía entrar a la casa que me echó.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_34",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "mansion_han",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided Han salon: full body shot, head to feet in frame, camera at the entrance arch at eye level, Ji-woo walking away from camera across the marble toward the bright doors in her wool coat, both feet mid-stride, the empty salon around her, warm tungsten glow. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she walks away from camera toward the bright doors without looking back, mouth closed, not speaking; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Esperé cinco días. Hasta la mañana de la boda.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_35",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "portico_mansion",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided Baek mansion portico: establishing wide shot from the driveway, floor to ceiling visible, Ji-woo full body small in the lower third standing at the edge of the drive in her dark wool coat, the stone steps now dry and covered with white flower arrangements, blurred anonymous Korean guests in formal wear climbing the steps, hard bright morning daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the blurred guests climb the flowered steps past her while she stands still; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "La casa que me sacó a la lluvia estaba llena de flores.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_36",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "portico_mansion",
+          "view": "close_escalon"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided portico step close view: Insert shot: extreme close-up of one dry stone step with white petals scattered across it, the same worn stone edge, hard bright daylight, shallow depth of field, no people. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): a white petal turns over on the dry stone in the breeze; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "En ese escalón se me cayó todo, una vez.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_37",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "comedor_baek",
+          "view": "puerta_servicio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided dining hall service door view: full body shot, head to feet in frame, camera at the narrow service door looking back into the hall, Ji-woo stepping through the plain service doorframe in her wool coat, both feet on the marble, both hands at her sides, the flowered long table deep behind her, warm tungsten glow. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she steps through the service doorframe into the hall, mouth closed, not speaking; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Yo entré por donde me sacaron.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "ENTRÉ POR DONDE ME SACARON",
+        "highlight_words": [
+          "entré"
+        ]
+      }
+    },
+    {
+      "id": "scene_38",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "tae_min",
+            "pose": "traje_novio"
+          }
+        ],
+        "escenario": {
+          "id": "comedor_baek",
+          "view": "desde_la_cabecera"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Tae-min in the provided dining hall head-of-table view: medium shot, camera from behind the head chair looking down the hall toward the service wall, Tae-min standing beside the open service door in his black groom suit with a white boutonniere, both feet on the marble, face three-quarters to camera, mouth clearly visible, one hand still on the door handle, warm tungsten glow. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Tae-min begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Tae-min moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El que me abrió fue mi esposo: —Entra rápido.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_39",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "tae_min",
+            "pose": "traje_novio"
+          }
+        ],
+        "escenario": {
+          "id": "comedor_baek",
+          "view": "puerta_servicio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Tae-min in the provided dining hall service door view: medium close-up, chest up, camera at the service door, Tae-min facing camera three-quarters with his eyes low, mouth clearly visible, the white boutonniere at his lapel, warm tungsten glow on his jaw. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Tae-min begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Tae-min moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Tae-min no me miró a los ojos: —Está arriba. Tienes cuatro minutos.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "CUATRO MINUTOS",
+        "highlight_words": [
+          "minutos"
+        ]
+      }
+    },
+    {
+      "id": "scene_40",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "tae_min",
+            "pose": "traje_novio"
+          },
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "comedor_baek",
+          "view": "desde_la_cabecera"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Tae-min and the provided Ji-woo in the provided dining hall head-of-table view: medium shot, camera behind Tae-min's shoulder (over-the-shoulder), his shoulder on frame-left in the foreground from behind, Ji-woo on frame-right facing frame-left just inside the service door, both feet on the marble, her face three-quarters to camera, mouth clearly visible, both hands in her coat pockets, warm tungsten glow. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ji-woo begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Ji-woo moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—¿Por qué me abres?",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_41",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "tae_min",
+            "pose": "traje_novio"
+          }
+        ],
+        "escenario": {
+          "id": "comedor_baek",
+          "view": "puerta_servicio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Tae-min in the provided dining hall service door view: medium close-up, chest up, camera at the service door at slight low angle, Tae-min facing camera, mouth clearly visible, his hand leaving the door handle, the flowered hall blurred behind him, warm tungsten glow. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Tae-min begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Tae-min moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Porque hoy firmo yo también.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_42",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "comedor_baek",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided dining hall: establishing wide shot from the entrance doors, floor to ceiling visible, the long table dressed with white flowers and crystal, blurred anonymous Korean guests in formal wear seated along both sides, Ji-woo small in the lower third standing against the side wall in her dark coat, warm tungsten glow, soft haze. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the blurred guests turn toward the far end of the hall, none of them looking at her; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Adentro, la mesa donde me arrodillé tenía flores.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_43",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "se_ra",
+            "pose": "vestido_novia"
+          }
+        ],
+        "escenario": {
+          "id": "comedor_baek",
+          "view": "lado_ventana"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Se-ra in the provided dining hall window-side view: medium shot, camera at table level from the window side, Se-ra standing beyond the table edge in her white satin wedding gown and veil, both feet on the marble, face frontal, mouth clearly visible, the small white bouquet held at her waist, blurred seated guests around her, warm chandelier light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Se-ra begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Se-ra moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Se-ra me vio desde el fondo: —Llegaste tarde para el ramo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_44",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "comedor_baek",
+          "view": "close_mesa"
+        },
+        "ingredients": [
+          "contrato_fusion"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided merger contract in the provided dining table close view: Insert shot: extreme close-up of a thick bound contract lying open on the white linen at the head of the table, a red seal and two black fountain pens laid side by side on top of it, white petals scattered around, warm chandelier light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): one of the two pens is set down beside the other on the open contract; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "En la mesa de honor no había pastel. Había un contrato.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "HABÍA UN CONTRATO",
+        "highlight_words": [
+          "contrato"
+        ]
+      }
+    },
+    {
+      "id": "scene_45",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_woo",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "comedor_baek",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-woo in the provided dining hall: medium close-up, chest up, camera at the entrance doors at eye level, Ji-woo pressed against the side wall of the hall in her dark coat, her face frontal and still, her eyes fixed on the far end of the table, blurred flowers and guests around her, warm chandelier light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her eyes lock on the far end of the table and do not move, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, knowing] Faltaban tres minutos para que firmaran.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "TRES MINUTOS",
+        "highlight_words": [
+          "tres"
+        ]
+      }
+    }
+  ],
+  "capcut_export": {
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18",
+      "scene_19",
+      "scene_20",
+      "scene_21",
+      "scene_22",
+      "scene_23",
+      "scene_24",
+      "scene_25",
+      "scene_26",
+      "scene_27",
+      "scene_28",
+      "scene_29",
+      "scene_30",
+      "scene_31",
+      "scene_32",
+      "scene_33",
+      "scene_34",
+      "scene_35",
+      "scene_36",
+      "scene_37",
+      "scene_38",
+      "scene_39",
+      "scene_40",
+      "scene_41",
+      "scene_42",
+      "scene_43",
+      "scene_44",
+      "scene_45"
+    ],
+    "caption_style": {
+      "font": "bold sans-serif",
+      "position": "lower-third",
+      "color": "white",
+      "stroke": "black"
+    },
+    "title_cards": [
+      "CONTINUARÁ",
+      "PARTE 8: LA FIRMA"
+    ],
+    "cliffhanger_card": "¿PARTE 8?",
+    "music_notes": [
+      "Piano dramático suave",
+      "Marcha nupcial deformada, lenta"
+    ],
+    "sfx_notes": [
+      "Cama de hospital vacía, silencio",
+      "Obturadores y flashes",
+      "Broche de bolso",
+      "Puerta de servicio",
+      "Murmullo de boda"
+    ]
+  },
+  "audio": {
+    "voice_speed": 1.25,
+    "voice_rate": 1,
+    "music_volume": 0
+  },
+  "tts_export": {
+    "mode": "per_scene",
+    "voice_id": "bfed5c0810a347dbb62e8ccce7f59c48",
+    "note": "Una sola voz femenina narra todas las escenas, incluidos los diálogos. Fish Audio por escena."
+  }
+}

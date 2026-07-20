@@ -1,0 +1,1827 @@
+{
+  "project": {
+    "preset": "novela-coreana",
+    "title": "Mi hermana me ahogó. Desperté el día de mi boda. - Parte 1",
+    "subtitle": "La boda de la muerta",
+    "serie": "boda_repetida",
+    "slug": "boda_repetida_parte_01",
+    "series": {
+      "id": "boda_repetida",
+      "part": 1,
+      "is_cliffhanger": true
+    },
+    "language": "es",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "reuse_ingredients": true,
+    "grok_clip_seconds": "6",
+    "scene_target_seconds": 4,
+    "voice_target_seconds": [
+      3,
+      4
+    ],
+    "voice_ceiling_seconds": "5",
+    "hook": "Mi hermana me ahogó en la tina. Mi esposo le sostuvo la puerta.",
+    "motor": "N_regresion_segunda_oportunidad (secundario: L_traicion_intima)",
+    "world": "B_makjang_extremo",
+    "allow_supernatural": false,
+    "allow_historical": false
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "fish"
+    }
+  },
+  "characters": {
+    "da_eun": {
+      "display_name": "Da-eun",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/boda_repetida/da_eun_base.png",
+          "prompt": "Character reference, vertical 9:16, single Korean woman, age 25, realistic East-Asian features, delicate oval face, dark brown eyes, very long straight black hair loose to her waist, faint shadows under her eyes, plain bone-white blouse and dark skirt, restrained watchful expression, empty hands, standing upright, neutral soft grey studio background. Cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "tina_ahogada": {
+          "mode": "generate",
+          "asset": "assets/characters/boda_repetida/da_eun_tina_ahogada.png",
+          "reference_pose": "base",
+          "prompt": "Same character Da-eun, three years older, same face, black silk slip dress soaked through, long black hair floating wet around her face, lying back submerged to the collarbone in a white marble bathtub, both arms limp at her sides under the water, eyes open and calm, no wounds, no blood, neutral studio background."
+        },
+        "novia_pelo_suelto": {
+          "mode": "generate",
+          "asset": "assets/characters/boda_repetida/da_eun_novia_pelo_suelto.png",
+          "reference_pose": "base",
+          "prompt": "Same character Da-eun, same face, cream silk bridal robe over a slip, very long black hair loose and dry, no make-up, standing upright, both hands empty, shocked restrained expression, neutral studio background."
+        },
+        "sentada_tocador": {
+          "mode": "generate",
+          "asset": "assets/characters/boda_repetida/da_eun_sentada_tocador.png",
+          "reference_pose": "novia_pelo_suelto",
+          "prompt": "Same character Da-eun, same face, same cream silk bridal robe, hair loose, seated on a low padded stool, upright posture, both hands flat on her knees, feet flat on the floor, neutral studio background."
+        },
+        "vestido_novia": {
+          "mode": "generate",
+          "asset": "assets/characters/boda_repetida/da_eun_vestido_novia.png",
+          "reference_pose": "base",
+          "prompt": "Same character Da-eun, same face, simple raw silk wedding dress with long sleeves and a high neck, a short veil, hair pinned back with a small pearl hairpin, standing upright, both hands empty, composed unreadable expression, neutral studio background."
+        },
+        "novia_agachada": {
+          "mode": "generate",
+          "asset": "assets/characters/boda_repetida/da_eun_novia_agachada.png",
+          "reference_pose": "vestido_novia",
+          "prompt": "Same character Da-eun, same face, same raw silk wedding dress and veil, kneeling on both knees with the dress spread on the floor, back straight, one hand extended forward and open, urgent expression, neutral studio background."
+        }
+      }
+    },
+    "mi_rae": {
+      "display_name": "Mi-rae",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/boda_repetida/mi_rae_base.png",
+          "prompt": "Character reference, vertical 9:16, single Korean woman, age 23, realistic East-Asian features, round soft face, shoulder-length black hair with a middle part, emerald green silk dress, sweet harmless smile, empty hands, standing upright, neutral soft grey studio background. Cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "vestido_gala": {
+          "mode": "generate",
+          "asset": "assets/characters/boda_repetida/mi_rae_vestido_gala.png",
+          "reference_pose": "base",
+          "prompt": "Same character Mi-rae, same face and hair now pinned at one side, formal emerald green silk gala dress, small pearl earrings, standing upright, both hands folded in front of her, sweet attentive smile, neutral studio background."
+        },
+        "sobre_la_tina": {
+          "mode": "generate",
+          "asset": "assets/characters/boda_repetida/mi_rae_sobre_la_tina.png",
+          "reference_pose": "base",
+          "prompt": "Same character Mi-rae, three years older, same face, dark grey blouse with both sleeves rolled to the elbow, hair tied back, kneeling on both knees leaning forward, both arms extended down and forward, wet forearms, calm blank expression, neutral studio background."
+        }
+      }
+    },
+    "seo_jin": {
+      "display_name": "Seo-jin",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/boda_repetida/seo_jin_base.png",
+          "prompt": "Character reference, vertical 9:16, single Korean man, age 28, realistic East-Asian features, sharp jaw, short black hair swept back, black formal groom suit with a white boutonniere, polite cold smile, empty hands, standing upright, neutral soft grey studio background. Cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "traje_gris": {
+          "mode": "generate",
+          "asset": "assets/characters/boda_repetida/seo_jin_traje_gris.png",
+          "reference_pose": "base",
+          "prompt": "Same character Seo-jin, three years older, same face, charcoal grey suit without tie, shirt collar open, standing upright, one hand flat on a door edge at shoulder height, blank patient expression, neutral studio background."
+        }
+      }
+    },
+    "abuelo_cha": {
+      "display_name": "Abuelo Cha",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/boda_repetida/abuelo_cha_base.png",
+          "prompt": "Character reference, vertical 9:16, single Korean man, age 78, realistic East-Asian features, deep lines, thin white hair combed back, black formal suit, a dark wooden bead bracelet on his right wrist, severe unreadable expression, empty hands, standing upright, neutral soft grey studio background. Cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "sentado_silla": {
+          "mode": "generate",
+          "asset": "assets/characters/boda_repetida/abuelo_cha_sentado_silla.png",
+          "reference_pose": "base",
+          "prompt": "Same character Abuelo Cha, same face and white hair, same black suit and wooden bead bracelet, seated on a formal chair, upright posture, both hands resting on his thighs, feet flat on the floor, tired severe expression, neutral studio background."
+        }
+      }
+    }
+  },
+  "escenarios": {
+    "bano_marmol": {
+      "display_name": "Baño de mármol",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/boda_repetida/bano_marmol_base.png",
+          "prompt": "EMPTY luxury Korean marble bathroom seen from the open door, a long white freestanding bathtub full of still water in the middle, black stone floor, a tall mirror, one dim wall sconce, cold blue night light, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "cenital": {
+          "mode": "generate",
+          "asset": "assets/escenarios/boda_repetida/bano_marmol_cenital.png",
+          "reference_view": "base",
+          "prompt": "Same marble bathroom, new camera position directly above the bathtub looking straight down at the still water surface and the tub rim, bird's-eye view, same cold blue night light, empty set, no people, no text."
+        },
+        "close_agua": {
+          "mode": "generate",
+          "asset": "assets/escenarios/boda_repetida/bano_marmol_close_agua.png",
+          "reference_view": "base",
+          "prompt": "Same marble bathroom, extreme close view of the still water surface inside the tub with the white marble rim at the edge of frame, faint reflected sconce light, shallow depth of field, empty set, no people, no text."
+        }
+      }
+    },
+    "cuarto_novia": {
+      "display_name": "Cuarto de la novia",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/boda_repetida/cuarto_novia_base.png",
+          "prompt": "EMPTY elegant Korean bridal suite seen from the corner, a low bed with a wedding dress laid out on it, a vanity table with a lit mirror, tall windows with morning light through white curtains, warm pale light, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "espejo": {
+          "mode": "generate",
+          "asset": "assets/escenarios/boda_repetida/cuarto_novia_espejo.png",
+          "reference_view": "base",
+          "prompt": "Same bridal suite, new camera position at the vanity table facing the lit mirror, the padded stool and the mirror frame in the foreground, same warm morning light, empty set, no people, no text."
+        },
+        "desde_la_puerta": {
+          "mode": "generate",
+          "asset": "assets/escenarios/boda_repetida/cuarto_novia_desde_la_puerta.png",
+          "reference_view": "base",
+          "prompt": "Same bridal suite, new camera position from the open doorway looking in, the doorframe edge in the foreground, the bed and vanity beyond, same warm morning light, empty set, no people, no text."
+        }
+      }
+    },
+    "salon_boda": {
+      "display_name": "Salón de la boda",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/boda_repetida/salon_boda_base.png",
+          "prompt": "EMPTY luxury Korean wedding hall seen from the back of the aisle, rows of white chairs on both sides, a long white aisle, a flowered altar arch at the far end, tall lilies everywhere, warm golden light with soft haze, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "pasillo": {
+          "mode": "generate",
+          "asset": "assets/escenarios/boda_repetida/salon_boda_pasillo.png",
+          "reference_view": "base",
+          "prompt": "Same wedding hall, new camera position standing in the middle of the white aisle at eye level facing the altar arch, chairs receding on both sides, same warm golden light, empty set, no people, no text."
+        },
+        "altar_a": {
+          "mode": "generate",
+          "asset": "assets/escenarios/boda_repetida/salon_boda_altar_a.png",
+          "reference_view": "base",
+          "prompt": "Same wedding hall, new camera position at the altar arch looking back down the aisle, the flowered arch edge in the foreground, same warm golden light, empty set, no people, no text."
+        },
+        "altar_b": {
+          "mode": "generate",
+          "asset": "assets/escenarios/boda_repetida/salon_boda_altar_b.png",
+          "reference_view": "base",
+          "prompt": "Same wedding hall, new camera position at the altar from the opposite side, the flowered arch behind and the first rows of white chairs in the foreground, same warm golden light, empty set, no people, no text."
+        },
+        "primera_fila": {
+          "mode": "generate",
+          "asset": "assets/escenarios/boda_repetida/salon_boda_primera_fila.png",
+          "reference_view": "base",
+          "prompt": "Same wedding hall, new camera position at the front row of white chairs at seated eye level, the chair backs in the foreground, the flowered altar arch blurred behind, same warm golden light, empty set, no people, no text."
+        }
+      }
+    }
+  },
+  "ingredients": [
+    {
+      "id": "horquilla_perlas",
+      "type": "entity",
+      "generation_prompt": "Single antique pearl hairpin, thin silver stem with three small cream pearls, slightly worn, neutral dark background, extreme detail, realistic photography, no text, no logo.",
+      "output_file": "assets/ingredients/boda_repetida/horquilla_perlas.png"
+    },
+    {
+      "id": "taza_te",
+      "type": "entity",
+      "generation_prompt": "Single small white porcelain tea cup full of pale tea on a matching saucer, faint steam, neutral background, high detail, realistic photography, no text, no logo.",
+      "output_file": "assets/ingredients/boda_repetida/taza_te.png"
+    },
+    {
+      "id": "pastillas_abuelo",
+      "type": "entity",
+      "generation_prompt": "Single small amber pill bottle lying open with two white pills spilled beside it on a dark surface, no readable label, neutral background, extreme detail, realistic photography, no text, no logo.",
+      "output_file": "assets/ingredients/boda_repetida/pastillas_abuelo.png"
+    },
+    {
+      "id": "acta_matrimonio",
+      "type": "entity",
+      "generation_prompt": "Single formal marriage certificate sheet on a lectern, heavy cream paper with faint printed ruled lines and a red seal, a black fountain pen resting on it, no readable text, warm light, high detail, realistic photography, no logo.",
+      "output_file": "assets/ingredients/boda_repetida/acta_matrimonio.png"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_01",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "tina_ahogada"
+          },
+          {
+            "id": "mi_rae",
+            "pose": "sobre_la_tina"
+          }
+        ],
+        "escenario": {
+          "id": "bano_marmol",
+          "view": "cenital"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun and the provided Mi-rae in the provided marble bathroom overhead view: establishing wide shot from directly above the tub, bird's-eye view, Da-eun submerged to the collarbone in the water inside the white tub with her black hair floating around her face, Mi-rae kneeling on the black stone floor beside the tub with both arms extended down into the water, her sleeves rolled to the elbow, cold blue night light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the water surface breaks once around Da-eun's hair and goes flat again, both mouths closed, not speaking; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, tense] Mi hermana me ahogó en la tina.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "MI HERMANA",
+        "highlight_words": [
+          "hermana"
+        ]
+      }
+    },
+    {
+      "id": "scene_02",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "traje_gris"
+          }
+        ],
+        "escenario": {
+          "id": "bano_marmol",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Seo-jin in the provided marble bathroom: medium shot, camera behind his shoulder (from behind) at the open door, Seo-jin in the foreground with his back to camera in a charcoal suit, both feet on the black stone, one hand flat on the door edge at shoulder height holding it open, the white tub and the water beyond him, cold blue night light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): his hand stays flat on the door and does not move, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Mi esposo le sostuvo la puerta.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_03",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "bano_marmol",
+          "view": "close_agua"
+        },
+        "ingredients": [
+          "horquilla_perlas"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided pearl hairpin in the provided bathtub water close view: Insert shot: extreme close-up of a small pearl hairpin sinking slowly through the clear water toward the white marble bottom of the tub, faint reflected sconce light on the pearls, shallow depth of field, no people. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the pearl hairpin sinks slowly and settles on the white marble bottom; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Se me soltó la horquilla de mi madre.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_04",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "tina_ahogada"
+          }
+        ],
+        "escenario": {
+          "id": "bano_marmol",
+          "view": "cenital"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided marble bathroom overhead view: full body shot, head to feet in frame, camera directly above the tub looking down, Da-eun lying back under the water in the white tub, her black hair spread around her face, both arms limp at her sides, her eyes open and calm, no wounds, cold blue night light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her open eyes stay fixed upward while the water stills over her, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Lo último que vi fue el techo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_05",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "bano_marmol",
+          "view": "close_agua"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided bathtub water close view: Insert shot: close-up of the still water surface inside the tub with the white marble rim at the edge of frame, one last ring spreading and dying, faint sconce reflection, shallow depth of field, no people. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): one last ring spreads across the water and dies flat; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Después el agua se quedó quieta.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_06",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "novia_pelo_suelto"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided bridal suite: establishing wide shot from the corner, floor to ceiling visible, Da-eun full body small in the lower third sitting bolt upright on the edge of the low bed in a cream silk robe, the wedding dress laid out beside her, tall windows with white curtains full of morning light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she snaps upright on the edge of the bed and the curtains lift once behind her; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Desperté ocho horas antes. El día de mi boda.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "EL DÍA DE MI BODA",
+        "highlight_words": [
+          "boda"
+        ]
+      }
+    },
+    {
+      "id": "scene_07",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "novia_pelo_suelto"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided bridal suite: medium close-up, chest up, camera at the foot of the bed at eye level, Da-eun with wet-looking wide eyes and dry hair, both hands gripping her own throat, morning light on her face. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her hands find her own throat and hold it, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Tenía veinticinco años otra vez.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_08",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "sentada_tocador"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "espejo"
+        },
+        "ingredients": [
+          "horquilla_perlas"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun and the provided pearl hairpin in the provided vanity mirror view: close-up, camera at the vanity facing the lit mirror, Da-eun seated on the padded stool with her reflection in the frame, one hand raised to the small pearl hairpin holding her loose hair, the pin dry and clean, warm mirror light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her fingers touch the dry pearl hairpin and stop, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "La horquilla estaba seca. En mi pelo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "SECA",
+        "highlight_words": [
+          "seca"
+        ]
+      }
+    },
+    {
+      "id": "scene_09",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "sentada_tocador"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "espejo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided vanity mirror view: medium close-up, chest up, camera at the vanity beside the mirror, Da-eun seated on the stool staring at her own reflection, both hands flat on the vanity top, her breath shallow, warm mirror light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her reflection blinks a half second after she does, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Yo la vi hundirse. Hacía tres años.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_10",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "novia_pelo_suelto"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided bridal suite: full body shot, head to feet in frame, camera from the corner at eye level, Da-eun standing barefoot beside the bed in her cream robe, both feet on the wooden floor, both hands pressed hard over her own mouth, the wedding dress laid out behind her, morning light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she presses both hands harder over her own mouth, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Me tapé la boca para no gritar.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_11",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "mi_rae",
+            "pose": "vestido_gala"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "desde_la_puerta"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Mi-rae in the provided bridal suite doorway view: medium shot, camera inside the room facing the open doorway, Mi-rae standing in the doorframe in her emerald gala dress, both feet on the floor, face frontal, mouth clearly visible, one hand still on the door handle, a tea tray in the other, warm morning light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Mi-rae begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Mi-rae moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Mi hermana abrió sin tocar: —¿Ya estás lista?",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_12",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "novia_pelo_suelto"
+          },
+          {
+            "id": "mi_rae",
+            "pose": "vestido_gala"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun and the provided Mi-rae in the provided bridal suite: full body shot, head to feet in frame, camera from the corner at eye level, Mi-rae on frame-left walking in with the tray facing frame-right, Da-eun on frame-right frozen beside the bed facing frame-left, both feet on the floor, both mouths closed, morning light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Da-eun's whole body goes rigid as Mi-rae walks past her, mouths closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Esa voz me había dicho: no patalees.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "NO PATALEES",
+        "highlight_words": [
+          "patalees"
+        ]
+      }
+    },
+    {
+      "id": "scene_13",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "mi_rae",
+            "pose": "vestido_gala"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "desde_la_puerta"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Mi-rae in the provided bridal suite doorway view: medium close-up, chest up, camera inside the room at eye level, Mi-rae facing camera three-quarters with a sweet smile, mouth clearly visible, both hands setting the small tea cup down out of frame, warm morning light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Mi-rae begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Mi-rae moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Te traje té. Como siempre.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_14",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "sentada_tocador"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "espejo"
+        },
+        "ingredients": [
+          "taza_te"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun and the provided tea cup in the provided vanity mirror view: medium shot, camera behind her shoulder (from behind) at the vanity, Da-eun seated on the stool with her back to camera and her face visible only in the lit mirror, the small white tea cup on the vanity top in front of her, both hands flat on her knees, warm mirror light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the faint steam rises from the cup while her hands stay on her knees, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "En tres años, ese té me durmió cien veces.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_15",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "sentada_tocador"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "espejo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided vanity mirror view: medium close-up, chest up, camera at the vanity beside the mirror, Da-eun seated facing camera three-quarters, mouth clearly visible, her face composed for the first time, one hand pushing the cup a few centimetres away, warm mirror light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Da-eun begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Da-eun moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Déjalo ahí. Ahora lo tomo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_16",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "novia_pelo_suelto"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided bridal suite: full body shot, head to feet in frame, camera from the corner at eye level, Da-eun standing in her cream robe in the middle of the room, both feet on the floor, both hands open at her sides, the laid-out wedding dress on frame-right, morning light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she turns her head slowly toward the laid-out wedding dress, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Yo era Cha Da-eun. La única nieta del presidente.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "CHA DA-EUN",
+        "highlight_words": [
+          "Da-eun"
+        ]
+      }
+    },
+    {
+      "id": "scene_17",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "sentada_tocador"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "espejo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided vanity mirror view: medium close-up, chest up, camera at the vanity beside the mirror, Da-eun seated with her eyes tracking something out of frame, both hands closed on her knees, warm mirror light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her eyes track slowly across the room and stop, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Ella era Mi-rae. La niña que mi abuelo recogió.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_18",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "novia_pelo_suelto"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided bridal suite: medium shot, camera from the corner at eye level, Da-eun standing beside the bed with one hand resting flat on the laid-out wedding dress, both feet on the floor, her face lowered to the silk, morning light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her palm presses down slowly on the wedding dress, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Y en ocho horas me casaba con Seo-jin.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_19",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "sentada_tocador"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "espejo"
+        },
+        "ingredients": [
+          "taza_te"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun and the provided tea cup in the provided vanity mirror view: Insert shot: close-up of the white tea cup full on the vanity top, no face in frame, Da-eun's hand at the edge of frame turning the saucer a few degrees without lifting the cup, the tea untouched, warm mirror light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her fingers turn the saucer a few degrees and let go; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "No toqué el té.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "NO TOQUÉ EL TÉ",
+        "highlight_words": [
+          "té"
+        ]
+      }
+    },
+    {
+      "id": "scene_20",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "mi_rae",
+            "pose": "vestido_gala"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "desde_la_puerta"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Mi-rae in the provided bridal suite doorway view: medium shot, camera inside the room facing the doorway, Mi-rae standing in the doorframe half turned back, both feet on the floor, face three-quarters to camera, mouth clearly visible, one hand on the frame, warm morning light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Mi-rae begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Mi-rae moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Se te va a enfriar.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_21",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "mi_rae",
+            "pose": "vestido_gala"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Mi-rae in the provided bridal suite: medium close-up, chest up, camera from the corner at eye level, Mi-rae standing in the middle of the room facing camera, mouth clearly visible, her sweet smile fixed, both hands folded in front of her, morning light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Mi-rae begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Mi-rae moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—El abuelo pregunta por ti.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_22",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "novia_pelo_suelto"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_novia",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided bridal suite: medium shot, camera from the corner at eye level, Da-eun standing beside the bed facing camera three-quarters, both feet on the floor, her mouth closed in a small polite smile that does not reach her eyes, both hands loose, morning light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): a small polite smile settles on her mouth without reaching her eyes, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Sonreí como sonríe la gente que no sabe nada.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_23",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "vestido_novia"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided wedding hall: establishing wide shot from the back of the aisle, floor to ceiling visible, Da-eun full body small in the lower third standing alone at the head of the long white aisle in her raw silk wedding dress, rows of blurred anonymous Korean guests seated on both sides, the flowered altar arch far ahead, warm golden light with soft haze. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the blurred guests all turn toward her at once as the doors open behind her; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El salón olía igual. A lirios y a dinero.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_24",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "vestido_novia"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "pasillo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided wedding hall aisle view: full body shot, head to feet in frame, camera standing in the middle of the white aisle facing her, Da-eun walking toward camera between the rows, both feet on the white aisle, both hands holding a small bouquet at her waist, blurred seated guests on both sides, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she walks two slow steps toward camera without lowering her eyes, mouth closed, not speaking; slow dolly out. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Caminé sola hacia el hombre que me iba a matar.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "QUE ME IBA A MATAR",
+        "highlight_words": [
+          "matar"
+        ]
+      }
+    },
+    {
+      "id": "scene_25",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "altar_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Seo-jin in the provided wedding hall altar view: medium close-up, chest up, camera at the altar arch looking back down the aisle, Seo-jin standing under the arch in his black groom suit with a white boutonniere, face frontal, mouth clearly visible, one hand extended forward and open, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Seo-jin begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Seo-jin moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Seo-jin me dio la mano: —Llegas tarde, cariño.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_26",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "vestido_novia"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "altar_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided wedding hall altar side view: medium shot, camera at the altar from the opposite side, Da-eun standing under the flowered arch facing frame-left, both feet on the floor, her hand resting in his open hand at the edge of frame, her eyes down on their two hands, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her hand settles slowly into his open palm, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Esa mano me sostuvo la puerta mientras me ahogaba.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_27",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "altar_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Seo-jin in the provided wedding hall altar view: medium close-up, chest up, camera at the altar arch at eye level, Seo-jin standing under the arch, face frontal, mouth clearly visible, both hands closed around hers at the edge of frame, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Seo-jin begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Seo-jin moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—¿Por qué tiemblas tanto?",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_28",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "vestido_novia"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "altar_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided wedding hall altar side view: medium close-up, chest up, camera at the altar from the opposite side, Da-eun facing camera three-quarters under the arch, mouth clearly visible, her veil still, her eyes steady, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Da-eun begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Da-eun moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—De la emoción.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_29",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "base"
+          },
+          {
+            "id": "da_eun",
+            "pose": "vestido_novia"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "altar_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Seo-jin and the provided Da-eun in the provided wedding hall altar view: medium shot, camera behind Da-eun's shoulder (over-the-shoulder) at the altar, her veiled shoulder blurred on frame-left in the foreground, Seo-jin on frame-right facing frame-left under the arch, his face three-quarters to camera, mouth clearly visible, both hands holding hers, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Seo-jin begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Seo-jin moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Mírame cuando te hablo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_30",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "abuelo_cha",
+            "pose": "sentado_silla"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "primera_fila"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Abuelo Cha in the provided wedding hall front row view: medium close-up, chest up, camera at the front row at seated eye level, Abuelo Cha seated on a white chair in his black suit, one hand closed hard around his own left arm, his jaw tight, the wooden bead bracelet on his wrist, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): his hand closes harder around his own left arm, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "En primera fila, mi abuelo se tocaba el brazo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_31",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "vestido_novia"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "pasillo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided wedding hall aisle view: medium shot, camera in the middle of the aisle at eye level, Da-eun standing at the altar end of the aisle turned back toward the front row, both feet on the white aisle, the bouquet lowered in one hand, blurred guests on both sides, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her head turns sharply from the altar to the front row, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "En mi otra vida se desmayó a mitad de la ceremonia.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_32",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "abuelo_cha",
+            "pose": "sentado_silla"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "primera_fila"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Abuelo Cha in the provided wedding hall front row view: full body shot, head to feet in frame, camera at the front row at seated eye level, Abuelo Cha seated small on the white chair with blurred anonymous guests on both sides of him, both feet on the floor, all the blurred faces turned away toward the altar, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the blurred guests around him all keep their faces turned to the altar, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Nadie lo vio. Todos miraban el vestido.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_33",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "vestido_novia"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "altar_a"
+        },
+        "ingredients": [
+          "pastillas_abuelo"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun and the provided pill bottle in the provided wedding hall altar view: Insert shot: close-up of Da-eun's hand only, no face in frame, her fingers closing around a small amber pill bottle taken from under the flowers of her bouquet, warm golden light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her fingers close around the small amber bottle and lift it out of the bouquet; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Yo sabía dónde guardaba las pastillas.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_34",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "vestido_novia"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "pasillo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided wedding hall aisle view: full body shot, head to feet in frame, camera in the middle of the aisle at eye level, Da-eun letting the white bouquet drop onto the aisle at her feet, both feet on the white runner, the flowers scattering on the floor, blurred guests rising in their seats, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the bouquet drops out of her hand and scatters on the white aisle; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Solté el ramo a mitad del pasillo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_35",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "novia_agachada"
+          },
+          {
+            "id": "abuelo_cha",
+            "pose": "sentado_silla"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "primera_fila"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun and the provided Abuelo Cha in the provided wedding hall front row view: medium shot, camera behind Abuelo Cha's shoulder (over-the-shoulder) at the front row, his shoulder on frame-right in the foreground seated from behind, Da-eun on frame-left kneeling on the floor in her wedding dress facing frame-right, her open hand extended toward him, blurred guests standing around them, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she pushes the small bottle into his hand and closes his fingers over it, mouths closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Me arrodillé frente a mi abuelo, con el vestido puesto.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_36",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "novia_agachada"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "pasillo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided wedding hall aisle view: medium close-up, chest up, camera from the aisle at kneeling eye level, Da-eun kneeling beside the front row and facing camera three-quarters, her veil pushed back, mouth clearly visible, both hands closed over a hand at the edge of frame, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Da-eun begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Da-eun moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Abuelo. Tómese esto ahora.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_37",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "abuelo_cha",
+            "pose": "sentado_silla"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "primera_fila"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Abuelo Cha in the provided wedding hall front row view: medium shot, camera at the front row at seated eye level, Abuelo Cha seated on the white chair, both feet on the floor, face frontal, mouth clearly visible, the small amber bottle held in his open palm, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Abuelo Cha begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Abuelo Cha moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Mi abuelo me miró raro: —¿Y tú cómo sabes?",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_38",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "abuelo_cha",
+            "pose": "sentado_silla"
+          },
+          {
+            "id": "da_eun",
+            "pose": "novia_agachada"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "primera_fila"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Abuelo Cha and the provided Da-eun in the provided wedding hall front row view: full body shot, head to feet in frame, camera at the front row from the opposite side at seated eye level, Abuelo Cha on frame-left seated facing frame-right swallowing the pill, Da-eun on frame-right kneeling on the floor facing frame-left with both hands on the chair arm, blurred guests behind them, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): he swallows the pill and his shoulders drop as the pain lets go, mouths closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Se tomó la pastilla. No se desmayó.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_39",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "novia_agachada"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided wedding hall: establishing wide shot from the back of the aisle, floor to ceiling visible, Da-eun small in the lower third kneeling in her white dress beside the front row, the scattered bouquet on the aisle behind her, rows of blurred standing guests turned toward her, the flowered arch beyond, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): every blurred guest in the hall turns toward the kneeling bride; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Por primera vez en mi vida, ese hombre me miró.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_40",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "abuelo_cha",
+            "pose": "sentado_silla"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "primera_fila"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Abuelo Cha in the provided wedding hall front row view: medium close-up, chest up, camera at the front row at seated eye level, Abuelo Cha facing camera three-quarters, mouth clearly visible, his eyes hard on her, the wooden bead bracelet visible on his lifted wrist, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Abuelo Cha begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Abuelo Cha moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Tú no eres la de ayer.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "NO ERES LA DE AYER",
+        "highlight_words": [
+          "ayer"
+        ]
+      }
+    },
+    {
+      "id": "scene_41",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "novia_agachada"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "primera_fila"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided wedding hall front row view: medium shot, camera at the front row at seated eye level, Da-eun kneeling in her wedding dress facing camera, both hands on her knees, mouth clearly visible, her eyes level and dry, blurred standing guests behind her, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Da-eun begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Da-eun moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Soy la de mañana.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "SOY LA DE MAÑANA",
+        "highlight_words": [
+          "mañana"
+        ]
+      }
+    },
+    {
+      "id": "scene_42",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "vestido_novia"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "altar_a"
+        },
+        "ingredients": [
+          "acta_matrimonio"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun and the provided marriage certificate in the provided wedding hall altar view: Insert shot: close-up of Da-eun's hand only, no face in frame, her fingers holding a black fountain pen over the cream certificate sheet on the lectern, the tip pressed into the paper, warm golden light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the pen tip presses into the paper and drags one steady line; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Firmé el acta con la mano temblando.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_43",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "seo_jin",
+            "pose": "base"
+          },
+          {
+            "id": "da_eun",
+            "pose": "vestido_novia"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "altar_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Seo-jin and the provided Da-eun in the provided wedding hall altar side view: medium shot, camera at the altar from the opposite side, Seo-jin on frame-left facing frame-right under the flowered arch, Da-eun on frame-right facing frame-left, both feet on the floor, his hands closing over hers, blurred guests applauding behind them, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): his hands close over hers while her chin stays level, mouths closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[icy, controlled] Me casé con él. Con los ojos abiertos.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "CON LOS OJOS ABIERTOS",
+        "highlight_words": [
+          "abiertos"
+        ]
+      }
+    },
+    {
+      "id": "scene_44",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "vestido_novia"
+          },
+          {
+            "id": "mi_rae",
+            "pose": "vestido_gala"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun and the provided Mi-rae in the provided wedding hall: establishing wide shot from the back of the aisle, floor to ceiling visible, Da-eun and Mi-rae small in the lower third standing together under the flowered arch for a photograph, blurred anonymous guests crowded on both sides with raised phones, warm golden light with soft haze. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the blurred crowd raises their phones together as the two women pose; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Para la foto, mi hermana me acomodó el velo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_45",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "mi_rae",
+            "pose": "vestido_gala"
+          },
+          {
+            "id": "da_eun",
+            "pose": "vestido_novia"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "altar_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Mi-rae and the provided Da-eun in the provided wedding hall altar side view: medium shot, camera behind Da-eun's shoulder (from behind) at the altar, Da-eun in the foreground with her back to camera and her veiled head filling the lower frame, Mi-rae beyond her facing camera with both hands raised and settling on the back of the veil, both feet on the floor, her sweet smile fixed, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): both her hands settle on the back of the veiled head and press down slightly, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Me puso las manos en la cabeza. Otra vez.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "OTRA VEZ",
+        "highlight_words": [
+          "Otra"
+        ]
+      }
+    },
+    {
+      "id": "scene_46",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "vestido_novia"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "altar_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided wedding hall altar view: medium close-up, chest up, camera at the altar arch at eye level, Da-eun facing camera three-quarters under the veil, her eyes going far away, her mouth closed, the golden light of the hall going cold and blue at the edges of frame. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the warm light at the edges of frame slowly cools to blue around her face, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Y sentí el agua en los oídos.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_47",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "mi_rae",
+            "pose": "vestido_gala"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "altar_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Mi-rae in the provided wedding hall altar side view: medium close-up, chest up, camera at the altar from the opposite side, Mi-rae leaning in close to the edge of frame, her face three-quarters to camera, mouth clearly visible beside a veiled ear, her eyes open and flat, warm golden light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Mi-rae begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Mi-rae moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Se acercó a mi oído: —Otra vez tú de blanco.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_48",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "vestido_novia"
+          }
+        ],
+        "escenario": {
+          "id": "salon_boda",
+          "view": "altar_a"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun in the provided wedding hall altar view: extreme close-up of Da-eun's eyes only under the veil, camera at the altar arch, her pupils widening, one strand of hair stuck to her temple, the blurred golden hall behind, cold light creeping into the frame. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her pupils widen and hold, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, knowing] Mi hermana también volvió.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "TAMBIÉN VOLVIÓ",
+        "highlight_words": [
+          "volvió"
+        ]
+      }
+    }
+  ],
+  "capcut_export": {
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18",
+      "scene_19",
+      "scene_20",
+      "scene_21",
+      "scene_22",
+      "scene_23",
+      "scene_24",
+      "scene_25",
+      "scene_26",
+      "scene_27",
+      "scene_28",
+      "scene_29",
+      "scene_30",
+      "scene_31",
+      "scene_32",
+      "scene_33",
+      "scene_34",
+      "scene_35",
+      "scene_36",
+      "scene_37",
+      "scene_38",
+      "scene_39",
+      "scene_40",
+      "scene_41",
+      "scene_42",
+      "scene_43",
+      "scene_44",
+      "scene_45",
+      "scene_46",
+      "scene_47",
+      "scene_48"
+    ],
+    "caption_style": {
+      "font": "bold sans-serif",
+      "position": "lower-third",
+      "color": "white",
+      "stroke": "black"
+    },
+    "title_cards": [
+      "CONTINUARÁ",
+      "PARTE 2: LA QUE LLEGÓ PRIMERO"
+    ],
+    "cliffhanger_card": "¿PARTE 2?",
+    "music_notes": [
+      "Piano suave que se repite en bucle",
+      "Marcha nupcial bajo el agua"
+    ],
+    "sfx_notes": [
+      "Agua de tina, burbujas, silencio",
+      "Respiración que vuelve de golpe",
+      "Cucharilla en porcelana",
+      "Murmullo de boda y obturadores",
+      "Susurro al oído"
+    ]
+  },
+  "audio": {
+    "voice_speed": 1.25,
+    "voice_rate": 1,
+    "music_volume": 0
+  },
+  "tts_export": {
+    "mode": "per_scene",
+    "voice_id": "bfed5c0810a347dbb62e8ccce7f59c48",
+    "note": "Una sola voz femenina narra todas las escenas, incluidos los diálogos. Fish Audio por escena."
+  }
+}

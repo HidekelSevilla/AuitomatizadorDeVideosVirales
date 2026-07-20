@@ -1,0 +1,1850 @@
+{
+  "project": {
+    "title": "Heredero del Enemigo Nacional",
+    "serie": "heredero_del_enemigo_nacional",
+    "series": {
+      "id": "heredero_del_enemigo_nacional"
+    },
+    "language": "es-MX",
+    "preset": "manhwa",
+    "slug": "heredero-del-enemigo-nacional-p1",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "part": 1,
+    "target_runtime_seconds": 95,
+    "runtime_range_seconds": [
+      90,
+      100
+    ]
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "Grok",
+      "mode": "GROK_NATIVE_PAGE",
+      "output_pattern": "images/scene_XX.jpg"
+    },
+    "animation": {
+      "tool": "static_native_page_adapter"
+    },
+    "tts": {
+      "tool": "ElevenLabs",
+      "voice_id": "narrador_es_mx_v7_pendiente"
+    },
+    "editing": {
+      "tool": "runtime_v2_8_editor"
+    }
+  },
+  "characters": {
+    "C_MIN_JAEHA": {
+      "display_name": "Min Jaeha",
+      "descriptor_profile": {
+        "age": "24-year-old Korean male",
+        "build": "lean wiry build",
+        "face": "narrow exhausted face with a small scar under the left eyebrow",
+        "hair_or_skin": "short messy black hair and pale skin",
+        "wardrobe": "gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge",
+        "materials": "charcoal rubber gloves and scuffed black work shoes",
+        "colors": "muted gray cold blue and black color palette",
+        "marks": "left wrist marked by a burned black receipt sigil when active"
+      },
+      "prompt_signature": "Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active",
+      "immutable_traits": [
+        "zero Veta worker status",
+        "morgue cleaner uniform",
+        "left wrist black receipt mark after transfer"
+      ],
+      "negative_invariants": [
+        "no heroic armor",
+        "no hunter weapon",
+        "no glowing eyes"
+      ],
+      "poses": {
+        "cleaning_blood": {
+          "mode": "generate",
+          "asset": "assets/characters/heredero_del_enemigo_nacional/C_MIN_JAEHA_cleaning_blood.png",
+          "prompt": "Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active. panicked exhaustion; kneeling low with shoulders curled over a blood smear; gaze locked on the containment table; both charcoal-gloved hands gripping a red-stained mop and cloth. no heroic armor, no hunter weapon, no glowing eyes. Hand-drawn Korean manhwa character reference, flat cel shading, crisp lineart. no readable text, no speech bubbles, no watermark, no logo.",
+          "performance_signature": {
+            "emotion": "panicked exhaustion",
+            "body": "kneeling low with shoulders curled over a blood smear",
+            "gaze": "gaze locked on the containment table",
+            "hands": "both charcoal-gloved hands gripping a red-stained mop and cloth"
+          }
+        },
+        "oxygen_choice": {
+          "mode": "generate",
+          "asset": "assets/characters/heredero_del_enemigo_nacional/C_MIN_JAEHA_oxygen_choice.png",
+          "prompt": "Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active. quiet desperation; standing tense with his chest folded inward; gaze fixed on a hospital oxygen notice; one hand holds a phone notice while the other signs a shift card. no heroic armor, no hunter weapon, no glowing eyes. Hand-drawn Korean manhwa character reference, flat cel shading, crisp lineart. no readable text, no speech bubbles, no watermark, no logo.",
+          "performance_signature": {
+            "emotion": "quiet desperation",
+            "body": "standing tense with his chest folded inward",
+            "gaze": "gaze fixed on a hospital oxygen notice",
+            "hands": "one hand holds a phone notice while the other signs a shift card"
+          }
+        },
+        "wrist_grabbed": {
+          "mode": "generate",
+          "asset": "assets/characters/heredero_del_enemigo_nacional/C_MIN_JAEHA_wrist_grabbed.png",
+          "prompt": "Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active. raw terror; torso yanked toward the mortuary bag; gaze snapped down to his trapped wrist; one hand seized by the corpse while the other claws at the table edge. no heroic armor, no hunter weapon, no glowing eyes. Hand-drawn Korean manhwa character reference, flat cel shading, crisp lineart. no readable text, no speech bubbles, no watermark, no logo.",
+          "performance_signature": {
+            "emotion": "raw terror",
+            "body": "torso yanked toward the mortuary bag",
+            "gaze": "gaze snapped down to his trapped wrist",
+            "hands": "one hand seized by the corpse while the other claws at the table edge"
+          }
+        },
+        "hunted_mark": {
+          "mode": "generate",
+          "asset": "assets/characters/heredero_del_enemigo_nacional/C_MIN_JAEHA_hunted_mark.png",
+          "prompt": "Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active. shock and dread; twisting away with his marked arm pulled back; gaze fixed on the beast lunging at the wrist mark; one hand protects the burning black receipt mark while the other reaches for balance. no heroic armor, no hunter weapon, no glowing eyes. Hand-drawn Korean manhwa character reference, flat cel shading, crisp lineart. no readable text, no speech bubbles, no watermark, no logo.",
+          "performance_signature": {
+            "emotion": "shock and dread",
+            "body": "twisting away with his marked arm pulled back",
+            "gaze": "gaze fixed on the beast lunging at the wrist mark",
+            "hands": "one hand protects the burning black receipt mark while the other reaches for balance"
+          }
+        },
+        "accepting_wound": {
+          "mode": "generate",
+          "asset": "assets/characters/heredero_del_enemigo_nacional/C_MIN_JAEHA_accepting_wound.png",
+          "prompt": "Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active. grim resolve through fear; standing still instead of dodging with shoulder exposed; gaze locked on the incoming claw; both hands open and shaking, refusing to dodge. no heroic armor, no hunter weapon, no glowing eyes. Hand-drawn Korean manhwa character reference, flat cel shading, crisp lineart. no readable text, no speech bubbles, no watermark, no logo.",
+          "performance_signature": {
+            "emotion": "grim resolve through fear",
+            "body": "standing still instead of dodging with shoulder exposed",
+            "gaze": "gaze locked on the incoming claw",
+            "hands": "both hands open and shaking, refusing to dodge"
+          }
+        },
+        "chain_release": {
+          "mode": "generate",
+          "asset": "assets/characters/heredero_del_enemigo_nacional/C_MIN_JAEHA_chain_release.png",
+          "prompt": "Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active. agonized defiance; arched backward as a black chain erupts from the shoulder wound; gaze burning toward the breaking beast; one hand clenches the wounded shoulder while the marked wrist points forward. no heroic armor, no hunter weapon, no glowing eyes. Hand-drawn Korean manhwa character reference, flat cel shading, crisp lineart. no readable text, no speech bubbles, no watermark, no logo.",
+          "performance_signature": {
+            "emotion": "agonized defiance",
+            "body": "arched backward as a black chain erupts from the shoulder wound",
+            "gaze": "gaze burning toward the breaking beast",
+            "hands": "one hand clenches the wounded shoulder while the marked wrist points forward"
+          }
+        },
+        "resisting_order": {
+          "mode": "generate",
+          "asset": "assets/characters/heredero_del_enemigo_nacional/C_MIN_JAEHA_resisting_order.png",
+          "prompt": "Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active. horrified resistance; bent over the gurney forcing his own arm down; gaze fixed on his disobedient hand; one hand pins the marked wrist against steel until blood spreads. no heroic armor, no hunter weapon, no glowing eyes. Hand-drawn Korean manhwa character reference, flat cel shading, crisp lineart. no readable text, no speech bubbles, no watermark, no logo.",
+          "performance_signature": {
+            "emotion": "horrified resistance",
+            "body": "bent over the gurney forcing his own arm down",
+            "gaze": "gaze fixed on his disobedient hand",
+            "hands": "one hand pins the marked wrist against steel until blood spreads"
+          }
+        },
+        "accused_survivor": {
+          "mode": "generate",
+          "asset": "assets/characters/heredero_del_enemigo_nacional/C_MIN_JAEHA_accused_survivor.png",
+          "prompt": "Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active. stunned betrayal; half-kneeling in beast blood with his wounded shoulder lowered; gaze lifted toward armed Hanse hunters; one hand clutches the black receipt wrist while the other hangs open. no heroic armor, no hunter weapon, no glowing eyes. Hand-drawn Korean manhwa character reference, flat cel shading, crisp lineart. no readable text, no speech bubbles, no watermark, no logo.",
+          "performance_signature": {
+            "emotion": "stunned betrayal",
+            "body": "half-kneeling in beast blood with his wounded shoulder lowered",
+            "gaze": "gaze lifted toward armed Hanse hunters",
+            "hands": "one hand clutches the black receipt wrist while the other hangs open"
+          }
+        },
+        "cliffhanger_mark": {
+          "mode": "generate",
+          "asset": "assets/characters/heredero_del_enemigo_nacional/C_MIN_JAEHA_cliffhanger_mark.png",
+          "prompt": "Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active. cold realization; curled over his whispering wrist in the empty morgue; gaze fixed on the living black mark; both hands cradle the wrist as if it might speak again. no heroic armor, no hunter weapon, no glowing eyes. Hand-drawn Korean manhwa character reference, flat cel shading, crisp lineart. no readable text, no speech bubbles, no watermark, no logo.",
+          "performance_signature": {
+            "emotion": "cold realization",
+            "body": "curled over his whispering wrist in the empty morgue",
+            "gaze": "gaze fixed on the living black mark",
+            "hands": "both hands cradle the wrist as if it might speak again"
+          }
+        }
+      }
+    },
+    "C_KWON_RYUGAK": {
+      "display_name": "Kwon Ryu-gak",
+      "descriptor_profile": {
+        "age": "41-year-old Korean male corpse",
+        "build": "tall gaunt build",
+        "face": "severe angular face with sunken cheeks",
+        "hair_or_skin": "long slick black hair streaked with silver and death-pale skin",
+        "wardrobe": "torn black containment shroud under a sealed mortuary bag",
+        "materials": "iron oath shackles and blackened seal tags",
+        "colors": "ash black rust red and cold violet color palette",
+        "marks": "chest and ribs marked by contaminated Fracture cracks"
+      },
+      "prompt_signature": "Kwon Ryu-gak, a 41-year-old Korean male corpse, tall gaunt build, severe angular face with sunken cheeks, long slick black hair streaked with silver and death-pale skin, torn black containment shroud under a sealed mortuary bag, iron oath shackles and blackened seal tags, ash black rust red and cold violet color palette, chest and ribs marked by contaminated Fracture cracks",
+      "immutable_traits": [
+        "dead national enemy",
+        "sealed corpse state",
+        "Fracture-contaminated ribs"
+      ],
+      "negative_invariants": [
+        "no healthy skin",
+        "no friendly expression",
+        "no clean suit"
+      ],
+      "poses": {
+        "corpse_sealed": {
+          "mode": "generate",
+          "asset": "assets/characters/heredero_del_enemigo_nacional/C_KWON_RYUGAK_corpse_sealed.png",
+          "prompt": "Kwon Ryu-gak, a 41-year-old Korean male corpse, tall gaunt build, severe angular face with sunken cheeks, long slick black hair streaked with silver and death-pale skin, torn black containment shroud under a sealed mortuary bag, iron oath shackles and blackened seal tags, ash black rust red and cold violet color palette, chest and ribs marked by contaminated Fracture cracks. absolute dead stillness; lying rigid inside a half-zipped mortuary bag; eyes closed with no living focus; both hands restrained under iron oath seals. no healthy skin, no friendly expression, no clean suit. Hand-drawn Korean manhwa character reference, flat cel shading, crisp lineart. no readable text, no speech bubbles, no watermark, no logo.",
+          "performance_signature": {
+            "emotion": "absolute dead stillness",
+            "body": "lying rigid inside a half-zipped mortuary bag",
+            "gaze": "eyes closed with no living focus",
+            "hands": "both hands restrained under iron oath seals"
+          }
+        },
+        "corpse_grip": {
+          "mode": "generate",
+          "asset": "assets/characters/heredero_del_enemigo_nacional/C_KWON_RYUGAK_corpse_grip.png",
+          "prompt": "Kwon Ryu-gak, a 41-year-old Korean male corpse, tall gaunt build, severe angular face with sunken cheeks, long slick black hair streaked with silver and death-pale skin, torn black containment shroud under a sealed mortuary bag, iron oath shackles and blackened seal tags, ash black rust red and cold violet color palette, chest and ribs marked by contaminated Fracture cracks. deathless command; half-risen from the mortuary bag; dead gaze aimed at Jaeha's wrist; one corpse hand crushes Jaeha's wrist while the other grips the bag zipper. no healthy skin, no friendly expression, no clean suit. Hand-drawn Korean manhwa character reference, flat cel shading, crisp lineart. no readable text, no speech bubbles, no watermark, no logo.",
+          "performance_signature": {
+            "emotion": "deathless command",
+            "body": "half-risen from the mortuary bag",
+            "gaze": "dead gaze aimed at Jaeha's wrist",
+            "hands": "one corpse hand crushes Jaeha's wrist while the other grips the bag zipper"
+          }
+        },
+        "dying_lips": {
+          "mode": "generate",
+          "asset": "assets/characters/heredero_del_enemigo_nacional/C_KWON_RYUGAK_dying_lips.png",
+          "prompt": "Kwon Ryu-gak, a 41-year-old Korean male corpse, tall gaunt build, severe angular face with sunken cheeks, long slick black hair streaked with silver and death-pale skin, torn black containment shroud under a sealed mortuary bag, iron oath shackles and blackened seal tags, ash black rust red and cold violet color palette, chest and ribs marked by contaminated Fracture cracks. fading malice; collapsed against the open mortuary bag; half-lidded gaze fading toward Jaeha; one hand presses the black receipt into skin while the other falls limp. no healthy skin, no friendly expression, no clean suit. Hand-drawn Korean manhwa character reference, flat cel shading, crisp lineart. no readable text, no speech bubbles, no watermark, no logo.",
+          "performance_signature": {
+            "emotion": "fading malice",
+            "body": "collapsed against the open mortuary bag",
+            "gaze": "half-lidded gaze fading toward Jaeha",
+            "hands": "one hand presses the black receipt into skin while the other falls limp"
+          }
+        }
+      }
+    },
+    "C_YUN_SERA": {
+      "display_name": "Yun Sera",
+      "descriptor_profile": {
+        "age": "29-year-old Korean female",
+        "build": "athletic compact build",
+        "face": "sharp oval face with stern brows and a healed cut on the lower lip",
+        "hair_or_skin": "black hair tied in a tight tactical ponytail and clear tan skin",
+        "wardrobe": "dark navy Hanse tactical coat with armored collar and rank pins",
+        "materials": "matte ceramic armor plates and a compact broadcast device",
+        "colors": "navy steel white and emergency red color palette",
+        "marks": "right cheek marked by a small silver Hanse comm scar"
+      },
+      "prompt_signature": "Yun Sera, a 29-year-old Korean female Hanse captain, athletic compact build, sharp oval face with stern brows and a healed cut on the lower lip, black hair tied in a tight tactical ponytail and clear tan skin, dark navy Hanse tactical coat with armored collar and rank pins, matte ceramic armor plates and a compact broadcast device, navy steel white and emergency red color palette, right cheek marked by a small silver Hanse comm scar",
+      "immutable_traits": [
+        "Hanse captain authority",
+        "tactical restraint",
+        "broadcast device"
+      ],
+      "negative_invariants": [
+        "no soft smile",
+        "no civilian clothes",
+        "no fantasy crown"
+      ],
+      "poses": {
+        "breach_command": {
+          "mode": "generate",
+          "asset": "assets/characters/heredero_del_enemigo_nacional/C_YUN_SERA_breach_command.png",
+          "prompt": "Yun Sera, a 29-year-old Korean female Hanse captain, athletic compact build, sharp oval face with stern brows and a healed cut on the lower lip, black hair tied in a tight tactical ponytail and clear tan skin, dark navy Hanse tactical coat with armored collar and rank pins, matte ceramic armor plates and a compact broadcast device, navy steel white and emergency red color palette, right cheek marked by a small silver Hanse comm scar. controlled fury; standing square in the morgue breach with tactical authority; gaze fixed on Jaeha as evidence, not as a person; one hand raises a broadcast device while the other signals hunters forward. no soft smile, no civilian clothes, no fantasy crown. Hand-drawn Korean manhwa character reference, flat cel shading, crisp lineart. no readable text, no speech bubbles, no watermark, no logo.",
+          "performance_signature": {
+            "emotion": "controlled fury",
+            "body": "standing square in the morgue breach with tactical authority",
+            "gaze": "gaze fixed on Jaeha as evidence, not as a person",
+            "hands": "one hand raises a broadcast device while the other signals hunters forward"
+          }
+        },
+        "state_broadcast": {
+          "mode": "generate",
+          "asset": "assets/characters/heredero_del_enemigo_nacional/C_YUN_SERA_state_broadcast.png",
+          "prompt": "Yun Sera, a 29-year-old Korean female Hanse captain, athletic compact build, sharp oval face with stern brows and a healed cut on the lower lip, black hair tied in a tight tactical ponytail and clear tan skin, dark navy Hanse tactical coat with armored collar and rank pins, matte ceramic armor plates and a compact broadcast device, navy steel white and emergency red color palette, right cheek marked by a small silver Hanse comm scar. cold official certainty; shoulders rigid beside the empty villain table; gaze aimed through the transmission lens; one hand frames Jaeha's face on the device while the other grips her sidearm low. no soft smile, no civilian clothes, no fantasy crown. Hand-drawn Korean manhwa character reference, flat cel shading, crisp lineart. no readable text, no speech bubbles, no watermark, no logo.",
+          "performance_signature": {
+            "emotion": "cold official certainty",
+            "body": "shoulders rigid beside the empty villain table",
+            "gaze": "gaze aimed through the transmission lens",
+            "hands": "one hand frames Jaeha's face on the device while the other grips her sidearm low"
+          }
+        }
+      }
+    }
+  },
+  "ingredients": [
+    {
+      "id": "P_RECIBO_NEGRO",
+      "type": "entity",
+      "output_file": "assets/ingredients/heredero_del_enemigo_nacional/P_RECIBO_NEGRO.png",
+      "generation_prompt": "black receipt sigil contract mark burned into a wrist, pulsing like a black invoice seal. Hand-drawn Korean manhwa prop/entity reference, crisp lineart, flat cel shading, vertical 9:16 safe design, no readable text, no speech bubbles, no watermark, no logo."
+    },
+    {
+      "id": "P_HOSPITAL_OXYGEN_NOTICE",
+      "type": "entity",
+      "output_file": "assets/ingredients/heredero_del_enemigo_nacional/P_HOSPITAL_OXYGEN_NOTICE.png",
+      "generation_prompt": "hospital oxygen cutoff notice represented by blank icons, oxygen tube symbol, and dawn alarm shape without readable words. Hand-drawn Korean manhwa prop/entity reference, crisp lineart, flat cel shading, vertical 9:16 safe design, no readable text, no speech bubbles, no watermark, no logo."
+    },
+    {
+      "id": "P_MORGUE_SEALS",
+      "type": "entity",
+      "output_file": "assets/ingredients/heredero_del_enemigo_nacional/P_MORGUE_SEALS.png",
+      "generation_prompt": "three iron oath seals, enemy heir registry sigils, and blackened mortuary seal tags. Hand-drawn Korean manhwa prop/entity reference, crisp lineart, flat cel shading, vertical 9:16 safe design, no readable text, no speech bubbles, no watermark, no logo."
+    },
+    {
+      "id": "E_FRACTURE_BEAST_RIB",
+      "type": "entity",
+      "output_file": "assets/ingredients/heredero_del_enemigo_nacional/E_FRACTURE_BEAST_RIB.png",
+      "generation_prompt": "rib-born Fracture beast made of bone splinters and violet-black flesh, blind head, hooked claws, no eyes, no eye sockets, no pupils. Hand-drawn Korean manhwa prop/entity reference, crisp lineart, flat cel shading, vertical 9:16 safe design, no readable text, no speech bubbles, no watermark, no logo."
+    },
+    {
+      "id": "SYSTEM_RANK",
+      "type": "entity",
+      "output_file": "assets/ingredients/heredero_del_enemigo_nacional/SYSTEM_RANK.png",
+      "generation_prompt": "floating rank screen rising from zero as unreadable geometric UI blocks with level one balance icons. Hand-drawn Korean manhwa prop/entity reference, crisp lineart, flat cel shading, vertical 9:16 safe design, no readable text, no speech bubbles, no watermark, no logo."
+    },
+    {
+      "id": "P_ORDEN_PENDIENTE",
+      "type": "entity",
+      "output_file": "assets/ingredients/heredero_del_enemigo_nacional/P_ORDEN_PENDIENTE.png",
+      "generation_prompt": "pending order manifested as black wrist-writing and violent throat-crushing pictograph, illegible and unreadable. Hand-drawn Korean manhwa prop/entity reference, crisp lineart, flat cel shading, vertical 9:16 safe design, no readable text, no speech bubbles, no watermark, no logo."
+    },
+    {
+      "id": "F_CAZADORES_HANSE",
+      "type": "entity",
+      "output_file": "assets/ingredients/heredero_del_enemigo_nacional/F_CAZADORES_HANSE.png",
+      "generation_prompt": "Hanse hunters in dark navy containment armor, visor helmets, sensor lances, and state response posture. Hand-drawn Korean manhwa prop/entity reference, crisp lineart, flat cel shading, vertical 9:16 safe design, no readable text, no speech bubbles, no watermark, no logo."
+    },
+    {
+      "id": "P_STATE_BROADCAST",
+      "type": "entity",
+      "output_file": "assets/ingredients/heredero_del_enemigo_nacional/P_STATE_BROADCAST.png",
+      "generation_prompt": "state broadcast device projecting Jaeha face as unreadable official classification blocks. Hand-drawn Korean manhwa prop/entity reference, crisp lineart, flat cel shading, vertical 9:16 safe design, no readable text, no speech bubbles, no watermark, no logo."
+    },
+    {
+      "id": "P_FRACTURE_WARNING_SYMBOL",
+      "type": "entity",
+      "output_file": "assets/ingredients/heredero_del_enemigo_nacional/P_FRACTURE_WARNING_SYMBOL.png",
+      "generation_prompt": "Fracture warning symbol and zero Veta status indicator rendered as icons without readable words. Hand-drawn Korean manhwa prop/entity reference, crisp lineart, flat cel shading, vertical 9:16 safe design, no readable text, no speech bubbles, no watermark, no logo."
+    }
+  ],
+  "escenarios": {
+    "L_MORGUE_RAIZ": {
+      "display_name": "Morgue Raíz",
+      "descriptor_profile": {
+        "architecture": "sealed municipal containment morgue",
+        "layout": "rectangular circulation",
+        "materials": "poured concrete walls, fixed stainless autopsy tables, grated floor drains",
+        "anchors": "iron oath seal rails and ceiling fluorescence",
+        "palette": "cold blue-gray municipal palette"
+      },
+      "spatial_role": "PRIMARY",
+      "prompt_signature": "sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette",
+      "views": {
+        "containment_table_wide": {
+          "mode": "generate",
+          "asset": "assets/escenarios/heredero_del_enemigo_nacional/L_MORGUE_RAIZ_containment_table_wide.png",
+          "prompt": "CAMERA: scale=ENVIRONMENT_WIDE; elevation=LOW; viewpoint=PROFILE; azimuth_deg=90; lens_mm=35; roll_deg=0; dominant_subject=environment; occupancy_pct=100.\nSUBJECTS: empty environment, no characters.\nACTION: static identity plate with fixed architectural anchors.\nENVIRONMENT: sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; north containment table locked beneath three iron rails, center drain grid stained with red cleanup water, east steel service door sealed by yellow hazard tags, and west glass control booth dark and silent.\nLIGHTING: cold fluorescent ceiling illumination with restrained alarm spill.\nSTYLE: hand-drawn Korean manhwa environment reference, flat cel shading, crisp lineart, precise architecture and materials, high-resolution vertical 9:16 source.\nNEGATIVE: no readable text, no speech bubbles, no watermark, no logo, no people, no movable walls.",
+          "prompt_signature": "north containment table locked beneath three iron rails, center drain grid stained with red cleanup water, east steel service door sealed by yellow hazard tags, and west glass control booth dark and silent",
+          "camera_signature": {
+            "scale": "ENVIRONMENT_WIDE",
+            "elevation": "LOW",
+            "viewpoint": "PROFILE",
+            "azimuth_deg": 90,
+            "lens_mm": 35,
+            "roll_deg": 0,
+            "dominant_subject": "environment",
+            "occupancy_pct": 100
+          }
+        },
+        "service_door_axis": {
+          "mode": "generate",
+          "asset": "assets/escenarios/heredero_del_enemigo_nacional/L_MORGUE_RAIZ_service_door_axis.png",
+          "prompt": "CAMERA: scale=ENVIRONMENT_WIDE; elevation=EYE_LEVEL; viewpoint=THREE_QUARTER_FRONT; azimuth_deg=25; lens_mm=50; roll_deg=0; dominant_subject=environment; occupancy_pct=100.\nSUBJECTS: empty environment, no characters.\nACTION: static identity plate with fixed architectural anchors.\nENVIRONMENT: sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; east service door alcove with a wall-mounted shift terminal, cracked phone tray, oxygen cutoff paperwork represented by blank icons, and floor arrows painted toward the central drain.\nLIGHTING: cold fluorescent ceiling illumination with restrained alarm spill.\nSTYLE: hand-drawn Korean manhwa environment reference, flat cel shading, crisp lineart, precise architecture and materials, high-resolution vertical 9:16 source.\nNEGATIVE: no readable text, no speech bubbles, no watermark, no logo, no people, no movable walls.",
+          "prompt_signature": "east service door alcove with a wall-mounted shift terminal, cracked phone tray, oxygen cutoff paperwork represented by blank icons, and floor arrows painted toward the central drain",
+          "camera_signature": {
+            "scale": "ENVIRONMENT_WIDE",
+            "elevation": "EYE_LEVEL",
+            "viewpoint": "THREE_QUARTER_FRONT",
+            "azimuth_deg": 25,
+            "lens_mm": 50,
+            "roll_deg": 0,
+            "dominant_subject": "environment",
+            "occupancy_pct": 100
+          }
+        },
+        "oath_seal_overhead": {
+          "mode": "generate",
+          "asset": "assets/escenarios/heredero_del_enemigo_nacional/L_MORGUE_RAIZ_oath_seal_overhead.png",
+          "prompt": "CAMERA: scale=ENVIRONMENT_WIDE; elevation=HIGH; viewpoint=FRONT; azimuth_deg=0; lens_mm=50; roll_deg=0; dominant_subject=environment; occupancy_pct=100.\nSUBJECTS: empty environment, no characters.\nACTION: static identity plate with fixed architectural anchors.\nENVIRONMENT: sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; ceiling oath rails arranged above the mortuary bag, three iron seals hanging from black chains, circular ward grooves around the table, and cold vapor pooled near the floor drain.\nLIGHTING: cold fluorescent ceiling illumination with restrained alarm spill.\nSTYLE: hand-drawn Korean manhwa environment reference, flat cel shading, crisp lineart, precise architecture and materials, high-resolution vertical 9:16 source.\nNEGATIVE: no readable text, no speech bubbles, no watermark, no logo, no people, no movable walls.",
+          "prompt_signature": "ceiling oath rails arranged above the mortuary bag, three iron seals hanging from black chains, circular ward grooves around the table, and cold vapor pooled near the floor drain",
+          "camera_signature": {
+            "scale": "ENVIRONMENT_WIDE",
+            "elevation": "HIGH",
+            "viewpoint": "FRONT",
+            "azimuth_deg": 0,
+            "lens_mm": 50,
+            "roll_deg": 0,
+            "dominant_subject": "environment",
+            "occupancy_pct": 100
+          }
+        },
+        "rib_shadow_profile": {
+          "mode": "generate",
+          "asset": "assets/escenarios/heredero_del_enemigo_nacional/L_MORGUE_RAIZ_rib_shadow_profile.png",
+          "prompt": "CAMERA: scale=ENVIRONMENT_WIDE; elevation=LOW; viewpoint=PROFILE; azimuth_deg=100; lens_mm=35; roll_deg=-8; dominant_subject=environment; occupancy_pct=100.\nSUBJECTS: empty environment, no characters.\nACTION: static identity plate with fixed architectural anchors.\nENVIRONMENT: sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; north table torn open at the mortuary bag seam, rib fragments spreading toward the center drain, violet Fracture residue along steel tiles, and a warning glyph ring burned into concrete.\nLIGHTING: cold fluorescent ceiling illumination with restrained alarm spill.\nSTYLE: hand-drawn Korean manhwa environment reference, flat cel shading, crisp lineart, precise architecture and materials, high-resolution vertical 9:16 source.\nNEGATIVE: no readable text, no speech bubbles, no watermark, no logo, no people, no movable walls.",
+          "prompt_signature": "north table torn open at the mortuary bag seam, rib fragments spreading toward the center drain, violet Fracture residue along steel tiles, and a warning glyph ring burned into concrete",
+          "camera_signature": {
+            "scale": "ENVIRONMENT_WIDE",
+            "elevation": "LOW",
+            "viewpoint": "PROFILE",
+            "azimuth_deg": 100,
+            "lens_mm": 35,
+            "roll_deg": -8,
+            "dominant_subject": "environment",
+            "occupancy_pct": 100
+          }
+        },
+        "gurney_pov": {
+          "mode": "generate",
+          "asset": "assets/escenarios/heredero_del_enemigo_nacional/L_MORGUE_RAIZ_gurney_pov.png",
+          "prompt": "CAMERA: scale=ENVIRONMENT_WIDE; elevation=HIGH; viewpoint=POV; azimuth_deg=180; lens_mm=70; roll_deg=12; dominant_subject=environment; occupancy_pct=100.\nSUBJECTS: empty environment, no characters.\nACTION: static identity plate with fixed architectural anchors.\nENVIRONMENT: sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; mobile steel gurney locked beside the central drain, bent restraint handle, blood trail leading from the north table, and emergency shutter closed over the east service door.\nLIGHTING: cold fluorescent ceiling illumination with restrained alarm spill.\nSTYLE: hand-drawn Korean manhwa environment reference, flat cel shading, crisp lineart, precise architecture and materials, high-resolution vertical 9:16 source.\nNEGATIVE: no readable text, no speech bubbles, no watermark, no logo, no people, no movable walls.",
+          "prompt_signature": "mobile steel gurney locked beside the central drain, bent restraint handle, blood trail leading from the north table, and emergency shutter closed over the east service door",
+          "camera_signature": {
+            "scale": "ENVIRONMENT_WIDE",
+            "elevation": "HIGH",
+            "viewpoint": "POV",
+            "azimuth_deg": 180,
+            "lens_mm": 70,
+            "roll_deg": 12,
+            "dominant_subject": "environment",
+            "occupancy_pct": 100
+          }
+        },
+        "drain_ground_rear": {
+          "mode": "generate",
+          "asset": "assets/escenarios/heredero_del_enemigo_nacional/L_MORGUE_RAIZ_drain_ground_rear.png",
+          "prompt": "CAMERA: scale=ENVIRONMENT_WIDE; elevation=GROUND_LEVEL; viewpoint=REAR_THREE_QUARTER; azimuth_deg=210; lens_mm=40; roll_deg=0; dominant_subject=environment; occupancy_pct=100.\nSUBJECTS: empty environment, no characters.\nACTION: static identity plate with fixed architectural anchors.\nENVIRONMENT: sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; drain channel crossing the morgue floor, broken beast shell scattered around the grate, black chain scorch marks on steel tiles, and the north table left warped by containment heat.\nLIGHTING: cold fluorescent ceiling illumination with restrained alarm spill.\nSTYLE: hand-drawn Korean manhwa environment reference, flat cel shading, crisp lineart, precise architecture and materials, high-resolution vertical 9:16 source.\nNEGATIVE: no readable text, no speech bubbles, no watermark, no logo, no people, no movable walls.",
+          "prompt_signature": "drain channel crossing the morgue floor, broken beast shell scattered around the grate, black chain scorch marks on steel tiles, and the north table left warped by containment heat",
+          "camera_signature": {
+            "scale": "ENVIRONMENT_WIDE",
+            "elevation": "GROUND_LEVEL",
+            "viewpoint": "REAR_THREE_QUARTER",
+            "azimuth_deg": 210,
+            "lens_mm": 40,
+            "roll_deg": 0,
+            "dominant_subject": "environment",
+            "occupancy_pct": 100
+          }
+        },
+        "registry_terminal_close": {
+          "mode": "generate",
+          "asset": "assets/escenarios/heredero_del_enemigo_nacional/L_MORGUE_RAIZ_registry_terminal_close.png",
+          "prompt": "CAMERA: scale=ENVIRONMENT_WIDE; elevation=HIGH; viewpoint=FRONT; azimuth_deg=0; lens_mm=85; roll_deg=0; dominant_subject=environment; occupancy_pct=100.\nSUBJECTS: empty environment, no characters.\nACTION: static identity plate with fixed architectural anchors.\nENVIRONMENT: sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; west control terminal with glowing registry sigils rendered as unreadable blocks, steel gurney edge with fresh blood, black receipt burn marks on the rail, and three broken oath tags piled nearby.\nLIGHTING: cold fluorescent ceiling illumination with restrained alarm spill.\nSTYLE: hand-drawn Korean manhwa environment reference, flat cel shading, crisp lineart, precise architecture and materials, high-resolution vertical 9:16 source.\nNEGATIVE: no readable text, no speech bubbles, no watermark, no logo, no people, no movable walls.",
+          "prompt_signature": "west control terminal with glowing registry sigils rendered as unreadable blocks, steel gurney edge with fresh blood, black receipt burn marks on the rail, and three broken oath tags piled nearby",
+          "camera_signature": {
+            "scale": "ENVIRONMENT_WIDE",
+            "elevation": "HIGH",
+            "viewpoint": "FRONT",
+            "azimuth_deg": 0,
+            "lens_mm": 85,
+            "roll_deg": 0,
+            "dominant_subject": "environment",
+            "occupancy_pct": 100
+          }
+        },
+        "hunter_breach_ots": {
+          "mode": "generate",
+          "asset": "assets/escenarios/heredero_del_enemigo_nacional/L_MORGUE_RAIZ_hunter_breach_ots.png",
+          "prompt": "CAMERA: scale=ENVIRONMENT_WIDE; elevation=EYE_LEVEL; viewpoint=OTS; azimuth_deg=310; lens_mm=55; roll_deg=0; dominant_subject=environment; occupancy_pct=100.\nSUBJECTS: empty environment, no characters.\nACTION: static identity plate with fixed architectural anchors.\nENVIRONMENT: sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; east service door forced open by Hanse breach gear, rectangular corridor threshold full of cold light, empty north containment table beyond, and official sensor tripods aimed into the room.\nLIGHTING: cold fluorescent ceiling illumination with restrained alarm spill.\nSTYLE: hand-drawn Korean manhwa environment reference, flat cel shading, crisp lineart, precise architecture and materials, high-resolution vertical 9:16 source.\nNEGATIVE: no readable text, no speech bubbles, no watermark, no logo, no people, no movable walls.",
+          "prompt_signature": "east service door forced open by Hanse breach gear, rectangular corridor threshold full of cold light, empty north containment table beyond, and official sensor tripods aimed into the room",
+          "camera_signature": {
+            "scale": "ENVIRONMENT_WIDE",
+            "elevation": "EYE_LEVEL",
+            "viewpoint": "OTS",
+            "azimuth_deg": 310,
+            "lens_mm": 55,
+            "roll_deg": 0,
+            "dominant_subject": "environment",
+            "occupancy_pct": 100
+          }
+        },
+        "whisper_wrist_bay": {
+          "mode": "generate",
+          "asset": "assets/escenarios/heredero_del_enemigo_nacional/L_MORGUE_RAIZ_whisper_wrist_bay.png",
+          "prompt": "CAMERA: scale=ENVIRONMENT_WIDE; elevation=LOW; viewpoint=THREE_QUARTER_FRONT; azimuth_deg=35; lens_mm=70; roll_deg=0; dominant_subject=environment; occupancy_pct=100.\nSUBJECTS: empty environment, no characters.\nACTION: static identity plate with fixed architectural anchors.\nENVIRONMENT: sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; central steel gurney bay surrounded by black ash, empty north table, dead beast blood at the drain, and a small pulse glow from the wrist area reflected across brushed metal.\nLIGHTING: cold fluorescent ceiling illumination with restrained alarm spill.\nSTYLE: hand-drawn Korean manhwa environment reference, flat cel shading, crisp lineart, precise architecture and materials, high-resolution vertical 9:16 source.\nNEGATIVE: no readable text, no speech bubbles, no watermark, no logo, no people, no movable walls.",
+          "prompt_signature": "central steel gurney bay surrounded by black ash, empty north table, dead beast blood at the drain, and a small pulse glow from the wrist area reflected across brushed metal",
+          "camera_signature": {
+            "scale": "ENVIRONMENT_WIDE",
+            "elevation": "LOW",
+            "viewpoint": "THREE_QUARTER_FRONT",
+            "azimuth_deg": 35,
+            "lens_mm": 70,
+            "roll_deg": 0,
+            "dominant_subject": "environment",
+            "occupancy_pct": 100
+          }
+        }
+      }
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "C_MIN_JAEHA",
+            "pose": "cleaning_blood"
+          },
+          {
+            "id": "C_KWON_RYUGAK",
+            "pose": "corpse_sealed"
+          }
+        ],
+        "escenario": {
+          "id": "L_MORGUE_RAIZ",
+          "view": "containment_table_wide",
+          "geometry_authority": "GEOMETRY_LOCK"
+        },
+        "ingredients": [
+          "P_FRACTURE_WARNING_SYMBOL"
+        ]
+      },
+      "visual": {
+        "image_prompt": "Pure white webtoon page with two-panel composite; white space occupying 48% of the canvas. exactly two image panels; one dominant containment panel and one smaller badge-rule detail with deliberate white breathing room. Panel A: wide master shot, low-angle, profile view, level camera roll, using a 35mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; panicked exhaustion; kneeling low with shoulders curled over a blood smear; gaze locked on the containment table; both charcoal-gloved hands gripping a red-stained mop and cloth is cleaner handling blood beside Kwon Ryu-gak, a 41-year-old Korean male corpse, tall gaunt build, severe angular face with sunken cheeks, long slick black hair streaked with silver and death-pale skin, torn black containment shroud under a sealed mortuary bag, iron oath shackles and blackened seal tags, ash black rust red and cold violet color palette, chest and ribs marked by contaminated Fracture cracks; absolute dead stillness; lying rigid inside a half-zipped mortuary bag; eyes closed with no living focus; both hands restrained under iron oath seals; the dead villain secured in containment lies inside the sealed mortuary bag under an abstract 02:17 time marker made of clock marks, not readable digits; zero Veta status and Fracture rule are foreshadowed by icon-only warning lights. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; north containment table locked beneath three iron rails, center drain grid stained with red cleanup water, east steel service door sealed by yellow hazard tags, and west glass control booth dark and silent. Panel B: macro, high-angle, point-of-view, level camera roll, using a 100mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; panicked exhaustion; kneeling low with shoulders curled over a blood smear; gaze locked on the containment table; both charcoal-gloved hands gripping a red-stained mop and cloth holds a clipped cleaning license badge with zero Veta status indicator and a Fracture warning symbol, the Fracture rule shown by broken return icons without readable text; cleaner handling blood stains his gloves. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; east service door alcove with a wall-mounted shift terminal, cracked phone tray, oxygen cutoff paperwork represented by blank icons, and floor arrows painted toward the central drain. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp lineart, vertical 9:16 composition. Identity negatives: no heroic armor, no hunter weapon, no glowing eyes, no healthy skin, no friendly expression, no clean suit, no soft smile, no civilian clothes, no fantasy crown. Creature negatives when a Fracture beast appears: no eyes, no eye sockets, no pupils. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "visual_plan": {
+        "native_page": {
+          "family": "WHITE_PAGE",
+          "layout": "WHITE_COMPOSITE_2",
+          "background_pct": 48,
+          "panel_count": 2,
+          "composition": "exactly two image panels; one dominant containment panel and one smaller badge-rule detail with deliberate white breathing room"
+        },
+        "shots": [
+          {
+            "panel_id": "A",
+            "content_role": "PRIMARY",
+            "visible_entities": [
+              "C_MIN_JAEHA",
+              "C_KWON_RYUGAK",
+              "P_FRACTURE_WARNING_SYMBOL"
+            ],
+            "location_id": "L_MORGUE_RAIZ",
+            "view_id": "containment_table_wide",
+            "camera": {
+              "scale": "WIDE_MASTER",
+              "elevation": "LOW",
+              "viewpoint": "PROFILE",
+              "azimuth_deg": 90,
+              "lens_mm": 35,
+              "roll_deg": 0,
+              "dominant_subject": "C_KWON_RYUGAK",
+              "occupancy_pct": 72
+            },
+            "prompt_fragment": "Panel A: wide master shot, low-angle, profile view, level camera roll, using a 35mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; panicked exhaustion; kneeling low with shoulders curled over a blood smear; gaze locked on the containment table; both charcoal-gloved hands gripping a red-stained mop and cloth is cleaner handling blood beside Kwon Ryu-gak, a 41-year-old Korean male corpse, tall gaunt build, severe angular face with sunken cheeks, long slick black hair streaked with silver and death-pale skin, torn black containment shroud under a sealed mortuary bag, iron oath shackles and blackened seal tags, ash black rust red and cold violet color palette, chest and ribs marked by contaminated Fracture cracks; absolute dead stillness; lying rigid inside a half-zipped mortuary bag; eyes closed with no living focus; both hands restrained under iron oath seals; the dead villain secured in containment lies inside the sealed mortuary bag under an abstract 02:17 time marker made of clock marks, not readable digits; zero Veta status and Fracture rule are foreshadowed by icon-only warning lights. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; north containment table locked beneath three iron rails, center drain grid stained with red cleanup water, east steel service door sealed by yellow hazard tags, and west glass control booth dark and silent."
+          },
+          {
+            "panel_id": "B",
+            "content_role": "DETAIL",
+            "visible_entities": [
+              "C_MIN_JAEHA",
+              "P_FRACTURE_WARNING_SYMBOL"
+            ],
+            "location_id": "L_MORGUE_RAIZ",
+            "view_id": "service_door_axis",
+            "camera": {
+              "scale": "MACRO",
+              "elevation": "HIGH",
+              "viewpoint": "POV",
+              "azimuth_deg": 180,
+              "lens_mm": 100,
+              "roll_deg": 0,
+              "dominant_subject": "P_FRACTURE_WARNING_SYMBOL",
+              "occupancy_pct": 62
+            },
+            "prompt_fragment": "Panel B: macro, high-angle, point-of-view, level camera roll, using a 100mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; panicked exhaustion; kneeling low with shoulders curled over a blood smear; gaze locked on the containment table; both charcoal-gloved hands gripping a red-stained mop and cloth holds a clipped cleaning license badge with zero Veta status indicator and a Fracture warning symbol, the Fracture rule shown by broken return icons without readable text; cleaner handling blood stains his gloves. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; east service door alcove with a wall-mounted shift terminal, cracked phone tray, oxygen cutoff paperwork represented by blank icons, and floor arrows painted toward the central drain."
+          }
+        ]
+      },
+      "continuity": {
+        "moment_id": "M_001_hook",
+        "state_in": {
+          "Jaeha": "cleaner with zero Veta before inheritance",
+          "Kwon": "dead under containment",
+          "mark": "absent",
+          "beast": "not born",
+          "Hanse": "absent",
+          "Hana_oxygen": "unpaid before dawn",
+          "order": "dormant"
+        },
+        "state_out": {
+          "Jaeha": "identified as zero Veta cleaner beside Kwon blood",
+          "Kwon": "dead under containment",
+          "mark": "absent",
+          "beast": "not born",
+          "Hanse": "absent",
+          "Hana_oxygen": "unpaid before dawn",
+          "order": "dormant"
+        },
+        "identity_ids": [
+          "C_KWON_RYUGAK",
+          "C_MIN_JAEHA",
+          "P_FRACTURE_WARNING_SYMBOL"
+        ],
+        "location_id": "L_MORGUE_RAIZ",
+        "lighting_id": "cold_fluorescent_alarm",
+        "approved_reference_hashes": []
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "El villano más vigilado de Corea murió a las dos y diecisiete.\nUn minuto después, yo limpiaba su sangre.\nMe llamo Min Jaeha: limpiador de morgue, cero rango, cero Veta.\nEn Seúl, sin Veta nadie cruza una Fractura y vuelve entero."
+      },
+      "captions": {
+        "text": "El villano más vigilado de Corea murió a las dos y diecisiete.\nUn minuto después, yo limpiaba su sangre.\nMe llamo Min Jaeha: limpiador de morgue, cero rango, cero Veta.\nEn Seúl, sin Veta nadie cruza una Fractura y vuelve entero."
+      },
+      "transition_in": "cut",
+      "editor_motion": {
+        "enabled": false,
+        "preset": "static",
+        "zoom": 1,
+        "pan": 0
+      }
+    },
+    {
+      "id": "scene_02",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "C_MIN_JAEHA",
+            "pose": "oxygen_choice"
+          }
+        ],
+        "escenario": {
+          "id": "L_MORGUE_RAIZ",
+          "view": "service_door_axis",
+          "geometry_authority": "GEOMETRY_LOCK"
+        },
+        "ingredients": [
+          "P_HOSPITAL_OXYGEN_NOTICE"
+        ]
+      },
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one inset; black space occupying 60% of the canvas. exactly one image panel; one small inset panel contains the complete oxygen decision inside heavy black breathing room. Panel A: medium shot, eye-level, three-quarter front view, level camera roll, using a 50mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; quiet desperation; standing tense with his chest folded inward; gaze fixed on a hospital oxygen notice; one hand holds a phone notice while the other signs a shift card studies a hospital oxygen deadline on a phone notice rendered as blank oxygen icons and a dawn alarm shape; Jaeha accepting the shift for Hana is shown by his tense signature on an unreadable shift card, with the hospital oxygen notice beside the morgue service terminal. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; east service door alcove with a wall-mounted shift terminal, cracked phone tray, oxygen cutoff paperwork represented by blank icons, and floor arrows painted toward the central drain. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp lineart, vertical 9:16 composition. Identity negatives: no heroic armor, no hunter weapon, no glowing eyes, no healthy skin, no friendly expression, no clean suit, no soft smile, no civilian clothes, no fantasy crown. Creature negatives when a Fracture beast appears: no eyes, no eye sockets, no pupils. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "visual_plan": {
+        "native_page": {
+          "family": "BLACK_PAGE",
+          "layout": "BLACK_INSET",
+          "background_pct": 60,
+          "panel_count": 1,
+          "composition": "exactly one image panel; one small inset panel contains the complete oxygen decision inside heavy black breathing room"
+        },
+        "shots": [
+          {
+            "panel_id": "A",
+            "content_role": "PRIMARY",
+            "visible_entities": [
+              "C_MIN_JAEHA",
+              "P_HOSPITAL_OXYGEN_NOTICE"
+            ],
+            "location_id": "L_MORGUE_RAIZ",
+            "view_id": "service_door_axis",
+            "camera": {
+              "scale": "MEDIUM",
+              "elevation": "EYE_LEVEL",
+              "viewpoint": "THREE_QUARTER_FRONT",
+              "azimuth_deg": 25,
+              "lens_mm": 50,
+              "roll_deg": 0,
+              "dominant_subject": "C_MIN_JAEHA",
+              "occupancy_pct": 68
+            },
+            "prompt_fragment": "Panel A: medium shot, eye-level, three-quarter front view, level camera roll, using a 50mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; quiet desperation; standing tense with his chest folded inward; gaze fixed on a hospital oxygen notice; one hand holds a phone notice while the other signs a shift card studies a hospital oxygen deadline on a phone notice rendered as blank oxygen icons and a dawn alarm shape; Jaeha accepting the shift for Hana is shown by his tense signature on an unreadable shift card, with the hospital oxygen notice beside the morgue service terminal. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; east service door alcove with a wall-mounted shift terminal, cracked phone tray, oxygen cutoff paperwork represented by blank icons, and floor arrows painted toward the central drain."
+          }
+        ]
+      },
+      "continuity": {
+        "moment_id": "M_002_oxygen",
+        "state_in": {
+          "Jaeha": "identified as zero Veta cleaner beside Kwon blood",
+          "Kwon": "dead under containment",
+          "mark": "absent",
+          "beast": "not born",
+          "Hanse": "absent",
+          "Hana_oxygen": "unpaid before dawn",
+          "order": "dormant"
+        },
+        "state_out": {
+          "Jaeha": "accepts dangerous shift for Hana oxygen",
+          "Kwon": "dead under containment",
+          "mark": "absent",
+          "beast": "not born",
+          "Hanse": "absent",
+          "Hana_oxygen": "deadline visible before dawn",
+          "order": "dormant"
+        },
+        "identity_ids": [
+          "C_MIN_JAEHA",
+          "P_HOSPITAL_OXYGEN_NOTICE"
+        ],
+        "location_id": "L_MORGUE_RAIZ",
+        "lighting_id": "cold_fluorescent_alarm",
+        "approved_reference_hashes": []
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Acepté el turno porque el hospital de mi hermana cortaría su oxígeno al amanecer."
+      },
+      "captions": {
+        "text": "Acepté el turno porque el hospital de mi hermana cortaría su oxígeno al amanecer."
+      },
+      "transition_in": "cut",
+      "editor_motion": {
+        "enabled": false,
+        "preset": "static",
+        "zoom": 1,
+        "pan": 0
+      }
+    },
+    {
+      "id": "scene_03",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "C_MIN_JAEHA",
+            "pose": "wrist_grabbed"
+          },
+          {
+            "id": "C_KWON_RYUGAK",
+            "pose": "corpse_grip"
+          }
+        ],
+        "escenario": {
+          "id": "L_MORGUE_RAIZ",
+          "view": "oath_seal_overhead",
+          "geometry_authority": "GEOMETRY_LOCK"
+        },
+        "ingredients": [
+          "P_RECIBO_NEGRO",
+          "P_MORGUE_SEALS"
+        ]
+      },
+      "visual": {
+        "image_prompt": "Full-bleed vertical webtoon panel. exactly one image panel; one full-bleed transfer image fusing corpse grip, receipt mark, final command, and registry evidence. Panel A: full-body shot, high-angle, front view, level camera roll, using a 50mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; raw terror; torso yanked toward the mortuary bag; gaze snapped down to his trapped wrist; one hand seized by the corpse while the other claws at the table edge is dragged toward Kwon Ryu-gak, a 41-year-old Korean male corpse, tall gaunt build, severe angular face with sunken cheeks, long slick black hair streaked with silver and death-pale skin, torn black containment shroud under a sealed mortuary bag, iron oath shackles and blackened seal tags, ash black rust red and cold violet color palette, chest and ribs marked by contaminated Fracture cracks; deathless command; half-risen from the mortuary bag; dead gaze aimed at Jaeha's wrist; one corpse hand crushes Jaeha's wrist while the other grips the bag zipper; three iron oath seals hang above the opened mortuary bag while corpse gripping Jaeha causes the black receipt mark to burn into his skin; dying lips speaking form an unreadable black receipt command, and enemy heir registry sigils burn Jaeha name as abstract blocks, no readable text. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; ceiling oath rails arranged above the mortuary bag, three iron seals hanging from black chains, circular ward grooves around the table, and cold vapor pooled near the floor drain. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp lineart, vertical 9:16 composition. Identity negatives: no heroic armor, no hunter weapon, no glowing eyes, no healthy skin, no friendly expression, no clean suit, no soft smile, no civilian clothes, no fantasy crown. Creature negatives when a Fracture beast appears: no eyes, no eye sockets, no pupils. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "visual_plan": {
+        "native_page": {
+          "family": "OTHER",
+          "layout": "FULL_BLEED",
+          "background_pct": 0,
+          "panel_count": 1,
+          "composition": "exactly one image panel; one full-bleed transfer image fusing corpse grip, receipt mark, final command, and registry evidence"
+        },
+        "shots": [
+          {
+            "panel_id": "A",
+            "content_role": "PRIMARY",
+            "visible_entities": [
+              "C_MIN_JAEHA",
+              "C_KWON_RYUGAK",
+              "P_RECIBO_NEGRO",
+              "P_MORGUE_SEALS"
+            ],
+            "location_id": "L_MORGUE_RAIZ",
+            "view_id": "oath_seal_overhead",
+            "camera": {
+              "scale": "FULL",
+              "elevation": "HIGH",
+              "viewpoint": "FRONT",
+              "azimuth_deg": 0,
+              "lens_mm": 50,
+              "roll_deg": 0,
+              "dominant_subject": "C_KWON_RYUGAK",
+              "occupancy_pct": 80
+            },
+            "prompt_fragment": "Panel A: full-body shot, high-angle, front view, level camera roll, using a 50mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; raw terror; torso yanked toward the mortuary bag; gaze snapped down to his trapped wrist; one hand seized by the corpse while the other claws at the table edge is dragged toward Kwon Ryu-gak, a 41-year-old Korean male corpse, tall gaunt build, severe angular face with sunken cheeks, long slick black hair streaked with silver and death-pale skin, torn black containment shroud under a sealed mortuary bag, iron oath shackles and blackened seal tags, ash black rust red and cold violet color palette, chest and ribs marked by contaminated Fracture cracks; deathless command; half-risen from the mortuary bag; dead gaze aimed at Jaeha's wrist; one corpse hand crushes Jaeha's wrist while the other grips the bag zipper; three iron oath seals hang above the opened mortuary bag while corpse gripping Jaeha causes the black receipt mark to burn into his skin; dying lips speaking form an unreadable black receipt command, and enemy heir registry sigils burn Jaeha name as abstract blocks, no readable text. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; ceiling oath rails arranged above the mortuary bag, three iron seals hanging from black chains, circular ward grooves around the table, and cold vapor pooled near the floor drain."
+          }
+        ]
+      },
+      "continuity": {
+        "moment_id": "M_003_transfer",
+        "state_in": {
+          "Jaeha": "accepts dangerous shift for Hana oxygen",
+          "Kwon": "dead under containment",
+          "mark": "absent",
+          "beast": "not born",
+          "Hanse": "absent",
+          "Hana_oxygen": "deadline visible before dawn",
+          "order": "dormant"
+        },
+        "state_out": {
+          "Jaeha": "marked as enemy heir by black receipt",
+          "Kwon": "corpse moved and final command delivered",
+          "mark": "burned black receipt active",
+          "beast": "not born",
+          "Hanse": "absent",
+          "Hana_oxygen": "deadline visible before dawn",
+          "order": "seeded as unpaid command"
+        },
+        "identity_ids": [
+          "C_KWON_RYUGAK",
+          "C_MIN_JAEHA",
+          "P_MORGUE_SEALS",
+          "P_RECIBO_NEGRO"
+        ],
+        "location_id": "L_MORGUE_RAIZ",
+        "lighting_id": "cold_fluorescent_alarm",
+        "approved_reference_hashes": []
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Kwon Ryu-gak debía estar muerto bajo tres juramentos de hierro.\nPero abrió la bolsa mortuoria y me sujetó la muñeca.\nNo pidió auxilio; me clavó en la piel un recibo negro.\nSus últimos labios dijeron: cobra lo que me deben.\nLos sellos de la morgue quemaron mi nombre como heredero del enemigo nacional."
+      },
+      "captions": {
+        "text": "Kwon Ryu-gak debía estar muerto bajo tres juramentos de hierro.\nPero abrió la bolsa mortuoria y me sujetó la muñeca.\nNo pidió auxilio; me clavó en la piel un recibo negro.\nSus últimos labios dijeron: cobra lo que me deben.\nLos sellos de la morgue quemaron mi nombre como heredero del enemigo nacional."
+      },
+      "transition_in": "cut",
+      "editor_motion": {
+        "enabled": false,
+        "preset": "static",
+        "zoom": 1,
+        "pan": 0
+      }
+    },
+    {
+      "id": "scene_04",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "C_MIN_JAEHA",
+            "pose": "hunted_mark"
+          },
+          {
+            "id": "C_KWON_RYUGAK",
+            "pose": "corpse_grip"
+          }
+        ],
+        "escenario": {
+          "id": "L_MORGUE_RAIZ",
+          "view": "rib_shadow_profile",
+          "geometry_authority": "GEOMETRY_LOCK"
+        },
+        "ingredients": [
+          "E_FRACTURE_BEAST_RIB",
+          "P_RECIBO_NEGRO"
+        ]
+      },
+      "visual": {
+        "image_prompt": "Pure white webtoon page with two action strips; white space occupying 45% of the canvas. exactly two image panels; two action strips show the rib birth and the pulse-rule detail with white impact space. Panel A: full-body shot, low-angle, profile view, level camera roll, using a 35mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; shock and dread; twisting away with his marked arm pulled back; gaze fixed on the beast lunging at the wrist mark; one hand protects the burning black receipt mark while the other reaches for balance recoils as a rib-born Fracture beast bursts from Kwon Ryu-gak, a 41-year-old Korean male corpse, tall gaunt build, severe angular face with sunken cheeks, long slick black hair streaked with silver and death-pale skin, torn black containment shroud under a sealed mortuary bag, iron oath shackles and blackened seal tags, ash black rust red and cold violet color palette, chest and ribs marked by contaminated Fracture cracks; deathless command; half-risen from the mortuary bag; dead gaze aimed at Jaeha's wrist; one corpse hand crushes Jaeha's wrist while the other grips the bag zipper's contaminated rib cage; the blind bone creature ignores the dead corpse and lunges forward, beast targeting wrist mark, no eyes, no eye sockets, no pupils. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; north table torn open at the mortuary bag seam, rib fragments spreading toward the center drain, violet Fracture residue along steel tiles, and a warning glyph ring burned into concrete. Panel B: close shot, high-angle, point-of-view, Dutch angle, using a 80mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; shock and dread; twisting away with his marked arm pulled back; gaze fixed on the beast lunging at the wrist mark; one hand protects the burning black receipt mark while the other reaches for balance sees activation rule from pulse as the black receipt mark radiates icon-only rule shapes; the rule survive damage and collect is shown as abstract pulse rings around the wrist, with the beast targeting wrist mark reflected in the burn. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; mobile steel gurney locked beside the central drain, bent restraint handle, blood trail leading from the north table, and emergency shutter closed over the east service door. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp lineart, vertical 9:16 composition. Identity negatives: no heroic armor, no hunter weapon, no glowing eyes, no healthy skin, no friendly expression, no clean suit, no soft smile, no civilian clothes, no fantasy crown. Creature negatives when a Fracture beast appears: no eyes, no eye sockets, no pupils. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "visual_plan": {
+        "native_page": {
+          "family": "WHITE_PAGE",
+          "layout": "WHITE_ACTION_STRIP_2",
+          "background_pct": 45,
+          "panel_count": 2,
+          "composition": "exactly two image panels; two action strips show the rib birth and the pulse-rule detail with white impact space"
+        },
+        "shots": [
+          {
+            "panel_id": "A",
+            "content_role": "PRIMARY",
+            "visible_entities": [
+              "C_MIN_JAEHA",
+              "E_FRACTURE_BEAST_RIB",
+              "C_KWON_RYUGAK"
+            ],
+            "location_id": "L_MORGUE_RAIZ",
+            "view_id": "rib_shadow_profile",
+            "camera": {
+              "scale": "FULL",
+              "elevation": "LOW",
+              "viewpoint": "PROFILE",
+              "azimuth_deg": 100,
+              "lens_mm": 35,
+              "roll_deg": -8,
+              "dominant_subject": "E_FRACTURE_BEAST_RIB",
+              "occupancy_pct": 78
+            },
+            "prompt_fragment": "Panel A: full-body shot, low-angle, profile view, level camera roll, using a 35mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; shock and dread; twisting away with his marked arm pulled back; gaze fixed on the beast lunging at the wrist mark; one hand protects the burning black receipt mark while the other reaches for balance recoils as a rib-born Fracture beast bursts from Kwon Ryu-gak, a 41-year-old Korean male corpse, tall gaunt build, severe angular face with sunken cheeks, long slick black hair streaked with silver and death-pale skin, torn black containment shroud under a sealed mortuary bag, iron oath shackles and blackened seal tags, ash black rust red and cold violet color palette, chest and ribs marked by contaminated Fracture cracks; deathless command; half-risen from the mortuary bag; dead gaze aimed at Jaeha's wrist; one corpse hand crushes Jaeha's wrist while the other grips the bag zipper's contaminated rib cage; the blind bone creature ignores the dead corpse and lunges forward, beast targeting wrist mark, no eyes, no eye sockets, no pupils. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; north table torn open at the mortuary bag seam, rib fragments spreading toward the center drain, violet Fracture residue along steel tiles, and a warning glyph ring burned into concrete."
+          },
+          {
+            "panel_id": "B",
+            "content_role": "DETAIL",
+            "visible_entities": [
+              "C_MIN_JAEHA",
+              "P_RECIBO_NEGRO",
+              "E_FRACTURE_BEAST_RIB"
+            ],
+            "location_id": "L_MORGUE_RAIZ",
+            "view_id": "gurney_pov",
+            "camera": {
+              "scale": "CLOSE",
+              "elevation": "HIGH",
+              "viewpoint": "POV",
+              "azimuth_deg": 180,
+              "lens_mm": 80,
+              "roll_deg": 12,
+              "dominant_subject": "P_RECIBO_NEGRO",
+              "occupancy_pct": 70
+            },
+            "prompt_fragment": "Panel B: close shot, high-angle, point-of-view, Dutch angle, using a 80mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; shock and dread; twisting away with his marked arm pulled back; gaze fixed on the beast lunging at the wrist mark; one hand protects the burning black receipt mark while the other reaches for balance sees activation rule from pulse as the black receipt mark radiates icon-only rule shapes; the rule survive damage and collect is shown as abstract pulse rings around the wrist, with the beast targeting wrist mark reflected in the burn. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; mobile steel gurney locked beside the central drain, bent restraint handle, blood trail leading from the north table, and emergency shutter closed over the east service door."
+          }
+        ]
+      },
+      "continuity": {
+        "moment_id": "M_004_beast_rule",
+        "state_in": {
+          "Jaeha": "marked as enemy heir by black receipt",
+          "Kwon": "corpse moved and final command delivered",
+          "mark": "burned black receipt active",
+          "beast": "not born",
+          "Hanse": "absent",
+          "Hana_oxygen": "deadline visible before dawn",
+          "order": "seeded as unpaid command"
+        },
+        "state_out": {
+          "Jaeha": "marked and targeted by rib-born Fracture beast",
+          "Kwon": "corpse distorted by rib birth",
+          "mark": "active and hunted",
+          "beast": "alive targeting wrist mark",
+          "Hanse": "absent",
+          "Hana_oxygen": "deadline visible before dawn",
+          "order": "rule voice active"
+        },
+        "identity_ids": [
+          "C_KWON_RYUGAK",
+          "C_MIN_JAEHA",
+          "E_FRACTURE_BEAST_RIB",
+          "P_RECIBO_NEGRO"
+        ],
+        "location_id": "L_MORGUE_RAIZ",
+        "lighting_id": "cold_fluorescent_alarm",
+        "approved_reference_hashes": []
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Corrí, y una costilla del cadáver parió una bestia de Fractura.\nLa criatura ignoró al muerto y saltó hacia mi marca.\nUna voz en mi pulso dictó la regla: sobrevive al daño y cobra."
+      },
+      "captions": {
+        "text": "Corrí, y una costilla del cadáver parió una bestia de Fractura.\nLa criatura ignoró al muerto y saltó hacia mi marca.\nUna voz en mi pulso dictó la regla: sobrevive al daño y cobra."
+      },
+      "transition_in": "cut",
+      "editor_motion": {
+        "enabled": false,
+        "preset": "static",
+        "zoom": 1,
+        "pan": 0
+      }
+    },
+    {
+      "id": "scene_05",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "C_MIN_JAEHA",
+            "pose": "accepting_wound"
+          }
+        ],
+        "escenario": {
+          "id": "L_MORGUE_RAIZ",
+          "view": "gurney_pov",
+          "geometry_authority": "GEOMETRY_LOCK"
+        },
+        "ingredients": [
+          "E_FRACTURE_BEAST_RIB",
+          "P_RECIBO_NEGRO"
+        ]
+      },
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one reveal strip; black space occupying 58% of the canvas. exactly one image panel; one reveal strip freezes the accepted wound inside black pressure. Panel A: medium shot, high-angle, point-of-view, Dutch angle, using a 70mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; grim resolve through fear; standing still instead of dodging with shoulder exposed; gaze locked on the incoming claw; both hands open and shaking, refusing to dodge faces the rib-born Fracture beast without stepping away; Jaeha choosing not to dodge is clear in his exposed shoulder and open hands, and hostile wound accepted is shown as the hooked claw piercing his shoulder while the mark waits to collect. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; mobile steel gurney locked beside the central drain, bent restraint handle, blood trail leading from the north table, and emergency shutter closed over the east service door. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp lineart, vertical 9:16 composition. Identity negatives: no heroic armor, no hunter weapon, no glowing eyes, no healthy skin, no friendly expression, no clean suit, no soft smile, no civilian clothes, no fantasy crown. Creature negatives when a Fracture beast appears: no eyes, no eye sockets, no pupils. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "visual_plan": {
+        "native_page": {
+          "family": "BLACK_PAGE",
+          "layout": "BLACK_REVEAL_STRIP",
+          "background_pct": 58,
+          "panel_count": 1,
+          "composition": "exactly one image panel; one reveal strip freezes the accepted wound inside black pressure"
+        },
+        "shots": [
+          {
+            "panel_id": "A",
+            "content_role": "PRIMARY",
+            "visible_entities": [
+              "C_MIN_JAEHA",
+              "E_FRACTURE_BEAST_RIB",
+              "P_RECIBO_NEGRO"
+            ],
+            "location_id": "L_MORGUE_RAIZ",
+            "view_id": "gurney_pov",
+            "camera": {
+              "scale": "MEDIUM",
+              "elevation": "HIGH",
+              "viewpoint": "POV",
+              "azimuth_deg": 180,
+              "lens_mm": 70,
+              "roll_deg": 12,
+              "dominant_subject": "E_FRACTURE_BEAST_RIB",
+              "occupancy_pct": 76
+            },
+            "prompt_fragment": "Panel A: medium shot, high-angle, point-of-view, Dutch angle, using a 70mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; grim resolve through fear; standing still instead of dodging with shoulder exposed; gaze locked on the incoming claw; both hands open and shaking, refusing to dodge faces the rib-born Fracture beast without stepping away; Jaeha choosing not to dodge is clear in his exposed shoulder and open hands, and hostile wound accepted is shown as the hooked claw piercing his shoulder while the mark waits to collect. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; mobile steel gurney locked beside the central drain, bent restraint handle, blood trail leading from the north table, and emergency shutter closed over the east service door."
+          }
+        ]
+      },
+      "continuity": {
+        "moment_id": "M_005_wound",
+        "state_in": {
+          "Jaeha": "marked and targeted by rib-born Fracture beast",
+          "Kwon": "corpse distorted by rib birth",
+          "mark": "active and hunted",
+          "beast": "alive targeting wrist mark",
+          "Hanse": "absent",
+          "Hana_oxygen": "deadline visible before dawn",
+          "order": "rule voice active"
+        },
+        "state_out": {
+          "Jaeha": "accepts hostile wound to activate collection",
+          "Kwon": "ignored corpse remnant",
+          "mark": "ready to collect damage",
+          "beast": "claw pierces Jaeha shoulder",
+          "Hanse": "absent",
+          "Hana_oxygen": "deadline visible before dawn",
+          "order": "not released yet"
+        },
+        "identity_ids": [
+          "C_MIN_JAEHA",
+          "E_FRACTURE_BEAST_RIB",
+          "P_RECIBO_NEGRO"
+        ],
+        "location_id": "L_MORGUE_RAIZ",
+        "lighting_id": "cold_fluorescent_alarm",
+        "approved_reference_hashes": []
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Dejé que la garra me atravesara porque no tenía otra moneda."
+      },
+      "captions": {
+        "text": "Dejé que la garra me atravesara porque no tenía otra moneda."
+      },
+      "transition_in": "cut",
+      "editor_motion": {
+        "enabled": false,
+        "preset": "static",
+        "zoom": 1,
+        "pan": 0
+      }
+    },
+    {
+      "id": "scene_06",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "C_MIN_JAEHA",
+            "pose": "chain_release"
+          }
+        ],
+        "escenario": {
+          "id": "L_MORGUE_RAIZ",
+          "view": "drain_ground_rear",
+          "geometry_authority": "GEOMETRY_LOCK"
+        },
+        "ingredients": [
+          "E_FRACTURE_BEAST_RIB",
+          "SYSTEM_RANK",
+          "P_RECIBO_NEGRO",
+          "P_HOSPITAL_OXYGEN_NOTICE"
+        ]
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical manhwa splash panel. exactly one image panel; one full-page splash shows chain impact, level one proof, oxygen payment, and borrowed control cost. Panel A: wide master shot, ground-level, rear three-quarter view, level camera roll, using a 40mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; agonized defiance; arched backward as a black chain erupts from the shoulder wound; gaze burning toward the breaking beast; one hand clenches the wounded shoulder while the marked wrist points forward releases a black chain from wound that lashes across the room; beast defeated is shown as the rib-born Fracture beast breaks apart over the drain, rank rising from zero appears as unreadable geometric UI, oxygen paid appears as a hospital oxygen icon, and borrowed control warning appears as a black hand-shaped warning around the wrist. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; drain channel crossing the morgue floor, broken beast shell scattered around the grate, black chain scorch marks on steel tiles, and the north table left warped by containment heat. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp lineart, vertical 9:16 composition. Identity negatives: no heroic armor, no hunter weapon, no glowing eyes, no healthy skin, no friendly expression, no clean suit, no soft smile, no civilian clothes, no fantasy crown. Creature negatives when a Fracture beast appears: no eyes, no eye sockets, no pupils. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "visual_plan": {
+        "native_page": {
+          "family": "OTHER",
+          "layout": "SPLASH",
+          "background_pct": 0,
+          "panel_count": 1,
+          "composition": "exactly one image panel; one full-page splash shows chain impact, level one proof, oxygen payment, and borrowed control cost"
+        },
+        "shots": [
+          {
+            "panel_id": "A",
+            "content_role": "PRIMARY",
+            "visible_entities": [
+              "C_MIN_JAEHA",
+              "E_FRACTURE_BEAST_RIB",
+              "SYSTEM_RANK",
+              "P_RECIBO_NEGRO",
+              "P_HOSPITAL_OXYGEN_NOTICE"
+            ],
+            "location_id": "L_MORGUE_RAIZ",
+            "view_id": "drain_ground_rear",
+            "camera": {
+              "scale": "WIDE_MASTER",
+              "elevation": "GROUND_LEVEL",
+              "viewpoint": "REAR_THREE_QUARTER",
+              "azimuth_deg": 210,
+              "lens_mm": 40,
+              "roll_deg": 0,
+              "dominant_subject": "C_MIN_JAEHA",
+              "occupancy_pct": 82
+            },
+            "prompt_fragment": "Panel A: wide master shot, ground-level, rear three-quarter view, level camera roll, using a 40mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; agonized defiance; arched backward as a black chain erupts from the shoulder wound; gaze burning toward the breaking beast; one hand clenches the wounded shoulder while the marked wrist points forward releases a black chain from wound that lashes across the room; beast defeated is shown as the rib-born Fracture beast breaks apart over the drain, rank rising from zero appears as unreadable geometric UI, oxygen paid appears as a hospital oxygen icon, and borrowed control warning appears as a black hand-shaped warning around the wrist. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; drain channel crossing the morgue floor, broken beast shell scattered around the grate, black chain scorch marks on steel tiles, and the north table left warped by containment heat."
+          }
+        ]
+      },
+      "continuity": {
+        "moment_id": "M_006_payoff",
+        "state_in": {
+          "Jaeha": "accepts hostile wound to activate collection",
+          "Kwon": "ignored corpse remnant",
+          "mark": "ready to collect damage",
+          "beast": "claw pierces Jaeha shoulder",
+          "Hanse": "absent",
+          "Hana_oxygen": "deadline visible before dawn",
+          "order": "not released yet"
+        },
+        "state_out": {
+          "Jaeha": "level one after first collection with shoulder wound",
+          "Kwon": "body no longer source of control",
+          "mark": "level one balance with borrowed control warning",
+          "beast": "defeated by black chain",
+          "Hanse": "absent",
+          "Hana_oxygen": "oxygen paid for a brief window",
+          "order": "about to activate"
+        },
+        "identity_ids": [
+          "C_MIN_JAEHA",
+          "E_FRACTURE_BEAST_RIB",
+          "P_HOSPITAL_OXYGEN_NOTICE",
+          "P_RECIBO_NEGRO",
+          "SYSTEM_RANK"
+        ],
+        "location_id": "L_MORGUE_RAIZ",
+        "lighting_id": "cold_fluorescent_alarm",
+        "approved_reference_hashes": []
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "El recibo ardió; una cadena negra salió de mi herida y rompió a la bestia.\nPor primera vez, una pantalla de rango subió para alguien marcado como cero.\nSaldo heredado: nivel uno, oxígeno pagado, control prestado."
+      },
+      "captions": {
+        "text": "El recibo ardió; una cadena negra salió de mi herida y rompió a la bestia.\nPor primera vez, una pantalla de rango subió para alguien marcado como cero.\nSaldo heredado: nivel uno, oxígeno pagado, control prestado."
+      },
+      "transition_in": "cut",
+      "editor_motion": {
+        "enabled": false,
+        "preset": "static",
+        "zoom": 1,
+        "pan": 0
+      }
+    },
+    {
+      "id": "scene_07",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "C_MIN_JAEHA",
+            "pose": "resisting_order"
+          }
+        ],
+        "escenario": {
+          "id": "L_MORGUE_RAIZ",
+          "view": "registry_terminal_close",
+          "geometry_authority": "GEOMETRY_LOCK"
+        },
+        "ingredients": [
+          "P_ORDEN_PENDIENTE",
+          "P_RECIBO_NEGRO"
+        ]
+      },
+      "visual": {
+        "image_prompt": "Pure white webtoon page with one inset; white space occupying 70% of the canvas. exactly one image panel; one small inset panel contains the complete bodily-control struggle inside untouched white silence. Panel A: close shot, high-angle, front view, level camera roll, using a 85mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; horrified resistance; bent over the gurney forcing his own arm down; gaze fixed on his disobedient hand; one hand pins the marked wrist against steel until blood spreads fights his own hand over the gurney; arm moving against Jaeha will is shown by black tendons pulling his forearm, violent pending order appears as illegible throat-crushing pictograph strokes, and Jaeha pinning his own wrist to resist crushes the marked wrist against steel until blood spreads. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; west control terminal with glowing registry sigils rendered as unreadable blocks, steel gurney edge with fresh blood, black receipt burn marks on the rail, and three broken oath tags piled nearby. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp lineart, vertical 9:16 composition. Identity negatives: no heroic armor, no hunter weapon, no glowing eyes, no healthy skin, no friendly expression, no clean suit, no soft smile, no civilian clothes, no fantasy crown. Creature negatives when a Fracture beast appears: no eyes, no eye sockets, no pupils. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "visual_plan": {
+        "native_page": {
+          "family": "WHITE_PAGE",
+          "layout": "WHITE_INSET",
+          "background_pct": 70,
+          "panel_count": 1,
+          "composition": "exactly one image panel; one small inset panel contains the complete bodily-control struggle inside untouched white silence"
+        },
+        "shots": [
+          {
+            "panel_id": "A",
+            "content_role": "PRIMARY",
+            "visible_entities": [
+              "C_MIN_JAEHA",
+              "P_ORDEN_PENDIENTE",
+              "P_RECIBO_NEGRO"
+            ],
+            "location_id": "L_MORGUE_RAIZ",
+            "view_id": "registry_terminal_close",
+            "camera": {
+              "scale": "CLOSE",
+              "elevation": "HIGH",
+              "viewpoint": "FRONT",
+              "azimuth_deg": 0,
+              "lens_mm": 85,
+              "roll_deg": 0,
+              "dominant_subject": "C_MIN_JAEHA",
+              "occupancy_pct": 74
+            },
+            "prompt_fragment": "Panel A: close shot, high-angle, front view, level camera roll, using a 85mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; horrified resistance; bent over the gurney forcing his own arm down; gaze fixed on his disobedient hand; one hand pins the marked wrist against steel until blood spreads fights his own hand over the gurney; arm moving against Jaeha will is shown by black tendons pulling his forearm, violent pending order appears as illegible throat-crushing pictograph strokes, and Jaeha pinning his own wrist to resist crushes the marked wrist against steel until blood spreads. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; west control terminal with glowing registry sigils rendered as unreadable blocks, steel gurney edge with fresh blood, black receipt burn marks on the rail, and three broken oath tags piled nearby."
+          }
+        ]
+      },
+      "continuity": {
+        "moment_id": "M_007_cost",
+        "state_in": {
+          "Jaeha": "level one after first collection with shoulder wound",
+          "Kwon": "body no longer source of control",
+          "mark": "level one balance with borrowed control warning",
+          "beast": "defeated by black chain",
+          "Hanse": "absent",
+          "Hana_oxygen": "oxygen paid for a brief window",
+          "order": "about to activate"
+        },
+        "state_out": {
+          "Jaeha": "resists arm taken by pending order and wrist bleeds",
+          "Kwon": "agenda residue active through order",
+          "mark": "forcing unwanted command",
+          "beast": "dead at feet",
+          "Hanse": "approaching",
+          "Hana_oxygen": "oxygen paid for a brief window",
+          "order": "first Hanse throat order resisted"
+        },
+        "identity_ids": [
+          "C_MIN_JAEHA",
+          "P_ORDEN_PENDIENTE",
+          "P_RECIBO_NEGRO"
+        ],
+        "location_id": "L_MORGUE_RAIZ",
+        "lighting_id": "cold_fluorescent_alarm",
+        "approved_reference_hashes": []
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "El precio llegó de inmediato: mi brazo escribió una orden que yo no quería cumplir.\nLa orden decía: rompe la garganta del primer agente Hanse.\nApreté mi propia muñeca contra la camilla hasta sangrar para no obedecer."
+      },
+      "captions": {
+        "text": "El precio llegó de inmediato: mi brazo escribió una orden que yo no quería cumplir.\nLa orden decía: rompe la garganta del primer agente Hanse.\nApreté mi propia muñeca contra la camilla hasta sangrar para no obedecer."
+      },
+      "transition_in": "cut",
+      "editor_motion": {
+        "enabled": false,
+        "preset": "static",
+        "zoom": 1,
+        "pan": 0
+      }
+    },
+    {
+      "id": "scene_08",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "C_MIN_JAEHA",
+            "pose": "accused_survivor"
+          },
+          {
+            "id": "C_YUN_SERA",
+            "pose": "state_broadcast"
+          }
+        ],
+        "escenario": {
+          "id": "L_MORGUE_RAIZ",
+          "view": "hunter_breach_ots",
+          "geometry_authority": "GEOMETRY_LOCK"
+        },
+        "ingredients": [
+          "F_CAZADORES_HANSE",
+          "E_FRACTURE_BEAST_RIB",
+          "P_RECIBO_NEGRO",
+          "P_STATE_BROADCAST"
+        ]
+      },
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one main panel with one floating detail; black space occupying 55% of the canvas. exactly two image panels; one main breach panel with one floating broadcast detail inside black official pressure. Panel A: wide master shot, eye-level, over-the-shoulder view, level camera roll, using a 55mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; stunned betrayal; half-kneeling in beast blood with his wounded shoulder lowered; gaze lifted toward armed Hanse hunters; one hand clutches the black receipt wrist while the other hangs open is half-kneeling as Hanse hunters arriving breach the east service door; Yun Sera, a 29-year-old Korean female Hanse captain, athletic compact build, sharp oval face with stern brows and a healed cut on the lower lip, black hair tied in a tight tactical ponytail and clear tan skin, dark navy Hanse tactical coat with armored collar and rank pins, matte ceramic armor plates and a compact broadcast device, navy steel white and emergency red color palette, right cheek marked by a small silver Hanse comm scar; cold official certainty; shoulders rigid beside the empty villain table; gaze aimed through the transmission lens; one hand frames Jaeha's face on the device while the other grips her sidearm low leads them with a broadcast device; empty villain table is visible beyond, dead beast at feet, and Kwon signature moving in Jaeha body appears as black energy veins. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; east service door forced open by Hanse breach gear, rectangular corridor threshold full of cold light, empty north containment table beyond, and official sensor tripods aimed into the room. Panel B: close shot, low-angle, profile view, Dutch angle, using a 70mm lens. Yun Sera, a 29-year-old Korean female Hanse captain, athletic compact build, sharp oval face with stern brows and a healed cut on the lower lip, black hair tied in a tight tactical ponytail and clear tan skin, dark navy Hanse tactical coat with armored collar and rank pins, matte ceramic armor plates and a compact broadcast device, navy steel white and emergency red color palette, right cheek marked by a small silver Hanse comm scar; cold official certainty; shoulders rigid beside the empty villain table; gaze aimed through the transmission lens; one hand frames Jaeha's face on the device while the other grips her sidearm low performs Yun Sera state broadcast with a compact device projecting Jaeha face as unreadable blocks; Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; stunned betrayal; half-kneeling in beast blood with his wounded shoulder lowered; gaze lifted toward armed Hanse hunters; one hand clutches the black receipt wrist while the other hangs open is framed as state classification as Kwon Ryu-gak without readable words, while Kwon signature moving in Jaeha body pulses on his wrist. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; west control terminal with glowing registry sigils rendered as unreadable blocks, steel gurney edge with fresh blood, black receipt burn marks on the rail, and three broken oath tags piled nearby. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp lineart, vertical 9:16 composition. Identity negatives: no heroic armor, no hunter weapon, no glowing eyes, no healthy skin, no friendly expression, no clean suit, no soft smile, no civilian clothes, no fantasy crown. Creature negatives when a Fracture beast appears: no eyes, no eye sockets, no pupils. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "visual_plan": {
+        "native_page": {
+          "family": "BLACK_PAGE",
+          "layout": "BLACK_FLOATING_DETAIL",
+          "background_pct": 55,
+          "panel_count": 2,
+          "composition": "exactly two image panels; one main breach panel with one floating broadcast detail inside black official pressure"
+        },
+        "shots": [
+          {
+            "panel_id": "A",
+            "content_role": "PRIMARY",
+            "visible_entities": [
+              "C_MIN_JAEHA",
+              "C_YUN_SERA",
+              "F_CAZADORES_HANSE",
+              "E_FRACTURE_BEAST_RIB",
+              "P_RECIBO_NEGRO"
+            ],
+            "location_id": "L_MORGUE_RAIZ",
+            "view_id": "hunter_breach_ots",
+            "camera": {
+              "scale": "WIDE_MASTER",
+              "elevation": "EYE_LEVEL",
+              "viewpoint": "OTS",
+              "azimuth_deg": 310,
+              "lens_mm": 55,
+              "roll_deg": 0,
+              "dominant_subject": "C_YUN_SERA",
+              "occupancy_pct": 76
+            },
+            "prompt_fragment": "Panel A: wide master shot, eye-level, over-the-shoulder view, level camera roll, using a 55mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; stunned betrayal; half-kneeling in beast blood with his wounded shoulder lowered; gaze lifted toward armed Hanse hunters; one hand clutches the black receipt wrist while the other hangs open is half-kneeling as Hanse hunters arriving breach the east service door; Yun Sera, a 29-year-old Korean female Hanse captain, athletic compact build, sharp oval face with stern brows and a healed cut on the lower lip, black hair tied in a tight tactical ponytail and clear tan skin, dark navy Hanse tactical coat with armored collar and rank pins, matte ceramic armor plates and a compact broadcast device, navy steel white and emergency red color palette, right cheek marked by a small silver Hanse comm scar; cold official certainty; shoulders rigid beside the empty villain table; gaze aimed through the transmission lens; one hand frames Jaeha's face on the device while the other grips her sidearm low leads them with a broadcast device; empty villain table is visible beyond, dead beast at feet, and Kwon signature moving in Jaeha body appears as black energy veins. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; east service door forced open by Hanse breach gear, rectangular corridor threshold full of cold light, empty north containment table beyond, and official sensor tripods aimed into the room."
+          },
+          {
+            "panel_id": "B",
+            "content_role": "DETAIL",
+            "visible_entities": [
+              "C_YUN_SERA",
+              "C_MIN_JAEHA",
+              "P_STATE_BROADCAST",
+              "P_RECIBO_NEGRO"
+            ],
+            "location_id": "L_MORGUE_RAIZ",
+            "view_id": "registry_terminal_close",
+            "camera": {
+              "scale": "CLOSE",
+              "elevation": "LOW",
+              "viewpoint": "PROFILE",
+              "azimuth_deg": 100,
+              "lens_mm": 70,
+              "roll_deg": -12,
+              "dominant_subject": "P_STATE_BROADCAST",
+              "occupancy_pct": 66
+            },
+            "prompt_fragment": "Panel B: close shot, low-angle, profile view, Dutch angle, using a 70mm lens. Yun Sera, a 29-year-old Korean female Hanse captain, athletic compact build, sharp oval face with stern brows and a healed cut on the lower lip, black hair tied in a tight tactical ponytail and clear tan skin, dark navy Hanse tactical coat with armored collar and rank pins, matte ceramic armor plates and a compact broadcast device, navy steel white and emergency red color palette, right cheek marked by a small silver Hanse comm scar; cold official certainty; shoulders rigid beside the empty villain table; gaze aimed through the transmission lens; one hand frames Jaeha's face on the device while the other grips her sidearm low performs Yun Sera state broadcast with a compact device projecting Jaeha face as unreadable blocks; Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; stunned betrayal; half-kneeling in beast blood with his wounded shoulder lowered; gaze lifted toward armed Hanse hunters; one hand clutches the black receipt wrist while the other hangs open is framed as state classification as Kwon Ryu-gak without readable words, while Kwon signature moving in Jaeha body pulses on his wrist. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; west control terminal with glowing registry sigils rendered as unreadable blocks, steel gurney edge with fresh blood, black receipt burn marks on the rail, and three broken oath tags piled nearby."
+          }
+        ]
+      },
+      "continuity": {
+        "moment_id": "M_008_state_hunt",
+        "state_in": {
+          "Jaeha": "resists arm taken by pending order and wrist bleeds",
+          "Kwon": "agenda residue active through order",
+          "mark": "forcing unwanted command",
+          "beast": "dead at feet",
+          "Hanse": "approaching",
+          "Hana_oxygen": "oxygen paid for a brief window",
+          "order": "first Hanse throat order resisted"
+        },
+        "state_out": {
+          "Jaeha": "publicly classified as Kwon continuity by Hanse",
+          "Kwon": "villain table empty",
+          "mark": "black signature visible in body",
+          "beast": "dead at Jaeha feet",
+          "Hanse": "hunters and Yun Sera arrived",
+          "Hana_oxygen": "oxygen paid for a brief window",
+          "order": "resisted but source unknown"
+        },
+        "identity_ids": [
+          "C_MIN_JAEHA",
+          "C_YUN_SERA",
+          "E_FRACTURE_BEAST_RIB",
+          "F_CAZADORES_HANSE",
+          "P_RECIBO_NEGRO",
+          "P_STATE_BROADCAST"
+        ],
+        "location_id": "L_MORGUE_RAIZ",
+        "lighting_id": "cold_fluorescent_alarm",
+        "approved_reference_hashes": []
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Los cazadores entraron y no encontraron al villano.\nEncontraron su Firma negra moviéndose en mi cuerpo y sangre de bestia a mis pies.\nLa capitana Yun Sera transmitió mi rostro: para el Estado, yo ya era Kwon Ryu-gak."
+      },
+      "captions": {
+        "text": "Los cazadores entraron y no encontraron al villano.\nEncontraron su Firma negra moviéndose en mi cuerpo y sangre de bestia a mis pies.\nLa capitana Yun Sera transmitió mi rostro: para el Estado, yo ya era Kwon Ryu-gak."
+      },
+      "transition_in": "cut",
+      "editor_motion": {
+        "enabled": false,
+        "preset": "static",
+        "zoom": 1,
+        "pan": 0
+      }
+    },
+    {
+      "id": "scene_09",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "C_MIN_JAEHA",
+            "pose": "cliffhanger_mark"
+          }
+        ],
+        "escenario": {
+          "id": "L_MORGUE_RAIZ",
+          "view": "whisper_wrist_bay",
+          "geometry_authority": "GEOMETRY_LOCK"
+        },
+        "ingredients": [
+          "P_RECIBO_NEGRO",
+          "P_ORDEN_PENDIENTE"
+        ]
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical character close-up. exactly one image panel; one full-page character close-up isolates the whispering mark and serial revelation. Panel A: extreme close-up, low-angle, three-quarter front view, level camera roll, using a 70mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; cold realization; curled over his whispering wrist in the empty morgue; gaze fixed on the living black mark; both hands cradle the wrist as if it might speak again listens to the whispering wrist mark; pending orders revelation is visualized as black receipt layers opening inside the burn, not as readable text, and the living mark implies that he inherited pending orders rather than power alone. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; central steel gurney bay surrounded by black ash, empty north table, dead beast blood at the drain, and a small pulse glow from the wrist area reflected across brushed metal. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp lineart, vertical 9:16 composition. Identity negatives: no heroic armor, no hunter weapon, no glowing eyes, no healthy skin, no friendly expression, no clean suit, no soft smile, no civilian clothes, no fantasy crown. Creature negatives when a Fracture beast appears: no eyes, no eye sockets, no pupils. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "visual_plan": {
+        "native_page": {
+          "family": "OTHER",
+          "layout": "CHARACTER_CLOSEUP",
+          "background_pct": 0,
+          "panel_count": 1,
+          "composition": "exactly one image panel; one full-page character close-up isolates the whispering mark and serial revelation"
+        },
+        "shots": [
+          {
+            "panel_id": "A",
+            "content_role": "PRIMARY",
+            "visible_entities": [
+              "C_MIN_JAEHA",
+              "P_RECIBO_NEGRO",
+              "P_ORDEN_PENDIENTE"
+            ],
+            "location_id": "L_MORGUE_RAIZ",
+            "view_id": "whisper_wrist_bay",
+            "camera": {
+              "scale": "EXTREME_CLOSE",
+              "elevation": "LOW",
+              "viewpoint": "THREE_QUARTER_FRONT",
+              "azimuth_deg": 35,
+              "lens_mm": 70,
+              "roll_deg": 0,
+              "dominant_subject": "P_RECIBO_NEGRO",
+              "occupancy_pct": 80
+            },
+            "prompt_fragment": "Panel A: extreme close-up, low-angle, three-quarter front view, level camera roll, using a 70mm lens. Min Jaeha, a 24-year-old Korean male morgue cleaner, lean wiry build, narrow exhausted face with a small scar under the left eyebrow, short messy black hair and pale skin, gray industrial cleaning coverall with reflective seams and a clipped cleaning license badge, charcoal rubber gloves and scuffed black work shoes, muted gray cold blue and black color palette, left wrist marked by a burned black receipt sigil when active; cold realization; curled over his whispering wrist in the empty morgue; gaze fixed on the living black mark; both hands cradle the wrist as if it might speak again listens to the whispering wrist mark; pending orders revelation is visualized as black receipt layers opening inside the burn, not as readable text, and the living mark implies that he inherited pending orders rather than power alone. The environment is sealed municipal containment morgue with rectangular circulation, poured concrete walls, fixed stainless autopsy tables, grated floor drains, iron oath seal rails and ceiling fluorescence, cold blue-gray municipal palette; central steel gurney bay surrounded by black ash, empty north table, dead beast blood at the drain, and a small pulse glow from the wrist area reflected across brushed metal."
+          }
+        ]
+      },
+      "continuity": {
+        "moment_id": "M_009_cliffhanger",
+        "state_in": {
+          "Jaeha": "publicly classified as Kwon continuity by Hanse",
+          "Kwon": "villain table empty",
+          "mark": "black signature visible in body",
+          "beast": "dead at Jaeha feet",
+          "Hanse": "hunters and Yun Sera arrived",
+          "Hana_oxygen": "oxygen paid for a brief window",
+          "order": "resisted but source unknown"
+        },
+        "state_out": {
+          "Jaeha": "understands inheritance is pending orders and is hunted",
+          "Kwon": "absent as body but present as agenda",
+          "mark": "whispering wrist mark reveals pending orders",
+          "beast": "dead residue",
+          "Hanse": "state hunt declared",
+          "Hana_oxygen": "oxygen paid briefly but unresolved",
+          "order": "pending orders revelation open"
+        },
+        "identity_ids": [
+          "C_MIN_JAEHA",
+          "P_ORDEN_PENDIENTE",
+          "P_RECIBO_NEGRO"
+        ],
+        "location_id": "L_MORGUE_RAIZ",
+        "lighting_id": "cold_fluorescent_alarm",
+        "approved_reference_hashes": []
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Entonces mi muñeca susurró: no heredaste mi poder; heredaste mis órdenes pendientes."
+      },
+      "captions": {
+        "text": "Entonces mi muñeca susurró: no heredaste mi poder; heredaste mis órdenes pendientes."
+      },
+      "transition_in": "cut",
+      "editor_motion": {
+        "enabled": false,
+        "preset": "static",
+        "zoom": 1,
+        "pan": 0
+      }
+    }
+  ],
+  "editing": {
+    "caption_style": {
+      "enabled": false,
+      "reason": "visual prompts require no readable text and no captions"
+    },
+    "panel_motion": {
+      "default": "static",
+      "respect_native_page": true
+    }
+  },
+  "tts_export": {
+    "language": "es-MX",
+    "mode": "dialogue",
+    "model_id": "eleven_multilingual_v2",
+    "elevenlabs_speed": 1,
+    "edit_speed": 1,
+    "voices": {
+      "narrador": "narrador_es_mx_v7_pendiente"
+    },
+    "dialogue": [
+      {
+        "scene_id": "scene_01",
+        "speaker": "narrador",
+        "text": "El villano más vigilado de Corea murió a las dos y diecisiete.\nUn minuto después, yo limpiaba su sangre.\nMe llamo Min Jaeha: limpiador de morgue, cero rango, cero Veta.\nEn Seúl, sin Veta nadie cruza una Fractura y vuelve entero."
+      },
+      {
+        "scene_id": "scene_02",
+        "speaker": "narrador",
+        "text": "Acepté el turno porque el hospital de mi hermana cortaría su oxígeno al amanecer."
+      },
+      {
+        "scene_id": "scene_03",
+        "speaker": "narrador",
+        "text": "Kwon Ryu-gak debía estar muerto bajo tres juramentos de hierro.\nPero abrió la bolsa mortuoria y me sujetó la muñeca.\nNo pidió auxilio; me clavó en la piel un recibo negro.\nSus últimos labios dijeron: cobra lo que me deben.\nLos sellos de la morgue quemaron mi nombre como heredero del enemigo nacional."
+      },
+      {
+        "scene_id": "scene_04",
+        "speaker": "narrador",
+        "text": "Corrí, y una costilla del cadáver parió una bestia de Fractura.\nLa criatura ignoró al muerto y saltó hacia mi marca.\nUna voz en mi pulso dictó la regla: sobrevive al daño y cobra."
+      },
+      {
+        "scene_id": "scene_05",
+        "speaker": "narrador",
+        "text": "Dejé que la garra me atravesara porque no tenía otra moneda."
+      },
+      {
+        "scene_id": "scene_06",
+        "speaker": "narrador",
+        "text": "El recibo ardió; una cadena negra salió de mi herida y rompió a la bestia.\nPor primera vez, una pantalla de rango subió para alguien marcado como cero.\nSaldo heredado: nivel uno, oxígeno pagado, control prestado."
+      },
+      {
+        "scene_id": "scene_07",
+        "speaker": "narrador",
+        "text": "El precio llegó de inmediato: mi brazo escribió una orden que yo no quería cumplir.\nLa orden decía: rompe la garganta del primer agente Hanse.\nApreté mi propia muñeca contra la camilla hasta sangrar para no obedecer."
+      },
+      {
+        "scene_id": "scene_08",
+        "speaker": "narrador",
+        "text": "Los cazadores entraron y no encontraron al villano.\nEncontraron su Firma negra moviéndose en mi cuerpo y sangre de bestia a mis pies.\nLa capitana Yun Sera transmitió mi rostro: para el Estado, yo ya era Kwon Ryu-gak."
+      },
+      {
+        "scene_id": "scene_09",
+        "speaker": "narrador",
+        "text": "Entonces mi muñeca susurró: no heredaste mi poder; heredaste mis órdenes pendientes."
+      }
+    ],
+    "full_script": "El villano más vigilado de Corea murió a las dos y diecisiete.\nUn minuto después, yo limpiaba su sangre.\nMe llamo Min Jaeha: limpiador de morgue, cero rango, cero Veta.\nEn Seúl, sin Veta nadie cruza una Fractura y vuelve entero.\nAcepté el turno porque el hospital de mi hermana cortaría su oxígeno al amanecer.\nKwon Ryu-gak debía estar muerto bajo tres juramentos de hierro.\nPero abrió la bolsa mortuoria y me sujetó la muñeca.\nNo pidió auxilio; me clavó en la piel un recibo negro.\nSus últimos labios dijeron: cobra lo que me deben.\nLos sellos de la morgue quemaron mi nombre como heredero del enemigo nacional.\nCorrí, y una costilla del cadáver parió una bestia de Fractura.\nLa criatura ignoró al muerto y saltó hacia mi marca.\nUna voz en mi pulso dictó la regla: sobrevive al daño y cobra.\nDejé que la garra me atravesara porque no tenía otra moneda.\nEl recibo ardió; una cadena negra salió de mi herida y rompió a la bestia.\nPor primera vez, una pantalla de rango subió para alguien marcado como cero.\nSaldo heredado: nivel uno, oxígeno pagado, control prestado.\nEl precio llegó de inmediato: mi brazo escribió una orden que yo no quería cumplir.\nLa orden decía: rompe la garganta del primer agente Hanse.\nApreté mi propia muñeca contra la camilla hasta sangrar para no obedecer.\nLos cazadores entraron y no encontraron al villano.\nEncontraron su Firma negra moviéndose en mi cuerpo y sangre de bestia a mis pies.\nLa capitana Yun Sera transmitió mi rostro: para el Estado, yo ya era Kwon Ryu-gak.\nEntonces mi muñeca susurró: no heredaste mi poder; heredaste mis órdenes pendientes."
+  },
+  "v7_contract": {
+    "version": "7.0",
+    "generation_mode": "GROK_NATIVE_PAGE",
+    "mode": "PILOT",
+    "pilot_panel_count": 9,
+    "canvas": {
+      "width": 720,
+      "height": 1280
+    },
+    "thresholds": {
+      "min_non_eye_level_pct": 20,
+      "min_non_frontal_pct": 35,
+      "max_identical_signature_run": 2,
+      "min_distinct_page_layouts": 6,
+      "max_generation_attempts": 3,
+      "min_camera_match_pct": 90,
+      "min_distinct_camera_signatures": 6,
+      "max_minor_failures_pilot": 1,
+      "max_minor_failure_pct_production": 2
+    },
+    "runtime_adapter": {
+      "grok_native_full_page": true,
+      "page_blueprint_slots_integrated": false
+    },
+    "page_mix": {
+      "basis": "TYPE_PANEL_ONLY",
+      "method": "LARGEST_REMAINDER",
+      "ratios": {
+        "white": 30,
+        "black": 30,
+        "other": 40
+      },
+      "counts": {
+        "white": 3,
+        "black": 3,
+        "other": 3
+      }
+    }
+  },
+  "production_lock": {
+    "v7_version": "7.0",
+    "story_packet_path": "story_packet_v7_heredero_enemigo_nacional_p1.md",
+    "story_packet_sha256": "087ecb15322fd0e45d6ff476a439ff637a8ddd0fe76e6d5085e50bd885a94c82",
+    "monologue_sha256": "107916b8071f6ca6354eb4eb59097a040e3513d14d1e5e86690070e983ff82ec",
+    "approved_voice_id": "narrador_es_mx_v7_pendiente"
+  },
+  "obligation_map": [
+    {
+      "obligation_id": "VO_B01_01",
+      "atom_ids": [
+        "A001",
+        "A002",
+        "A003",
+        "A004"
+      ],
+      "must_show": [
+        "C_KWON_RYUGAK dead under containment",
+        "C_MIN_JAEHA cleaning blood",
+        "zero Veta status",
+        "Fracture rule"
+      ],
+      "required_relationship": "la muerte nacional, el déficit del protagonista y la regla de supervivencia deben quedar conectados",
+      "source_shot_ids": [
+        "scene_01"
+      ],
+      "prompt_evidence": [
+        {
+          "shot_id": "scene_01",
+          "required_terms": [
+            "dead villain secured in containment",
+            "cleaner handling blood",
+            "zero Veta status",
+            "Fracture rule"
+          ]
+        }
+      ]
+    },
+    {
+      "obligation_id": "VO_B02_01",
+      "atom_ids": [
+        "A005"
+      ],
+      "must_show": [
+        "hospital oxygen deadline",
+        "Jaeha accepting the shift for Hana"
+      ],
+      "required_relationship": "el turno peligroso existe porque la vida de Hana depende del pago antes del amanecer",
+      "source_shot_ids": [
+        "scene_02"
+      ],
+      "prompt_evidence": [
+        {
+          "shot_id": "scene_02",
+          "required_terms": [
+            "hospital oxygen deadline",
+            "Jaeha accepting the shift for Hana"
+          ]
+        }
+      ]
+    },
+    {
+      "obligation_id": "VO_B03_01",
+      "atom_ids": [
+        "A006",
+        "A007",
+        "A008",
+        "A009",
+        "A010"
+      ],
+      "must_show": [
+        "three iron oath seals",
+        "corpse gripping Jaeha",
+        "black receipt mark",
+        "enemy heir registry"
+      ],
+      "required_relationship": "el contacto del cadáver causa la marca y la morgue transforma a Jaeha en heredero registrado",
+      "source_shot_ids": [
+        "scene_03"
+      ],
+      "prompt_evidence": [
+        {
+          "shot_id": "scene_03",
+          "required_terms": [
+            "three iron oath seals",
+            "corpse gripping Jaeha",
+            "black receipt mark",
+            "enemy heir registry"
+          ]
+        }
+      ]
+    },
+    {
+      "obligation_id": "VO_B04_01",
+      "atom_ids": [
+        "A011",
+        "A012",
+        "A013"
+      ],
+      "must_show": [
+        "rib-born Fracture beast",
+        "beast targeting wrist mark",
+        "activation rule from pulse"
+      ],
+      "required_relationship": "la bestia nace por la herencia y obliga al poder a revelar su regla mínima",
+      "source_shot_ids": [
+        "scene_04"
+      ],
+      "prompt_evidence": [
+        {
+          "shot_id": "scene_04",
+          "required_terms": [
+            "rib-born Fracture beast",
+            "beast targeting wrist mark",
+            "activation rule from pulse"
+          ]
+        }
+      ]
+    },
+    {
+      "obligation_id": "VO_B05_01",
+      "atom_ids": [
+        "A014"
+      ],
+      "must_show": [
+        "Jaeha choosing not to dodge",
+        "hostile wound accepted"
+      ],
+      "required_relationship": "Jaeha decide activar el poder aceptando daño real porque no tiene otra forma de sobrevivir",
+      "source_shot_ids": [
+        "scene_05"
+      ],
+      "prompt_evidence": [
+        {
+          "shot_id": "scene_05",
+          "required_terms": [
+            "Jaeha choosing not to dodge",
+            "hostile wound accepted"
+          ]
+        }
+      ]
+    },
+    {
+      "obligation_id": "VO_B06_01",
+      "atom_ids": [
+        "A015",
+        "A016",
+        "A017"
+      ],
+      "must_show": [
+        "black chain from wound",
+        "beast defeated",
+        "rank rising from zero",
+        "oxygen paid",
+        "borrowed control warning"
+      ],
+      "required_relationship": "la herida se cobra como poder, sube el nivel, paga oxígeno y anuncia el precio de control",
+      "source_shot_ids": [
+        "scene_06"
+      ],
+      "prompt_evidence": [
+        {
+          "shot_id": "scene_06",
+          "required_terms": [
+            "black chain from wound",
+            "beast defeated",
+            "rank rising from zero",
+            "oxygen paid"
+          ]
+        }
+      ]
+    },
+    {
+      "obligation_id": "VO_B07_01",
+      "atom_ids": [
+        "A018",
+        "A019",
+        "A020"
+      ],
+      "must_show": [
+        "arm moving against Jaeha will",
+        "violent pending order",
+        "Jaeha pinning his own wrist to resist"
+      ],
+      "required_relationship": "el precio se cobra como orden corporal inconclusa y Jaeha prueba que no quiere ser Kwon",
+      "source_shot_ids": [
+        "scene_07"
+      ],
+      "prompt_evidence": [
+        {
+          "shot_id": "scene_07",
+          "required_terms": [
+            "arm moving against Jaeha will",
+            "violent pending order",
+            "Jaeha pinning his own wrist to resist"
+          ]
+        }
+      ]
+    },
+    {
+      "obligation_id": "VO_B08_01",
+      "atom_ids": [
+        "A021",
+        "A022",
+        "A023"
+      ],
+      "must_show": [
+        "Hanse hunters arriving",
+        "empty villain table",
+        "Kwon signature moving in Jaeha",
+        "Yun Sera state broadcast"
+      ],
+      "required_relationship": "Hanse no ve intención, ve evidencia estatal: la Firma de Kwon en el cuerpo de Jaeha",
+      "source_shot_ids": [
+        "scene_08"
+      ],
+      "prompt_evidence": [
+        {
+          "shot_id": "scene_08",
+          "required_terms": [
+            "Hanse hunters arriving",
+            "empty villain table",
+            "Kwon signature moving in Jaeha"
+          ]
+        }
+      ]
+    },
+    {
+      "obligation_id": "VO_B09_01",
+      "atom_ids": [
+        "A024"
+      ],
+      "must_show": [
+        "whispering wrist mark",
+        "pending orders revelation"
+      ],
+      "required_relationship": "el cliffhanger revela que el poder heredado trae tareas violentas aún activas",
+      "source_shot_ids": [
+        "scene_09"
+      ],
+      "prompt_evidence": [
+        {
+          "shot_id": "scene_09",
+          "required_terms": [
+            "whispering wrist mark",
+            "pending orders revelation"
+          ]
+        }
+      ]
+    }
+  ]
+}

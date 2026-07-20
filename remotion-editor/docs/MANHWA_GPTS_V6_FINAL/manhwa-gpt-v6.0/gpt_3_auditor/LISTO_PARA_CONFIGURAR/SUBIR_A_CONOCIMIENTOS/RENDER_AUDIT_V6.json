@@ -1,0 +1,109 @@
+{
+  "schema": "RENDER_AUDIT_V6",
+  "version": "6.0",
+  "template_status": "PENDING_REAL_OBSERVATIONS",
+  "template_notice": "FAIL-CLOSED: this file contains no PASS, votes, hashes or observations. Populate only after inspecting the real JPG files.",
+  "project_sha256": "REPLACE_WITH_REAL_PROJECT_SHA256",
+  "project_hash_semantics": "SHA-256 of semantic canonical JSON: sorted compact UTF-8, integral floats and negative zero normalized; not a hash of whitespace bytes",
+  "generation_manifest_sha256": "REPLACE_WITH_REAL_MANIFEST_SHA256",
+  "source_record_schema": {
+    "shot_id": "exact producer shot_id",
+    "output_path": "real source path",
+    "output_sha256": "real source SHA-256",
+    "asset_status": "PASS, RETAKE or HUMAN_REVIEW",
+    "camera_result": "MATCH, ACCEPTABLE_VARIANCE, MISS or NOT_OBSERVED",
+    "observed": {
+      "scale": "observed enum",
+      "elevation": "observed enum",
+      "viewpoint": "observed enum",
+      "roll": "observed enum",
+      "occupancy_pct": "observed number",
+      "dominant_subject": "observed subject ID"
+    },
+    "observers": {
+      "vlm": {
+        "reviewer_id": "real independent observer ID",
+        "camera_result": "observed result",
+        "evidence": "concrete evidence from pixels"
+      },
+      "human": {
+        "reviewer_id": "different real observer ID",
+        "camera_result": "observed result",
+        "evidence": "concrete evidence from pixels"
+      },
+      "adjudicator": {
+        "reviewer_id": "third independent observer when required",
+        "camera_result": "final observed result",
+        "evidence": "concrete evidence resolving disagreement"
+      }
+    },
+    "identity_status": "PASS, RETAKE or HUMAN_REVIEW",
+    "continuity_status": "PASS, RETAKE or HUMAN_REVIEW",
+    "crop_status": "PASS, RETAKE or HUMAN_REVIEW",
+    "readability_status": "PASS, RETAKE or HUMAN_REVIEW",
+    "confidence": "0.0 to 1.0",
+    "failure_codes": [
+      {
+        "code": "F_* definido en 01_CONTRATO_Y_QA_AUDITOR_V6.md",
+        "severity": "CRITICAL, MAJOR or MINOR",
+        "resolved": false,
+        "evidence": "visible evidence and minimum repair"
+      }
+    ]
+  },
+  "page_record_schema": {
+    "scene_id": "exact scene ID",
+    "final_output_path": "images/scene_XX.jpg",
+    "final_output_sha256": "real final SHA-256",
+    "composition_revision": "integer >= 1",
+    "composition_manifest_path": "real .composition.json path for composed pages",
+    "composition_manifest_sha256": "real hash for composed pages",
+    "asset_status": "PASS, RETAKE or HUMAN_REVIEW",
+    "geometry_status": "PASS, RETAKE or HUMAN_REVIEW",
+    "semantics_status": "PASS, RETAKE or HUMAN_REVIEW",
+    "mobile_readability_status": "PASS, RETAKE or HUMAN_REVIEW",
+    "source_shot_ids": ["all source shot IDs"],
+    "source_hashes": ["all real source hashes"],
+    "failure_codes": []
+  },
+  "sources": [],
+  "pages": [],
+  "sequence_review": {
+    "status": "PENDING",
+    "contact_sheet_path": "REPLACE_WITH_REAL_PATH",
+    "contact_sheet_sha256": "REPLACE_WITH_REAL_SHA256",
+    "inventory_path": "REPLACE_WITH_REAL_PATH",
+    "inventory_sha256": "REPLACE_WITH_REAL_SHA256",
+    "source_shot_ids": [],
+    "page_scene_ids": [],
+    "reviewer_id": "REPLACE_WITH_REAL_REVIEWER",
+    "checks": {
+      "environment_view_repetition": "PENDING",
+      "weather_overlay_repetition": "PENDING",
+      "pose_repetition": "PENDING",
+      "palette_monotony": "PENDING",
+      "equivalent_composition_run": "PENDING"
+    },
+    "evidence": []
+  },
+  "human_ab": {
+    "required": true,
+    "status": "PENDING",
+    "pair_record_schema": {
+      "pair_id": "unique ID",
+      "randomization_id": "real batch/order assignment ID",
+      "v6_scene_id": "scene represented by the V6 file",
+      "v5_3_path": "real comparable V5.3 JPG path",
+      "v5_3_sha256": "real V5.3 JPG SHA-256",
+      "v6_path": "real audited V6 final JPG path",
+      "v6_sha256": "real audited V6 final JPG SHA-256",
+      "randomized_order": ["V5_3", "V6"],
+      "votes": []
+    },
+    "reviewers": [],
+    "pair_results": [],
+    "total_votes": 0,
+    "v6_votes": 0,
+    "v6_pair_wins": 0
+  }
+}

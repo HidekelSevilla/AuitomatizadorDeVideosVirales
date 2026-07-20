@@ -1,10 +1,13 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
 
 import { parseProject } from "../lib/json-loader.js";
 import { validateQueueProject } from "../lib/queue-validator.js";
+import { FISH_PRESETS, resolveFishVoice } from "../lib/messaging.js";
 import { getMediaRequirements } from "../shared/media-requirements.mjs";
 
 const FISH_NOVELA_VOICE = "bfed5c0810a347dbb62e8ccce7f59c48";
+const FISH_ENGLISH_NOVELA_VOICE = "933563129e564b19a115bedd57b7406a";
 
 const raw = {
   project: {
@@ -141,7 +144,39 @@ assert.ok(mediaPaths.includes("heredera_oculta_parte_01/clips/scene_02.mp4"));
 assert.ok(mediaPaths.includes("heredera_oculta_parte_01/voice/scene_01.mp3"));
 assert.ok(mediaPaths.includes("heredera_oculta_parte_01/voice/scene_02.mp3"));
 assert.equal(mediaPaths.some((p) => p.endsWith("/voice/full.mp3")), false);
+
+// Ritmo editorial por defecto: Fish genera la diccion con voice_speed y el finalizador compacta
+// todo el montaje a 1.10x. Un project.speed explicito sigue teniendo prioridad en build.mjs.
+const buildSource = fs.readFileSync(new URL("../remotion-editor/orchestrator/build.mjs", import.meta.url), "utf8");
+assert.match(buildSource, /if \(typeof p\.project\?\.speed === "number"\) return p\.project\.speed;[\s\S]*const finalSpeed = p\.project\?\.speed_final;[\s\S]*\["novela-coreana", "novelas-coreanas-eng"\]\.includes\(p\.project\?\.preset\)\) return 1\.10;/);
 assert.equal(mediaPaths.some((p) => p.includes("/images/")), false);
+
+// Variante inglesa: mismo pipeline/voz/ritmo/medios que novela-coreana; solo cambia el preset visual
+// (Remotion agrupa sus captions en bloques de 3..4 palabras).
+const englishRaw = structuredClone(raw);
+englishRaw.project.preset = "novelas-coreanas-eng";
+englishRaw.project.language = "en";
+englishRaw.tts_export.voice_id = "otra_voz_que_debe_ser_ignorada";
+const englishValidated = validateQueueProject(englishRaw, { fileExists });
+assert.equal(englishValidated.ok, true, englishValidated.errors.join("\n"));
+const englishParsed = parseProject(englishRaw);
+assert.equal(englishParsed.ok, true, englishParsed.errors?.join("\n"));
+assert.equal(englishParsed.project.preset, "novelas-coreanas-eng");
+assert.equal(englishParsed.project.voiceSpeed, 1.25);
+assert.equal(englishParsed.scenes.every((scene) => scene.renderMode === "animated"), true);
+assert.equal(englishParsed.project.ttsExport.voice_id, FISH_ENGLISH_NOVELA_VOICE);
+assert.deepEqual(FISH_PRESETS["novelas-coreanas-eng"], {
+  voiceId: FISH_ENGLISH_NOVELA_VOICE,
+  model: "s2.1-pro",
+  forceVoice: true,
+});
+assert.equal(resolveFishVoice("novelas-coreanas-eng", "otra_voz_de_config").voiceId, FISH_ENGLISH_NOVELA_VOICE);
+const englishMediaPaths = getMediaRequirements(englishRaw).requirements.map((r) => r.path);
+assert.deepEqual(englishMediaPaths, mediaPaths);
+const presetsSource = fs.readFileSync(new URL("../remotion-editor/src/viral/presets.ts", import.meta.url), "utf8");
+assert.match(presetsSource, /"novelas-coreanas-eng"[\s\S]*?captionMinWords:\s*3,[\s\S]*?captionMaxWords:\s*4,/);
+const fishToolSource = fs.readFileSync(new URL("../remotion-editor/tools/fish-voice.mjs", import.meta.url), "utf8");
+assert.match(fishToolSource, /const voiceId = presetCfg\?\.forceVoice \? _presetVoice : \(_voiceArg \|\| _presetVoice \|\| DEFAULT_VOICE_ID\);/);
 
 const badVoice = validateQueueProject({
   ...raw,

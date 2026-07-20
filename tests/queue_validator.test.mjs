@@ -111,4 +111,17 @@ const fileExists = (rel) => rel === "assets/characters/protagonista_base.png";
   assert.notEqual(projectMediaSignature(p), original);
 }
 
+{
+  const p = {
+    project: { title: "Flow limpio", slug: "flow_limpio", preset: "manhwa", serie: "flow_limpio", aspect_ratio: "9:16", comparison_variant: "flow_images_only" },
+    pipeline: { image_generation: { tool: "flow" }, animation: { tool: "none" }, tts: { tool: "elevenlabs" } },
+    scenes: [{ id: "scene_01", type: "panel", render_mode: "static", visual: { image_prompt: "panel vertical terminado" }, voiceover: { speaker: "narrador", text: "Hola." } }],
+    tts_export: { full_script: "Hola.", dialogue: [{ scene_id: "scene_01", speaker: "narrador", text: "Hola." }] },
+  };
+  const res = validateQueueProject(p, { fileExists: () => true });
+  assert.equal(res.ok, true, res.errors.join("\n"));
+  assert.equal(res.provider, "flow");
+  assert.equal(res.animationProvider, "none", "una comparativa solo-imagen debe declarar que no anima");
+}
+
 console.log("OK: queue validator");

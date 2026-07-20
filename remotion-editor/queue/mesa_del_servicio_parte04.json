@@ -1,0 +1,1869 @@
+{
+  "project": {
+    "preset": "novela-coreana",
+    "title": "Me sentaron con los meseros en la boda de mi hijo - Parte 4",
+    "subtitle": "Los tres informes",
+    "serie": "mesa_del_servicio",
+    "slug": "mesa_del_servicio_parte_04",
+    "series": {
+      "id": "mesa_del_servicio",
+      "part": 4,
+      "is_cliffhanger": true
+    },
+    "language": "es",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "reuse_ingredients": true,
+    "grok_clip_seconds": "6",
+    "scene_target_seconds": 4,
+    "voice_target_seconds": [
+      3,
+      4
+    ],
+    "voice_ceiling_seconds": "5",
+    "hook": "Once anos me toco la silla de atras. Ese lunes le toco a ella.",
+    "motor": "A_injusticia (secundario: L_traicion_intima)",
+    "world": "C_chaebol_corporativo",
+    "allow_supernatural": false,
+    "allow_historical": false
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "fish"
+    }
+  },
+  "characters": {
+    "bok_ja": {
+      "display_name": "Bok-ja",
+      "poses": {
+        "delantal_mercado": {
+          "mode": "existing",
+          "asset": "assets/characters/mesa_del_servicio/bok_ja_delantal_mercado.png"
+        },
+        "abrigo_calle": {
+          "mode": "existing",
+          "asset": "assets/characters/mesa_del_servicio/bok_ja_abrigo_calle.png"
+        },
+        "sentada_oficina": {
+          "mode": "existing",
+          "asset": "assets/characters/mesa_del_servicio/bok_ja_sentada_oficina.png"
+        },
+        "sentada_cuarto": {
+          "mode": "generate",
+          "asset": "assets/characters/mesa_del_servicio/bok_ja_sentada_cuarto.png",
+          "reference_pose": "abrigo_calle",
+          "prompt": "Same character Bok-ja, same face and short greying permed hair, plain grey blouse without the coat, seated cross-legged on the floor beside a low wooden table, upright posture, both hands resting open on her knees, tired unguarded expression, neutral studio background."
+        }
+      }
+    },
+    "geum_sil": {
+      "display_name": "Geum-sil",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/mesa_del_servicio/geum_sil_base.png"
+        },
+        "sentada_oficina": {
+          "mode": "generate",
+          "asset": "assets/characters/mesa_del_servicio/geum_sil_sentada_oficina.png",
+          "reference_pose": "base",
+          "prompt": "Same character Geum-sil, same face and silver chignon, same cream tailored skirt suit, seated on a low visitor chair with her knees pressed together, upright rigid posture, both hands closed on a folder in her lap, feet flat on the floor, tightly controlled expression, neutral studio background."
+        }
+      }
+    },
+    "ji_hoon": {
+      "display_name": "Ji-hoon",
+      "poses": {
+        "camisa_casa": {
+          "mode": "existing",
+          "asset": "assets/characters/mesa_del_servicio/ji_hoon_camisa_casa.png"
+        },
+        "arrodillado": {
+          "mode": "generate",
+          "asset": "assets/characters/mesa_del_servicio/ji_hoon_arrodillado.png",
+          "reference_pose": "camisa_casa",
+          "prompt": "Same character Ji-hoon, same face and short neat black hair, same white dress shirt with the sleeves rolled, kneeling on both knees on a bare floor, back curved forward, both hands flat on his own thighs, head lowered, devastated expression, neutral studio background."
+        }
+      }
+    },
+    "da_rae": {
+      "display_name": "Da-rae",
+      "poses": {
+        "abrigo_calle": {
+          "mode": "existing",
+          "asset": "assets/characters/mesa_del_servicio/da_rae_abrigo_calle.png"
+        }
+      }
+    },
+    "mesero_kang": {
+      "display_name": "Mesero Kang",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/mesa_del_servicio/mesero_kang_base.png"
+        }
+      }
+    }
+  },
+  "escenarios": {
+    "mercado": {
+      "display_name": "Puesto del mercado",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/mesa_del_servicio/mercado_base.png"
+        },
+        "detras_mostrador": {
+          "mode": "existing",
+          "asset": "assets/escenarios/mesa_del_servicio/mercado_detras_mostrador.png"
+        },
+        "close_mostrador": {
+          "mode": "existing",
+          "asset": "assets/escenarios/mesa_del_servicio/mercado_close_mostrador.png"
+        }
+      }
+    },
+    "oficina_hotel": {
+      "display_name": "Oficina de direccion del hotel",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/mesa_del_servicio/oficina_hotel_base.png"
+        },
+        "frente_escritorio": {
+          "mode": "existing",
+          "asset": "assets/escenarios/mesa_del_servicio/oficina_hotel_frente_escritorio.png"
+        },
+        "detras_escritorio": {
+          "mode": "existing",
+          "asset": "assets/escenarios/mesa_del_servicio/oficina_hotel_detras_escritorio.png"
+        },
+        "close_escritorio": {
+          "mode": "existing",
+          "asset": "assets/escenarios/mesa_del_servicio/oficina_hotel_close_escritorio.png"
+        }
+      }
+    },
+    "cuarto_bok_ja": {
+      "display_name": "Cuarto de Bok-ja",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/mesa_del_servicio/cuarto_bok_ja_base.png"
+        },
+        "close_caja": {
+          "mode": "existing",
+          "asset": "assets/escenarios/mesa_del_servicio/cuarto_bok_ja_close_caja.png"
+        },
+        "desde_el_rincon": {
+          "mode": "existing",
+          "asset": "assets/escenarios/mesa_del_servicio/cuarto_bok_ja_desde_el_rincon.png"
+        }
+      }
+    },
+    "obra_hotel": {
+      "display_name": "Ala en obra del hotel",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/mesa_del_servicio/obra_hotel_base.png"
+        },
+        "close_sello": {
+          "mode": "existing",
+          "asset": "assets/escenarios/mesa_del_servicio/obra_hotel_close_sello.png"
+        },
+        "cocina_vieja": {
+          "mode": "generate",
+          "asset": "assets/escenarios/mesa_del_servicio/obra_hotel_cocina_vieja.png",
+          "reference_view": "base",
+          "prompt": "EMPTY abandoned hotel kitchen behind the sealed door, long steel prep counters furred with dust, a bank of dead burners, exposed pipes running along the low ceiling, one high window with grey daylight, plaster fallen on the tiles, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "cocina_desde_el_fondo": {
+          "mode": "generate",
+          "asset": "assets/escenarios/mesa_del_servicio/obra_hotel_cocina_desde_el_fondo.png",
+          "reference_view": "cocina_vieja",
+          "prompt": "Same abandoned kitchen, new camera position from the far end of the room looking back toward the doorway, the dusted steel prep counters receding on both sides, the exposed ceiling pipes overhead, grey daylight from the high window, empty set, no people, no text."
+        },
+        "close_tuberia": {
+          "mode": "generate",
+          "asset": "assets/escenarios/mesa_del_servicio/obra_hotel_close_tuberia.png",
+          "reference_view": "cocina_vieja",
+          "prompt": "Same abandoned kitchen, extreme close view of a corroded joint in an exposed ceiling pipe with an old repair clamp bolted over it, rust bleeding down the metal, dust in the grey light, shallow depth of field, empty set, no people, no text."
+        }
+      }
+    },
+    "azotea_hotel": {
+      "display_name": "Azotea del hotel",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/mesa_del_servicio/azotea_hotel_base.png",
+          "prompt": "EMPTY rooftop of an old Korean hotel seen from the stairwell door, gravel and tar underfoot, a low parapet wall, humming ventilation units, the city skyline beyond, cold late afternoon light, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "junto_al_pretil": {
+          "mode": "generate",
+          "asset": "assets/escenarios/mesa_del_servicio/azotea_hotel_junto_al_pretil.png",
+          "reference_view": "base",
+          "prompt": "Same hotel rooftop, new camera position at the low parapet wall looking back at the stairwell door and the ventilation units, the parapet edge in the foreground, same cold late afternoon light, empty set, no people, no text."
+        }
+      }
+    }
+  },
+  "ingredients": [
+    {
+      "id": "credencial_marido",
+      "type": "entity",
+      "generation_prompt": "Single old laminated hotel employee ID badge, worn plastic yellowed at the edges, a small faded photograph of a middle-aged East-Asian man in a cook's white jacket in the corner, an embossed hotel crest, no readable text, neutral dark background, extreme detail, realistic photography, no logo.",
+      "output_file": "assets/ingredients/mesa_del_servicio/credencial_marido.png"
+    },
+    {
+      "id": "informe_accidente",
+      "type": "entity",
+      "generation_prompt": "Single old internal incident report sheet, yellowed paper with faint printed ruled boxes and a red stamp in the corner, one handwritten ink signature at the bottom, a crease across the middle, no readable text, neutral dark background, extreme detail, realistic photography, no logo.",
+      "output_file": "assets/ingredients/mesa_del_servicio/informe_accidente.png"
+    },
+    {
+      "id": "reloj_bolsillo",
+      "type": "entity",
+      "generation_prompt": "Single worn brass pocket watch with a scratched glass face and a short chain, lying open on a dark wooden surface, no readable numbers, neutral background, extreme detail, realistic photography, no text, no logo.",
+      "output_file": "assets/ingredients/mesa_del_servicio/reloj_bolsillo.png"
+    },
+    {
+      "id": "cheque_compra",
+      "type": "entity",
+      "generation_prompt": "Single formal bank cashier's cheque on heavy pale blue security paper with a fine guilloche pattern and an embossed corner seal, lying alone on a dark desk, no readable text or numbers, neutral background, extreme detail, realistic photography, no logo.",
+      "output_file": "assets/ingredients/mesa_del_servicio/cheque_compra.png"
+    },
+    {
+      "id": "invitacion_gala",
+      "type": "entity",
+      "generation_prompt": "Single thick cream gala invitation card with a gold embossed border and a small hotel crest, lying on a dark surface, no readable text, neutral background, extreme detail, realistic photography, no logo.",
+      "output_file": "assets/ingredients/mesa_del_servicio/invitacion_gala.png"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_01",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "geum_sil",
+            "pose": "sentada_oficina"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "frente_escritorio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Geum-sil in the provided office desk view: establishing wide shot from the visitor side of the desk, floor to ceiling visible, Geum-sil small in the lower third seated on the low visitor chair in front of the broad desk, the desk edge in the foreground and the high leather chair beyond it, the framed certificates on the wall, cold blue-grey daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she sits down on the low visitor chair and the empty leather chair towers across the desk from her; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, tense] Once años me tocó la silla de atrás. Ese lunes le tocó a ella.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "LA SILLA DE ATRÁS",
+        "highlight_words": [
+          "silla"
+        ]
+      }
+    },
+    {
+      "id": "scene_02",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "sentada_oficina"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "detras_escritorio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided office view from behind the desk: medium shot, camera from behind the desk looking back at the room, the desk surface in the foreground, Bok-ja seated BEHIND it with her back three-quarters to camera, both feet on the floor, the visitor chair and the closed door ahead of her, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she turns the leather chair a few degrees toward the visitor and stops, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "No le grité. No le dije nada de lo que había leído.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_03",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "geum_sil",
+            "pose": "sentada_oficina"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Geum-sil in the provided hotel management office: medium close-up, chest up, camera from the door at eye level, Geum-sil seated on the visitor chair facing camera three-quarters, mouth clearly visible, both hands closed on the folder in her lap, cold daylight on her face. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Geum-sil begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Geum-sil moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Ella habló primero: —Usted no puede manejar un hotel.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_04",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "sentada_oficina"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "frente_escritorio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided office desk view: full body shot, head to feet in frame, camera from the visitor side of the desk, Bok-ja seated BEHIND the desk in the leather chair, the desk edge in the foreground, both feet flat on the floor, face frontal, mouth clearly visible, both hands quiet on the wood, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Bok-ja begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Bok-ja moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Llevo once años manejándolo. Usted no se dio cuenta.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_05",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "close_escritorio"
+        },
+        "ingredients": [
+          "cheque_compra"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided cashier's cheque in the provided desk close view: Insert shot: extreme close-up of a formal bank cheque on pale blue security paper laid on the dark desk, the guilloche pattern and the embossed corner seal catching the cold daylight, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the cheque is set down on the wood and a hand slides it forward across the desk; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Sacó un cheque. Lo puso en mi escritorio.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_06",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "geum_sil",
+            "pose": "sentada_oficina"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Geum-sil in the provided hotel management office: medium shot, camera from the door at eye level, Geum-sil seated on the visitor chair, both feet on the floor, face frontal, mouth clearly visible, one hand still extended toward the desk, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Geum-sil begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Geum-sil moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—El grupo compra el edificio. Usted vuelve a su vida.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_07",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "sentada_oficina"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "close_escritorio"
+        },
+        "ingredients": [
+          "cheque_compra"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja and the provided cheque in the provided desk close view: Insert shot: close-up of Bok-ja's hands only, no face in frame, her working fingers turning the pale blue cheque face-down on the dark desk without lifting it, cold daylight, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her fingers turn the cheque face-down on the wood and leave it there; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Lo volteé sin leerlo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_08",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "sentada_oficina"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "frente_escritorio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided office desk view: medium close-up, chest up, camera from the visitor side of the desk, Bok-ja seated in the leather chair facing camera, mouth clearly visible, one hand flat over the face-down cheque, cold daylight on half her face. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Bok-ja begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Bok-ja moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—¿Sabe qué había en el sótano de este edificio?",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_09",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "geum_sil",
+            "pose": "sentada_oficina"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Geum-sil in the provided hotel management office: medium close-up, chest up, camera from the door at eye level, Geum-sil seated facing camera three-quarters, mouth clearly visible, her jaw setting hard, both hands gripping the folder, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Geum-sil begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Geum-sil moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Papeles viejos. Nada que le sirva.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_10",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "geum_sil",
+            "pose": "sentada_oficina"
+          },
+          {
+            "id": "bok_ja",
+            "pose": "sentada_oficina"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "detras_escritorio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Geum-sil and the provided Bok-ja in the provided office view from behind the desk: medium shot, camera behind Bok-ja's shoulder (over-the-shoulder) from behind the desk, Bok-ja's shoulder blurred on frame-right in the foreground, Geum-sil on frame-left seated on the low visitor chair facing frame-right, both feet on the floor, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Geum-sil's grip tightens on the folder in her lap, mouths closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Dijo papeles viejos. Yo no había dicho de qué papeles.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_11",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "sentada_oficina"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "frente_escritorio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided office desk view: full body shot, head to feet in frame, camera from the visitor side of the desk, Bok-ja seated BEHIND the broad desk in the leather chair, the desk edge in the foreground, both feet flat on the floor, one hand pushing the face-down cheque back across the wood, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she pushes the face-down cheque slowly back across the desk toward the visitor chair, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Y no vendí.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "NO VENDÍ",
+        "highlight_words": [
+          "vendí"
+        ]
+      }
+    },
+    {
+      "id": "scene_12",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "abrigo_calle"
+          },
+          {
+            "id": "mesero_kang",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "obra_hotel",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja and the provided Mesero Kang in the provided hotel construction wing: establishing wide shot from the corridor entrance, floor to ceiling visible, Bok-ja small on frame-right in her charcoal coat and Mesero Kang small on frame-left out of uniform, both standing on the dusty floor facing the sealed door at the end of the wing, plastic sheeting on both sides, cold grey light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): he breaks the red seal on the handle with two fingers and steps back, mouths closed, not speaking; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El martes rompimos el sello. Los dos solos.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_13",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "obra_hotel",
+          "view": "cocina_vieja"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided abandoned kitchen: full body shot, head to feet in frame, camera at the doorway at eye level, Bok-ja standing among long dusted steel prep counters, both feet on the fallen plaster, dead burners along one wall, exposed pipes across the low ceiling, grey daylight from one high window. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): dust lifts off the steel counters as the door opens behind her; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Once años cerrada. Todo seguía en su lugar.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_14",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "obra_hotel",
+          "view": "cocina_vieja"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided abandoned kitchen: medium shot, camera at the prep counters at eye level, Bok-ja standing BEHIND a long steel counter, the dusted tabletop in the foreground, both feet on the tiles, one hand wiping a line clean through the dust, grey daylight from the high window. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her hand wipes one clean line through the dust on the steel, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Aquí cerraba él. El último.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_15",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "abrigo_calle"
+          },
+          {
+            "id": "mesero_kang",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "obra_hotel",
+          "view": "cocina_desde_el_fondo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja and the provided Mesero Kang in the provided abandoned kitchen far-end view: medium close-up, chest up, camera behind Bok-ja's shoulder (over-the-shoulder) from the far end of the kitchen, her shoulder blurred on frame-left in the foreground, Mesero Kang on frame-right among the dusted steel facing frame-left, mouth clearly visible, his face lifted toward the ceiling pipes, grey daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Mesero Kang begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Mesero Kang moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El mesero señaló el techo: —La fuga estaba ahí. Siempre estuvo ahí.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_16",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "obra_hotel",
+          "view": "close_tuberia"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "On the provided kitchen pipe close view: Insert shot: extreme close-up of a corroded joint in an exposed ceiling pipe with an old repair clamp bolted over it, rust bleeding down the metal, dust turning in the grey light, shallow depth of field, no people. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): dust drifts slowly across the rusted clamp on the pipe joint; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Una abrazadera vieja. Puesta encima del óxido.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_17",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "mesero_kang",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "obra_hotel",
+          "view": "cocina_desde_el_fondo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Mesero Kang in the provided abandoned kitchen far-end view: medium shot, camera from the far end of the kitchen looking back toward the doorway, the steel counters receding, Mesero Kang standing among them with his body BEHIND the counter line, both feet on the tiles, face frontal, mouth clearly visible, one hand pointing up at the pipe, grey daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Mesero Kang begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Mesero Kang moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—La reportamos tres veces. Nos dijeron que aguantaba.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "TRES VECES",
+        "highlight_words": [
+          "tres"
+        ]
+      }
+    },
+    {
+      "id": "scene_18",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "obra_hotel",
+          "view": "cocina_vieja"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided abandoned kitchen: medium close-up, chest up, camera at the prep counters at eye level, Bok-ja standing with her face turned up toward the ceiling pipes, her mouth closed, both hands hanging open at her sides, grey daylight on her face. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her face stays turned up toward the pipe without blinking, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[soft, trembling, hurt] No fue descuido. Fue una abrazadera de mil wones.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "MIL WONES",
+        "highlight_words": [
+          "wones"
+        ]
+      }
+    },
+    {
+      "id": "scene_19",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "obra_hotel",
+          "view": "cocina_vieja"
+        },
+        "ingredients": [
+          "credencial_marido"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja and the provided employee badge in the provided abandoned kitchen: Insert shot: close-up of Bok-ja's hands only, no face in frame, her fingers laying the old laminated employee badge flat on the dusted steel counter, the faded photograph face-up in the grey light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her fingers set the badge on the dusty steel and press it flat; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Le dejé su credencial en su mesa.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_20",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_hoon",
+            "pose": "camisa_casa"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-hoon in the provided hotel management office: full body shot, head to feet in frame, camera from the door at eye level, Ji-hoon standing just inside the office in his white shirt, both feet on the floor, both hands empty at his sides, the broad desk and the empty leather chair beyond him, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): he stops just inside the door and does not go further into the room, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El jueves mi hijo subió a esta oficina. Buscándome.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_21",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_hoon",
+            "pose": "camisa_casa"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "detras_escritorio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-hoon in the provided office view from behind the desk: medium shot, camera from behind the desk looking at the door, the desk surface in the foreground, Ji-hoon standing beyond it facing camera, both feet on the floor, mouth clearly visible, one hand on the back of the visitor chair, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ji-hoon begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Ji-hoon moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Me dijeron abajo que la dueña era usted. Que usted.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_22",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "sentada_oficina"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "frente_escritorio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided office desk view: medium close-up, chest up, camera from the visitor side of the desk, Bok-ja seated in the leather chair facing camera, mouth clearly visible, her face calm, both hands folded on the desk, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Bok-ja begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Bok-ja moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Siéntate. Te voy a contar de tu papá.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_23",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "close_escritorio"
+        },
+        "ingredients": [
+          "informe_accidente"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided incident report in the provided desk close view: Insert shot: extreme close-up of the yellowed incident report unfolded on the dark desk, the red stamp in the corner and the handwritten signature at the bottom, cold daylight across the paper, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the old sheet is unfolded flat and turned around to face the other side of the desk; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Le di el informe con la firma hacia él.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_24",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_hoon",
+            "pose": "camisa_casa"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "detras_escritorio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-hoon in the provided office view from behind the desk: medium close-up, chest up, camera from behind the desk looking at the door, Ji-hoon standing beyond the desk with the sheet raised in one hand beside his face, mouth clearly visible, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ji-hoon begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Ji-hoon moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Esta firma es de la mamá de Da-rae.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_25",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "sentada_oficina"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "frente_escritorio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided office desk view: medium shot, camera from the visitor side of the desk, Bok-ja seated BEHIND the desk, the desk edge in the foreground, both feet on the floor, face frontal, mouth clearly visible, both hands flat on the wood, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Bok-ja begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Bok-ja moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Hay tres informes iguales. Tres cocineros.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_26",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_hoon",
+            "pose": "arrodillado"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-hoon in the provided hotel management office: full body shot, head to feet in frame, camera from the door at eye level, Ji-hoon kneeling on both knees on the office floor with his back curved and his head lowered, both hands flat on his own thighs, the broad desk beyond him, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): his knees give and he goes down onto the floor without a sound, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Se le doblaron las rodillas ahí mismo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_27",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_hoon",
+            "pose": "arrodillado"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-hoon in the provided hotel management office: medium close-up, chest up, camera from the door at kneeling eye level, Ji-hoon kneeling with his face lifted toward the desk, mouth clearly visible, his eyes red, both hands still flat on his thighs, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ji-hoon begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Ji-hoon moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Mamá. Yo me reí de usted en esa cena.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "ME REÍ DE USTED",
+        "highlight_words": [
+          "reí"
+        ]
+      }
+    },
+    {
+      "id": "scene_28",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "sentada_oficina"
+          },
+          {
+            "id": "ji_hoon",
+            "pose": "arrodillado"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "detras_escritorio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja and the provided Ji-hoon in the provided office view from behind the desk: medium shot, camera behind Bok-ja's shoulder (over-the-shoulder) from behind the desk, Bok-ja's shoulder blurred on frame-left in the foreground, Ji-hoon on frame-right kneeling on the floor beyond the desk, both hands on his thighs, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she stays seated and does not get up to lift him, mouths closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "No me levanté a levantarlo. Todavía no.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_29",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "sentada_oficina"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "frente_escritorio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided office desk view: medium close-up, chest up, camera from the visitor side of the desk, Bok-ja seated in the leather chair facing camera, mouth clearly visible, her eyes dry and level, one hand open on the desk, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Bok-ja begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Bok-ja moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Levántate solo. Como te enseñó él.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_30",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "sentada_cuarto"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_bok_ja",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided rented room: establishing wide shot from the door, floor to ceiling visible, Bok-ja small in the lower third seated cross-legged on the floor beside the low table in a grey blouse, the folded mattress against the wall, the shoebox open on the table, warm dim lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she sits on the floor beside the low table and the lamp warms the whole small room; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Esa noche cociné para dos. Por costumbre.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_31",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "sentada_cuarto"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_bok_ja",
+          "view": "close_caja"
+        },
+        "ingredients": [
+          "reloj_bolsillo"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja and the provided pocket watch in the provided box close view: Insert shot: close-up of Bok-ja's hands only, no face in frame, camera behind her shoulder (from behind), her fingers winding the worn brass pocket watch beside the open shoebox on the low table, the papers folded away underneath, warm lamp light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her fingers turn the crown of the brass watch three times; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Le di cuerda a su reloj. Todavía anda.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_32",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_rae",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_bok_ja",
+          "view": "desde_el_rincon"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-rae in the provided rented room corner view: full body shot, head to feet in frame, camera from the far corner looking back at the door, the low table in the middle foreground, Da-rae standing in the open doorway in her camel coat, both feet on the floor, both hands holding a covered dish, warm dim lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she stands in the doorway holding the covered dish and does not step in, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Y mi nuera tocó mi puerta. Sola, con un plato.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_33",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_rae",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_bok_ja",
+          "view": "desde_el_rincon"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-rae in the provided rented room corner view: medium close-up, chest up, camera from the far corner at eye level, Da-rae standing in the doorway facing camera three-quarters, mouth clearly visible, the covered dish held against her, warm lamp light on her face. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Da-rae begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Da-rae moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Señora, yo firmé cosas de mi mamá sin leerlas.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_34",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "sentada_cuarto"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_bok_ja",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided rented room: full body shot, head to feet in frame, camera from the door at eye level, Bok-ja seated cross-legged on the floor beside the low table, her body BEHIND the table line, both hands open on her knees, face frontal, mouth clearly visible, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Bok-ja begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Bok-ja moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Siéntate. Hay arroz de sobra.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_35",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "sentada_cuarto"
+          },
+          {
+            "id": "da_rae",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_bok_ja",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja and the provided Da-rae in the provided rented room: medium shot, camera from the door at eye level, Bok-ja on frame-left seated cross-legged on the floor and Da-rae on frame-right sitting down across the low table from her, the table edge in the foreground, the lamp between them, warm dim light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Da-rae sits down on the floor across the low table without taking off her coat, mouths closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Se sentó en el piso. Con el abrigo puesto.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_36",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "close_escritorio"
+        },
+        "ingredients": [
+          "invitacion_gala"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided gala invitation in the provided desk close view: Insert shot: extreme close-up of a thick cream gala invitation card with a gold embossed border and a small hotel crest lying on the dark desk, cold daylight across the gilt edge, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the stiff invitation card is set down on the wood and rocks once; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El viernes llegó la invitación a la gala.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_37",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "sentada_oficina"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "frente_escritorio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided office desk view: medium shot, camera from the visitor side of the desk, Bok-ja seated BEHIND the desk with the invitation held in both hands, the desk edge in the foreground, both feet on the floor, her eyes on the card, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she turns the stiff card over once in both hands, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Aniversario del hotel. En tres días.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "EN TRES DÍAS",
+        "highlight_words": [
+          "tres"
+        ]
+      }
+    },
+    {
+      "id": "scene_38",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "mesero_kang",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Mesero Kang in the provided hotel management office: medium close-up, chest up, camera from the door at eye level, Mesero Kang standing just inside the office facing camera three-quarters, mouth clearly visible, both hands folded in front of him, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Mesero Kang begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Mesero Kang moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Esa noche anuncian la venta de la cadena, presidenta.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_39",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "mesero_kang",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Mesero Kang in the provided hotel management office: medium shot, camera from the door at eye level, Mesero Kang standing just inside the office, both feet on the floor, face frontal, mouth clearly visible, one hand indicating the desk, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Mesero Kang begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Mesero Kang moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Y falta una firma en el contrato. La del edificio.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_40",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "sentada_oficina"
+          }
+        ],
+        "escenario": {
+          "id": "oficina_hotel",
+          "view": "detras_escritorio"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided office view from behind the desk: medium close-up, chest up, camera from behind the desk, Bok-ja seated with her face three-quarters to camera and her eyes level, the invitation lowered to the wood, cold daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she lays the invitation face-up on the desk beside the report, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Sin mi firma no hay venta.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_41",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "geum_sil",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "mercado",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Geum-sil in the provided market food stall: full body shot, head to feet in frame, camera at the customer side at eye level, Geum-sil standing in the market alley in her cream suit facing the closed stall shutter, both feet on the wet concrete, two blurred anonymous men in dark coats waiting behind her, cold evening light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the two blurred men behind her step forward when she does not move, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El sábado bajó otra vez al mercado. Con dos hombres.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_42",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "geum_sil",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "mercado",
+          "view": "detras_mostrador"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Geum-sil in the provided market stall counter view: medium shot, camera behind the counter looking out at the alley, the counter edge in the foreground, Geum-sil standing beyond it facing camera, both feet on the concrete, mouth clearly visible, both hands closed in front of her, warm bulb light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Geum-sil begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Geum-sil moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Firme el jueves y todo esto se queda enterrado.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_43",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "delantal_mercado"
+          }
+        ],
+        "escenario": {
+          "id": "mercado",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided market food stall: medium shot, camera at the customer side at eye level, Bok-ja standing behind her counter, the counter and pots in the foreground, both feet on the concrete, mouth clearly visible, both hands on the steel, warm bulb light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Bok-ja begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Bok-ja moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—¿Enterrado como los otros dos?",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_44",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "geum_sil",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "mercado",
+          "view": "detras_mostrador"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Geum-sil in the provided market stall counter view: medium close-up, chest up, camera behind the counter looking out, Geum-sil standing beyond the counter with her mouth closed and her face gone still, the steam crossing between her and the lens, warm bulb light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her face goes completely still and she does not answer, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Por primera vez en su vida, esa mujer no supo qué decir.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_45",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "azotea_hotel",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided hotel rooftop: establishing wide shot from the stairwell door, floor to ceiling visible, Bok-ja full body small in the lower third standing on the gravel of the old rooftop in her charcoal coat, the low parapet and the humming ventilation units around her, the city skyline beyond, cold late afternoon light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the wind lifts the hem of her coat while she stands at the parapet; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El domingo subí a la azotea. Él comía aquí.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_46",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "azotea_hotel",
+          "view": "junto_al_pretil"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided rooftop parapet view: medium shot, camera behind her shoulder (from behind) at the parapet, Bok-ja in the foreground seen from behind facing out over the low parapet, both feet on the gravel, both hands resting on the concrete, the city skyline ahead of her, cold light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her hands rest flat on the rough concrete of the parapet, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Veintiún años subiendo a comer aquí, solo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_47",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "azotea_hotel",
+          "view": "junto_al_pretil"
+        },
+        "ingredients": [
+          "invitacion_gala"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja and the provided gala invitation in the provided rooftop parapet view: Insert shot: close-up of Bok-ja's hands only, no face in frame, her fingers holding the gilt-edged gala invitation against the rough concrete of the parapet, the wind pulling at the card, cold light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the wind pulls at the stiff card in her fingers and she holds it flat; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Tres días para la gala. Falta mi firma.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_48",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "mesero_kang",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "azotea_hotel",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Mesero Kang in the provided hotel rooftop: full body shot, head to feet in frame, camera from the stairwell door at eye level, Mesero Kang standing on the gravel out of uniform, both feet on the roof, face frontal, mouth clearly visible, one hand holding a phone lowered at his side, cold late afternoon light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Mesero Kang begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Mesero Kang moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El mesero subió corriendo: —Presidenta. Cambiaron la fecha.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "CAMBIARON LA FECHA",
+        "highlight_words": [
+          "fecha"
+        ]
+      }
+    },
+    {
+      "id": "scene_49",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "mesero_kang",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "azotea_hotel",
+          "view": "junto_al_pretil"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Mesero Kang in the provided rooftop parapet view: medium shot, camera at the parapet looking back at the stairwell door, the parapet edge in the foreground, Mesero Kang standing beyond it on the gravel, both feet on the roof, face frontal, mouth clearly visible, the phone held up in one hand, cold light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Mesero Kang begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Mesero Kang moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—La gala es mañana. Y su hijo va a firmar por usted.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_50",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "bok_ja",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "azotea_hotel",
+          "view": "junto_al_pretil"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Bok-ja in the provided rooftop parapet view: medium close-up, chest up, camera at the parapet at slight low angle, Bok-ja facing camera three-quarters with the wind in her short grey hair, her mouth closed and her eyes very still, the city sky behind her, cold light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the wind moves her hair while her face does not change at all, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, knowing] Mi hijo tiene mi apellido. Y ellos tienen su firma.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "MI HIJO VA A FIRMAR",
+        "highlight_words": [
+          "firma"
+        ]
+      }
+    }
+  ],
+  "capcut_export": {
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18",
+      "scene_19",
+      "scene_20",
+      "scene_21",
+      "scene_22",
+      "scene_23",
+      "scene_24",
+      "scene_25",
+      "scene_26",
+      "scene_27",
+      "scene_28",
+      "scene_29",
+      "scene_30",
+      "scene_31",
+      "scene_32",
+      "scene_33",
+      "scene_34",
+      "scene_35",
+      "scene_36",
+      "scene_37",
+      "scene_38",
+      "scene_39",
+      "scene_40",
+      "scene_41",
+      "scene_42",
+      "scene_43",
+      "scene_44",
+      "scene_45",
+      "scene_46",
+      "scene_47",
+      "scene_48",
+      "scene_49",
+      "scene_50"
+    ],
+    "caption_style": {
+      "font": "bold sans-serif",
+      "position": "lower-third",
+      "color": "white",
+      "stroke": "black"
+    },
+    "title_cards": [
+      "CONTINUARA",
+      "PARTE 5: LA GALA"
+    ],
+    "cliffhanger_card": "PARTE 5?",
+    "music_notes": [
+      "Piano dramatico suave",
+      "Cuerda grave en la cocina vieja",
+      "Silencio total cuando cae de rodillas"
+    ],
+    "sfx_notes": [
+      "Sello de papel que se rompe",
+      "Polvo y eco de cocina vacia",
+      "Reloj de bolsillo al que se le da cuerda",
+      "Viento de azotea",
+      "Telefono que suena una sola vez"
+    ]
+  },
+  "audio": {
+    "voice_speed": 1.25,
+    "voice_rate": 1,
+    "music_volume": 0
+  },
+  "tts_export": {
+    "mode": "per_scene",
+    "voice_id": "bfed5c0810a347dbb62e8ccce7f59c48",
+    "note": "Una sola voz femenina narra todas las escenas, incluidos los dialogos. Fish Audio por escena."
+  }
+}

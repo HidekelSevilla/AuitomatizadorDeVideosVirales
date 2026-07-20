@@ -1,10 +1,11 @@
 // Genera la MISMA narracion (tts_export.full_script) con una voz forzada, para comparar timbre A/B.
 // NO toca los renders existentes: escribe en pruebas/voice-compare/<outName>.mp3. Settings = produccion
-// (s2-pro, prosody 1.0 / SIN prosody = sin warble). Reusa la logica de fish-voice.mjs.
+// (s2.1-pro, prosody 1.0 / SIN prosody = sin warble). Reusa la logica de fish-voice.mjs.
 // Uso: node tools/voice-compare.mjs <ruta-json> <voiceId> <outName>
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseFishTimestampSse } from "../../lib/fish-timestamp-sse.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(__dirname, "..", "..");
@@ -26,19 +27,13 @@ fs.mkdirSync(outDir, { recursive: true });
 
 const res = await fetch("https://api.fish.audio/v1/tts/stream/with-timestamp", {
   method: "POST",
-  headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", model: "s2-pro" },
+  headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", model: "s2.1-pro" },
   body: JSON.stringify({ text, format: "mp3", latency: "normal", reference_id: voiceId }),
 });
 if (!res.ok) { console.error("Fish", res.status, await res.text()); process.exit(1); }
 
-const raw = await res.text();
-const parts = [];
-for (const block of raw.split(/\n\n/)) {
-  const data = block.split(/\n/).filter((l) => l.startsWith("data:")).map((l) => l.slice(5).trim()).join("");
-  if (!data || data === "[DONE]") continue;
-  let ev; try { ev = JSON.parse(data); } catch { continue; }
-  if (ev.audio_base64) parts.push(Buffer.from(ev.audio_base64, "base64"));
-}
+const parsed = parseFishTimestampSse(await res.text());
+const parts = parsed.audioBase64Parts.map((part) => Buffer.from(part, "base64"));
 const audio = Buffer.concat(parts);
 if (!audio.length) { console.error("Stream vacio"); process.exit(1); }
 const out = path.join(outDir, `${outName}.mp3`);

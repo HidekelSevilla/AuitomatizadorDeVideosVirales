@@ -48,6 +48,9 @@ export interface SceneData {
   // (tambien lo dispara SOLO el render al abrir la ventana del sistema). Otros presets: se ignora.
   transition_in?: "cut" | "crossfade" | "dip_black" | "flash";
   _window?: { start: number; end: number }; // historias voz-continua: ventana (seg, raw Fish) de la escena sobre el audio maestro (lo inyecta align/inject-words.mjs)
+  _frame_window?: { start: number; end: number; fps: number }; // V7 decoupled: rango semiabierto entero y reproducible
+  _narration?: { unit_id: string; speaker?: string; text?: string; words?: WordTs[] }; // V7 decoupled: captions derivados, no TTS duplicado
+  narration_ref?: { unit_id: string; timing_weight: number };
   captions?: CaptionData;
   sfx?: SfxCue[];
   timeline?: { clip_duration_s?: number };
@@ -89,13 +92,13 @@ export interface ProjectMeta {
 }
 
 export interface TtsExportData {
-  edit_speed?: number; // velocidad final habitual del preset manhwa (ej. 1.40)
+  edit_speed?: number; // velocidad final habitual del preset manhwa (default 1.25)
   video_speed?: number; // alias heredado
 }
 
 export interface AudioData {
   music_file?: string; // relativo a la carpeta del proyecto, ej "music/tenso.mp3"
-  music_volume?: number; // default 0.18
+  music_volume?: number; // manhwa default 0.0325; otros presets definen su propio nivel
   clip_volume?: number; // volumen del audio propio de las animaciones, default 0.1
   voice_rate?: number; // velocidad de la voz narrada, default 0.92 (un poco mas lenta)
   hook_sfx?: string; // click en cada corte del hook, default "click.mp3" (public/sfx/)
@@ -114,6 +117,8 @@ export interface AudioData {
   // historias voz-continua (lo inyecta align/inject-words.mjs, NO viene del JSON del usuario):
   _continuous?: boolean; // true -> el render usa 1 pista maestra de voz + ventanas por escena (sin costura)
   _master?: string; // ruta del mp3 maestro relativa a public/<slug>/ (ej "voice/full.mp3")
+  _visual_timing_model?: "NARRATION_VISUAL_TRACKS_V1";
+  _omit_scene_voice?: boolean; // build --clips-only: usa solo el audio propio de los clips
 }
 
 export interface CaptionStyle {

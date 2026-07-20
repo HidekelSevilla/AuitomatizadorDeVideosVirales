@@ -2,7 +2,7 @@
 #   1) dev-server (puente extension <-> disco, puerto 35729): /secrets /save /move /queue /charfile
 #   2) render watch de Remotion: renderiza cada video cuando sus medios estan listos (no gasta tokens)
 #   3) telegram-bridge opcional: solo si secrets.local.json trae telegramBotToken
-# Evita duplicados (chequea la linea de comando), arranca en ventana minimizada y verifica.
+# Evita duplicados (chequea la linea de comando), arranca oculto y verifica.
 $ErrorActionPreference = "Stop"
 $Root     = Split-Path -Parent $PSScriptRoot
 $Remotion = Join-Path $Root "remotion-editor"
@@ -17,7 +17,7 @@ if (Test-Proc '*reload-server.mjs*') {
   Write-Host "[OK] dev-server ya estaba corriendo."
 } else {
   Write-Host "[*] Iniciando dev-server (puente, puerto 35729)..."
-  Start-Process node -ArgumentList 'dev/reload-server.mjs' -WorkingDirectory $Root -WindowStyle Minimized
+  Start-Process node -ArgumentList 'dev/reload-server.mjs' -WorkingDirectory $Root -WindowStyle Hidden
   Start-Sleep -Seconds 2
 }
 
@@ -26,7 +26,7 @@ if (Test-Proc '*build.mjs*--watch*') {
   Write-Host "[OK] render watch ya estaba corriendo."
 } else {
   Write-Host "[*] Iniciando render watch (Remotion)..."
-  Start-Process node -ArgumentList 'orchestrator/build.mjs','--watch' -WorkingDirectory $Remotion -WindowStyle Minimized
+  Start-Process node -ArgumentList 'orchestrator/build.mjs','--watch' -WorkingDirectory $Remotion -WindowStyle Hidden
   Start-Sleep -Seconds 2
 }
 
@@ -44,7 +44,7 @@ if ($TelegramEnabled) {
     Write-Host "[OK] telegram bridge ya estaba corriendo."
   } else {
     Write-Host "[*] Iniciando telegram bridge..."
-    Start-Process node -ArgumentList 'scripts/telegram-bridge.mjs' -WorkingDirectory $Root -WindowStyle Minimized
+    Start-Process node -ArgumentList 'scripts/telegram-bridge.mjs' -WorkingDirectory $Root -WindowStyle Hidden
     Start-Sleep -Seconds 2
   }
 } else {

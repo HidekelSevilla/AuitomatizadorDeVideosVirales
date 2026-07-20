@@ -5,7 +5,7 @@
 //
 // DIFERENCIAS CLAVE vs Flow (mapeadas en vivo 2026-06-16, ver memoria grok-future-animation):
 //  - El compositor es UN <form>: prompt = [contenteditable] ("Ask Grok anything"); modos Imagen/Video
-//    (role=menuitemradio, texto exacto); aspecto "Relación de aspecto"; generar = button aria-label "Enviar".
+//    (role=radio, texto exacto); aspecto "Relación de aspecto"; generar = button aria-label "Enviar".
 //  - Las REFERENCIAS (personaje + escenas previas) las sube el SW via CDP DOM.setFileInputFiles al
 //    input[type=file][name=files] ANTES de mandar GENERATE_IMAGE/ANIMATE. Grok SI procesa archivos
 //    puestos por codigo (a diferencia de Flow). Aparece un chip con boton aria-label "Remove image".
@@ -17,16 +17,27 @@
 // PENDIENTE DE SHAKEOUT EN VIVO: confirmar 9:16, el patron exacto de URL del VIDEO y los tiempos.
 
 (() => {
-  if (window.__grokDriverLoaded) return;
+  const GROK_DRIVER_VERSION = "0.2.18-card-scoped-final-actions";
+  if (window.__grokDriverVersion === GROK_DRIVER_VERSION) return;
+  // Una recarga solo de la extension invalida el listener viejo pero conserva el `window` de la pagina.
+  // El guard booleano anterior impedia inyectar el driver corregido hasta recargar Grok, destruyendo la
+  // grilla que queriamos recuperar. Versionar el guard permite hot-upgrade sin navegar; desde esta version
+  // tambien retiramos el listener previo cuando siga vivo para no responder dos veces.
+  if (window.__grokDriverMessageListener) {
+    try { chrome.runtime.onMessage.removeListener(window.__grokDriverMessageListener); } catch (_e) { /* contexto viejo invalidado */ }
+  }
   window.__grokDriverLoaded = true;
+  window.__grokDriverVersion = GROK_DRIVER_VERSION;
 
   // ACT replicado a mano (igual que flow-driver: el content script no importa modulos).
   const ACT = {
     PING: "act:ping",
     INSPECT_DOM: "act:inspect_dom",
+    PREPARE_IMAGE: "act:prepare_image",
     GENERATE_IMAGE: "act:generate_image",
     COLLECT_IMAGE: "act:collect_image",
     ANIMATE: "act:animate",
+    PREPARE_VIDEO: "act:prepare_video",
     ANIMATE_FIRE: "act:animate_fire",
     ANIMATE_COLLECT: "act:animate_collect",
     VIDEO_SRCS: "act:video_srcs",
@@ -41,6 +52,7 @@
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const rsleep = (min, max) => sleep(Math.round(min + Math.random() * Math.max(0, max - min)));
   const norm = (s) => (s || "").replace(/\s+/g, " ").trim();
+  const folded = (s) => norm(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const visible = (el) => {
     if (!el || !el.getBoundingClientRect) return false;
     const r = el.getBoundingClientRect();
@@ -130,7 +142,7 @@
     const removeBtns = () => removeImageButtons(composeForm() || document);
     let removed = 0;
     // BUCLE re-consultando cada vuelta: clicar un chip re-renderiza la lista, asi que un snapshot unico se
-    // desincroniza y deja chips de la escena PREVIA -> se acumulan y Grok rechaza por pasar de 3 refs.
+    // desincroniza y deja chips de la escena PREVIA. El siguiente handshake debe empezar desde cero.
     for (let pass = 0; pass < 12; pass++) {
       const btns = removeBtns();
       if (!btns.length) break;
@@ -145,7 +157,11 @@
   // -------------------------------------------------------------- deteccion ---
   // Grok agrega mas superficies alrededor de Imagine (busqueda, proyectos, feed). Mantener todos los
   // controles acotados al composer evita tomar botones homonimos de esas superficies.
-  const promptEditable = () => document.querySelector('[contenteditable][role="textbox"][aria-label="Ask Grok anything"]')
+  const promptEditable = () => document.querySelector('textarea[aria-label="Mensaje para obtener imagen"],textarea[aria-label="Message for image"],textarea[aria-label="Ask Grok anything"]')
+    || document.querySelector('form textarea[aria-label]')
+    || document.querySelector("form textarea")
+    || document.querySelector('[contenteditable][role="textbox"][aria-label="Ask Grok anything"]')
+    || document.querySelector('[contenteditable][role="textbox"][aria-label="Mensaje para obtener imagen"]')
     || document.querySelector("form [contenteditable]")
     || document.querySelector("[contenteditable]");
   const composeForm = () => promptEditable()?.closest("form") || document.querySelector("form");
@@ -217,20 +233,47 @@
 
   // Imagenes de RESULTADO. Grok usa tres formas distintas segun la vista:
   //  - GRID del compositor (p.ej. SIN referencia -> N variaciones): <img> con src data:image/...base64 (~720px).
-  //  - Post privado: assets.grok.com/.../generated/<postid>/...
+  //  - Post privado legacy: assets.grok.com/.../generated/<postid>/...
+  //  - Visor julio-2026: assets.grok.com/users/<user>/<postid>/content?cache=1.
   //  - Post abierto desde una de las 4 variantes: imagine-public.x.ai/imagine-public/images/<postid>.jpg.
   // El ultimo solo cuenta dentro de main/article en /imagine/post; asi no confundimos el feed Descubrir.
-  function resultImageEls() {
+  function resultImageEls(root = document) {
     const form = composeForm();
-    return [...document.querySelectorAll("img")].filter((i) => {
+    return [...root.querySelectorAll("img")].filter((i) => {
       if (form && form.contains(i)) return false;
       if (i.naturalWidth < 400) return false;
       const src = i.currentSrc || i.src || "";
       if (/^data:image/.test(src) || /assets\.grok\.com\/[^"']*\/generated\//.test(src)) return true;
-      return /\/imagine\/post\//.test(location.pathname)
-        && !!i.closest("main,article")
-        && /imagine-public\.x\.ai\/imagine-public\/images\//.test(src);
+      const inMainResultArea = !!i.closest("main,article");
+      const scopedToPost = /\/imagine\/post\//.test(location.pathname) && inMainResultArea;
+      const titleLooksLikePrompt = !/^Imagine\s*-\s*Grok$/i.test(String(document.title || "").trim());
+      const scopedToTitledGrid = /^\/imagine\/?$/i.test(location.pathname) && titleLooksLikePrompt && inMainResultArea;
+      const contentEndpoint = /assets\.grok\.com\/users\/[^/]+\/[^/?#]+\/content(?:[?#]|$)/i.test(src);
+      return (scopedToPost && /imagine-public\.x\.ai\/imagine-public\/images\//.test(src))
+        || ((scopedToPost || scopedToTitledGrid) && contentEndpoint);
     });
+  }
+  // Grok habilita este bloque lateral solo cuando la variante seleccionada ya termino. Un unico boton
+  // no basta (en UIs anteriores "Guardar" aparecia sobre frames intermedios): exigimos Descargar Y otra
+  // accion final. Sigue siendo una senal adicional; nunca sustituye estabilidad ni validacion de bytes.
+  function resultActionsReady(image = null) {
+    const enabled = (button) => visible(button)
+      && !button.disabled
+      && button.getAttribute("aria-disabled") !== "true";
+    const label = (button) => norm(button.innerText || button.getAttribute("aria-label") || "");
+    const card = image?.closest?.('[class*="media-post-masonry-card"]') || null;
+    if (card) {
+      const cardButtons = [...card.querySelectorAll("button,[role=button]")].filter(enabled);
+      const hasSave = cardButtons.some((button) => ["Guardar", "Save"].includes(label(button)));
+      const hasCreateVideo = cardButtons.some((button) => ["Crear video", "Create video"].includes(label(button)));
+      return hasSave && hasCreateVideo;
+    }
+    const buttons = [...document.querySelectorAll("button,[role=button]")].filter(enabled);
+    const hasDownload = buttons.some((button) => ["Descargar", "Download"].includes(label(button)));
+    const hasFinalAction = buttons.some((button) => [
+      "Regenerar", "Regenerate", "Crear video", "Create video", "Animar", "Animate",
+    ].includes(label(button)));
+    return hasDownload && hasFinalAction;
   }
   // Clave compacta para deduplicar. Antes guardabamos el data: COMPLETO en Sets/mensajes (cientos de KB x4),
   // haciendo pesado el worker. FNV-1a conserva una huella pequena y estable.
@@ -241,10 +284,100 @@
   }
   const genId = (url) => {
     const s = url || "";
-    const server = s.match(/\/generated\/([^/?]+)/) || s.match(/\/images\/([^/?]+?)(?:\.[a-z]+)?(?:\?|$)/i);
+    const server = s.match(/\/generated\/([^/?]+)/)
+      || s.match(/\/users\/[^/]+\/([^/?#]+)\/content(?:[?#]|$)/i)
+      || s.match(/\/images\/([^/?]+?)(?:\.[a-z]+)?(?:\?|$)/i);
     return server ? `post:${server[1]}` : /^data:image/.test(s) ? `data:${s.length}:${compactHash(s)}` : s;
   };
+  // La UI nueva deja las cuatro variantes en /imagine y codifica el post exacto en el endpoint
+  // /users/<user>/<post>/content. No hace falta esperar una navegacion que nunca ocurrira.
+  const postUrlFromContentSrc = (url) => {
+    const m = String(url || "").match(/\/users\/[^/]+\/([^/?#]+)\/content(?:[?#]|$)/i);
+    return m ? `https://grok.com/imagine/post/${m[1]}` : null;
+  };
   function currentResultGenIds() { return new Set(resultImageEls().map((i) => genId(i.src))); }
+
+  // Cada envio de /imagine crea un bloque `prompt + grilla`. Mirar todas las <img> de la pagina
+  // permitia que un bloque nuevo VACIO adoptara una variante distinta del prompt anterior. La clave
+  // correcta no es el orden global de las imagenes sino el contenedor cuyo texto coincide con el
+  // prompt exacto que acabamos de enviar.
+  function promptResultGroups(prompt) {
+    const wanted = norm(prompt);
+    if (!wanted) return [];
+    const groups = [];
+    const leaves = [...document.querySelectorAll("span,p,div")].filter((el) => {
+      if (norm(el.textContent) !== wanted) return false;
+      return ![...el.children].some((child) => norm(child.textContent) === wanted);
+    });
+    for (const leaf of leaves) {
+      let node = leaf.parentElement;
+      for (let depth = 0; node && depth < 5; depth++, node = node.parentElement) {
+        const cls = String(node.className || "");
+        const childCount = Number(node.children?.length || 0);
+        // UI julio-2026: el bloque inmediato usa `relative` y tiene dos hijos (cabecera + lista).
+        // El fallback con img/list conserva compatibilidad si Grok cambia las clases.
+        const looksLikeResultBlock = childCount >= 2 && (/\brelative\b/.test(cls)
+          || !!node.querySelector("img,[role=list],ul,ol"));
+        if (!looksLikeResultBlock) continue;
+        if (!groups.includes(node)) groups.push(node);
+        break;
+      }
+    }
+    return groups;
+  }
+
+  function latestPromptResultGroup(prompt) {
+    const groups = promptResultGroups(prompt);
+    return groups[groups.length - 1] || null;
+  }
+
+  // Con referencias, la UI julio-2026 navega directo a /imagine/post/<id>: el prompt queda como un
+  // bloque hermano FUERA de <main>, mientras las 2 variantes viven dentro de main>article. Por eso no
+  // existe el contenedor `prompt + grilla` de /imagine. La combinacion URL /post + texto exacto del
+  // prompt en la pagina acota el resultado sin caer en imagenes de escenas anteriores.
+  function postResultRootForPrompt(prompt) {
+    if (!/\/imagine\/post\//.test(location.pathname)) return null;
+    const wanted = norm(prompt);
+    if (!wanted) return null;
+    const exactPromptPresent = [...document.querySelectorAll("span,p,div")].some((el) => {
+      if (norm(el.textContent) !== wanted) return false;
+      return ![...el.children].some((child) => norm(child.textContent) === wanted);
+    });
+    if (!exactPromptPresent) return null;
+    return document.querySelector("main article") || document.querySelector("main");
+  }
+
+  // UI julio-2026 sin referencias: Grok puede quitar el texto del prompt del DOM, mantener la grilla
+  // en /imagine y poner el prompt exacto en document.title (`<prompt> - Grok`). El `before` durable del
+  // intento sigue excluyendo todo lo que ya existia antes de Enter, asi que esta senal permite observar
+  // solo las imagenes nuevas sin caer en una escena anterior ni en Descubrir.
+  function titleResultRootForPrompt(prompt) {
+    if (!/^\/imagine\/?$/i.test(location.pathname)) return null;
+    const wanted = norm(prompt);
+    if (!wanted) return null;
+    const title = norm(String(document.title || "").replace(/\s+-\s+Grok\s*$/i, ""));
+    if (title !== wanted) return null;
+    return document.querySelector("main") || document;
+  }
+
+  // El visor nuevo ya no conserva el texto del prompt en el DOM del /post. Durante generateImage aun
+  // podemos vincularlo de forma segura: es una navegacion NUEVA ocurrida despues del unico Enter de este
+  // intento y distinta a la URL previa. Esta prueba causal solo se usa dentro de esa llamada; las
+  // recuperaciones posteriores siguen exigiendo el postUrl persistido por el background.
+  function submittedPostResultRoot(submitSignal) {
+    const currentUrl = String(location.href || "");
+    const preUrl = String(submitSignal?.preUrl || "");
+    if (!preUrl || currentUrl === preUrl || !/\/imagine\/post\/[^/?#]+/i.test(currentUrl)) return null;
+    const observedPostUrl = String(submitSignal?.postUrl || "");
+    if (observedPostUrl && observedPostUrl !== currentUrl) return null;
+    return document.querySelector("main article") || document.querySelector("main");
+  }
+
+  function promptGroupStillGenerating(group) {
+    if (!group) return false;
+    return /\b(?:generando|generating)(?:\s+(?:imagen|image))?(?:\s+\d{1,3}\s*%)?/i.test(String(group.innerText || ""))
+      || !!group.querySelector('[role="progressbar"],[aria-busy="true"]');
+  }
 
   function resultStillGenerating(img) {
     const generating = /\b(?:generando|generating)(?:\s+(?:imagen|image))?(?:\s+\d{1,3}\s*%)?/i;
@@ -258,12 +391,14 @@
       && generating.test(String(document.body?.innerText || ""));
   }
 
-  function pickResultImage(exclude = new Set()) {
-    const els = resultImageEls().filter((i) => !exclude.has(genId(i.currentSrc || i.src)));
+  function pickResultImage(exclude = new Set(), root = document) {
+    const els = resultImageEls(root).filter((i) => !exclude.has(genId(i.currentSrc || i.src)));
     els.sort((a, b) => {
       const wa = a.getBoundingClientRect().width, wb = b.getBoundingClientRect().width;
       if (Math.abs(wa - wb) > 20) return wb - wa;
-      return (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
+      // En /imagine los grupos nuevos se agregan al FINAL. En recuperaciones legacy puede faltar `before`;
+      // ordenar primero el DOM antiguo hacia que scene_003 adoptara los bytes exactos de scene_002.
+      return (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? 1 : -1);
     });
     return els[0] || null;
   }
@@ -371,7 +506,7 @@
     return elementPixelsLookFinal(img, cfg) === true;
   }
 
-  async function validatedImageCandidates(exclude, settledSrc, cfg) {
+  async function validatedImageCandidates(exclude, settledSrc, cfg, root = document) {
     const out = [];
     const seen = new Set();
     const push = (imageUrl, requiresByteValidation) => {
@@ -383,7 +518,7 @@
     // revela ruido; data: se puede inspeccionar aqui, URL servidor se marca obligatoriamente para bytes.
     const settledIsData = /^data:image/.test(settledSrc || "");
     push(settledSrc, !settledIsData);
-    for (const el of resultImageEls()) {
+    for (const el of resultImageEls(root)) {
       const src = el.currentSrc || el.src || "";
       if (!src || exclude.has(genId(src)) || seen.has(src) || resultStillGenerating(el)) continue;
       if (/^data:image/.test(src)) {
@@ -396,8 +531,10 @@
     return out;
   }
 
-  async function openImage({ before = [] } = {}) {
-    const img = pickResultImage(new Set(before || []));
+  async function openImage({ before = [], prompt = "" } = {}) {
+    const promptGroup = prompt ? latestPromptResultGroup(prompt) : null;
+    if (prompt && !promptGroup) return { ok: false, error: "no encontre el bloque del prompt actual para abrir su imagen" };
+    const img = pickResultImage(new Set(before || []), promptGroup || document);
     if (!img) return { ok: false, error: "no encontre una imagen nueva para abrir" };
     let target = img;
     for (let depth = 0; target?.parentElement && depth < 7; depth++) {
@@ -424,37 +561,83 @@
 
   // ------------------------------------------------------------- acciones -----
   // Selecciona el modo (radio "Imagen" / "Video") por texto exacto.
-  async function setMode(name) {
+  function modeToggle(name) {
     const aliases = name === "Imagen" ? new Set(["Imagen", "Image"])
       : name === "Video" ? new Set(["Video"])
       : new Set([name]);
     const root = composeForm() || document;
     const radios = [...root.querySelectorAll("[role=radio],[role=menuitemradio]")];
     const candidates = radios.length ? radios : [...root.querySelectorAll("button,[role=button]")];
-    const el = candidates.find((e) => visible(e)
+    return candidates.find((e) => visible(e)
       && (aliases.has(norm(e.innerText)) || aliases.has(norm(e.getAttribute("aria-label")))));
+  }
+
+  async function setMode(name) {
+    const el = modeToggle(name);
     if (el) { el.click(); await sleep(400); return true; }
     return false;
   }
 
-  // Relacion de aspecto (menu Radix aria-label="Relación de aspecto"). Mapeado en vivo 2026-06-20: en modo
+  // La UI nueva borra los adjuntos al cambiar de modo. El background llama esto ANTES de subir las
+  // referencias de imagen; generateImage lo repite idempotentemente para confirmar el estado.
+  async function prepareImage() {
+    await waitFor(() => promptEditable() && sendButton() && modeToggle("Imagen"), { timeout: 20000 });
+    for (let k = 0; k < 4 && modeToggle("Imagen")?.getAttribute("aria-checked") !== "true"; k++) {
+      const el = modeToggle("Imagen"); if (!el) break;
+      if (k === 0) el.click(); else await trustedClickEl(el);
+      await sleep(700);
+    }
+    if (modeToggle("Imagen")?.getAttribute("aria-checked") !== "true") {
+      throw new Error("no pude poner Grok en modo Imagen (el toggle no registro); reintenta");
+    }
+    return { ok: true, data: { prepared: true } };
+  }
+
+  // Relacion de aspecto (menu Radix aria-label="Relación de aspecto"). Mapeado en vivo 2026-07-14: en modo
   // Imagen el menu trae "2:3 Alto", "3:2 Ancho", "1:1 Cuadrado", "9:16 Vertical", "16:9 Panorámico"
   // (role=menuitem). El .click() sintetico NO abre el menu -> hay que mandar PointerEvent (pointerdown+
   // pointerup). Idempotente: si el boton ya muestra el ratio pedido, no toca nada (Grok lo recuerda entre
   // generaciones). Debe llamarse DESPUES de setMode("Imagen"): las opciones dependen del modo.
-  const aspectBtn = () => document.querySelector('button[aria-label="Relación de aspecto"]');
+  const controlButtonByLabel = (...labels) => {
+    const wanted = new Set(labels.map(folded));
+    return [...document.querySelectorAll("button")]
+      .find((b) => visible(b) && wanted.has(folded(b.getAttribute("aria-label"))));
+  };
+  const aspectBtn = () => controlButtonByLabel("Relación de aspecto", "Aspect ratio");
+  const imageCountBtn = () => controlButtonByLabel("Cantidad de imágenes", "Image count", "Number of images");
   const ptr = (el, type) => el.dispatchEvent(new PointerEvent(type, { bubbles: true, cancelable: true, pointerId: 1, button: 0, isPrimary: true }));
+  async function openControlMenu(buttonGetter) {
+    for (let k = 0; k < 3 && buttonGetter()?.getAttribute("aria-expanded") !== "true"; k++) {
+      const el = buttonGetter(); if (!el) break;
+      ptr(el, "pointerdown"); ptr(el, "pointerup"); el.click();
+      await sleep(300);
+    }
+    return buttonGetter()?.getAttribute("aria-expanded") === "true";
+  }
+
+  // Grok recuerda ×4/×8/×12 entre sesiones. La extension elige una de las cuatro variaciones ya
+  // pagadas, asi que fija ×4 para no multiplicar el gasto por una preferencia manual anterior.
+  async function setImageCount() {
+    const want = "×4";
+    const b = imageCountBtn();
+    if (!b) return false;
+    if (norm(b.innerText) === want) return true;
+    if (!await openControlMenu(imageCountBtn)) return false;
+    const item = [...document.querySelectorAll("[role=menuitem]")]
+      .find((i) => norm(i.innerText) === want || norm(i.getAttribute("aria-label")) === want);
+    if (!item) throw new Error('Grok: no encontre la opcion de cantidad "×4"');
+    ptr(item, "pointerdown"); ptr(item, "pointerup"); item.click();
+    await sleep(400);
+    return norm(imageCountBtn()?.innerText || "") === want;
+  }
+
   async function setAspect(aspectRatio) {
     const want = norm(aspectRatio || "");
     if (!want) return false;
     const b = aspectBtn();
     if (!b) return false;
     if (norm(b.innerText).startsWith(want)) return true;   // ya esta en el ratio pedido
-    for (let k = 0; k < 3 && aspectBtn()?.getAttribute("aria-expanded") !== "true"; k++) {
-      const el = aspectBtn(); if (!el) break;
-      ptr(el, "pointerdown"); ptr(el, "pointerup"); el.click();
-      await sleep(300);
-    }
+    await openControlMenu(aspectBtn);
     const item = [...document.querySelectorAll("[role=menuitem]")].find((i) => norm(i.innerText).startsWith(want));
     if (!item) {
       const e = aspectBtn(); if (e?.getAttribute("aria-expanded") === "true") { ptr(e, "pointerdown"); ptr(e, "pointerup"); }  // cierra el menu
@@ -465,29 +648,95 @@
     return norm(aspectBtn()?.innerText || "").startsWith(want);
   }
 
-  // Escribe el prompt con teclas TRUSTED. innerText por si solo no prueba que React lo registro:
-  // execCommand podia dejar el texto visible pero Enviar seguia usando un estado vacio/antiguo.
+  const promptText = (ed = promptEditable()) => norm(ed?.value ?? ed?.innerText ?? "");
+
+  // Los chips de referencia hacen que Grok reemplace el ProseMirror completo aun DESPUES de que ya
+  // aparecen como confirmados. Escribir de inmediato manda las teclas al nodo desmontado (o al body) y
+  // produce el caracteristico 0/N. Exigir la misma identidad visible durante un intervalo corto evita
+  // competir con ese render sin meter una espera fija larga en todas las generaciones.
+  async function stablePromptEditable({ timeout = 10000, stableMs = 700 } = {}) {
+    let candidate = null;
+    let candidateSince = 0;
+    return waitFor(() => {
+      const current = promptEditable();
+      if (!current?.isConnected || !visible(current)) {
+        candidate = null;
+        candidateSince = 0;
+        return null;
+      }
+      if (current !== candidate) {
+        candidate = current;
+        candidateSince = Date.now();
+        return null;
+      }
+      return Date.now() - candidateSince >= stableMs ? current : null;
+    }, { timeout, interval: 100 });
+  }
+
+  // Escribe el prompt con teclado TRUSTED y foco TRUSTED. innerText por si solo no prueba que React lo
+  // registro: execCommand podia dejar texto visible pero Enviar seguia usando estado vacio/antiguo.
+  // Los reintentos son locales y ocurren ANTES de persistir/enviar Enter, por lo que no pueden duplicar
+  // una generacion ni obligan a volver a subir las referencias.
   async function setPrompt(text, cfg) {
-    const ed = promptEditable();
-    if (!ed) throw new Error("no encuentro el prompt (contenteditable) de Grok");
-    ed.focus();
     const t = String(text || "").replace(/\r?\n/g, " ");
-    void cfg;
-    await trustedKeyboard({ text: t, replace: true });
-    await sleep(250);
-    const actual = norm(promptEditable()?.innerText || "");
-    if (actual !== norm(t)) {
-      throw new Error(`el prompt de Grok no se pudo reemplazar completo (${actual.length}/${norm(t).length}); reintenta`);
+    const wanted = norm(t);
+    const attempts = Math.min(4, Math.max(3, Number(cfg?.grokPromptWriteRetries) || 3));
+    let actual = "";
+    let detail = "";
+    for (let attempt = 0; attempt < attempts; attempt++) {
+      const ed = await stablePromptEditable({
+        timeout: Number(cfg?.grokPromptEditorTimeoutMs) || 10000,
+        stableMs: Number(cfg?.grokPromptEditorStableMs) || 700,
+      }).catch(() => null);
+      if (!ed) {
+        detail = "editor no estable";
+        continue;
+      }
+      if (promptText(ed) === wanted) return wanted.length;
+      try {
+        // focus() sintetico se pierde cuando el usuario cambia de ventana. El click CDP llega al tab de
+        // Grok aunque no sea la ventana activa y fija document.activeElement justo antes del teclado.
+        await trustedClickEl(ed);
+      } catch (e) {
+        detail = `foco trusted fallo: ${e?.message ?? e}`;
+        await sleep(250);
+        continue;
+      }
+      const focused = promptEditable();
+      if (focused !== ed || !ed.isConnected) {
+        detail = "Grok reemplazo el editor durante el foco";
+        await sleep(250);
+        continue;
+      }
+      // ProseMirror admite Input.insertText real de CDP. El background lo divide en bloques pero conserva
+      // el 100% del texto. Esta funcion exige igualdad exacta antes de autorizar Enter. La ultima vuelta
+      // usa keyDown por caracter como compatibilidad si Grok vuelve a cambiar de editor.
+      const textMode = attempt < attempts - 1 ? "insertText" : "keys";
+      await trustedKeyboard({
+        text: t,
+        replace: true,
+        textMode,
+        chunkChars: Number(cfg?.grokPromptChunkChars) || 480,
+        chunkThresholdChars: Number(cfg?.grokPromptChunkThresholdChars) || 3000,
+      });
+      const registered = await waitFor(() => {
+        const current = promptEditable();
+        return current?.isConnected && promptText(current) === wanted ? current : null;
+      }, { timeout: Number(cfg?.grokPromptRegisterTimeoutMs) || 3500, interval: 100 }).catch(() => null);
+      if (registered) return wanted.length;
+      actual = promptText();
+      detail = promptEditable() !== ed ? "Grok reemplazo el editor durante la escritura" : "React no registro las teclas";
+      await sleep(350);
     }
-    return actual.length;
+    throw new Error(`el prompt de Grok no se pudo reemplazar completo (${actual.length}/${wanted.length}; ${detail || "sin detalle"}); reintenta`);
   }
 
   // Dispara "Enviar" (trusted). Grok ya no siempre vacia el prompt al aceptar una generacion, asi que
   // confirmamos con varias senales: prompt reducido, boton deshabilitado/desmontado, navegacion, texto
   // Generando o un resultado nuevo. Solo fallamos cuando el prompt queda y NO aparece ninguna senal.
   async function fire(cfg, beforeResultIds = new Set(), grokAttempt = null) {
-    const ed = promptEditable();
-    const before = norm(ed?.innerText || "").length;
+    const expectedPrompt = promptText();
+    const before = expectedPrompt.length;
     const preUrl = location.href;
     // El boton aparece deshabilitado mientras React termina de registrar el contenteditable. Esperarlo
     // evita un click trusted prematuro que luego parece un fallo aleatorio de envio.
@@ -496,8 +745,17 @@
       return (b && b.getAttribute("aria-disabled") !== "true" && !b.disabled) ? b : null;
     }, { timeout: 12000 }).catch(() => null);
     if (!ready) throw new Error('el boton "Enviar" de Grok no se habilito; reintenta');
-    ed && ed.focus();
     await rsleep(cfg?.reviewMinMs ?? 1200, cfg?.reviewMaxMs ?? 3500);   // pausa de "revisar" antes de enviar (config.reviewPause, anti-deteccion)
+    // La pausa y un cambio de ventana pueden quitar el foco, y Grok puede volver a montar ProseMirror.
+    // Revalidamos el prompt y damos foco trusted INMEDIATAMENTE antes de la frontera durable + Enter.
+    const currentEditor = await stablePromptEditable({ timeout: 6000, stableMs: 250 }).catch(() => null);
+    if (!currentEditor || promptText(currentEditor) !== expectedPrompt) {
+      throw new Error("el prompt de Grok cambio antes de enviar; reintenta sin generar");
+    }
+    await trustedClickEl(currentEditor);
+    if (promptEditable() !== currentEditor || !currentEditor.isConnected || promptText(currentEditor) !== expectedPrompt) {
+      throw new Error("el prompt de Grok perdio el foco antes de enviar; reintenta sin generar");
+    }
     // El ACK de storage es la frontera de gasto: solo despues se permite Enter. Un crash entre el ACK y
     // la tecla queda deliberadamente como intento ambiguo y exige recuperacion/revision manual; es mas
     // seguro bloquear una regeneracion que pagar/generar dos veces.
@@ -506,7 +764,7 @@
     // durante la pausa de revision. Verificado que el mismo mecanismo corrige Slate de Flow.
     await trustedKeyboard({ key: "ENTER", releaseAfterKey: true });
     const acceptedSignal = () => {
-      const promptLen = norm(promptEditable()?.innerText || "").length;
+      const promptLen = promptText();
       if (promptLen < Math.max(1, before - 3)) return { reason: "prompt liberado" };
       if (location.href !== preUrl && /\/imagine\/post\//.test(location.href)) return { reason: "navegacion a post" };
       if (resultImageEls().some((img) => !beforeResultIds.has(genId(img.currentSrc || img.src)))) return { reason: "resultado nuevo" };
@@ -520,7 +778,11 @@
     // tarda en pintar la senal, el SW realiza un probe largo de resultados antes de recargar/reintentar.
     if (!accepted) throw new Error("el Enviar de Grok no registro (prompt retenido y sin senal de generacion); reintenta");
     await reportImageSubmitObserved(grokAttempt, accepted, preUrl);
-    return accepted;
+    return {
+      ...accepted,
+      preUrl,
+      postUrl: location.href !== preUrl && /\/imagine\/post\//.test(location.href) ? location.href : null,
+    };
   }
 
   // GENERATE_IMAGE: modo Imagen -> prompt -> Enviar -> espera una imagen de resultado NUEVA.
@@ -528,7 +790,10 @@
     const hs0 = detectHardStop(); if (hs0) return hs0;
     // tras navegar al composer fresco, espera a que React monte prompt + boton Enviar
     await waitFor(() => promptEditable() && sendButton(), { timeout: 20000 });
-    await setMode("Imagen");
+    await prepareImage();
+    // La nueva UI persiste ×4/×8/×12. Fijar ×4 evita generar de mas por una preferencia manual previa.
+    try { await setImageCount(); }
+    catch (e) { console.warn("[grok-driver] setImageCount:", e?.message ?? e); }
     // Aspecto (historias = 16:9). No fatal: si falla, Grok genera con el aspecto actual (lo recuerda).
     if (aspectRatio) {
       try { await setAspect(aspectRatio); }
@@ -543,24 +808,52 @@
     for (const key of (Array.isArray(rejectImageKeys) ? rejectImageKeys : [])) {
       if (key) before.add(String(key));
     }
-    await fire(cfg, before, grokAttempt);
+    const submitSignal = await fire(cfg, before, grokAttempt);
+    // Grok puede tardar mas de un minuto en montar el bloque `prompt + grilla`, y en algunos renders
+    // REUTILIZA el mismo nodo React de un intento anterior con el mismo prompt. Comparar identidad de
+    // nodos y esperar solo 30s produjo falsos negativos aun cuando las 4 imagenes aparecian despues.
+    // La prueba segura es: prompt exacto + progreso o una clave de imagen que no estaba en `before`.
+    const promptGroupHit = await waitFor(() => {
+      const hs = detectHardStop(); if (hs) return { hardStop: hs };
+      const submittedPostRoot = submittedPostResultRoot(submitSignal);
+      if (submittedPostRoot) return { group: submittedPostRoot, directPost: true, postUrl: location.href };
+      const postRoot = postResultRootForPrompt(prompt);
+      if (postRoot) return { group: postRoot, directPost: true, postUrl: location.href };
+      const titleRoot = titleResultRootForPrompt(prompt);
+      if (titleRoot) return { group: titleRoot, titleScoped: true };
+      const groups = promptResultGroups(prompt);
+      const group = [...groups].reverse().find((candidate) => promptGroupStillGenerating(candidate)
+        || resultImageEls(candidate).some((img) => !before.has(genId(img.currentSrc || img.src))));
+      return group ? { group } : null;
+    }, { timeout: Number(cfg?.grokPromptGroupTimeoutMs) || 180000 }).catch(() => null);
+    if (promptGroupHit?.hardStop) return promptGroupHit.hardStop;
+    const promptGroup = promptGroupHit?.group || null;
+    if (!promptGroup) {
+      return { ok: false, error: "no aparecio el bloque del prompt actual en Grok; no tomo imagenes de escenas anteriores" };
+    }
+    // `fire` puede observar primero "prompt liberado" y la navegacion llegar unos segundos despues.
+    // Persistimos el /post en cuanto el mismo generateImage lo ve, antes de cualquier settle/descarga.
+    if (promptGroupHit?.postUrl && promptGroupHit.postUrl !== submitSignal?.postUrl) {
+      await reportImageSubmitObserved(grokAttempt, { reason: "navegacion tardia a post" }, submitSignal?.preUrl || "");
+      submitSignal.postUrl = promptGroupHit.postUrl;
+    }
     // Espera a que aparezca la PRIMERA imagen nueva (cargada: naturalWidth>=400).
     const found = await waitFor(() => {
       const hs = detectHardStop(); if (hs) return hs;
-      return resultImageEls().some((i) => !before.has(genId(i.src))) ? { hit: true } : null;
-    }, { timeout: 180000 });
+      return resultImageEls(promptGroup).some((i) => !before.has(genId(i.src))) ? { hit: true } : null;
+    }, { timeout: 180000 }).catch(() => null);
+    if (!found) return { ok: false, error: "GROK_PROMPT_GROUP_EMPTY: Grok acepto el prompt pero su bloque no produjo imagenes; no tomo una escena anterior" };
     if (found.type) return found; // parada dura
     // Elige UNA imagen nueva de forma DETERMINISTA: la mas GRANDE (full-res; en /post hay miniatura + grande
     // del mismo generado), desempate por orden DOM (en el grid sin-ref: izquierda->derecha = 1a variacion).
-    const pickFresh = () => pickResultImage(before);
+    const pickFresh = () => pickResultImage(before, promptGroup);
     // CRITICO: Grok muestra un PLACEHOLDER de RUIDO mientras genera, y SOLO al final aparece la imagen real.
     // El placeholder de ruido puede ser ESTATICO y ya tener dimensiones finales. Tambien hay frames
     // progresivos cuyo `src` cambia sin crecer (mismo largo/uno mas corto), por eso reiniciamos el reloj
     // ante CUALQUIER cambio de URL y validamos pixeles; el boton Guardar por si solo no prueba nitidez.
     // Re-consultamos el nodo porque React puede reemplazarlo durante la difusion.
     const isData = (s) => /^data:/.test(s || "");
-    const QUIET_SERVER_MS = Number(cfg?.grokImageServerQuietMs) || 15000;
-    const QUIET_DATA_MS = Number(cfg?.grokImageDataQuietMs) || 10000;
+    const ACTION_READY_QUIET_MS = Number(cfg?.grokImageActionReadyQuietMs) || 5000;
     const MAX_MS = 180000, t0 = Date.now();
     let lastSrc = "", lastPixelFingerprint = "", lastChange = Date.now(), settledSrc = "", settledNeedsByteValidation = false;
     while (Date.now() - t0 < MAX_MS) {
@@ -574,33 +867,36 @@
       }
       const idle = Date.now() - lastChange;
       if (cur && !resultStillGenerating(el)) {
-        if (isData(cur) && idle >= QUIET_DATA_MS && await dataImageLooksFinal(cur, cfg)) { settledSrc = cur; break; }
-        if (!isData(cur) && idle >= QUIET_SERVER_MS && imageDimensionsLookFinal(el, cfg)) {
+        if (isData(cur) && resultActionsReady(el) && idle >= ACTION_READY_QUIET_MS
+            && await dataImageLooksFinal(cur, cfg)) { settledSrc = cur; break; }
+        if (!isData(cur) && imageDimensionsLookFinal(el, cfg)) {
           const pixels = pixelInspection === null ? null : pixelInspection.looksFinal;
           // CORS=null NO equivale a aprobado. Solo devolvemos un candidato en cuarentena para que el
           // SW valide sus bytes descargados; nunca se asigna ni se mueve a canonical en este punto.
-          if (pixels === true || pixels === null) {
+          if (resultActionsReady(el) && (pixels === true || pixels === null) && idle >= ACTION_READY_QUIET_MS) {
             settledSrc = cur; settledNeedsByteValidation = pixels !== true; break;
           }
         }
       }
       await sleep(400);
     }
-    const freshEls = resultImageEls().filter((i) => !before.has(genId(i.src)));
+    const freshEls = resultImageEls(promptGroup).filter((i) => !before.has(genId(i.src)));
     if (!pickFresh()) return { ok: false, error: "no aparecio imagen nueva en Grok tras generar" };
     if (!settledSrc) return { ok: false, error: "la imagen nueva de Grok no se estabilizo (evito guardar ruido o un frame intermedio)" };
     // Captura la URL del POST de esta imagen (Grok navega a /imagine/post/<id> al generar). Es la pagina
     // donde luego esta el boton "Hacer video"; guardarla evita derivarla mal de la URL del asset.
-    let postUrl = null;
-    try { postUrl = await waitFor(() => /\/imagine\/post\/[^/]+/.test(location.href) ? location.href : null, { timeout: 8000 }); }
-    catch (_e) { /* no navego a /post: el SW derivara del genId como fallback */ }
+    let postUrl = /\/imagine\/post\/[^/]+/.test(location.href) ? location.href : postUrlFromContentSrc(settledSrc);
+    if (!postUrl) {
+      try { postUrl = await waitFor(() => /\/imagine\/post\/[^/]+/.test(location.href) ? location.href : null, { timeout: 2500 }); }
+      catch (_e) { /* no navego a /post: animacion subira el JPG o el SW derivara un legacy /generated */ }
+    }
     // Devuelve EXACTAMENTE el src que supero la validacion. Antes se volvia a leer el nodo y un
     // re-render entre ambas lineas podia sustituirlo por otro frame aun no validado.
-    const candidateImages = await validatedImageCandidates(before, settledSrc, cfg);
+    const candidateImages = await validatedImageCandidates(before, settledSrc, cfg, promptGroup);
     return { ok: true, data: {
       imageUrl: settledSrc, postUrl, variantCount: freshEls.length,
       requiresByteValidation: settledNeedsByteValidation,
-      candidateImages,
+      candidateImages, promptScoped: true,
     } };
   }
 
@@ -608,24 +904,49 @@
   // MISMAS senales de estabilizacion que generateImage: antes devolvia el primer <img> grande sin
   // validar y recuperaba el placeholder de RUIDO o un frame a media difusion (recurrencia del bug de
   // scene_15/scene_30). data: -> quieto QUIET_DATA_MS + dataImageLooksFinal; servidor -> quieto largo.
-  async function collectImage({ timeoutMs = 45000, requirePost = false, before = [], cfg } = {}) {
+  async function collectImage({ timeoutMs = 45000, requirePost = false, before = [], prompt = "", cfg } = {}) {
     const exclude = new Set(before || []);
+    let promptGroup = null;
+    if (prompt && !requirePost) {
+      promptGroup = await waitFor(() => postResultRootForPrompt(prompt)
+        || titleResultRootForPrompt(prompt)
+        || latestPromptResultGroup(prompt), {
+        // Respetar el timeout real pedido por el SW. Antes se truncaba silenciosamente a 15s aunque
+        // recuperacion solicitara 180s, justo cuando Grok monta el bloque tarde bajo carga.
+        timeout: Math.max(1000, timeoutMs),
+      }).catch(() => null);
+      if (!promptGroup) {
+        return { ok: false, error: "no encontre el bloque del prompt actual; no tomo imagenes de escenas anteriores" };
+      }
+      // Recuperacion de un intento ya enviado: si el bloque exacto esta vacio y no muestra progreso,
+      // esperar unos segundos por un montaje tardio. Si sigue vacio, es prueba positiva de que NO hay
+      // asset recuperable; nunca caer al bloque previo.
+      if (!resultImageEls(promptGroup).length && !promptGroupStillGenerating(promptGroup)) {
+        const mountedLate = await waitFor(() => {
+          if (resultImageEls(promptGroup).length || promptGroupStillGenerating(promptGroup)) return { ready: true };
+          return null;
+        }, { timeout: Math.max(1000, timeoutMs) }).catch(() => null);
+        if (!mountedLate) {
+          return { ok: false, error: "GROK_PROMPT_GROUP_EMPTY: el bloque exacto del prompt esta vacio; no tomo una imagen anterior" };
+        }
+      }
+    }
+    const resultRoot = promptGroup || document;
     const found = await waitFor(() => {
       const hs = detectHardStop(); if (hs) return hs;
       if (requirePost && !/\/imagine\/post\//.test(location.href)) return null;
-      const el = pickResultImage(exclude);
+      const el = pickResultImage(exclude, resultRoot);
       return el ? { hit: true } : null;
     }, { timeout: timeoutMs });
     if (found.type) return found;
     const isData = (s) => /^data:/.test(s || "");
-    const QUIET_SERVER_MS = Number(cfg?.grokImageServerQuietMs) || 15000;
-    const QUIET_DATA_MS = Number(cfg?.grokImageDataQuietMs) || 10000;
+    const ACTION_READY_QUIET_MS = Number(cfg?.grokImageActionReadyQuietMs) || 5000;
     const settleMax = Math.max(30000, timeoutMs);
     const t0 = Date.now();
     let lastSrc = "", lastPixelFingerprint = "", lastChange = Date.now(), settledSrc = "", settledNeedsByteValidation = false;
     while (Date.now() - t0 < settleMax) {
       const hs = detectHardStop(); if (hs) return hs;
-      const el = pickResultImage(exclude);
+      const el = pickResultImage(exclude, resultRoot);
       const cur = el ? (el.currentSrc || el.src || "") : "";
       const pixelInspection = cur && !isData(cur) ? elementPixelInspection(el, cfg) : null;
       const pixelFingerprint = pixelInspection?.fingerprint || "";
@@ -634,29 +955,31 @@
       }
       const idle = Date.now() - lastChange;
       if (cur && !resultStillGenerating(el)) {
-        if (isData(cur) && idle >= QUIET_DATA_MS && await dataImageLooksFinal(cur, cfg)) { settledSrc = cur; break; }
-        if (!isData(cur) && idle >= QUIET_SERVER_MS && imageDimensionsLookFinal(el, cfg)) {
+        if (isData(cur) && resultActionsReady(el) && idle >= ACTION_READY_QUIET_MS
+            && await dataImageLooksFinal(cur, cfg)) { settledSrc = cur; break; }
+        if (!isData(cur) && imageDimensionsLookFinal(el, cfg)) {
           const pixels = pixelInspection === null ? null : pixelInspection.looksFinal;
-          if (pixels === true || pixels === null) {
+          if (resultActionsReady(el) && (pixels === true || pixels === null) && idle >= ACTION_READY_QUIET_MS) {
             settledSrc = cur; settledNeedsByteValidation = pixels !== true; break;
           }
         }
       }
       await sleep(400);
     }
-    const chosen = pickResultImage(exclude);
+    const chosen = pickResultImage(exclude, resultRoot);
     if (!chosen) return { ok: false, error: "no encontre imagen generada actual en Grok" };
     if (!settledSrc) return { ok: false, error: "la imagen recuperada no se estabilizo (posible ruido/frame intermedio); reintenta" };
-    const candidateImages = await validatedImageCandidates(exclude, settledSrc, cfg);
+    const candidateImages = await validatedImageCandidates(exclude, settledSrc, cfg, resultRoot);
     return {
       ok: true,
       data: {
         imageUrl: settledSrc,
         postUrl: /\/imagine\/post\//.test(location.href) ? location.href : null,
-        variantCount: resultImageEls().filter((i) => !exclude.has(genId(i.currentSrc || i.src))).length,
+        variantCount: resultImageEls(resultRoot).filter((i) => !exclude.has(genId(i.currentSrc || i.src))).length,
         recovered: true,
         requiresByteValidation: settledNeedsByteValidation,
         candidateImages,
+        promptScoped: !!promptGroup || requirePost,
       },
     };
   }
@@ -665,21 +988,18 @@
   // camara del post de la imagen). Animar por aqui = UNA sola generacion dirigida (no el doble que
   // generaba "Hacer video" + "Crear video").
   function videoToggle() {
-    return [...document.querySelectorAll("button,[role=button],[role=menuitemradio],[role=tab]")]
+    const root = composeForm() || document;
+    return [...root.querySelectorAll("button,[role=button],[role=radio],[role=menuitemradio],[role=tab]")]
       .find((b) => visible(b) && (norm(b.innerText) === "Video" || b.getAttribute("aria-label") === "Video"));
   }
 
-  // ANIMATE_FIRE: pone el composer en modo Video -> escribe el prompt -> "Enviar" (TRUSTED via CDP, como
-  // generar imagen; el clic sintetico de Enviar es flaky). Grok navega al /post del video y genera en
-  // sitio; el video lo recoge ANIMATE_COLLECT tras re-inyectar. El SW adjunta el debugger SOLO para este
-  // clic y lo suelta antes de la espera larga (evita el congelamiento).
-  async function animateFire({ prompt, cfg, expectImage } = {}) {
+  // La UI de julio de 2026 BORRA los adjuntos al cambiar Imagen <-> Video. El background llama esta
+  // preparacion ANTES de DOM.setFileInputFiles; animateFire la repite de forma idempotente para posts y
+  // versiones anteriores de la UI.
+  async function prepareVideo() {
     const hs0 = detectHardStop(); if (hs0) return hs0;
     await waitFor(() => videoToggle(), { timeout: 20000 });
     await rsleep(500, 1200);
-    // Cambiar a modo Video y CONFIRMAR (aria-checked="true"). El clic SINTETICO del toggle a veces NO registra
-    // -> el composer se queda en modo Imagen, "Crear video" nunca aparece y mas abajo se cuelga esperando ese
-    // boton (bug real 2026-06-18: la animacion se detuvo aqui). Reintenta: 1ro sintetico, luego TRUSTED (CDP).
     for (let k = 0; k < 4 && videoToggle()?.getAttribute("aria-checked") !== "true"; k++) {
       const el = videoToggle(); if (!el) break;
       if (k === 0) el.click(); else await trustedClickEl(el);
@@ -690,6 +1010,16 @@
     }
     await sleep(500);
     await waitFor(() => promptEditable(), { timeout: 8000 });
+    return { ok: true, data: { prepared: true } };
+  }
+
+  // ANIMATE_FIRE: pone el composer en modo Video -> escribe el prompt -> "Enviar" (TRUSTED via CDP, como
+  // generar imagen; el clic sintetico de Enviar es flaky). Grok navega al /post del video y genera en
+  // sitio; el video lo recoge ANIMATE_COLLECT tras re-inyectar. El SW adjunta el debugger SOLO para este
+  // clic y lo suelta antes de la espera larga (evita el congelamiento).
+  async function animateFire({ prompt, cfg, expectImage } = {}) {
+    const prepared = await prepareVideo();
+    if (prepared?.type) return prepared;
     if (prompt) await setPrompt(prompt, cfg);   // mismo tipeo (humano/instantaneo segun config) que en imagen
     await rsleep(cfg?.reviewMinMs ?? 1200, cfg?.reviewMaxMs ?? 3500);   // pausa de "revision" (config.reviewPause)
     const preUrl = location.href;
@@ -766,15 +1096,17 @@
   }
 
   // ----------------------------------------------------------- listener -------
-  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  const grokDriverMessageListener = (message, _sender, sendResponse) => {
     const type = message?.type;
     if (!type || !Object.values(ACT).includes(type)) return; // ignora lo que no es ACT.*
     (async () => {
       try {
         if (type === ACT.PING) return { ok: true, data: { pong: true, driver: "grok", url: location.href } };
         if (type === ACT.INSPECT_DOM) return inspect();
+        if (type === ACT.PREPARE_IMAGE) return await prepareImage();
         if (type === ACT.GENERATE_IMAGE) return await generateImage(message);
         if (type === ACT.COLLECT_IMAGE) return await collectImage(message);
+        if (type === ACT.PREPARE_VIDEO) return await prepareVideo();
         if (type === ACT.ANIMATE || type === ACT.ANIMATE_FIRE) return await animateFire(message);
         if (type === ACT.ANIMATE_COLLECT) return await animateCollect(message);
         if (type === ACT.CLEAR_REFS) return await clearRefs();
@@ -789,7 +1121,9 @@
       }
     })().then(sendResponse);
     return true; // respuesta async
-  });
+  };
+  window.__grokDriverMessageListener = grokDriverMessageListener;
+  chrome.runtime.onMessage.addListener(grokDriverMessageListener);
 
   console.log("[grok-driver] cargado en", location.href);
 })();

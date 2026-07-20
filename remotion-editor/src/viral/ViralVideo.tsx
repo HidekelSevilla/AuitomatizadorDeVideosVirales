@@ -19,6 +19,8 @@ import type { ViralProps, SceneData, WordTs, ComputedTimeline } from "./types";
 import { getPreset, type Preset } from "./presets";
 // @ts-expect-error  .mjs sin tipos: FUENTE UNICA del slug (debe coincidir con extension + dev-server)
 import { slugify } from "../../../shared/slug.mjs";
+// @ts-expect-error  .mjs puro compartido con las pruebas Node
+import { balancedCaptionGroupSizes } from "../../../shared/caption-groups.mjs";
 
 const { fontFamily } = loadFont("normal", { weights: ["800", "900"], subsets: ["latin"] });
 
@@ -47,7 +49,7 @@ const HIST_CAPTION_SIZE = 72; // historias: karaoke un poco mas chico que el de 
 const CAPTION_GAP_HOLD_S = 0.16; // evita que la ultima palabra se quede pegada durante pausas largas.
 const WAKE_INTRO_S = 1.3; // pov-historias: duracion del fundido de negro -> primera imagen al arranque ("despertar"). Fija.
 // ---- manhwa (2026-07): musica + acentos del sistema/impacto + transiciones + karaoke por grupos ----
-const MANHWA_MUSIC_VOL = 0.13;      // cama musical bajo la voz (apenas consciente); audio.music_volume manda si viene
+const MANHWA_MUSIC_VOL = 0.0325;    // mitad del default anterior (0.065); audio.music_volume manda si viene
 const MANHWA_MUSIC_DUCK = 0.55;     // factor de ducking mientras la voz habla (vol * factor)
 const MANHWA_DEFAULT_MUSIC = "music/manhwa_ambient.mp3"; // bed default COMPARTIDO (public/music/); solo suena si existe (sondeado en metadata)
 const SYSTEM_SFX = "ding.mp3";      // ding al APARECER la ventana del sistema (public/sfx/); omitido en silencio si falta
@@ -74,7 +76,7 @@ const norm = (s: string): string =>
 
 const cleanWord = (w: string): string => w.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "") || w;
 
-// Quita marcadores de emocion/efecto de Fish ([nervous], [break], (excited)...) del TEXTO. Fish s2-pro
+// Quita marcadores de emocion/efecto de Fish ([nervous], [break], (excited)...) del TEXTO. Fish s2.1-pro
 // NO los pronuncia ni los devuelve en el alignment (verificado), asi que el karaoke normal ya sale limpio;
 // esto es la red de seguridad para el fallback sin timestamps (texto crudo) y para el hook.
 const stripTags = (s?: string): string =>
@@ -189,6 +191,7 @@ const sceneMotion = (s: SceneData) => s.visual?.motion ?? s.motion;
 // HIBRIDO criptoclaro_reel: una escena con render_mode "animated" se dibuja como CLIP de video (no still + Ken Burns).
 const isAnimatedScene = (s: SceneData) => s.render_mode === "animated";
 const isManhwa = (p: ViralProps) => p.project.preset === "manhwa";
+const isNovela = (p: ViralProps) => ["novela-coreana", "novelas-coreanas-eng"].includes(p.project.preset ?? "");
 // manhwa: ¿la escena es "del sistema"? (voz [cold] o referencia a sistema_ui). La PRIMERA escena de cada
 // bloque de sistema dispara flash + ding automaticos (regla fija: cero carga para el generador del JSON).
 const refId = (r: { id?: string } | string | undefined) => (typeof r === "string" ? r : r?.id);
@@ -293,6 +296,22 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
   ];
   const byId = Object.fromEntries([...openingScenes, ...props.scenes].map((s) => [sceneId(s), s]));
 
+  const v7TimelineModel = (props.v7_contract as { timeline_model?: string } | undefined)?.timeline_model;
+  const decoupledV7 = v7TimelineModel === "NARRATION_VISUAL_TRACKS_V1";
+  if (decoupledV7) {
+    if (!props.audio?._continuous || !props.audio?._master) {
+      throw new Error("NARRATION_VISUAL_TRACKS_V1 requires aligned continuous audio; refusing the 4s-per-page fallback");
+    }
+    for (const id of order) {
+      const scene = byId[id];
+      const window = scene?._frame_window;
+      if (!window || !Number.isInteger(window.start) || !Number.isInteger(window.end)
+          || window.end <= window.start || !scene?._narration?.unit_id) {
+        throw new Error(`NARRATION_VISUAL_TRACKS_V1 page ${id} has no valid injected frame window`);
+      }
+    }
+  }
+
   // ---- historias VOZ-CONTINUA: 1 mp3 maestro + ventana {start,end} por escena (de los timestamps de Fish,
   // inyectadas por align/inject-words.mjs). El timing NO sale de ffprobe por escena sino del mapa. La voz
   // suena continua (sin costura por corte). Gateado por audio._continuous (lo pone el builder). ----
@@ -301,14 +320,20 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
     try { fullDur = await getAudioDurationInSeconds(staticFile(`${slug}/${props.audio._master}`)); } catch { /* sin audio: degrada */ }
     const cont = order.map((id) => {
       const win = byId[id]?._window ?? { start: 0, end: fullDur };
-      const startF = Math.round((win.start / voiceRate) * fps);
-      const endF = Math.round(((win.end || fullDur) / voiceRate) * fps);
+      const frameWin = byId[id]?._frame_window;
+      const frameFps = frameWin?.fps || fps;
+      const startF = frameWin
+        ? Math.round(((frameWin.start / frameFps) / voiceRate) * fps)
+        : Math.round((win.start / voiceRate) * fps);
+      const endF = frameWin
+        ? Math.round(((frameWin.end / frameFps) / voiceRate) * fps)
+        : Math.round(((win.end || fullDur) / voiceRate) * fps);
       const frames = Math.max(1, endF - startF);
       return { id, cardFrames: 0, sceneFrames: frames, clipWindow: frames, playbackRate: 1, introFrames: 0, startFrame: startF };
     });
     const lastEnd = cont.length ? cont[cont.length - 1].startFrame + cont[cont.length - 1].sceneFrames : 1;
     // El orchestrator acelera el MP4 DESPUES de Remotion. Para conservar 0.45 s en el archivo final,
-    // la cola cruda debe multiplicarse por esa velocidad (0.45*1.40 -> 0.63 s antes de finalizeVideo).
+    // la cola cruda debe multiplicarse por esa velocidad (0.45*1.25 -> 0.5625 s antes de finalizeVideo).
     const declaredFinalSpeed = props.project.speed
       ?? props.project.speed_final
       ?? props.tts_export?.edit_speed
@@ -369,9 +394,9 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
     // novela-coreana CON scene_target_seconds (escenas cortas ~3s, clips 6s): NO acelerar -> techo 1.0;
     // el Sequence (durationInFrames=clipWindow, startFrom 0) RECORTA el clip a sus primeros clipWindow
     // frames, igual que el hook. Asi no se congela ni se acelera. Otros presets: techo 1 (intacto).
-    const novelaTrim = props.project.preset === "novela-coreana"
+    const novelaTrim = isNovela(props)
       && typeof props.project.scene_target_seconds === "number" && props.project.scene_target_seconds > 0;
-    const rateCeiling = (props.project.preset === "novela-coreana" && !novelaTrim) ? 1.3 : 1;
+    const rateCeiling = (isNovela(props) && !novelaTrim) ? 1.3 : 1;
     const playbackRate = Math.max(0.5, Math.min(rateCeiling, (clipDur * fps) / clipWindow));
     scenes.push({ id, cardFrames, sceneFrames, clipWindow, playbackRate, introFrames });
   }
@@ -409,11 +434,28 @@ type CaptionWordGroup = { words: WordTs[]; startIndex: number; endIndex: number 
 const captionWordGroups = (
   words: WordTs[],
   punctuatedText: string | undefined,
-  maxWords: number
+  maxWords: number,
+  minWords = 1
 ): CaptionWordGroup[] => {
   if (!words.length) return [];
   const cap = Math.max(1, Math.floor(maxWords));
   if (cap === 1) return words.map((word, i) => ({ words: [word], startIndex: i, endIndex: i + 1 }));
+  const floor = Math.max(1, Math.min(cap, Math.floor(minWords)));
+
+  // Un preset puede pedir un rango estricto (novelas-coreanas-eng: 3..4). En ese caso se balancea
+  // el texto completo: 9 -> 3+3+3, 11 -> 4+4+3. Solo queda un grupo menor al piso cuando no existe
+  // una particion posible (texto total <3 o exactamente 5 palabras para el rango 3..4).
+  if (floor > 1) {
+    const sizes = balancedCaptionGroupSizes(words.length, cap, floor);
+    const groups: CaptionWordGroup[] = [];
+    let start = 0;
+    for (const size of sizes) {
+      const end = start + size;
+      groups.push({ words: words.slice(start, end), startIndex: start, endIndex: end });
+      start = end;
+    }
+    return groups;
+  }
 
   const text = punctuatedText ?? "";
   const matches = [...text.matchAll(CAPTION_TOKEN_RE)];
@@ -474,7 +516,8 @@ const Karaoke: React.FC<{
   bottom?: number;
   size?: number;
   maxWords?: number; // >1 = karaoke por GRUPOS (chunk fijo con la palabra activa resaltada). 1 = clasico una-palabra.
-}> = ({ text, words, windowFrames, voiceRate, preset, hot = [], bottom = 380, size = 132, maxWords = 1 }) => {
+  minWords?: number;
+}> = ({ text, words, windowFrames, voiceRate, preset, hot = [], bottom = 380, size = 132, maxWords = 1, minWords = 1 }) => {
   const frame = useCurrentFrame();
   const { fps, width } = useVideoConfig();
 
@@ -490,8 +533,8 @@ const Karaoke: React.FC<{
 
   const timed = list.length > 0 && list[0].start >= 0;
   const groups = useMemo(
-    () => captionWordGroups(list, text, maxWords),
-    [list, text, maxWords]
+    () => captionWordGroups(list, text, maxWords, minWords),
+    [list, text, maxWords, minWords]
   );
 
   if (list.length === 0) return null;
@@ -524,7 +567,7 @@ const Karaoke: React.FC<{
   }
 
   // ---- modo GRUPOS (manhwa, 2026-07): chunk fijo de maxWords palabras; la activa se pinta del color hot.
-  // A 1.4x el modo una-palabra parpadea (palabras de ~100ms); el grupo da una frase estable que leer.
+  // A velocidades editoriales aceleradas el modo una-palabra parpadea; el grupo da una frase estable que leer.
   if (maxWords > 1) {
     const activeGroup = groups.find((g) => idx >= g.startIndex && idx < g.endIndex) ?? groups[0];
     const chunk = activeGroup.words;
@@ -1017,6 +1060,8 @@ const Hook: React.FC<{ props: ViralProps; preset: Preset }> = ({ props, preset }
           preset={preset}
           bottom={capBottom}
           size={capSize}
+          maxWords={preset.captionMaxWords ?? 1}
+          minWords={preset.captionMinWords ?? 1}
         />
       )}
     </AbsoluteFill>
@@ -1053,9 +1098,11 @@ const Scene: React.FC<{
   const capBottom = preset.stills ? Math.round(vh * 0.08) : 380;
   const { cardFrames, sceneFrames, clipWindow, playbackRate, introFrames } = timing;
   const contentFrames = sceneFrames - introFrames;
+  const narrationWords = scene._narration?.words ?? scene.voiceover?.words;
+  const narrationText = scene._narration?.text ?? scene.voiceover?.text ?? scene.captions?.text;
   const sub = stripLabelWords(
-    dedupeWords(scene.voiceover?.words),
-    stripTagsForCaptions(scene.voiceover?.text ?? scene.captions?.text),
+    dedupeWords(narrationWords),
+    stripTagsForCaptions(narrationText),
     scene.time_label
   );
 
@@ -1079,7 +1126,9 @@ const Scene: React.FC<{
         <AbsoluteFill style={{ backgroundColor: continuous ? "transparent" : "black" }}>
           {/* voz: arranca con el contenido (suena durante el cartel narrado -> sincroniza "DIA 1").
               historias voz-continua: el audio es 1 pista maestra global (en ViralVideo) -> aqui NO se pone. */}
-          {!continuous && <Audio src={staticFile(`${slug}/voice/${sceneId(scene)}.mp3`)} playbackRate={voiceRate} />}
+          {!continuous && !props.audio?._omit_scene_voice && (
+            <Audio src={staticFile(`${slug}/voice/${sceneId(scene)}.mp3`)} playbackRate={voiceRate} />
+          )}
           {/* historias v2: golpe de tambor al ENTRAR la escena punch (cartel baked + fija). Opt-in. */}
           {isPunch && <Audio src={staticFile(`sfx/${punchSfx}`)} volume={xport(props)?.punch_sfx_volume ?? 1.0} />}
           {/* flash al aparecer el cartel narrado de la escena */}
@@ -1140,7 +1189,8 @@ const Scene: React.FC<{
               hot={scene.captions?.highlight_words}
               bottom={capBottom}
               size={capSize}
-              maxWords={captionStyle(props)?.max_words_on_screen ?? (isManhwa(props) ? MANHWA_CAPTION_WORDS : 1)}
+              maxWords={preset.captionMaxWords ?? captionStyle(props)?.max_words_on_screen ?? (isManhwa(props) ? MANHWA_CAPTION_WORDS : 1)}
+              minWords={preset.captionMinWords ?? 1}
             />
           )}
 
@@ -1194,7 +1244,7 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
     for (const s of props.scenes) {
       const win = s._window;
       if (!win) continue;
-      const ws = dedupeWords(s.voiceover?.words);
+      const ws = dedupeWords(s._narration?.words ?? s.voiceover?.words);
       if (ws && ws.length) spans.push([win.start + ws[0].start, win.start + ws[ws.length - 1].end]);
       else spans.push([win.start, win.end]);
     }
@@ -1232,8 +1282,7 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
         const manhwaBed = isManhwa(props) ? props._manhwaMusic : undefined;
         // novela-coreana E historias: SIN musica de fondo por defecto (no les queda; la voz manda). Solo suena
         // si el JSON trae su propio audio.music_file. Otros presets: musica compartida por defecto (intacto).
-        const isNovela = props.project.preset === "novela-coreana";
-        const noDefaultMusic = isNovela || (preset.stills && !manhwaBed);
+        const noDefaultMusic = isNovela(props) || (preset.stills && !manhwaBed);
         // manhwa music_cues (sondeados en metadata): pueden sonar aunque falte la cama base (arrancan en su escena).
         const cues = isManhwa(props) && continuous ? (props._musicCues ?? []) : [];
         const muted = props.audio?.music_volume === 0 || (noDefaultMusic && !ownMusic && cues.length === 0);

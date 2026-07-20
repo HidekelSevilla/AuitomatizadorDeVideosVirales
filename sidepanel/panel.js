@@ -183,7 +183,7 @@ function render(state) {
   lastScenes = state.scenes || [];
   renderIngredients(state.project?.ingredients || [], state.queue || {});
   renderScenes(lastScenes);
-  renderQueueButtons(state.queue || { running: false, paused: false }, lastScenes);
+  renderQueueButtons(state.queue || { running: false, paused: false }, lastScenes, state.project?.ingredients || []);
   renderProgress(lastScenes);
   renderHero(state);
   renderPhaseTracker(state);
@@ -412,7 +412,7 @@ function renderIngredients(ingredients, queue = {}) {
   el.ingredientList.replaceChildren();
   const ready = items.filter(ingredientReady).length;
   el.ingredientsSummary.textContent = `${ready} / ${items.length}`;
-  const busy = !!queue.running && !queue.paused;
+  const busy = (!!queue.running || items.some((ing) => ing.status === SCENE_STATUS.GENERATING_IMAGE)) && !queue.paused;
 
   for (const ing of items) {
     const st = ingredientStatus(ing);
@@ -463,9 +463,14 @@ function renderIngredients(ingredients, queue = {}) {
     actions.className = 'scene-actions';
     const retry = document.createElement('button');
     retry.className = 'btn small';
-    retry.textContent = 'Rehacer';
-    retry.title = 'Regenera solo este ingrediente y sobrescribe el asset si aplica.';
-    retry.disabled = busy || st.key === 'generating_image';
+    const willQueueRetry = busy || st.key === 'generating_image';
+    retry.textContent = willQueueRetry ? 'Rehacer después' : 'Rehacer';
+    retry.title = willQueueRetry
+      ? 'Encola este ingrediente para rehacerlo cuando cierre la generación actual.'
+      : 'Regenera solo este ingrediente y sobrescribe el asset si aplica.';
+    // El background serializa y persiste el pedido. Deshabilitarlo durante toda la fase hacia imposible
+    // corregir un ingrediente sin vigilar el pequeño intervalo entre dos generaciones.
+    retry.disabled = false;
     retry.addEventListener('click', async () => {
       retry.disabled = true;
       await runControlCommand(msg(CMD.RETRY_INGREDIENT, { ingredientId: ing.id }), `Rehacer ingrediente ${ing.id}`);
@@ -508,7 +513,9 @@ function renderScenes(scenes) {
     title.textContent = s.id;
     const badge = document.createElement('span');
     badge.className = `badge status-${s.status}`;
-    badge.textContent = badgeLabel(s.status);
+    const awaitsAutomaticImageRetry = s.status === SCENE_STATUS.ERROR
+      && s.errorPhase === 'images' && !s.imageFinalRetryUsed;
+    badge.textContent = awaitsAutomaticImageRetry ? 'Reintento automático pendiente' : badgeLabel(s.status);
     info.append(title, badge);
 
     if (s.error) {
@@ -537,15 +544,21 @@ function renderScenes(scenes) {
     // La imagen ya existe: re-disparar la animacion sin regenerar la imagen.
     if (s.imageUrl) addRetry('Reanimar', 'anim', 'Vuelve a animar con la imagen ya generada (no la regenera).');
     // Siempre disponible: regenerar la imagen desde cero.
-    addRetry(s.imageUrl ? 'Regen img' : 'Reintentar', 'image', 'Regenera la imagen desde cero.');
+    addRetry(s.imageUrl ? 'Regen img' : 'Reintentar', 'image', awaitsAutomaticImageRetry
+      ? 'La cola la reintentará automáticamente al terminar las escenas independientes; este botón permite adelantarla cuando la cola esté detenida.'
+      : 'Regenera la imagen desde cero.');
 
     li.append(thumb, info, actions);
     el.sceneList.append(li);
   }
 }
 
-function renderQueueButtons(queue, scenes) {
-  const running = !!queue.running;
+function renderQueueButtons(queue, scenes, ingredients = []) {
+  // La fase de ingredientes usa su propio mutex y durante algunos awaits queue.running puede ser false.
+  // El panel lo interpretaba como "no hay nada corriendo" y deshabilitaba Pausa/Detener precisamente
+  // mientras Grok generaba un ingrediente.
+  const ingredientActive = (ingredients || []).some((ing) => ing.status === SCENE_STATUS.GENERATING_IMAGE);
+  const running = !!queue.running || ingredientActive;
   const paused = !!queue.paused;
   const hasPending = (scenes || []).some((s) => s.status === SCENE_STATUS.PENDING);
   const hasImages = (scenes || []).some((s) => s.status === SCENE_STATUS.IMAGE_DONE);

@@ -1,0 +1,51 @@
+{
+  "manifest_version": "5.3",
+  "manifest_id": "id_de_serie_through_p01_v5_3",
+  "series_id": "id_de_serie",
+  "through_part": 1,
+  "assets": [
+    {
+      "id": "personaje_a",
+      "display_name": "Personaje A",
+      "asset_type": "human",
+      "prompt_signature": "young Korean man with short black hair and a gray work coverall",
+      "poses": [
+        {
+          "pose": "base",
+          "pose_role": "base",
+          "asset": "assets/characters/id_de_serie/personaje_a_base.png",
+          "identity_note": "firma física y outfit que esta imagen conserva"
+        }
+      ]
+    },
+    {
+      "id": "contenedor_a",
+      "display_name": "Contenedor A",
+      "asset_type": "container",
+      "prompt_signature": "transparent cylindrical capsule with a white steel frame and black base",
+      "transparent": true,
+      "poses": [
+        {
+          "pose": "base",
+          "pose_role": "base",
+          "asset": "assets/characters/id_de_serie/contenedor_a_base.png",
+          "identity_note": "forma, apertura y material transparente canónicos"
+        }
+      ]
+    }
+  ],
+  "escenarios": [
+    {
+      "id": "escenario_a",
+      "display_name": "Escenario A",
+      "views": [
+        {
+          "view": "front_eye",
+          "view_type": "plate",
+          "asset": "assets/escenarios/id_de_serie/escenario_a_front_eye.png",
+          "architecture_note": "eje, entradas y elementos persistentes"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1315 @@
+{
+  "project": {
+    "title": "Herencia Confiscada - Parte 1: El Recaudador ha muerto",
+    "preset": "manhwa",
+    "slug": "herencia_confiscada_parte_01",
+    "language": "es-419",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "default_clip_duration_s": 4
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "elevenlabs",
+      "voice_id": "452WrNT9o8dphaYW5YGU",
+      "language": "es-419"
+    },
+    "editing": {
+      "tool": "remotion"
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-bleed vertical webtoon panel, wide master shot, high-angle, three-quarter front view, using a 24mm lens: the rain-slick deck of the Banpo bridge at deep night flooded by cold white police floodlights, and at the center the Collector, a tall figure in an ankle-length ash-gray coat with black embargo ribbons sealed in crimson wax hanging from the hem, face hidden under a wide-brimmed dark hat, kneeling on the wet asphalt with both gloved hands open on his knees and head level, while Seol Kang-min, an imposing silver-haired Korean national hero in ceremonial white armor with golden edges and a short cape, stands over him several steps away with clenched fists, two helicopters hovering above with crossing search beams, a distant line of riot shields holding back a small crowd at the far end of the bridge, the Seoul skyline glowing behind. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Hace tres noches, en el puente Banpo,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_02",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one wide inset; black space occupying 55% of the canvas. exactly one image panel. Panel A: medium shot, eye-level, over-the-shoulder view from behind Seol Kang-min, using a 50mm lens: past the golden-edged white pauldron and short cape of the silver-haired Korean national hero in ceremonial armor, the Collector, a tall figure in an ankle-length ash-gray coat with black embargo ribbons sealed in crimson wax hanging from the hem, face hidden under a wide-brimmed dark hat, kneels on the rain-slick bridge deck at deep night, head slightly bowed, both black-gloved hands open and empty on his knees, cold floodlight carving the brim of his hat, thin rain threads crossing the beam. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "el villano más grande de Corea cayó de rodillas frente al héroe nacional.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_03",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with two-panel composite; white space occupying 50% of the canvas. exactly two image panels. Panel A: full-body shot, low-angle, rear three-quarter view, using a 35mm lens: the Collector, a tall ominous figure in an ankle-length ash-gray coat with black embargo ribbons sealed in crimson wax hanging from the hem, face hidden under a wide-brimmed dark hat, walking away unhurried through thin rain at deep night, both black-gloved hands relaxed at his sides, while behind him to the right a burly Korean hunter in dented dark battle armor kneels collapsed on the wet pavement, head bowed, both empty hands limp on the ground. Panel B: close-up, high-angle, front view, using an 85mm lens: the same collapsed hunter's hollow defeated face at deep night, rain cutting through the dust on his cheeks, eyes empty and unfocused, mouth pressed shut, a dented helmet lying beside his knee. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Treinta años de terror terminaron sin un solo golpe:",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_04",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one small inset; black space occupying 65% of the canvas. exactly one image panel. Panel A: extreme close-up, eye-level, front view, using a 100mm lens: the shadowed lower face of the Collector under the wide brim of his dark hat at deep night, only a sharp chin and thin mouth visible in the gloom, two pale glints under the brim dimming as his eyes slide shut, calm relieved expression on the visible mouth, crimson wax-seal ribbons of his ash-gray coat collar brushing his jaw, cold bridge floodlight grazing the hat edge. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "el Recaudador cerró los ojos como quien termina un turno,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_05",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one tall inset; black space occupying 55% of the canvas. exactly one image panel. Panel A: wide shot, low-angle, front view, using a 24mm lens: golden and red fireworks bursting over the dense Seoul skyline at deep night, a crowd of small cheering silhouettes with raised arms filling a rooftop terrace in the lower foreground, confetti drifting through the cold air, tower windows lit in celebration. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "y el país salió a celebrar sobre su cadáver. [pause]",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_06",
+      "type": "narrative_card",
+      "card": {
+        "mode": "editor",
+        "text": "Herencia Confiscada"
+      },
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": ""
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Herencia Confiscada.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_07",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with one rectangular inset; white space occupying 60% of the canvas. exactly one image panel. Panel A: wide shot, high-angle, rear three-quarter view, using a 35mm lens: Han Do-yun, a pale worn-out twenty-six-year-old Korean night janitor with messy short black hair, lean wiry build slightly stooped, wearing a grayish-blue maintenance coverall with faint reflective strips and a cloth ID badge, pushes a mop across the polished floor of a dark office aisle at deep night with both hands on the handle, small in the frame, while distant golden fireworks bloom silently through the tall dark windows behind him. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Yo no fui a la fiesta:",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_08",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-bleed vertical webtoon panel, wide master shot, eye-level, front view, using a 35mm lens: the empty twelfth-floor office at deep night, rows of dark cubicles under sparse cold fluorescent panels, and Han Do-yun, a pale twenty-six-year-old Korean janitor with messy short black hair and dark circles under his eyes, lean wiry build in a grayish-blue maintenance coverall with reflective strips, wringing the mop into his yellow cart bucket in the center aisle, shoulders sagging with fatigue, gaze down on the water, both hands twisting the mop head. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "me tocaba trapear el piso doce del edificio Daehan.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_09",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with one tall inset; white space occupying 55% of the canvas. exactly one image panel. Panel A: medium shot, eye-level, front view, using a 50mm lens: Han Do-yun, a pale worn-out twenty-six-year-old Korean janitor with messy short black hair, dark circles under large dark-brown eyes, grayish-blue maintenance coverall with a cloth ID badge, stands before the tall dark office window at deep night facing his own dim reflection, golden firework bursts from the celebrating city below scattered across the black glass around his reflected face, mop held upright in his right hand, left hand hanging tired at his side, hollow steady gaze meeting his reflected eyes. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "El que limpia lo que Corea ensucia mientras duerme… ese soy yo.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_10",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-page vertical character close-up, eye-level, front view, using an 85mm lens: the tired face of Han Do-yun at deep night, a pale twenty-six-year-old Korean man with an oval youthful face, heavy dark circles under large earnest dark-brown eyes, messy short black hair stuck to his forehead with sweat, the collar of his grayish-blue maintenance coverall and the cloth ID badge visible at the bottom of the frame, jaw set with quiet endurance, gaze slightly off-camera, cold fluorescent light flattening his features, dark cubicles blurred behind him. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Me llamo Han Do-yun: veintiséis años, dos empleos;",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_11",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with two-panel composite; white space occupying 50% of the canvas. exactly two image panels. Panel A: macro shot, top-down, point-of-view, using a 100mm lens: a cracked smartphone screen glowing at deep night with a lockscreen photo of Han Sae-byeol, a bright seventeen-year-old Korean girl with a high black ponytail, straight bangs, lively warm brown eyes, navy school blazer with a maroon ribbon, grinning and flashing a victory sign. Panel B: close-up, high-angle, three-quarter front view, using an 85mm lens: a young man's worn pale thumb hovering over the same cracked glowing screen, callused knuckles and a faded blue work glove folded under the phone, the warm screen light and the faint glow of distant fireworks through a dark window the only lights in the darkness. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "la renta no espera y la escuela de Sae-byeol, mi hermana menor, tampoco.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_12",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with two stacked panels; white space occupying 45% of the canvas. exactly two image panels. Panel A: close-up, eye-level, profile view, using a 70mm lens: Han Do-yun, a pale twenty-six-year-old Korean janitor with messy short black hair and dark circles, in his grayish-blue maintenance coverall, sliding the cracked phone into his chest pocket with his right hand at deep night, lips pressed into a faint fading smile, gaze dropping. Panel B: medium shot, high-angle, rear three-quarter view, using a 35mm lens: the same young janitor in the same grayish-blue coverall gripping the mop handle again with both hands beside his yellow cart in the dark office aisle, head bowed back to work, cold fluorescent pools of light on the polished floor. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Ella cree que me va bien; su beca vale más que mi orgullo.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_13",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-bleed vertical webtoon panel, wide establishing shot, eye-level, three-quarter front view, using a 35mm lens: the small archive room on the twelfth floor at deep night, metal shelves packed with boxes along both walls, the worn wooden desk with its green lamp still turned on over an empty leather chair pushed back, a document cart resting beside the desk, dust motes floating in the lamp light, the door ajar to the dark corridor, the desk surface bare and waiting. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Deben saber algo: en ese piso trabajaba el señor Gu, un archivista viejo,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_14",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with one warm memory inset tinted in soft sepia; white space occupying 60% of the canvas. exactly one image panel. Panel A: medium shot, eye-level, three-quarter front view, using a 50mm lens, the whole panel washed in warm sepia memory tone: Mr. Gu, a stooped small elderly Korean archivist with thin combed-back white hair, half-moon glasses low on his nose, brown knitted vest over a beige shirt, seated at his archive desk at late night, both ink-stained wrinkled hands accepting a steaming paper coffee cup offered by a grayish-blue coverall sleeve entering from the right edge of the panel, the old man's deep wrinkles folded into a genuine warm smile, gaze lifted toward the unseen giver. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "el único que sabía mi nombre.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_15",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-page vertical webtoon panel, medium shot, high-angle, over-the-shoulder view from behind Han Do-yun, using a 50mm lens: the pale twenty-six-year-old Korean janitor with messy short black hair, grayish-blue maintenance coverall with reflective strips, leans over the empty archive desk at deep night and sets a steaming paper coffee cup beside the green lamp with his right hand, his left hand steadying the desk edge, his tired face in lost profile with a small stubborn frown, the empty leather chair and dark shelves waiting in front of him. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Tres noches sin aparecer, y yo, necio, seguía dejándole su café.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_16",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with two-panel composite; white space occupying 45% of the canvas. exactly two image panels. Panel A: macro shot, eye-level, profile view, using a 100mm lens: the steaming paper coffee cup on the archive desk at deep night tipping over on its own, dark coffee sliding out in a frozen arc, the green desk lamp glow rimming the cup edge. Panel B: macro shot, high-angle, front view, using a 100mm lens: the spilled coffee puddle on the wooden desk, and instead of steam, thin glossy black ink ribbons rising upward from the liquid like slow smoke, their tips curling with faint crimson light, the wood grain sharp beneath the dark puddle. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[curious] Esa madrugada el café se volcó solo. Del charco no subió vapor: subió tinta.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_17",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one tall inset; black space occupying 50% of the canvas. exactly one image panel. Panel A: close-up action shot, low-angle, three-quarter front view with a moderate Dutch tilt, using a 70mm lens: glossy black embargo ribbons sealed with small crimson wax stamps coiling rapidly up the right forearm of Han Do-yun, a pale twenty-six-year-old Korean janitor in a grayish-blue maintenance coverall, his sleeve pushed up by the climbing ribbons, his arm yanked forward over the archive desk at deep night, tendons straining, his wide dark-brown eyes and messy black hair caught at the top of the frame, the green desk lamp light cutting across the black ribbons. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Cintas de embargo negras, selladas en lacre rojo, treparon por mi brazo",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_18",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one small inset; black space occupying 60% of the canvas. exactly one image panel. Panel A: close-up, high-angle, front view, using an 85mm lens: the terrified face of Han Do-yun at deep night, pale oval Korean face with dark circles, messy short black hair, mouth open in a silent gasp, pupils shrunk, sweat beading at his temple, his right arm wrapped in black embargo ribbons pressed against his chest, his left hand clawing at the ribbons without loosening them, faint crimson glow from the wax seals lighting his chin from below. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "como si el embargado fuera yo.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_19",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-page vertical object detail, macro shot, top-down view, using a 100mm lens: the back of Han Do-yun's pale right hand at deep night as a deep-crimson wax-seal sigil burns itself into the skin, a circular stamped emblem with thin notched edges glowing hot crimson, the last black embargo ribbon dissolving into the mark, faint smoke threads rising, the grayish-blue coverall sleeve wrinkled back at the wrist, fingers rigid and splayed with pain over the dark wooden archive desk beside the green lamp glow. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Algo me quemó el dorso de la mano",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_20",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one inset; black space occupying 50% of the canvas. exactly one image panel. Panel A: medium close-up, eye-level, three-quarter front view, using a 50mm lens: a translucent deep-crimson system window with a thin rectangular frame, small corner notches and faint scan-lines, blank and newly lit, hovering at face height before Han Do-yun, a pale twenty-six-year-old Korean janitor in a grayish-blue coverall, the crimson glow washing over his stunned face and open mouth, his marked right hand half-raised toward the light, the dark archive shelves blurred behind the glowing panel at deep night. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "y una ventana roja se encendió frente a mí.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_21",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "A translucent deep-crimson system window fills most of the frame over the dim archive room displaying the text 'HERENCIA EJECUTADA. HEREDERO ÚNICO REGISTRADO.' in clean bold uppercase lettering, centered, thin rectangular frame with small corner notches, faint scan-lines, a small wax-seal emblem at the top edge, the blurred archive shelves and green desk lamp visible behind the glowing panel at deep night. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. exact text only, no additional text or labels, no speech bubbles, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[cold] HERENCIA EJECUTADA. HEREDERO ÚNICO REGISTRADO.",
+        "speaker": "sistema"
+      }
+    },
+    {
+      "id": "scene_22",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with two stacked panels; white space occupying 45% of the canvas. exactly two image panels. Panel A: medium shot, eye-level, profile view, using a 70mm lens: Han Do-yun, a pale twenty-six-year-old Korean janitor with messy black hair in a grayish-blue coverall, swiping his marked right hand hard at a small translucent deep-crimson system window floating before him in the dark archive room at deep night, teeth gritted, brow furrowed in desperate effort. Panel B: macro shot, high-angle, point-of-view, using a 100mm lens: his pale hand passing cleanly through the crimson translucent panel as if through projected light, the window surface unbroken around his wrist, the crimson wax-seal sigil on the back of his hand glowing brighter in contact with the light. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Intenté rechazarla; no existe botón para eso.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_23",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-bleed vertical webtoon panel, wide shot, low-angle, front view, using a 24mm lens: a giant public screen mounted on a dark office tower over an empty rain-damp plaza at deep night, the screen glowing pale blue and displaying a stern minimalist eye-and-shield emblem of the state agency, the cold light of the emblem reflecting down the wet plaza tiles, surrounding towers dark and silent. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "En este país lo aprendes antes que a leer:",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_24",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with one wide inset; white space occupying 55% of the canvas. exactly one image panel. Panel A: medium wide shot, eye-level, three-quarter front view, using a 35mm lens: a registration line in the plaza under flat gray daytime light, the whole panel washed in warm sepia memory tone, beneath the giant agency screen, a row of ordinary Korean civilians waiting with sleeves rolled up, and at the front a tracking-division field officer in a dark navy tactical uniform with an eye-and-shield chest emblem, black half-visor cap and bulky copper-plated gauntlets with thin amber seam-lights, pressing a civilian's raised open hand between both gloved palms, a second identical navy-uniformed officer holding a slate tablet in his gauntlets, the stern eye-and-shield emblem glowing on the screen above them, the civilians' faces resigned and quiet, while in the far background two more identical navy-uniformed officers zip-cuff a struggling middle-aged man and drag him toward a gray van, his bare raised hand glowing with an unregistered mark. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "toda habilidad se registra ante la Agencia, la oficina que vigila los poderes…",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_25",
+      "type": "narrative_card",
+      "card": {
+        "mode": "editor",
+        "text": "Criminal por existir"
+      },
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": ""
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "o eres criminal por existir.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_26",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-page vertical character close-up, eye-level, profile view, using an 85mm lens: Han Do-yun, a pale twenty-six-year-old Korean janitor with messy short black hair and dark circles, in his grayish-blue coverall, standing rigid in the dark archive room at deep night while a small translucent deep-crimson system window with corner notches and faint scan-lines hovers beside his cheek, its crimson light brushing his jaw and catching in his wide dark-brown eye, his lips slightly parted listening, his marked right hand pressed flat against his chest, the shelves and green desk lamp blurred in the background. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La voz se llamaba el Albacea, y me enseñó lo heredado.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_27",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-page vertical manhwa splash panel, wide shot, low-angle, front view, using a 24mm lens: the dark archive room at deep night exploding with crimson light as a vast translucent vault interface unfolds around Han Do-yun, a pale twenty-six-year-old Korean janitor in a grayish-blue coverall standing tiny at the bottom center with his head tilted back, dozens of translucent deep-crimson panels with corner notches and faint scan-lines cascading upward in curved tiers like an infinite archive wall, each panel wrapped in thin black ribbon lines with a small wax-seal emblem, the tiers dissolving into darkness far above him, his marked right hand glowing at his side. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[whispers] Una bóveda. No un poder: todos los poderes.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_28",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with two stacked panels; black space occupying 45% of the canvas. exactly two image panels. Panel A: macro shot, eye-level, front view, using a 100mm lens: a row of translucent deep-crimson ability plaques floating in darkness at deep night, each a small rectangular panel with corner notches holding the faint silhouette of a different power: a flame, a clawed hand, a lightning fork, every plaque crossed by black embargo ribbons stamped with a crimson wax seal. Panel B: macro shot, low-angle, profile view, using a 100mm lens: a long sealed weapon floating in darkness at deep night wrapped completely in black embargo ribbons, only the elegant curve of a sheathed blade readable under the wrapping, a large crimson wax seal closing the ribbons at its center, faint crimson light tracing its edges. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Treinta años de habilidades y armas confiscadas por el Recaudador,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_29",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one deep inset; black space occupying 55% of the canvas. exactly one image panel. Panel A: wide shot, high-angle, three-quarter front view, using a 35mm lens: endless tiers of translucent deep-crimson vault sections receding into pure darkness at deep night, each section a shelf-like row of sealed plaques bound in black ribbon, heavy dark padlock emblems glowing dim crimson on every section gate, the nearest section slightly brighter and unlocked with its gate swung open, the farthest rows fading into black. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "en cuarenta y nueve secciones que mi cuerpo aún no tolera…",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_30",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with one small isolated inset; white space occupying 70% of the canvas. exactly one image panel. Panel A: macro shot, eye-level, front view, using a 100mm lens: a single blank vault plaque floating alone against soft shadow at deep night, its translucent surface a deeper darker crimson than glass should allow, no silhouette inside, wrapped in doubled black embargo ribbons crossed twice, its wax seal matte black instead of crimson, a faint cold halo around it, the plaque surface completely smooth and unmarked. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "y una sin número que se negó a mostrarme.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_31",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "A translucent deep-crimson system window fills most of the frame over the dim archive room displaying the text 'ANAQUEL INICIAL LIBERADO: TRES HABILIDADES MENORES.' in clean bold uppercase lettering, centered, thin rectangular frame with small corner notches, faint scan-lines, a small wax-seal emblem at the top edge, the blurred archive shelves and warm green desk lamp visible behind the glowing panel at deep night. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. exact text only, no additional text or labels, no speech bubbles, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[cold] ANAQUEL INICIAL LIBERADO: TRES HABILIDADES MENORES.",
+        "speaker": "sistema"
+      }
+    },
+    {
+      "id": "scene_32",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with three-panel composite; white space occupying 40% of the canvas. exactly three image panels. Panel A: macro shot, eye-level, front view, using a 100mm lens: a small translucent deep-crimson plaque with corner notches holding the faint silhouette of a soft-soled shoe with muted ripple lines around it, its black ribbon freshly cut and hanging open, its wax seal split in half. Panel B: macro shot, high-angle, front view, using a 100mm lens: a second identical crimson plaque holding the silhouette of a small steady candle flame, ribbon cut, seal split. Panel C: macro shot, low-angle, front view, using a 100mm lens: a third crimson plaque holding the silhouette of a coiled rope, ribbon cut, seal split, all three plaques glowing weakly against the deep night darkness around them. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Tres, de miles, y a media potencia de sus dueños.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_33",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one small inset; black space occupying 60% of the canvas. exactly one image panel. Panel A: macro shot, top-down view, using a 100mm lens: the back of Han Do-yun's pale right hand against darkness at deep night, the deep-crimson wax-seal sigil with notched edges flaring once, a single thin ring of crimson light expanding outward from the mark like a ripple in still water, the ring crisp and perfectly circular, his fingers tense and half-curled, the frayed cuff of his grayish-blue coverall at the wrist. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Aun así, el sello lanzó un pulso al instalarse, y bastó:",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_34",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with one tall vertical inset; white space occupying 55% of the canvas. exactly one image panel. Panel A: wide shot, high-angle, top-down view, using a 24mm lens: looking straight down the zigzagging concrete service stairwell at deep night, gray flights with green metal handrails descending into shadow under caged emergency lights, and Han Do-yun, a small figure in a grayish-blue coverall with messy black hair, rushing down two floors below with his marked right hand jammed in his pocket, his left hand sliding along the rail, his stride urgent and unsteady. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "bajé por las escaleras de servicio",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_35",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-bleed vertical webtoon panel, wide shot, eye-level, three-quarter rear view, using a 35mm lens: the empty ground-floor lobby at deep night, and Han Do-yun, a pale twenty-six-year-old Korean janitor in a grayish-blue coverall, frozen mid-step on the polished stone floor with his marked hand hidden in his pocket, staring up at the large wall-mounted television now glowing blood-red with an emergency broadcast layout: a pulsing red map graphic of Seoul and a stern eye-and-shield emblem, the red light flooding the gray waiting chairs and his stunned upturned face. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "y en la tele del lobby la fiesta ya era una alerta roja.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_36",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with one wide inset; white space occupying 60% of the canvas. exactly one image panel. Panel A: wide shot, high-angle, three-quarter rear view, using a 35mm lens: Han Do-yun, a small hurried figure in a grayish-blue coverall with messy black hair, crossing the empty zebra crossing of a narrow Seoul side street at deep night, right hand buried deep in his pocket, left arm swinging stiffly, shoulders hunched low, closed metal shutters and a lone humming streetlamp pooling cold light on the wet asphalt around him. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Escondí la mano en el bolsillo y crucé",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_37",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one wide inset; black space occupying 50% of the canvas. exactly one image panel. Panel A: wide shot, ground-level, front view, using a 24mm lens: the mouth of the pedestrian underpass at deep night seen across the wet pavement, pale greenish fluorescent light spilling up the concrete stairs, two folding metal barriers narrowing the entrance into a single lane, portable floodlights on tripods glaring cold white, and Han Do-yun, a small figure in a grayish-blue coverall with messy black hair, stopped at the top edge of the stairs with his marked right hand shoved in his pocket, his body half-turned as if to leave. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "al paso subterráneo de cada noche: había un control nuevo,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_38",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-page vertical webtoon panel, medium shot, eye-level, over-the-shoulder view from within a short queue of tired Korean commuters, using a 50mm lens: at the base of the underpass stairs at deep night, two tracking-division field officers in dark navy tactical uniforms with eye-and-shield chest emblems, black half-visor caps and bulky copper-plated gauntlets with thin amber seam-lights inspect the line one person at a time, the nearest officer clamping a middle-aged woman's raised open hand between both copper gauntlets, thin amber diagnostic light seeping from the gauntlet seams over her palm, the second officer watching the queue with a slate tablet held at his chest, pale greenish fluorescent light and portable floodlights hardening every face. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "dos oficiales con guantes de cobre revisando manos, una por una.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_39",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one narrow inset; black space occupying 60% of the canvas. exactly one image panel. Panel A: close-up, eye-level, profile view, using a 70mm lens: Han Do-yun, a pale twenty-six-year-old Korean janitor with messy short black hair and dark circles, standing rigid at the shadowed edge of the underpass entrance at deep night, half his face carved by the cold floodlight from below and half sunk in darkness, jaw clenched, throat tight mid-swallow, his gaze dragged toward the tunnel depth, right hand fisted inside his pocket, left hand pressed flat against the cold tiled wall. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Pude regresarme; pero Sae-byeol estaba sola al otro lado del túnel,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_40",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with two-panel composite; white space occupying 50% of the canvas. exactly two image panels. Panel A: macro shot, top-down, point-of-view, using a 100mm lens: a cracked smartphone screen glowing in the dark with the photo of Han Sae-byeol, a bright seventeen-year-old Korean girl with a high black ponytail, straight bangs and lively warm brown eyes in a navy school blazer with a maroon ribbon, grinning with a victory sign. Panel B: extreme close-up, eye-level, front view, using an 85mm lens: the eyes of Han Do-yun, a pale twenty-six-year-old Korean man with dark circles and messy black hair falling over his brow, lit from below by the phone glow at deep night, his stare hardening from fear into resolve, brows lowering, the reflection of the small bright screen caught in both dark-brown irises. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "y esa niña no sabe mentir ni cuando le preguntan la hora.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_41",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-page vertical character close-up, low-angle, three-quarter front view, using an 85mm lens: Han Do-yun, a pale twenty-six-year-old Korean janitor with messy black hair, pressed into the tiled shadow beside the underpass entrance at deep night, whispering downward with barely parted lips toward a palm-sized translucent deep-crimson system window with corner notches hovering just under his jaw, its faint crimson light grazing his chin and the underside of his nose, his marked right hand cupped beneath the little window, his left shoulder blocking the cold floodlight behind him. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[exhales] Le pedí al Albacea lo más barato del anaquel.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_42",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "A translucent deep-crimson system window fills most of the frame over the dim underpass displaying the text 'PRECINTO ROTO. FIRMA EN EMISIÓN.' in clean bold uppercase lettering, centered, thin rectangular frame with small corner notches, faint scan-lines, a small wax-seal emblem at the top edge, the blurred greenish tunnel tiles and pale fluorescent tubes visible behind the glowing panel at deep night. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. exact text only, no additional text or labels, no speech bubbles, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[cold] PRECINTO ROTO. FIRMA EN EMISIÓN.",
+        "speaker": "sistema"
+      }
+    },
+    {
+      "id": "scene_43",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one dynamic inset; black space occupying 50% of the canvas. exactly one image panel. Panel A: action shot, low-angle, front view with a moderate Dutch tilt, using a 35mm lens: the legs and lower body of Han Do-yun in a grayish-blue coverall at the tunnel entrance at deep night, a black embargo ribbon around his ankles snapping apart in two clean pieces, small crimson wax fragments bursting outward frozen mid-air, soft crimson light wrapping both his worn sneakers like a thin mist settling into the soles, his weight already leaning into the first stride. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "El precinto tronó, y PASO SORDO, la habilidad de un ratero muerto,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_44",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with two stacked panels; white space occupying 40% of the canvas. exactly two image panels. Panel A: macro shot, ground-level, profile view, using a 100mm lens: a worn sneaker of Han Do-yun landing on the stained concrete tunnel floor at deep night, thin crimson mist compressing under the sole, muted soft ripple rings spreading from the contact point instead of any splash, the pale greenish tunnel light on the floor tiles. Panel B: wide shot, eye-level, front view with a slight Dutch tilt, using a 35mm lens: Han Do-yun, a pale twenty-six-year-old Korean janitor in a grayish-blue coverall, mid-stride slipping through the unlit service lane of the tunnel while the two tracking-division officers in dark navy uniforms, half-visor caps and copper-plated gauntlets work the commuter queue on the opposite lane, one officer clamping a commuter's raised hand between his gauntlets and the other bent over his slate tablet, both with their backs angled to the dark lane, a dead flickering fluorescent tube leaving Do-yun's path in shadow, his shoulders locked stiff, eyes fixed forward, marked right hand flat against his thigh. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "apagó mis pasos: crucé entre los guantes de cobre sin un solo ruido.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_45",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-bleed vertical webtoon panel, wide shot, low-angle, rear view, using a 24mm lens: the long straight underpass at deep night with Han Do-yun, a small figure in a grayish-blue coverall, running hard toward the far exit rectangle of darkness, while along the tiled walls the shoulder radios of the officers behind him and every mounted intercom box flare with harsh red blinking lights at the same instant, red pulses bouncing off the white tiles, the pale greenish fluorescents drowned by the sudden red, his shadow stretched long down the corridor. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Funcionó once segundos: al doce, las radios del túnel se encendieron a la vez",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_46",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one small inset; black space occupying 60% of the canvas. exactly one image panel. Panel A: macro shot, high-angle, three-quarter front view, using a 100mm lens: the back of Han Do-yun's pale right hand pumping mid-run through darkness at deep night, the deep-crimson wax-seal sigil dimming from bright crimson to a cold ash-gray ember, the last crimson mist tearing away from his fingers in thin streaks with the motion, the frayed grayish-blue coverall cuff whipping at his wrist. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "con mi pulso triangulado. Solté la habilidad, el sello murió,",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_47",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one tall inset; black space occupying 45% of the canvas. exactly one image panel. Panel A: tall action shot, knee-level, rear three-quarter view, using a 35mm lens: Han Do-yun, a pale twenty-six-year-old Korean janitor in a grayish-blue coverall, sprinting desperately down the narrow shuttered side street at deep night, arms pumping graceless and wild, head low, one sneaker skidding on the wet asphalt, his breath trailing white in the cold air, the lone streetlamp throwing his long shadow ahead of him toward the dark end of the street. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[exhales sharply] y corrí las seis cuadras a puro miedo.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_48",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with two stacked panels; white space occupying 45% of the canvas. exactly two image panels. Panel A: medium shot, high-angle, three-quarter front view, using a 50mm lens: Han Sae-byeol, a seventeen-year-old Korean girl with loose black hair and straight bangs in an oversized faded yellow hoodie, curled up asleep on the worn two-seat couch of a small apartment at deep night, one hand tucked under her cheek, a folded blanket over her legs, the old television bathing her in flickering cold light. Panel B: macro shot, eye-level, profile view, using a 100mm lens: a young man's pale hand with a dim ash-gray wax-seal sigil on its back holding the TV remote in the dark room, thumb pressing the power button, the dark reflection of a tired young male face with messy black hair caught faintly on the black glass of the switched-off screen. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Sae-byeol dormía con la tele encendida. La apagué. La volví a prender…",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_49",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-page vertical webtoon panel, medium shot, eye-level, front view, using a 50mm lens: the old television screen of a small dark apartment filling most of the frame at deep night, broadcasting a state press conference: a gray-haired stern Korean spokeswoman in a dark uniform at a podium, the eye-and-shield agency emblem large on the blue backdrop behind her, harsh press-flash lighting on her face, both her hands gripping the podium edges, the TV frame and dim room edges visible around the screen. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "La Agencia lo dijo en cadena nacional:",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_50",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with two stacked panels; white space occupying 45% of the canvas. exactly two image panels. Panel A: close-up, eye-level, front view, using a 70mm lens: the television screen at deep night showing a dark map of Seoul with a single crimson pulse ring radiating from one district, agency emblem in the corner of the broadcast layout, scan-line texture over the map glow. Panel B: close-up, low-angle, three-quarter front view, using an 85mm lens: the face of Han Do-yun, a pale twenty-six-year-old Korean man with messy black hair and dark circles, lit only by the cold TV glow in the dark apartment, his jaw slack, eyes wide and fixed on the screen, the crimson map light reflected across his pale cheek, his marked right hand trembling around the TV remote pressed against his knee, the ash-gray seal catching the screen glow, the collar of his grayish-blue coverall open at his throat. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "la firma del Recaudador seguía activa en un portador desconocido.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_51",
+      "type": "narrative_card",
+      "card": {
+        "mode": "editor",
+        "text": "Amenaza de clase nacional"
+      },
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": ""
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Desde esa noche: amenaza de clase nacional.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_52",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-page vertical webtoon panel, medium close-up, eye-level, front view, using a 70mm lens: the television screen at deep night showing Seol Kang-min, an imposing forty-four-year-old Korean national hero with slicked-back prematurely silver hair and a broad jaw, in an expensive midnight-blue suit with a golden sun pin, standing at the press podium beside the agency backdrop, flashing his practiced camera smile with his chin dipped in polite deflection, one open palm raised in a calm stopping gesture toward the unseen journalists, his other hand resting flat on the podium, press flashes freezing his confident expression, the dark apartment edges framing the bright screen. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Le preguntaron al héroe por el poder del muerto; sonrió y cambió de tema.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_53",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Pure white webtoon page with one narrow vertical inset; white space occupying 60% of the canvas. exactly one image panel. Panel A: wide shot, high-angle, point-of-view through the narrow apartment window looking steeply down at deep night, using a 35mm lens: three identical dark vans with no license plates rolling silently into the residential street three floors below, headlights off, their roofs wet under the cold streetlamp, parked cars squeezed along the curb, the thin curtain edge intruding at the frame border. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Camionetas sin placas entraron a mi calle.",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_54",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-page vertical webtoon panel, full-body shot, low-angle, three-quarter front view, using a 35mm lens: Cha Yeon-woo, a tall composed thirty-two-year-old Korean tracking agent with black hair in a tight low bun, cold sharp gray eyes and a thin scar across her left eyebrow, stepping down from the open door of a dark unmarked van onto the wet asphalt at deep night, her charcoal-gray trench coat swinging over her black tactical uniform, one gloved hand still on the van door, the other loose and ready at her side, boots planted with unhurried precision, the cold streetlamp behind her cutting her outline against the parked cars and the modest brick apartment building. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "De la primera bajó una mujer de gabardina gris;",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_55",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one small inset; black space occupying 60% of the canvas. exactly one image panel. Panel A: close-up, low-angle, front view, using an 85mm lens: the upturned face of Cha Yeon-woo at deep night, a composed thirty-two-year-old Korean agent with black hair in a tight low bun, the thin scar across her left eyebrow catching the streetlamp, her cold gray eyes scanning upward floor by floor with clinical calm, lips flat and unreadable, the collar of her charcoal-gray trench coat framing her jaw, faint lamplight and the dark brick facade blurred above her. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "miró mi edificio como quien revisa un recibo… y no siguió caminando. [pause]",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_56",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Matte-black webtoon page with one narrow inset; black space occupying 65% of the canvas. exactly one image panel. Panel A: medium shot, eye-level, rear view, using a 50mm lens: the dark silhouette of Han Do-yun, a lean twenty-six-year-old Korean man in a grayish-blue coverall with messy black hair, standing rigid at the edge of the narrow apartment window at deep night, his back to the dark room, one shoulder pressed to the wall to stay hidden from the street below, the cold streetlamp glow outlining his profile edge, and the deep-crimson wax-seal sigil on the back of his lowered right hand burning as the only strong light in the frame. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "Herencia confiscada, la llamó el Albacea. Esa noche entendí la letra chica:",
+        "speaker": "narrador"
+      }
+    },
+    {
+      "id": "scene_57",
+      "type": "panel",
+      "render_mode": "static",
+      "visual": {
+        "image_prompt": "Full-page vertical manhwa splash panel, wide shot, high-angle, three-quarter rear view, using a 24mm lens: the small dark apartment living room at deep night with Han Do-yun, a pale twenty-six-year-old Korean janitor in a grayish-blue coverall, standing small beside the narrow window, his marked right hand raised before his own face with the deep-crimson wax-seal sigil glowing between his eyes and the city, beyond the glass the residential street below pulsing with silent red and blue light bars among the parked vans, the sleeping couch and dead television sunk in shadow behind him, the crimson mark and the police lights the only colors in the dark. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "animation_prompt": "",
+      "timeline": {
+        "clip_duration_s": 4
+      },
+      "voiceover": {
+        "text": "[whispers] el Recaudador no me dejó su poder… me dejó su cacería.",
+        "speaker": "narrador"
+      }
+    }
+  ],
+  "render_export": {
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18",
+      "scene_19",
+      "scene_20",
+      "scene_21",
+      "scene_22",
+      "scene_23",
+      "scene_24",
+      "scene_25",
+      "scene_26",
+      "scene_27",
+      "scene_28",
+      "scene_29",
+      "scene_30",
+      "scene_31",
+      "scene_32",
+      "scene_33",
+      "scene_34",
+      "scene_35",
+      "scene_36",
+      "scene_37",
+      "scene_38",
+      "scene_39",
+      "scene_40",
+      "scene_41",
+      "scene_42",
+      "scene_43",
+      "scene_44",
+      "scene_45",
+      "scene_46",
+      "scene_47",
+      "scene_48",
+      "scene_49",
+      "scene_50",
+      "scene_51",
+      "scene_52",
+      "scene_53",
+      "scene_54",
+      "scene_55",
+      "scene_56",
+      "scene_57"
+    ]
+  },
+  "tts_export": {
+    "language": "es-419",
+    "mode": "dialogue",
+    "model_id": "eleven_v3",
+    "elevenlabs_speed": 1,
+    "edit_speed": 1.4,
+    "voices": {
+      "narrador": "452WrNT9o8dphaYW5YGU",
+      "sistema": "iOeCMakiJ4CctfQaM9yd"
+    },
+    "dialogue": [
+      {
+        "scene_id": "scene_01",
+        "speaker": "narrador",
+        "text": "Hace tres noches, en el puente Banpo,"
+      },
+      {
+        "scene_id": "scene_02",
+        "speaker": "narrador",
+        "text": "el villano más grande de Corea cayó de rodillas frente al héroe nacional."
+      },
+      {
+        "scene_id": "scene_03",
+        "speaker": "narrador",
+        "text": "Treinta años de terror terminaron sin un solo golpe:"
+      },
+      {
+        "scene_id": "scene_04",
+        "speaker": "narrador",
+        "text": "el Recaudador cerró los ojos como quien termina un turno,"
+      },
+      {
+        "scene_id": "scene_05",
+        "speaker": "narrador",
+        "text": "y el país salió a celebrar sobre su cadáver. [pause]"
+      },
+      {
+        "scene_id": "scene_06",
+        "speaker": "narrador",
+        "text": "Herencia Confiscada."
+      },
+      {
+        "scene_id": "scene_07",
+        "speaker": "narrador",
+        "text": "Yo no fui a la fiesta:"
+      },
+      {
+        "scene_id": "scene_08",
+        "speaker": "narrador",
+        "text": "me tocaba trapear el piso doce del edificio Daehan."
+      },
+      {
+        "scene_id": "scene_09",
+        "speaker": "narrador",
+        "text": "El que limpia lo que Corea ensucia mientras duerme… ese soy yo."
+      },
+      {
+        "scene_id": "scene_10",
+        "speaker": "narrador",
+        "text": "Me llamo Han Do-yun: veintiséis años, dos empleos;"
+      },
+      {
+        "scene_id": "scene_11",
+        "speaker": "narrador",
+        "text": "la renta no espera y la escuela de Sae-byeol, mi hermana menor, tampoco."
+      },
+      {
+        "scene_id": "scene_12",
+        "speaker": "narrador",
+        "text": "Ella cree que me va bien; su beca vale más que mi orgullo."
+      },
+      {
+        "scene_id": "scene_13",
+        "speaker": "narrador",
+        "text": "Deben saber algo: en ese piso trabajaba el señor Gu, un archivista viejo,"
+      },
+      {
+        "scene_id": "scene_14",
+        "speaker": "narrador",
+        "text": "el único que sabía mi nombre."
+      },
+      {
+        "scene_id": "scene_15",
+        "speaker": "narrador",
+        "text": "Tres noches sin aparecer, y yo, necio, seguía dejándole su café."
+      },
+      {
+        "scene_id": "scene_16",
+        "speaker": "narrador",
+        "text": "[curious] Esa madrugada el café se volcó solo. Del charco no subió vapor: subió tinta."
+      },
+      {
+        "scene_id": "scene_17",
+        "speaker": "narrador",
+        "text": "Cintas de embargo negras, selladas en lacre rojo, treparon por mi brazo"
+      },
+      {
+        "scene_id": "scene_18",
+        "speaker": "narrador",
+        "text": "como si el embargado fuera yo."
+      },
+      {
+        "scene_id": "scene_19",
+        "speaker": "narrador",
+        "text": "Algo me quemó el dorso de la mano"
+      },
+      {
+        "scene_id": "scene_20",
+        "speaker": "narrador",
+        "text": "y una ventana roja se encendió frente a mí."
+      },
+      {
+        "scene_id": "scene_21",
+        "speaker": "sistema",
+        "text": "[cold] HERENCIA EJECUTADA. HEREDERO ÚNICO REGISTRADO."
+      },
+      {
+        "scene_id": "scene_22",
+        "speaker": "narrador",
+        "text": "Intenté rechazarla; no existe botón para eso."
+      },
+      {
+        "scene_id": "scene_23",
+        "speaker": "narrador",
+        "text": "En este país lo aprendes antes que a leer:"
+      },
+      {
+        "scene_id": "scene_24",
+        "speaker": "narrador",
+        "text": "toda habilidad se registra ante la Agencia, la oficina que vigila los poderes…"
+      },
+      {
+        "scene_id": "scene_25",
+        "speaker": "narrador",
+        "text": "o eres criminal por existir."
+      },
+      {
+        "scene_id": "scene_26",
+        "speaker": "narrador",
+        "text": "La voz se llamaba el Albacea, y me enseñó lo heredado."
+      },
+      {
+        "scene_id": "scene_27",
+        "speaker": "narrador",
+        "text": "[whispers] Una bóveda. No un poder: todos los poderes."
+      },
+      {
+        "scene_id": "scene_28",
+        "speaker": "narrador",
+        "text": "Treinta años de habilidades y armas confiscadas por el Recaudador,"
+      },
+      {
+        "scene_id": "scene_29",
+        "speaker": "narrador",
+        "text": "en cuarenta y nueve secciones que mi cuerpo aún no tolera…"
+      },
+      {
+        "scene_id": "scene_30",
+        "speaker": "narrador",
+        "text": "y una sin número que se negó a mostrarme."
+      },
+      {
+        "scene_id": "scene_31",
+        "speaker": "sistema",
+        "text": "[cold] ANAQUEL INICIAL LIBERADO: TRES HABILIDADES MENORES."
+      },
+      {
+        "scene_id": "scene_32",
+        "speaker": "narrador",
+        "text": "Tres, de miles, y a media potencia de sus dueños."
+      },
+      {
+        "scene_id": "scene_33",
+        "speaker": "narrador",
+        "text": "Aun así, el sello lanzó un pulso al instalarse, y bastó:"
+      },
+      {
+        "scene_id": "scene_34",
+        "speaker": "narrador",
+        "text": "bajé por las escaleras de servicio"
+      },
+      {
+        "scene_id": "scene_35",
+        "speaker": "narrador",
+        "text": "y en la tele del lobby la fiesta ya era una alerta roja."
+      },
+      {
+        "scene_id": "scene_36",
+        "speaker": "narrador",
+        "text": "Escondí la mano en el bolsillo y crucé"
+      },
+      {
+        "scene_id": "scene_37",
+        "speaker": "narrador",
+        "text": "al paso subterráneo de cada noche: había un control nuevo,"
+      },
+      {
+        "scene_id": "scene_38",
+        "speaker": "narrador",
+        "text": "dos oficiales con guantes de cobre revisando manos, una por una."
+      },
+      {
+        "scene_id": "scene_39",
+        "speaker": "narrador",
+        "text": "Pude regresarme; pero Sae-byeol estaba sola al otro lado del túnel,"
+      },
+      {
+        "scene_id": "scene_40",
+        "speaker": "narrador",
+        "text": "y esa niña no sabe mentir ni cuando le preguntan la hora."
+      },
+      {
+        "scene_id": "scene_41",
+        "speaker": "narrador",
+        "text": "[exhales] Le pedí al Albacea lo más barato del anaquel."
+      },
+      {
+        "scene_id": "scene_42",
+        "speaker": "sistema",
+        "text": "[cold] PRECINTO ROTO. FIRMA EN EMISIÓN."
+      },
+      {
+        "scene_id": "scene_43",
+        "speaker": "narrador",
+        "text": "El precinto tronó, y PASO SORDO, la habilidad de un ratero muerto,"
+      },
+      {
+        "scene_id": "scene_44",
+        "speaker": "narrador",
+        "text": "apagó mis pasos: crucé entre los guantes de cobre sin un solo ruido."
+      },
+      {
+        "scene_id": "scene_45",
+        "speaker": "narrador",
+        "text": "Funcionó once segundos: al doce, las radios del túnel se encendieron a la vez"
+      },
+      {
+        "scene_id": "scene_46",
+        "speaker": "narrador",
+        "text": "con mi pulso triangulado. Solté la habilidad, el sello murió,"
+      },
+      {
+        "scene_id": "scene_47",
+        "speaker": "narrador",
+        "text": "[exhales sharply] y corrí las seis cuadras a puro miedo."
+      },
+      {
+        "scene_id": "scene_48",
+        "speaker": "narrador",
+        "text": "Sae-byeol dormía con la tele encendida. La apagué. La volví a prender…"
+      },
+      {
+        "scene_id": "scene_49",
+        "speaker": "narrador",
+        "text": "La Agencia lo dijo en cadena nacional:"
+      },
+      {
+        "scene_id": "scene_50",
+        "speaker": "narrador",
+        "text": "la firma del Recaudador seguía activa en un portador desconocido."
+      },
+      {
+        "scene_id": "scene_51",
+        "speaker": "narrador",
+        "text": "Desde esa noche: amenaza de clase nacional."
+      },
+      {
+        "scene_id": "scene_52",
+        "speaker": "narrador",
+        "text": "Le preguntaron al héroe por el poder del muerto; sonrió y cambió de tema."
+      },
+      {
+        "scene_id": "scene_53",
+        "speaker": "narrador",
+        "text": "Camionetas sin placas entraron a mi calle."
+      },
+      {
+        "scene_id": "scene_54",
+        "speaker": "narrador",
+        "text": "De la primera bajó una mujer de gabardina gris;"
+      },
+      {
+        "scene_id": "scene_55",
+        "speaker": "narrador",
+        "text": "miró mi edificio como quien revisa un recibo… y no siguió caminando. [pause]"
+      },
+      {
+        "scene_id": "scene_56",
+        "speaker": "narrador",
+        "text": "Herencia confiscada, la llamó el Albacea. Esa noche entendí la letra chica:"
+      },
+      {
+        "scene_id": "scene_57",
+        "speaker": "narrador",
+        "text": "[whispers] el Recaudador no me dejó su poder… me dejó su cacería."
+      }
+    ],
+    "full_script": "Hace tres noches, en el puente Banpo,\nel villano más grande de Corea cayó de rodillas frente al héroe nacional.\nTreinta años de terror terminaron sin un solo golpe:\nel Recaudador cerró los ojos como quien termina un turno,\ny el país salió a celebrar sobre su cadáver. [pause]\nHerencia Confiscada.\nYo no fui a la fiesta:\nme tocaba trapear el piso doce del edificio Daehan.\nEl que limpia lo que Corea ensucia mientras duerme… ese soy yo.\nMe llamo Han Do-yun: veintiséis años, dos empleos;\nla renta no espera y la escuela de Sae-byeol, mi hermana menor, tampoco.\nElla cree que me va bien; su beca vale más que mi orgullo.\nDeben saber algo: en ese piso trabajaba el señor Gu, un archivista viejo,\nel único que sabía mi nombre.\nTres noches sin aparecer, y yo, necio, seguía dejándole su café.\n[curious] Esa madrugada el café se volcó solo. Del charco no subió vapor: subió tinta.\nCintas de embargo negras, selladas en lacre rojo, treparon por mi brazo\ncomo si el embargado fuera yo.\nAlgo me quemó el dorso de la mano\ny una ventana roja se encendió frente a mí.\n[cold] HERENCIA EJECUTADA. HEREDERO ÚNICO REGISTRADO.\nIntenté rechazarla; no existe botón para eso.\nEn este país lo aprendes antes que a leer:\ntoda habilidad se registra ante la Agencia, la oficina que vigila los poderes…\no eres criminal por existir.\nLa voz se llamaba el Albacea, y me enseñó lo heredado.\n[whispers] Una bóveda. No un poder: todos los poderes.\nTreinta años de habilidades y armas confiscadas por el Recaudador,\nen cuarenta y nueve secciones que mi cuerpo aún no tolera…\ny una sin número que se negó a mostrarme.\n[cold] ANAQUEL INICIAL LIBERADO: TRES HABILIDADES MENORES.\nTres, de miles, y a media potencia de sus dueños.\nAun así, el sello lanzó un pulso al instalarse, y bastó:\nbajé por las escaleras de servicio\ny en la tele del lobby la fiesta ya era una alerta roja.\nEscondí la mano en el bolsillo y crucé\nal paso subterráneo de cada noche: había un control nuevo,\ndos oficiales con guantes de cobre revisando manos, una por una.\nPude regresarme; pero Sae-byeol estaba sola al otro lado del túnel,\ny esa niña no sabe mentir ni cuando le preguntan la hora.\n[exhales] Le pedí al Albacea lo más barato del anaquel.\n[cold] PRECINTO ROTO. FIRMA EN EMISIÓN.\nEl precinto tronó, y PASO SORDO, la habilidad de un ratero muerto,\napagó mis pasos: crucé entre los guantes de cobre sin un solo ruido.\nFuncionó once segundos: al doce, las radios del túnel se encendieron a la vez\ncon mi pulso triangulado. Solté la habilidad, el sello murió,\n[exhales sharply] y corrí las seis cuadras a puro miedo.\nSae-byeol dormía con la tele encendida. La apagué. La volví a prender…\nLa Agencia lo dijo en cadena nacional:\nla firma del Recaudador seguía activa en un portador desconocido.\nDesde esa noche: amenaza de clase nacional.\nLe preguntaron al héroe por el poder del muerto; sonrió y cambió de tema.\nCamionetas sin placas entraron a mi calle.\nDe la primera bajó una mujer de gabardina gris;\nmiró mi edificio como quien revisa un recibo… y no siguió caminando. [pause]\nHerencia confiscada, la llamó el Albacea. Esa noche entendí la letra chica:\n[whispers] el Recaudador no me dejó su poder… me dejó su cacería.",
+    "engine": "elevenlabs",
+    "voice_id": "452WrNT9o8dphaYW5YGU"
+  }
+}

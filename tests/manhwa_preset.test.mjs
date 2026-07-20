@@ -108,7 +108,54 @@ assert.equal(parsed.project.imageOnly, true);
 assert.equal(parsed.project.perSceneRender, true);
 assert.equal(parsed.project.ttsExport.engine, "elevenlabs");
 assert.equal(parsed.project.ttsExport.voice_id, MANHWA_DEFAULT_VOICE);
+assert.equal(parsed.project.ttsExport.model_id, "eleven_multilingual_v2");
+assert.equal(parsed.project.ttsExport.elevenlabs_speed, 1.0);
+assert.deepEqual(parsed.project.ttsExport.voice_settings, {
+  stability: 0.5,
+  similarity_boost: 0.4,
+  style: 0.7,
+  use_speaker_boost: true,
+});
 console.log(`MANHWA_DEFAULT_VOICE ${parsed.project.ttsExport.voice_id}`);
+
+assert.equal(
+  parsed.project.flowReferenceNames["assets/characters/serie_test/kael_base.png"],
+  "Personaje — Kael — Base",
+);
+assert.equal(
+  parsed.project.flowReferenceNames["assets/characters/serie_test/kael_herido.png"],
+  "Personaje — Kael — Herido",
+);
+assert.equal(
+  parsed.project.flowReferenceNames["assets/escenarios/serie_test/salon_clases.png"],
+  "Escenario — Salon de clases — Base",
+);
+assert.equal(
+  parsed.project.flowReferenceNames["assets/escenarios/serie_test/salon_contrapicado.png"],
+  "Escenario — Salon de clases — Contrapicado",
+);
+assert.equal(
+  parsed.project.ingredients.find((g) => g.outputFile.endsWith("kael_herido.png"))?.flowName,
+  "Personaje — Kael — Herido",
+);
+assert.equal(
+  parsed.project.ingredients.find((g) => g.outputFile.endsWith("salon_contrapicado.png"))?.flowName,
+  "Escenario — Salon de clases — Contrapicado",
+);
+console.log("FLOW_SEMANTIC_MEDIA_NAMES_OK personajes y escenarios");
+
+{
+  const withoutDominantBase = structuredClone(raw);
+  withoutDominantBase.characters.kael.poses.herido.reference_pose = false;
+  withoutDominantBase.escenarios.salon.views.contrapicado.reference_view = false;
+  const isolated = parseProject(withoutDominantBase);
+  assert.equal(isolated.ok, true, isolated.errors?.join("\n"));
+  const wounded = isolated.project.ingredients.find((g) => g.outputFile.endsWith("kael_herido.png"));
+  const lowAngle = isolated.project.ingredients.find((g) => g.outputFile.endsWith("salon_contrapicado.png"));
+  assert.deepEqual(wounded.referenceAssets, []);
+  assert.deepEqual(lowAngle.referenceAssets, []);
+  console.log("MANHWA_POSE_AND_VIEW_REFERENCE_OPT_OUT_OK");
+}
 
 // tts_export.voice_id "suelto" sigue sin pasar (guard anti-voz-accidental del generador de JSON)
 const parsedWithOtherVoice = parseProject({
@@ -161,9 +208,15 @@ assert.deepEqual(scenes.scene_01.referenceAssets, [
   "assets/characters/serie_test/kael_base.png",
   "assets/escenarios/serie_test/salon_clases.png",
 ]);
+assert.deepEqual(scenes.scene_01.characterReferenceAssets, [
+  "assets/characters/serie_test/kael_base.png",
+]);
 assert.deepEqual(scenes.scene_04.referenceAssets, [
   "assets/characters/serie_test/kael_herido.png",
   "assets/escenarios/serie_test/salon_contrapicado.png",
+]);
+assert.deepEqual(scenes.scene_04.characterReferenceAssets, [
+  "assets/characters/serie_test/kael_herido.png",
 ]);
 assert.equal(scenes.scene_03.sceneType, "narrative_card");
 assert.equal(scenes.scene_03.skipImageGeneration, true);
@@ -183,5 +236,18 @@ const staticPanels = raw.scenes.filter((s) => s.type === "panel" && s.render_mod
 assert.deepEqual(animationJobs, ["scene_04"]);
 for (const id of staticPanels) console.log(`SKIP_ANIMATION ${id}`);
 for (const id of animationJobs) console.log(`ANIM_JOB ${id}`);
+
+const buildSource = readFileSync(join(__dirname, "..", "remotion-editor", "orchestrator", "build.mjs"), "utf8");
+const ttsConfigSource = readFileSync(join(__dirname, "..", "remotion-editor", "tts", "config.py"), "utf8");
+const prepareFlowSource = readFileSync(join(__dirname, "..", "scripts", "prepare-ladron-flow-v2-final.mjs"), "utf8");
+const viralVideoSource = readFileSync(join(__dirname, "..", "remotion-editor", "src", "viral", "ViralVideo.tsx"), "utf8");
+assert.match(buildSource, /preset === "manhwa"[\s\S]*return 1\.25;/);
+assert.match(ttsConfigSource, /MANHWA_V2_SPEED[\s\S]*"1\.0"/);
+assert.match(ttsConfigSource, /MANHWA_DIALOGUE_EDIT_SPEED[\s\S]*"1\.25"/);
+assert.match(prepareFlowSource, /elevenlabs_speed:\s*1\.0/);
+assert.match(prepareFlowSource, /edit_speed:\s*1\.25/);
+assert.match(prepareFlowSource, /music_volume:\s*0\.0325/);
+assert.match(viralVideoSource, /MANHWA_MUSIC_VOL = 0\.0325/);
+console.log("MANHWA_DEFAULTS voice=1.00 edit=1.25 music=0.0325");
 
 console.log("OK: manhwa preset");

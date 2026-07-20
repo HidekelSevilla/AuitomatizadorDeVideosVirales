@@ -1,0 +1,384 @@
+{
+  "project": {
+    "slug": "inundacion_melaza_boston_reel",
+    "title": "La inundación de melaza de Boston",
+    "language": "es-MX",
+    "preset": "historias_reel",
+    "aspect_ratio": "9:16",
+    "orientation": "vertical",
+    "visual_style": "A_rico_pintado",
+    "topic": "La Gran Inundación de Melaza de Boston de 1919 como tragedia industrial causada por señales ignoradas y negligencia",
+    "tone": "documental de misterio histórico, desastre absurdo que se vuelve tragedia anunciada, morbo controlado, ciencia industrial y cierre reflexivo",
+    "duration_estimate_s": 72.4,
+    "speed_final": 1,
+    "scene_count": 17,
+    "tts_model": "eleven_v3"
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok",
+      "note": "Imágenes verticales por defecto; algunas escenas pueden animarse si render_mode=animated."
+    },
+    "animation": {
+      "tool": "grok_video",
+      "note": "Solo se usa en escenas con render_mode animated; el resto queda estático."
+    },
+    "render": {
+      "tool": "remotion_ffmpeg",
+      "motion": "Movimiento motivado: static por default; push_in tensión; pan solo para ola o escala; micro_zoom para evidencia; shake solo para colapso si se requiere.",
+      "timing": "duration_target_s = duración mínima; congelar imagen en silencio si la narración acaba antes; hold_priority alta = no recortar."
+    },
+    "audio": {
+      "tool": "elevenlabs",
+      "note": "UNA sola voz continua; los voice/scene_NNN.mp3 son rebanadas por timestamps."
+    }
+  },
+  "characters": [
+    {
+      "id": "tanque_melaza",
+      "name": "Tanque de melaza",
+      "role": "estructura industrial cuyo colapso causa la inundación",
+      "visual": "Gran cilindro de acero oscuro con remaches, escaleras, costuras, manchas de melaza y fugas visibles; debe sentirse enorme frente a los monitos."
+    },
+    {
+      "id": "vecinos_north_end",
+      "name": "Vecinos del North End",
+      "role": "residentes y trabajadores afectados por la ola de melaza",
+      "visual": "Monitos blancos con ropa obrera urbana de 1919: abrigos de lana, gorras planas, tirantes, faldas largas, chales, delantales y botas."
+    },
+    {
+      "id": "trabajadores_rescatistas",
+      "name": "Trabajadores y rescatistas",
+      "role": "personas que trabajan cerca del tanque y ayudan tras el colapso",
+      "visual": "Monitos blancos con overoles, camisas arremangadas, cascos o gorras, cuerdas, escaleras, herramientas y gestos urgentes."
+    },
+    {
+      "id": "empresa",
+      "name": "Ejecutivos de la empresa",
+      "role": "decisores asociados al tanque y a las señales ignoradas",
+      "visual": "Monitos blancos con trajes oscuros de tres piezas, sombreros bowler, relojes de bolsillo, libros contables y planos."
+    },
+    {
+      "id": "ingenieros_inspectores",
+      "name": "Ingenieros e inspectores",
+      "role": "representan pruebas, estructura y seguridad industrial",
+      "visual": "Monitos blancos con chaleco, camisa clara, planos enrollados, reglas de medición, gráficos y expresión escéptica."
+    },
+    {
+      "id": "narrador",
+      "name": "Narrador visual",
+      "role": "monito presentador para láminas, reacciones y cierre",
+      "visual": "Monito blanco liso, sin vestuario, cabeza redonda, ojos grandes y gestos expresivos."
+    }
+  ],
+  "ingredients": {
+    "tanque_melaza": "Gran cilindro de acero oscuro con remaches, costuras, escaleras laterales, manchas marrones y fugas visibles. Debe verse gigantesco, inestable y pesado, pero no monstruoso.",
+    "vecinos_north_end": "Monitos blancos con ropa obrera urbana de 1919: abrigos de lana, gorras planas, tirantes, camisas, faldas largas, chales, delantales, botas y rostros de alarma o tristeza.",
+    "trabajadores_rescatistas": "Monitos blancos con overoles, camisas arremangadas, guantes, gorras, cascos simples, cuerdas, escaleras, herramientas y posturas de esfuerzo.",
+    "empresa": "Monitos blancos con trajes oscuros de tres piezas, sombreros bowler, relojes de bolsillo, libros contables, planos y expresiones evasivas o tensas.",
+    "ingenieros_inspectores": "Monitos blancos con chalecos, camisas claras, planos enrollados, reglas, gráficos de seguridad, libretas y expresión seria.",
+    "narrador": "Monito blanco liso sin vestuario, cabeza redonda, ojos grandes y gestos expresivos. Solo aparece en láminas, comparaciones y cierres reflexivos.",
+    "fuentes_produccion": "Fuentes para caption o documento de producción: Boston Public Library, Boston.gov / City Archives, Mass Moments, National Conference of State Legislatures y TIME.",
+    "caption_sugerido": "El 15 de enero de 1919, un tanque con más de 2.3 millones de galones de melaza colapsó en el North End de Boston. La ola mató a 21 personas e hirió a unas 150. El caso no fue solo un desastre extraño: el tanque ya presentaba fugas, no había sido probado correctamente y la investigación posterior señaló fallas estructurales y negligencia. Fuentes consultadas: Boston Public Library, Boston.gov, Mass Moments, NCSL y TIME.",
+    "notas_precision": "Usar “reventó”, “se rompió” o “colapsó” en voz, no “explotó”, para evitar sugerir una detonación. No exagerar el alcance a toda la ciudad: el área afectada fue el North End de Boston. La tesis de negligencia debe apoyarse en fugas, pintura oscura, falta de prueba completa y mala supervisión.",
+    "regla_consistencia": "Personajes recurrentes = SIEMPRE el mismo monito; se distinguen por vestuario, postura y props. La catástrofe se muestra con melaza, sombras, escombros y rescate simbólico; nunca gore, sangre ni heridas realistas."
+  },
+  "scenes": [
+    {
+      "scene_id": "scene_001",
+      "panel_type": "cinematica",
+      "beat_type": "misterio",
+      "duration_target_s": 4.8,
+      "hold_priority": "alta",
+      "motion": "push_in",
+      "render_mode": "static",
+      "text_in_image": "2.3 MILLONES",
+      "label_type": "title",
+      "voiceover": {
+        "text": "[curious] Dos punto tres millones de galones de melaza arrasaron el North End de Boston."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a gigantic dark riveted molasses tank splitting open as a thick brown wave rushes toward a 1919 Boston North End street, with shocked residents in flat caps and shawls recoiling in the foreground; brick warehouses, elevated railway beams, port crates, cobblestones and winter light fill foreground, midground and background; impossible industrial disaster mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: sticky molasses brown, cold Boston winter gray, brick red and warning cream. Camera: LOW-ANGLE WIDE SHOT. a bold hand-painted Spanish title reads \"2.3 MILLONES\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_002",
+      "panel_type": "diagrama",
+      "beat_type": "misterio",
+      "duration_target_s": 5,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "TANQUE CON FUGAS",
+      "label_type": "title",
+      "voiceover": {
+        "text": "[short pause] Pero la tragedia había empezado años antes, con un tanque que ya mostraba fugas."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — an explainer slide composition: the dominant diagram shows a huge steel storage tank with brown leak streaks running from riveted seams, a small calendar icon reading years passing, and tiny worried neighbors pointing upward; a SMALL white stick-figure narrator to one side reacts to it with an expressive face, pointing at the main idea; a few clear props/icons illustrate the point; simple background in the video's style. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. SLIDE HERO RULE: the text or diagram is the main subject and dominates the frame; the white stick-figure is present but SMALL and to the side, still expressive with the round white head, big eyes, NO hair; keep some simple styled background and props, never a dead empty wash. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: aged paper beige, dark steel gray, molasses brown and caution red. Camera: flat front-on slide/diagram view. a bold hand-painted Spanish title reads \"TANQUE CON FUGAS\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_003",
+      "panel_type": "linea_de_tiempo",
+      "beat_type": "narrativa",
+      "duration_target_s": 4.2,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "15 ENERO 1919",
+      "label_type": "title",
+      "voiceover": {
+        "text": "El quince de enero de mil novecientos diecinueve, el tanque reventó."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — an explainer slide composition: the dominant timeline shows a winter Boston calendar, a tank icon, and a sudden rupture icon connected by red arrows, with a tiny narrator bracing as if hearing a loud crack; a SMALL white stick-figure narrator to one side reacts to it with an expressive face, pointing at the main idea; a few clear props/icons illustrate the point; simple background in the video's style. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. SLIDE HERO RULE: the text or diagram is the main subject and dominates the frame; the white stick-figure is present but SMALL and to the side, still expressive with the round white head, big eyes, NO hair; keep some simple styled background and props, never a dead empty wash. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: calendar parchment, winter blue, rupture red and molasses brown. Camera: flat front-on slide/diagram view. a bold hand-painted Spanish title reads \"15 ENERO 1919\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_004",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 3.6,
+      "hold_priority": "normal",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "NO ERA AGUA",
+      "label_type": "title",
+      "voiceover": {
+        "text": "No soltó agua. Soltó una pared espesa de melaza."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a dense vertical wall of dark molasses bursting from the tank, clearly thick and heavy, while workers stumble backward and one rescuer raises a rope; industrial yard beside Commercial Street with pipes, barrels, brick walls and elevated rail shadows; heavy liquid threat mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: deep molasses brown, iron black, brick red and pale winter sky. Camera: DYNAMIC ANGLE MEDIUM SHOT. a bold hand-painted Spanish title reads \"NO ERA AGUA\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_005",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 4,
+      "hold_priority": "normal",
+      "motion": "pan",
+      "render_mode": "animated",
+      "text_in_image": "(sin texto)",
+      "label_type": null,
+      "voiceover": {
+        "text": "Avanzó por las calles como una ola pesada."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a slow-moving but powerful molasses wave rolling down a narrow Boston street, pushing crates and carts while residents scramble onto steps and balconies; brick tenements, shop windows, street rails, barrels and winter haze create deep context; unstoppable heavy wave mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: glossy brown, frosty gray-blue, brick orange and shadow black. Camera: WIDE SHOT. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. Absolutely no text, no letters, no words anywhere.",
+      "animation_prompt": "Slow cinematic pan following the heavy molasses wave down the street, subtle debris movement and glossy surface ripples, preserve the exact original composition, characters and style. No morphing, no new objects, no gore."
+    },
+    {
+      "scene_id": "scene_006",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 4.8,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "ATRAPADOS",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Rompió estructuras, arrastró escombros y atrapó a vecinos, trabajadores y rescatistas."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW broken wooden structures and port debris jammed in thick molasses while neighbors, workers and rescuers tug ropes, reach out and struggle through sticky muck without graphic injury; North End street with collapsed shed, scattered barrels, firehouse ladder and elevated railway supports; frantic rescue mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: muddy molasses brown, rescue red, splintered wood tan and smoky gray. Camera: HIGH-ANGLE WIDE SHOT. a bold hand-painted Spanish title reads \"ATRAPADOS\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_007",
+      "panel_type": "diagrama",
+      "beat_type": "narrativa",
+      "duration_target_s": 4.2,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "21 MUERTOS / 150 HERIDOS",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Murieron veintiuna personas. Alrededor de ciento cincuenta quedaron heridas."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — an explainer slide composition: the dominant slide shows two solemn statistic blocks: a black ribbon icon for deaths and a bandage icon for injuries, with small silhouettes of Boston residents standing in respectful silence; a SMALL white stick-figure narrator to one side reacts to it with an expressive face, pointing at the main idea; a few clear props/icons illustrate the point; simple background in the video's style. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. SLIDE HERO RULE: the text or diagram is the main subject and dominates the frame; the white stick-figure is present but SMALL and to the side, still expressive with the round white head, big eyes, NO hair; keep some simple styled background and props, never a dead empty wash. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: solemn parchment cream, mourning black, muted red and hospital white. Camera: flat front-on slide/diagram view. a bold hand-painted Spanish title reads \"21 MUERTOS / 150 HERIDOS\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_008",
+      "panel_type": "reaccion",
+      "beat_type": "misterio",
+      "duration_target_s": 3.8,
+      "hold_priority": "alta",
+      "motion": "push_in",
+      "render_mode": "static",
+      "text_in_image": "LO INQUIETANTE",
+      "label_type": "title",
+      "voiceover": {
+        "text": "[thoughtful] Pero aquí está lo más inquietante."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW the plain narrator in the foreground leaning toward the viewer with serious wide eyes, pointing behind to a shadowy tank, old complaint papers and leaking seams; a dim investigation room with blueprints, lantern, photographs and molasses stains; revelation mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: investigation sepia, shadow blue, molasses brown and lantern gold. Camera: CENTERED MEDIUM SHOT. a bold hand-painted Spanish title reads \"LO INQUIETANTE\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_009",
+      "panel_type": "cinematica",
+      "beat_type": "misterio",
+      "duration_target_s": 3.4,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "NO FALLÓ SIN AVISAR",
+      "label_type": "title",
+      "voiceover": {
+        "text": "El tanque no falló sin avisar."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW the giant molasses tank looming over the street with rivets trembling, seams oozing and workers staring upward in alarm, while one company man looks away with a clipboard; industrial waterfront setting with ladders, pipes, cobblestones and harbor fog; warning-signs mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: steel gray, molasses brown, foggy harbor blue and uneasy yellow. Camera: LOW-ANGLE CLOSE-UP. a bold hand-painted Spanish title reads \"NO FALLÓ SIN AVISAR\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_010",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 3.5,
+      "hold_priority": "normal",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "FUGAS",
+      "label_type": "micro",
+      "voiceover": {
+        "text": "Desde antes, vecinos y trabajadores habían visto fugas."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW neighbors and dock workers pointing at sticky streams leaking down the tank wall while a child-size bucket is left beneath the drip, all figures worried and curious; Commercial Street sidewalk with brick warehouses, tank ladder, puddles and work tools; ignored-warning mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: molasses brown, brick red, worker denim blue and winter beige. Camera: MEDIUM SHOT. one SMALL discreet hand-painted label reading \"FUGAS\" on a little aged-parchment tag with a thin small red arrow pointing to the subject, kept small and unobtrusive in a corner, NOT a big headline, NOT modern infographic. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_011",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 4.7,
+      "hold_priority": "alta",
+      "motion": "micro_zoom",
+      "render_mode": "static",
+      "text_in_image": "PINTURA OSCURA",
+      "label_type": "title",
+      "voiceover": {
+        "text": "La empresa llegó a pintarlo de color oscuro para que se notaran menos."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW company workers in overalls painting the huge leaking tank a dark brown color while executives in suits watch from a distance, and residents notice the stains anyway; waterfront industrial yard with paint buckets, ladders, rivets, shadows and fog; concealment mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: dark brown paint, oily black, executive navy and muted fog gray. Camera: DYNAMIC ANGLE WIDE SHOT. a bold hand-painted Spanish title reads \"PINTURA OSCURA\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_012",
+      "panel_type": "diagrama",
+      "beat_type": "narrativa",
+      "duration_target_s": 4.5,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "SIN PRUEBA COMPLETA",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Y el tanque ni siquiera había sido probado correctamente a plena capacidad."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — an explainer slide composition: the dominant diagram compares a tiny shallow water test with a full giant tank, using red arrows and a large red X over the incomplete test, while a small engineer narrator looks alarmed; a SMALL white stick-figure narrator to one side reacts to it with an expressive face, pointing at the main idea; a few clear props/icons illustrate the point; simple background in the video's style. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. SLIDE HERO RULE: the text or diagram is the main subject and dominates the frame; the white stick-figure is present but SMALL and to the side, still expressive with the round white head, big eyes, NO hair; keep some simple styled background and props, never a dead empty wash. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: clean parchment, water blue, steel gray, red X and molasses brown. Camera: flat front-on slide/diagram view. a bold hand-painted Spanish title reads \"SIN PRUEBA COMPLETA\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_013",
+      "panel_type": "comparacion",
+      "beat_type": "misterio",
+      "duration_target_s": 4.2,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "NO ERA ABSURDO",
+      "label_type": "comparison",
+      "voiceover": {
+        "text": "[appalled] Entonces esto deja de ser una historia absurda sobre melaza."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — an explainer slide composition: the dominant split-screen comparison shows on the left a silly jar of molasses crossed out, and on the right a serious industrial disaster scene with a cracked tank and safety papers marked with a green check; a SMALL white stick-figure narrator to one side reacts to it with an expressive face, pointing at the main idea; a few clear props/icons illustrate the point; simple background in the video's style. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. SLIDE HERO RULE: the text or diagram is the main subject and dominates the frame; the white stick-figure is present but SMALL and to the side, still expressive with the round white head, big eyes, NO hair; keep some simple styled background and props, never a dead empty wash. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: comic molasses brown, serious steel gray, red X, green check and parchment beige. Camera: flat front-on slide/diagram view. a bold hand-painted Spanish label reads \"NO ERA ABSURDO\" in clean bold flat letters, one side marked with a red X and the other with a green check, NOT ornate. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_014",
+      "panel_type": "diagrama",
+      "beat_type": "cierre",
+      "duration_target_s": 3.8,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "SEÑALES IGNORADAS",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Se vuelve una historia sobre señales ignoradas."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — an explainer slide composition: the dominant slide shows three warning icons in a row: leaking seam, worker complaint, and missing safety test, all connected by red arrows toward the disaster; a SMALL white stick-figure narrator to one side reacts to it with an expressive face, pointing at the main idea; a few clear props/icons illustrate the point; simple background in the video's style. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. SLIDE HERO RULE: the text or diagram is the main subject and dominates the frame; the white stick-figure is present but SMALL and to the side, still expressive with the round white head, big eyes, NO hair; keep some simple styled background and props, never a dead empty wash. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: warning yellow, red arrows, steel gray and old paper cream. Camera: flat front-on slide/diagram view. a bold hand-painted Spanish title reads \"SEÑALES IGNORADAS\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_015",
+      "panel_type": "cinematica",
+      "beat_type": "cierre",
+      "duration_target_s": 4.6,
+      "hold_priority": "alta",
+      "motion": "push_in",
+      "render_mode": "static",
+      "text_in_image": "NEGLIGENCIA",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Una ola dulce no atacó Boston. La negligencia abrió la puerta."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a symbolic final street scene where a heavy industrial door labeled by visual warning symbols is left open and a molasses wave enters, while company executives turn away and rescuers rush forward; North End bricks, tank shadow, paperwork, ropes and dim winter light; moral reckoning mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: dark molasses brown, judgment red, cold gray, paper cream and rescue gold. Camera: LOW-ANGLE MEDIUM SHOT. a bold hand-painted Spanish title reads \"NEGLIGENCIA\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    },
+    {
+      "scene_id": "scene_016",
+      "panel_type": "reaccion",
+      "beat_type": "cierre",
+      "duration_target_s": 4.3,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "(sin texto)",
+      "label_type": null,
+      "voiceover": {
+        "text": "[short pause] A veces, el desastre no empieza cuando algo se rompe."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW the plain narrator standing quietly beside an intact but leaking tank shadow, holding a cracked rivet in one hand and looking down with sad understanding; empty North End street at dawn with brick walls, faint footprints in molasses and quiet harbor mist; reflective pause mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: soft dawn gray, faded molasses brown, muted brick red and quiet gold. Camera: CENTERED WIDE SHOT. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. Absolutely no text, no letters, no words anywhere."
+    },
+    {
+      "scene_id": "scene_017",
+      "panel_type": "cinematica",
+      "beat_type": "cierre",
+      "duration_target_s": 5,
+      "hold_priority": "alta",
+      "motion": "push_in",
+      "render_mode": "static",
+      "text_in_image": "SEGUIR ADELANTE",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Empieza cuando quienes podían detenerlo deciden seguir adelante."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW company executives walking past clear warning signs, leaking tank seams and worried workers, choosing to continue while the huge tank looms behind them; 1919 industrial waterfront with blueprints, ledgers, safety charts, rivets and winter sky; haunting accountability mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. NOT animals. HERO RULE: the white stick-figure characters are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Boston North End residents in 1919: working-class wool coats, flat caps, suspenders, long skirts, shawls, aprons, boots and worried faces. Factory workers and dock workers: rolled sleeves, suspenders, work aprons, caps, gloves, boots and tool belts. Firefighters and rescuers: 1910s dark firefighter coats, simple helmets, ropes, ladders and serious urgent expressions. Company executives from U.S. Industrial Alcohol: dark three-piece suits, bowler hats, pocket watches, ledgers, blueprints and polished shoes. Engineers and inspectors: white shirts, vests, rolled blueprints, measuring sticks, safety charts and serious skeptical expressions. The molasses tank: a huge riveted dark steel storage cylinder, fifty-foot scale, seams, rivets, ladders and visible brown sticky leaks. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: cold accountability blue, molasses brown, paper beige, warning red and shadow black. Camera: CENTERED SYMMETRICAL LOW-ANGLE SHOT. a bold hand-painted Spanish title reads \"SEGUIR ADELANTE\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed. All text in clear bold Spanish exactly as written."
+    }
+  ],
+  "render_export": {
+    "renderer": "remotion_ffmpeg",
+    "clip_order": [
+      "scene_001",
+      "scene_002",
+      "scene_003",
+      "scene_004",
+      "scene_005",
+      "scene_006",
+      "scene_007",
+      "scene_008",
+      "scene_009",
+      "scene_010",
+      "scene_011",
+      "scene_012",
+      "scene_013",
+      "scene_014",
+      "scene_015",
+      "scene_016",
+      "scene_017"
+    ]
+  },
+  "tts_export": {
+    "engine": "elevenlabs",
+    "model_id": "eleven_v3",
+    "voice_id": "8mBRP99B2Ng2QwsJMFQl",
+    "voice_name": "voz principal del canal",
+    "voice_settings": {
+      "stability": 0,
+      "similarity_boost": 0.75,
+      "style": 0,
+      "speed": 1.2
+    },
+    "language_code": "es",
+    "output_format": "mp3_44100_192",
+    "seed": 19190115,
+    "routing_note": "Reel vertical menor a cinco mil caracteres: usar eleven_v3 con tags simples y pausas de texto, sin SSML.",
+    "pronunciation_notes": "North End: Nort End. Boston: Bóston. Melaza: me-la-za. Galones: ga-lo-nes. No leer 2.3 en voz; en el guion va escrito como dos punto tres.",
+    "full_script": "[curious] Dos punto tres millones de galones de melaza arrasaron el North End de Boston. [short pause] Pero la tragedia había empezado años antes, con un tanque que ya mostraba fugas. El quince de enero de mil novecientos diecinueve, el tanque reventó. No soltó agua. Soltó una pared espesa de melaza. Avanzó por las calles como una ola pesada. Rompió estructuras, arrastró escombros y atrapó a vecinos, trabajadores y rescatistas. Murieron veintiuna personas. Alrededor de ciento cincuenta quedaron heridas. [thoughtful] Pero aquí está lo más inquietante. El tanque no falló sin avisar. Desde antes, vecinos y trabajadores habían visto fugas. La empresa llegó a pintarlo de color oscuro para que se notaran menos. Y el tanque ni siquiera había sido probado correctamente a plena capacidad. [appalled] Entonces esto deja de ser una historia absurda sobre melaza. Se vuelve una historia sobre señales ignoradas. Una ola dulce no atacó Boston. La negligencia abrió la puerta. [short pause] A veces, el desastre no empieza cuando algo se rompe. Empieza cuando quienes podían detenerlo deciden seguir adelante."
+  }
+}

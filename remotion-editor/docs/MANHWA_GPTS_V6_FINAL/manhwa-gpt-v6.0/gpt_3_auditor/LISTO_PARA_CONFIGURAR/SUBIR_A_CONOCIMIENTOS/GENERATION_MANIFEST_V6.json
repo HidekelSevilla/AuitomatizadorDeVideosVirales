@@ -1,0 +1,39 @@
+{
+  "schema": "GENERATION_MANIFEST_V6",
+  "version": "6.0",
+  "template_status": "PENDING_REAL_GENERATION_DATA",
+  "template_notice": "FAIL-CLOSED: replace every placeholder from real provider/output data. Empty sources can never pass postflight.",
+  "project_sha256": "REPLACE_WITH_REAL_PROJECT_SHA256",
+  "project_hash_semantics": "SHA-256 of semantic canonical JSON: sorted compact UTF-8, integral floats and negative zero normalized; not a hash of whitespace bytes",
+  "generated_at": "REPLACE_WITH_REAL_UTC_TIMESTAMP",
+  "source_record_schema": {
+    "shot_id": "exact shot_id from the producer JSON",
+    "prompt": "exact prompt submitted to the image model",
+    "model": "provider/model-version actually used",
+    "settings": {
+      "aspect_ratio": "9:16",
+      "seed": "integer or null when provider does not expose it"
+    },
+    "job_id": "real provider job ID or documented local generation ID",
+    "output_path": "images/scene_XX.jpg or images/cells/scene_XX_A.jpg",
+    "output_sha256": "real lowercase SHA-256 of output bytes",
+    "generation_attempt": "integer starting at 1",
+    "status": "GENERATED",
+    "attempt_history": [
+      {
+        "attempt": 1,
+        "submitted_at": "real UTC timestamp",
+        "prompt": "exact prompt submitted in this attempt",
+        "model": "exact provider/model version used in this attempt",
+        "settings": {"seed": "real value or null"},
+        "reference_hashes": ["hashes actually submitted in this attempt"],
+        "job_id": "real job ID",
+        "output_path": "real output path",
+        "output_sha256": "real output SHA-256",
+        "status": "GENERATED"
+      }
+    ],
+    "reference_hashes": ["real SHA-256 for every submitted reference"]
+  },
+  "sources": []
+}

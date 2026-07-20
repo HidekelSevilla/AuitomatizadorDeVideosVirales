@@ -1,9 +1,10 @@
 // Hace que Fish Audio diga un texto suelto y lo guarda como mp3 (para carteles narrados, ej "Parte dos").
-// Misma llamada que fish-voice.mjs (with-timestamp, s2-pro, voz default). Uso:
+// Misma llamada que fish-voice.mjs (with-timestamp, s2.1-pro, voz default). Uso:
 //   node tools/fish-say.mjs "<texto>" <slug> <archivo.mp3> [voiceId]
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseFishTimestampSse } from "../../lib/fish-timestamp-sse.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(__dirname, "..", "..");
@@ -32,18 +33,13 @@ const saySpeed = Number(process.env.SAY_SPEED) || 1;
 if (saySpeed !== 1) sayBody.prosody = { speed: saySpeed };
 const res = await fetch("https://api.fish.audio/v1/tts/stream/with-timestamp", {
   method: "POST",
-  headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", model: "s2-pro" },
+  headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", model: "s2.1-pro" },
   body: JSON.stringify(sayBody),
 });
 if (!res.ok) { console.error(`Fish ${res.status}: ${await res.text()}`); process.exit(1); }
 
-const parts = [];
-for (const block of (await res.text()).split(/\n\n/)) {
-  const data = block.split(/\n/).filter((l) => l.startsWith("data:")).map((l) => l.slice(5).trim()).join("");
-  if (!data || data === "[DONE]") continue;
-  let ev; try { ev = JSON.parse(data); } catch { continue; }
-  if (ev.audio_base64) parts.push(Buffer.from(ev.audio_base64, "base64"));
-}
+const parsed = parseFishTimestampSse(await res.text());
+const parts = parsed.audioBase64Parts.map((part) => Buffer.from(part, "base64"));
 const audio = Buffer.concat(parts);
 if (!audio.length) { console.error("Fish no devolvio audio"); process.exit(1); }
 fs.writeFileSync(path.join(outDir, fileArg), audio);

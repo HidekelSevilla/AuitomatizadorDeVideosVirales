@@ -1,6 +1,6 @@
 // Recupera la VOZ (Fish Audio) de un proyecto SIN la extension. Replica EXACTO la llamada del
 // service worker (background/service-worker.js fishTTSWithTimestamps): endpoint with-timestamp,
-// modelo s2-pro, reference_id del preset. Guarda <id>.mp3 + <id>.words.json en public/<slug>/voice/.
+// modelo s2.1-pro, reference_id del preset. Guarda <id>.mp3 + <id>.words.json en public/<slug>/voice/.
 // Util cuando los clips ya estan pero falta el audio (p.ej. recuperar un job tras un fallo).
 //
 // Uso: node tools/fish-voice.mjs <ruta-al-json> [voiceId]   (la API key sale de secrets.local.json en la raiz)
@@ -8,19 +8,22 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseFishTimestampSse } from "../../lib/fish-timestamp-sse.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(__dirname, "..", "..");   // raiz del repo (donde vive secrets.local.json)
 const ROOT = path.resolve(__dirname, "..");          // remotion-editor/
 
-// Presets de voz (igual que lib/messaging.js FISH_PRESETS). Prioridad: arg > preset del proyecto > DEFAULT_VOICE_ID.
+// Presets de voz (igual que lib/messaging.js FISH_PRESETS). Prioridad normal: arg > preset > default.
+// forceVoice:true ignora incluso el argumento manual.
 // Voz nueva como UNICA default (preferida; anterior 53042fcee6b84e138e72db017d9e50a6). Override con [voiceId].
 const FISH_PRESETS = {
-  esqueletos: { voiceId: "5e95c590cfcb46ab927a9ec7b35a88c7", model: "s2-pro" },
+  esqueletos: { voiceId: "5e95c590cfcb46ab927a9ec7b35a88c7", model: "s2.1-pro" },
   // novela-coreana: 1 voz (narradora calida).
-  "novela-coreana": { voiceId: "bfed5c0810a347dbb62e8ccce7f59c48", model: "s2-pro" },
+  "novela-coreana": { voiceId: "bfed5c0810a347dbb62e8ccce7f59c48", model: "s2.1-pro" },
+  "novelas-coreanas-eng": { voiceId: "933563129e564b19a115bedd57b7406a", model: "s2.1-pro", forceVoice: true },
   // historias: narrador grave de documental (DEBE coincidir con lib/messaging.js FISH_PRESETS).
-  historias: { voiceId: "35199d5438854f5d9157c500479ab684", model: "s2-pro" },
+  historias: { voiceId: "35199d5438854f5d9157c500479ab684", model: "s2.1-pro" },
 };
 const DEFAULT_VOICE_ID = "5e95c590cfcb46ab927a9ec7b35a88c7";   // fallback GARANTIZADO: nunca voz generica de Fish
 
@@ -39,8 +42,9 @@ const preset = proj.project?.preset || "";
 const presetCfg = FISH_PRESETS[preset] || null;
 const _voiceIds = presetCfg?.voiceIds || (presetCfg?.voiceId ? [presetCfg.voiceId] : []);
 const _voiceArg = (process.argv[3] || "").trim();   // override opcional: fuerza una voz especifica
-const voiceId = _voiceArg || (_voiceIds.length ? _voiceIds[Math.floor(Math.random() * _voiceIds.length)] : DEFAULT_VOICE_ID);
-const model = presetCfg?.model || "s2-pro";
+const _presetVoice = _voiceIds.length ? _voiceIds[Math.floor(Math.random() * _voiceIds.length)] : "";
+const voiceId = presetCfg?.forceVoice ? _presetVoice : (_voiceArg || _presetVoice || DEFAULT_VOICE_ID);
+const model = presetCfg?.model || "s2.1-pro";
 const slug = proj.project?.slug;
 const outDir = path.join(ROOT, "public", slug, "voice");
 fs.mkdirSync(outDir, { recursive: true });
@@ -56,9 +60,8 @@ fs.mkdirSync(openingOutDir, { recursive: true });
 // SIN cambiar el tono. Las etiquetas de emocion lentas ([reflective], [measured pacing]) la frenan.
 // DEFAULT 1.0 = SIN prosody. novela-coreana usa 1.25 por defecto; otros presets quedan en 1.0.
 // Para voz mas lenta NO usar prosody (guion mas pausado en su lugar).
-const ttsSpeed = Number(proj.audio?.voice_speed) || (preset === "novela-coreana" ? 1.25 : 1);
-
-const round3 = (x) => Math.round(x * 1000) / 1000;
+const ttsSpeed = Number(proj.audio?.voice_speed)
+  || (["novela-coreana", "novelas-coreanas-eng"].includes(preset) ? 1.25 : 1);
 
 async function fishTTSWithTimestamps(text) {
   const body = { text, format: "mp3", latency: "normal" };
@@ -66,7 +69,7 @@ async function fishTTSWithTimestamps(text) {
   if (voiceId) body.reference_id = voiceId;
   const res = await fetch("https://api.fish.audio/v1/tts/stream/with-timestamp", {
     method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", model: model || "s1" },
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json", model: model || "s2.1-pro" },
     body: JSON.stringify(body),
   });
   if (!res.ok) {
@@ -74,22 +77,9 @@ async function fishTTSWithTimestamps(text) {
     try { const j = await res.json(); detail = j.message || j.detail || JSON.stringify(j); } catch {}
     throw new Error(`Fish Audio ${res.status}: ${detail}`);
   }
-  const raw = await res.text();
-  const audioParts = [];
-  const words = [];
-  for (const block of raw.split(/\n\n/)) {
-    const data = block.split(/\n/).filter((l) => l.startsWith("data:")).map((l) => l.slice(5).trim()).join("");
-    if (!data || data === "[DONE]") continue;
-    let ev; try { ev = JSON.parse(data); } catch { continue; }
-    if (ev.audio_base64) audioParts.push(Buffer.from(ev.audio_base64, "base64"));
-    const offset = typeof ev.chunk_audio_offset_sec === "number" ? ev.chunk_audio_offset_sec : 0;
-    const segs = ev.alignment && Array.isArray(ev.alignment.segments) ? ev.alignment.segments : [];
-    for (const sg of segs) {
-      const w = (sg.text || "").trim();
-      if (!w) continue;
-      words.push({ word: w, start: round3((sg.start || 0) + offset), end: round3((sg.end || 0) + offset) });
-    }
-  }
+  const parsed = parseFishTimestampSse(await res.text());
+  const audioParts = parsed.audioBase64Parts.map((part) => Buffer.from(part, "base64"));
+  const words = parsed.words;
   const audio = Buffer.concat(audioParts);
   if (!audio.length) throw new Error("Fish no devolvio audio (stream vacio)");
   return { audio, words };

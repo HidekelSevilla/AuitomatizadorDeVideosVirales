@@ -1,0 +1,1663 @@
+{
+  "project": {
+    "title": "El Ladrón Eterno - Parte 1: El día que mi poder dejó de desaparecer",
+    "preset": "manhwa",
+    "serie": "ladron_eterno",
+    "slug": "ladron_eterno_parte_01",
+    "language": "es-419",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "part": 1
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "elevenlabs",
+      "voice_id": "452WrNT9o8dphaYW5YGU",
+      "language": "es-419"
+    },
+    "editing": {
+      "tool": "capcut"
+    }
+  },
+  "characters": {
+    "min_seok": {
+      "display_name": "Min-seok",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/ladron_eterno/min_seok_base.png",
+          "prompt": "Full-body front-facing character reference of Min-seok, a broad-shouldered Korean porter around thirty years old, sturdy heavy build with a wide back and thick calloused hands, short practical black hair, calm steady dark eyes, a serene unbothered face, wearing a loaded porter vest full of canvas straps and metal hooks over a plain dark work shirt, heavy work pants and worn boots, an old metal carabiner polished from years of use hanging from the chest of the vest, empty hands relaxed at his sides, not holding anything. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 character reference sheet composition, plain neutral gray background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        },
+        "cargando_equipo": {
+          "mode": "generate",
+          "asset": "assets/characters/ladron_eterno/min_seok_cargando_equipo.png",
+          "reference_pose": "base",
+          "prompt": "Full-body character reference of Min-seok, the same broad-shouldered Korean porter around thirty years old with sturdy heavy build, thick calloused hands, short practical black hair and calm steady dark eyes, wearing the same loaded porter vest full of canvas straps and metal hooks over a plain dark work shirt, heavy work pants and worn boots, the old polished carabiner hanging from his chest, standing firm and upright in a steady porter's stance, several supply crates and cloth-wrapped bundles clinging flush against his back and both shoulders, held there only by a faint warm glowing shimmer fusing the cargo directly to the fabric of his vest and jacket, his face calm and unbothered, serene steady expression, both hands relaxed and empty at his sides, centered three-quarter stance. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 character reference sheet composition, plain neutral gray background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        },
+        "reparando_correa": {
+          "mode": "generate",
+          "asset": "assets/characters/ladron_eterno/min_seok_reparando_correa.png",
+          "reference_pose": "base",
+          "prompt": "Full-body character reference of Min-seok, the same broad-shouldered Korean porter around thirty years old with sturdy heavy build, thick calloused hands, short practical black hair and calm steady dark eyes, wearing the same loaded porter vest full of canvas straps and metal hooks over a plain dark work shirt, heavy work pants and worn boots, the old polished carabiner hanging from his chest, kneeling slightly forward with two thick fingers pressing the torn ends of a canvas strap together, a faint warm shimmer sealing the fibers under his fingertips, his face calm and unbothered, serene concentration in his steady eyes, his other hand bracing the pack, centered three-quarter stance. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 character reference sheet composition, plain neutral gray background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        },
+        "inerte": {
+          "mode": "generate",
+          "asset": "assets/characters/ladron_eterno/min_seok_inerte.png",
+          "reference_pose": "base",
+          "prompt": "Full-body character reference of Min-seok, the same broad-shouldered Korean porter around thirty years old with sturdy heavy build, thick calloused hands and short practical black hair, now dead: his eyes closed, his once-calm face slack and pale, lying on his back with both arms folded over his chest, wearing the same loaded porter vest full of canvas straps and metal hooks over a plain dark work shirt, the old polished carabiner resting still at his chest, dried stylized red blood staining the side of the vest, heavy work pants and worn boots, no motion or tension anywhere in the body, centered composition. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 character reference sheet composition, plain neutral gray background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        }
+      }
+    },
+    "tae_min": {
+      "display_name": "Tae-min",
+      "poses": {
+        "recuerdo": {
+          "mode": "generate",
+          "asset": "assets/characters/ladron_eterno/tae_min_recuerdo.png",
+          "prompt": "Full-body front-facing character reference of Tae-min, Ji-ho's older brother, a tall neat twenty-eight-year-old Korean man, taller and more composed than Ji-ho, with short combed black hair, a serious protective face and steady dark eyes, wearing a tidy dark coat over a plain collared shirt, standing straight and composed with a faint reluctant smile, both hands relaxed at his sides, centered three-quarter stance. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 character reference sheet composition, plain neutral gray background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        }
+      }
+    },
+    "ji_ho": {
+      "display_name": "Ji-ho",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/ladron_eterno/ji_ho_base.png",
+          "prompt": "Full-body front-facing character reference of Ji-ho, a lean wiry twenty-five-year-old Korean man of medium height with short messy black hair, faint dark circles under sharp dark-brown eyes, a guarded sleepless face, wearing a worn dark-gray technical jacket with the hood down, black t-shirt, black cargo pants, scuffed black boots, black fingerless gloves, empty hands relaxed at his sides, not holding anything. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 character reference sheet composition, plain neutral gray background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        },
+        "campamento": {
+          "mode": "generate",
+          "asset": "assets/characters/ladron_eterno/ji_ho_campamento.png",
+          "reference_pose": "base",
+          "prompt": "Full-body character reference of Ji-ho, the same lean wiry twenty-five-year-old Korean man with short messy black hair, faint dark circles under sharp dark-brown eyes, a guarded sleepless face, wearing the same worn dark-gray technical jacket with the hood down, black t-shirt, black cargo pants, scuffed black boots and black fingerless gloves, standing upright with the patched backpack with mended straps slung on both shoulders, one hand resting loosely on the shoulder strap, the other hand relaxed at his side, alert watchful posture, gaze fixed slightly off to the side, centered three-quarter stance. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 character reference sheet composition, plain neutral gray background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        },
+        "hurto_llama": {
+          "mode": "generate",
+          "asset": "assets/characters/ladron_eterno/ji_ho_hurto_llama.png",
+          "reference_pose": "base",
+          "prompt": "Full-body character reference of Ji-ho, the same lean wiry twenty-five-year-old Korean man with short messy black hair, faint dark circles under sharp dark-brown eyes, wearing the same worn dark-gray technical jacket with the hood down, black t-shirt, black cargo pants, scuffed black boots and black fingerless gloves, his left hand pressed flat against a generic companion's bare forearm reaching into frame from the side, the companion's identity not shown beyond the offered forearm, his right arm raised with the palm turned up and open, a tiny match-sized flame just igniting in the center of that palm, his face caught between sharp concentration and startled surprise, brow drawn tight, lips parted, eyes locked on the new flame, centered three-quarter stance. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 character reference sheet composition, plain neutral gray background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        },
+        "quemandose": {
+          "mode": "generate",
+          "asset": "assets/characters/ladron_eterno/ji_ho_quemandose.png",
+          "reference_pose": "base",
+          "prompt": "Full-body character reference of Ji-ho, the same lean wiry twenty-five-year-old Korean man with short messy black hair, faint dark circles under sharp dark-brown eyes, wearing the same worn dark-gray technical jacket with the hood down, black t-shirt, black cargo pants, scuffed black boots and black fingerless gloves, standing with his right arm raised and his bare palm turned up, a single match-sized flame burning upright in the center of his palm, angry red blisters already forming across his fingertips and palm skin, his face tightening between fascination and pain, brow tense, breath caught, his left hand hovering protectively beside the flame without touching it, centered three-quarter stance. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 character reference sheet composition, plain neutral gray background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        },
+        "decidiendo": {
+          "mode": "generate",
+          "asset": "assets/characters/ladron_eterno/ji_ho_decidiendo.png",
+          "reference_pose": "base",
+          "prompt": "Full-body character reference of Ji-ho, the same lean wiry twenty-five-year-old Korean man with short messy black hair, faint dark circles under sharp dark-brown eyes, wearing the same worn dark-gray technical jacket with the hood down, black t-shirt, black cargo pants, scuffed black boots and black fingerless gloves, standing squared and tense, his jaw tight, dark-brown eyes narrowed and fixed straight ahead, his gloved right hand raised and waved forward in a signal to advance, his left hand gripping his backpack strap tight across his chest, weight shifted forward as if forcing himself to commit, centered three-quarter stance. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 character reference sheet composition, plain neutral gray background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        },
+        "cargando": {
+          "mode": "generate",
+          "asset": "assets/characters/ladron_eterno/ji_ho_cargando.png",
+          "reference_pose": "base",
+          "prompt": "INGREDIENTS: ji_ho/base + min_seok/inerte — Full-body character reference identifying two figures by position: Ji-ho, the lean wiry twenty-five-year-old Korean man with short messy black hair and faint dark circles under sharp dark-brown eyes, wearing the same worn dark-gray technical jacket with the hood down, black t-shirt, black cargo pants, scuffed black boots and black fingerless gloves, running forward facing the camera and leaning into the weight on his back; carried piggyback against that back is the dead body of Min-seok, the same heavyset broad-shouldered Korean porter with short practical black hair, his skin pale and his eyes closed, his corpse strapped chest-to-back against Ji-ho's spine, the corpse's head slumped over Ji-ho's right shoulder, the corpse's bare right palm pressed against Ji-ho's left wrist and bound there with a repaired canvas strap, the corpse wearing its porter vest with straps and hooks and an old polished carabiner at the chest, dried stylized red blood staining the side of the vest, both of Ji-ho's hands visible, centered three-quarter running stance. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 character reference sheet composition, plain neutral gray background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        }
+      }
+    }
+  },
+  "escenarios": {
+    "campamento_ruinas": {
+      "display_name": "Campamento en las ruinas",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/ladron_eterno/campamento_ruinas_base.png",
+          "prompt": "Empty night camp among collapsed concrete ruins in Korea, a low campfire ringed with broken stones casting warm orange light over cracked concrete slabs and bent rebar, scattered canvas packs and climbing gear around the fire, tarps strung between two fallen pillars, cold gray-blue darkness beyond the fire glow, a starless deep night sky above, no people, wide master shot at eye level. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, vertical 9:16 environment concept art composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        },
+        "entrada_grieta": {
+          "mode": "generate",
+          "asset": "assets/escenarios/ladron_eterno/campamento_ruinas_entrada_grieta.png",
+          "reference_view": "base",
+          "prompt": "NEW SHOT from the north flank of the same ruined night camp, a jagged vertical fissure splitting the ground at the base of a colossal half-buried black alien obelisk tower, the tower's matte mineral surface faceted in tilted non-human geometry rising out of frame, the crack descending into total darkness between broken concrete slabs, faint warm campfire glow far in the background among the ruins, deep night, no people, low-angle wide shot. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, vertical 9:16 environment concept art composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        },
+        "fogata": {
+          "mode": "generate",
+          "asset": "assets/escenarios/ladron_eterno/campamento_ruinas_fogata.png",
+          "reference_view": "base",
+          "prompt": "NEW SHOT close around the campfire at the same ruined night camp, a tight low-angle view from just outside the ring of broken stones looking across the flames toward the circle of seats and packs arranged around the fire, warm orange firelight washing upward across scattered canvas gear and bent rebar at the circle's edge, sparks rising off the low flames into the cold dark air above, the tarps strung between fallen pillars glowing faintly at the ring's outer edge, no people, low-angle medium shot centered on the fire itself. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, vertical 9:16 environment concept art composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        }
+      }
+    },
+    "tunel_obelisco": {
+      "display_name": "Túneles del Obelisco",
+      "views": {
+        "pasillo": {
+          "mode": "generate",
+          "asset": "assets/escenarios/ladron_eterno/tunel_obelisco_pasillo.png",
+          "prompt": "Empty black alien corridor deep inside an obelisk at deep night, long walls of seamless dark mineral cut in tilted non-human angles, the ceiling dropping too low on one side and stretching too tall on the other, faint cold gray reflections tracing the edges of the black stone, the floor a single polished dark slab, absolute darkness swallowing the far end of the corridor, no people, no light sources except a faint cold sheen, centered wide shot at eye level. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, vertical 9:16 environment concept art composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        },
+        "puerta_sellada": {
+          "mode": "generate",
+          "asset": "assets/escenarios/ladron_eterno/tunel_obelisco_puerta_sellada.png",
+          "reference_view": "pasillo",
+          "prompt": "NEW SHOT inside the same black alien corridor at deep night, facing a massive sealed alien door of layered dark mineral standing slightly ajar, its angular overlapping plates meeting in seams that glint with faint cold light, fresh stylized red blood smeared across the lower edge of the door frame, a band of absolute darkness pouring from the open gap, the tilted non-human walls of the corridor framing the door on both sides, no people, low-angle medium shot. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, vertical 9:16 environment concept art composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        },
+        "fuga_cold_open": {
+          "mode": "generate",
+          "asset": "assets/escenarios/ladron_eterno/tunel_obelisco_fuga_cold_open.png",
+          "reference_view": "pasillo",
+          "prompt": "NEW SHOT deep inside the same black alien corridor at deep night during a desperate chase, the seamless dark mineral walls in tilted non-human angles streaking past in dynamic motion blur at the edges, the polished dark floor stretching ahead in sharp forced perspective, a lone headlamp beam cutting a small cone of light through the consuming darkness, the ceiling dropping low on one side and stretching high on the other exactly as elsewhere in this corridor, absolute darkness pressing in from every direction beyond the light, no people, dramatic dynamic wide shot capturing the urgency of flight through the passage. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, vertical 9:16 environment concept art composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        },
+        "descenso": {
+          "mode": "generate",
+          "asset": "assets/escenarios/ladron_eterno/tunel_obelisco_descenso.png",
+          "reference_view": "pasillo",
+          "prompt": "NEW SHOT at the narrow vertical fissure where the black alien corridor begins, deep night, camera positioned inside the crack among raw torn earth and broken rebar looking down the shaft, headlamp beams crossing at odd angles in the tight space, the raw walls of torn earth and stone giving way lower down to the first seamless dark mineral surfaces of the alien structure in tilted non-human angles, cold dust drifting through the beams of light, no people, steep wide shot looking down the descending shaft. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, vertical 9:16 environment concept art composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        },
+        "camara_alta": {
+          "mode": "generate",
+          "asset": "assets/escenarios/ladron_eterno/tunel_obelisco_camara_alta.png",
+          "reference_view": "pasillo",
+          "prompt": "NEW SHOT from high inside the same black alien corridor at deep night, camera positioned near the ceiling looking almost straight down along the passage, the seamless dark mineral walls leaning at tilted non-human angles converging in forced perspective far below, the polished floor a narrow dark ribbon stretching into the distance, faint cold reflections tracing every angular seam from this height, the corridor's true scale revealed by the tiny scale of the passage below, no people, bird's-eye extreme wide shot emphasizing the immense scale of the architecture. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, vertical 9:16 environment concept art composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+        }
+      }
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "cargando"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_obelisco",
+          "view": "fuga_cold_open"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-bleed vertical webtoon panel: Ji-ho, a lean wiry twenty-five-year-old Korean man with short messy black hair, faint dark circles under wide desperate dark-brown eyes, wearing a worn dark-gray technical jacket with the hood down, black t-shirt, black cargo pants, scuffed boots and black fingerless gloves, sprinting straight toward the camera through a black alien tunnel at deep night, jaw clenched, gaze locked ahead, right arm pumping while his left hand clamps the canvas strap binding a dead man's bare palm to his left wrist, a heavyset dead Korean porter in a strap-covered vest slumped chest-to-back against his back with limp arms swaying, walls of seamless dark mineral cut in tilted non-human angles rushing past on both sides, his headlamp beam bouncing off the polished black floor, medium full-body shot, ground-level, front view, 35mm lens. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Todo poder que robo dura diez segundos. [short pause]"
+      }
+    },
+    {
+      "id": "scene_02",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "cargando"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair, dark circles under strained dark-brown eyes, in a worn dark-gray technical jacket, running through darkness at deep night with a dead porter strapped to his back — rendered as a two-panel composite on a matte-black webtoon page, black space occupying 30% of the canvas. exactly two image panels. Panel A: close-up, eye-level, profile view, 85mm lens: Ji-ho's tense sweating face, teeth gritted, eyes fixed forward, the pale slumped head of the dead man resting against his shoulder behind him. Panel B: macro, high-angle, point-of-view, 100mm lens: Ji-ho's own left wrist in a black fingerless glove, a dead man's bare palm pressed against it and bound with a repaired canvas strap, faint warm glow seaming the contact line, deep night darkness around. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "A los diez, desaparece. Siempre, sin una sola excepción."
+      }
+    },
+    {
+      "id": "scene_03",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "cargando"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a wiry twenty-five-year-old Korean man in a worn dark-gray technical jacket, black cargo pants and fingerless gloves, straining forward at deep night under the weight of a heavyset dead Korean porter strapped chest-to-back against him — rendered as one large inset on a matte-black webtoon page, black space occupying 32% of the canvas. exactly one image panel. Panel A: full-body shot, low-angle, rear three-quarter view, 35mm lens: Ji-ho's short messy black hair damp with sweat, his bent knees driving each step, both gloved hands gripping the canvas strap at his left wrist, the corpse's strap-covered porter vest and limp hanging arms fully visible on his back, dried stylized red blood staining the side of the vest, a small headlamp glow cutting a cone into the black alien corridor ahead. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "El que mantiene un cadáver pegado a mi espalda lleva cuarenta y tres."
+      }
+    },
+    {
+      "id": "scene_04",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "cargando"
+          },
+          {
+            "id": "min_seok",
+            "pose": "inerte"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_obelisco",
+          "view": "fuga_cold_open"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical character close-up of Min-seok, a broad-shouldered Korean porter around thirty with short practical black hair, his serene heavy face now lifeless, eyes closed, skin pale, head slumped over the right shoulder of Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair and a worn dark-gray technical jacket who keeps running at deep night, Min-seok's cheek bouncing against the jacket with each stride, the collar of his strap-covered porter vest visible, an old polished carabiner swinging at his chest, the blurred tilted black mineral walls of the alien corridor sliding past behind them, close-up, eye-level, profile view, 70mm lens. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "El cadáver se llama Min-seok. Pesa el doble de lo que pesaba vivo…"
+      }
+    },
+    {
+      "id": "scene_05",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "cargando"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean exhausted twenty-five-year-old Korean man with short messy black hair and dark circles under his eyes, buckling forward at deep night under the dead porter strapped to his back — rendered as one large inset on a pure white webtoon page, white space occupying 34% of the canvas. exactly one image panel. Panel A: full-body shot, high-angle, front three-quarter view, 50mm lens: Ji-ho's knees half-bent and trembling, spine bowed under the heavyset corpse in its strap-covered vest, his gloved right hand braced against his own thigh, his strapped left wrist pinned across his chest, sweat dripping from his chin, gaze burning upward from under damp hair, thick black panel border framing him against the clean white margin. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "o a lo mejor soy yo, que ya no puedo con nada."
+      }
+    },
+    {
+      "id": "scene_06",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "cargando"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_obelisco",
+          "view": "pasillo"
+        }
+      },
+      "visual": {
+        "image_prompt": "Tall vertical action panel: a wide master view of the black alien corridor at deep night, its seamless dark mineral walls leaning in tilted non-human angles, the ceiling plunging low on the left and soaring high on the right, and small in the middle distance Ji-ho, a lean twenty-five-year-old Korean man in a worn dark-gray technical jacket with a heavyset dead porter strapped to his back, sprinting alone across the polished black floor with no rope and no harness anywhere on his body, his single headlamp beam the only warm light in the immense darkness, both his hands pumping with the strap swinging at his left wrist, true long shot, eye-level, profile view, 24mm lens. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Corro por un túnel negro, sin cuerda ni arnés,"
+      }
+    },
+    {
+      "id": "scene_07",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "cargando"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_obelisco",
+          "view": "fuga_cold_open"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair, glancing back in fear at deep night while he runs with a dead porter strapped to his back — rendered as a two-panel composite on a matte-black webtoon page, black space occupying 30% of the canvas. exactly two image panels. Panel A: close-up, eye-level, rear three-quarter view, 85mm lens: Ji-ho's face turned over his own shoulder past the corpse's slumped head, one wide dark-brown eye catching light, sweat flying from his hair, his gloved left hand clenching the wrist strap. Panel B: wide shot, low-angle, front view, 24mm lens: far down the tilted black mineral corridor behind him, four harsh cold flashlight beams slicing the darkness, the men carrying them swallowed by shadow, only hard-edged light cones advancing across the polished black floor. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "con los hombres que mataron al resto del equipo detrás de mí."
+      }
+    },
+    {
+      "id": "scene_08",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "cargando"
+          }
+        ]
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical object detail: macro shot of the contact line between two bodies at deep night, the broad chest of a dead Korean porter in a strap-covered canvas vest pressed flat against the back of a worn dark-gray technical jacket worn by Ji-ho, a lean twenty-five-year-old Korean man mid-stride, a soft warm thread of light seaming the line where vest and jacket meet like a glowing stitch, the old polished carabiner on the vest trembling with each step, both of the corpse's limp hands hanging into frame, the darkness of the alien tunnel wrapping everything beyond the seam of light, macro, high-angle, profile view, 100mm lens. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Su pecho va apretado contra mi espalda, y la copia de su poder"
+      }
+    },
+    {
+      "id": "scene_09",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "cargando"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man carrying a dead porter strapped chest-to-back at deep night, held by a power that refuses to fade — rendered as a two-panel composite on a matte-black webtoon page, black space occupying 33% of the canvas. exactly two image panels. Panel A: medium shot, low-angle, rear view, 50mm lens: Ji-ho's back fully covered by the heavyset corpse in its strap-covered vest, the dead man's arms hanging limp, a soft warm glow tracing the full outline where the two bodies join. Panel B: macro, eye-level, front view, 100mm lens: a spread open hand shape of warm translucent light pressed flat against the middle of the dark-gray jacket fabric, fingers of light gently splayed, holding without gripping, deep black surrounding the glow. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "sigue ahí: tibia, firme, agarrándolo a mí como una mano abierta."
+      }
+    },
+    {
+      "id": "scene_10",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "cargando"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man in a worn dark-gray technical jacket running through darkness at deep night while counting seconds that keep passing — rendered as a three-panel composite on a pure white webtoon page, white space occupying 30% of the canvas. exactly three image panels. Panel A: macro, high-angle, top-down view, 100mm lens: his scuffed black boots mid-stride slamming the polished black floor, motion lines trailing. Panel B: close-up, eye-level, front view, 85mm lens: his clenched jaw and sweat-soaked black hair, dark-brown eyes counting in silent focus. Panel C: macro, low-angle, point-of-view, 70mm lens: the repaired canvas strap at his left wrist with the dead man's bare palm still pressed against his skin, the warm seam of light unbroken. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Diez. Veinte. Cuarenta. El poder no se apaga."
+      }
+    },
+    {
+      "id": "scene_11",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "cargando"
+          },
+          {
+            "id": "min_seok",
+            "pose": "inerte"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Min-seok, a broad-shouldered Korean porter around thirty with short practical black hair, dead and pale with his eyes closed and lips slack, his heavy head hanging over the shoulder of the running man who carries him at deep night — rendered as one large inset on a matte-black webtoon page, black space occupying 35% of the canvas. exactly one image panel. Panel A: extreme close-up, eye-level, front three-quarter view, 85mm lens: Min-seok's lifeless serene face filling the panel, a thin streak of dried stylized red blood at the corner of his jaw, the dark-gray jacket shoulder of Ji-ho, a lean twenty-five-year-old Korean man, visible under his cheek, faint warm strap-light glowing at the bottom edge, black void pressing in around the bordered panel. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Min-seok está muerto. [short pause] Yo no lo suelto."
+      }
+    },
+    {
+      "id": "scene_12",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "cargando"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_obelisco",
+          "view": "fuga_cold_open"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical manhwa splash panel: Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair and burning dark-brown eyes, charging away from the camera into the swallowing darkness of the black alien corridor at deep night, the heavyset dead porter in his strap-covered vest bound chest-to-back against him, warm stitched light seaming the join of their bodies, Ji-ho's gloved right fist swinging forward and his strapped left wrist tucked against his ribs, the tilted seamless mineral walls converging toward a far end of pure black, his headlamp beam devoured a few steps ahead, wide shot, knee-level, rear view, 35mm lens, dramatic perspective pulling into the dark. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Y su poder no me suelta a mí."
+      }
+    },
+    {
+      "id": "scene_13",
+      "type": "narrative_card",
+      "card": {
+        "text": "EL LADRÓN ETERNO",
+        "mode": "editor"
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Ese día, Min-seok amaneció vivo. Empiecen por ahí."
+      }
+    },
+    {
+      "id": "scene_14",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "base"
+          },
+          {
+            "id": "min_seok",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "campamento_ruinas",
+          "view": "base"
+        }
+      },
+      "visual": {
+        "image_prompt": "A white rectangular narration box with a thin dark border over a night camp among collapsed concrete ruins, the box containing the text 'SEIS HORAS ANTES' wrapping inside one single box, in upright dark rounded casual comic lettering, straight horizontal baseline, clean readable font, the box floating over the upper part of the frame; below it a low campfire ringed with stones casts warm orange light over six raiders preparing gear at deep night, among them Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair, worn dark-gray technical jacket and patched backpack, crouched checking his straps, and Min-seok, a broad-shouldered Korean porter around thirty in a strap-covered vest with an old polished carabiner, calmly loading packs, cracked slabs and bent rebar around them, wide master shot, eye-level, front view, 35mm lens. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. exact text only, no additional text or labels."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Éramos seis, bajando de noche a saquear un Obelisco: una de esas torres"
+      }
+    },
+    {
+      "id": "scene_15",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "escenario": {
+          "id": "campamento_ruinas",
+          "view": "entrada_grieta"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical manhwa splash panel: a colossal half-buried black alien obelisk tower looming over collapsed Korean ruins at deep night, its matte mineral surface faceted in tilted non-human geometry, edges catching faint cold starlight, the tower planted into the earth like a driven nail with broken concrete slabs heaved up around its base, a jagged fissure splitting the ground at its foot, thin cold mist curling between the ruins, the warm orange dot of a distant campfire tiny at the bottom of the frame, true long shot, worm's-eye view, front view, 24mm lens, overwhelming scale. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, vertical 9:16 composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "que los aliens dejaron clavadas en Corea cuando terminó la invasión, hace doce años."
+      }
+    },
+    {
+      "id": "scene_16",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "campamento"
+          }
+        ],
+        "escenario": {
+          "id": "campamento_ruinas",
+          "view": "entrada_grieta"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair and guarded dark-brown eyes, in a worn dark-gray technical jacket, studying a black alien tower from the ruins at deep night — rendered as a two-panel composite on a matte-black webtoon page, black space occupying 30% of the canvas. exactly two image panels. Panel A: wide shot, high-angle, front view, 24mm lens: the small half-buried obelisk tower alone among cracked concrete slabs and darkness, no roads and no lights anywhere around it, cold mist at its base. Panel B: close-up, eye-level, profile view, 85mm lens: Ji-ho's face lit faintly from below by distant campfire glow, jaw set, eyes narrowed at the tower, both gloved hands tightening the straps of his patched backpack. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Uno de los pequeños. De los que no salen en los mapas."
+      }
+    },
+    {
+      "id": "scene_17",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "campamento"
+          }
+        ],
+        "escenario": {
+          "id": "campamento_ruinas",
+          "view": "fogata"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair and tired dark-brown eyes, sealing a deal across a campfire at deep night — rendered as a two-panel composite on a pure white webtoon page, white space occupying 32% of the canvas. exactly two image panels. Panel A: medium shot, eye-level, over-the-shoulder view, 50mm lens: across the low stone-ringed campfire, a broad middle-aged Korean crew leader with a gray-streaked short beard, scarred jaw and heavy weathered tactical coat holds up one open hand mid-offer, firelight carving his face, Ji-ho's dark-gray jacket shoulder in the near foreground. Panel B: close-up, low-angle, front three-quarter view, 70mm lens: Ji-ho nodding once, mouth a flat line, eyes steady, his gloved right hand extended over the flames to shake while his left hand grips his backpack strap. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Yo acepté la mitad de la paga con tal de entrar, porque ahí abajo"
+      }
+    },
+    {
+      "id": "scene_18",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "campamento_ruinas",
+          "view": "base"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical character close-up of Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair and faint dark circles, crouched beside the low campfire among concrete ruins at deep night, the flames reflected as two small warm points in his fixed dark-brown eyes, his gaze aimed past the fire toward the darkness where the obelisk waits, his gloved left hand cinching a mended strap on his patched backpack tight, his right hand resting on his knee, tarps and scattered climbing gear blurred behind him, cracked slabs catching orange light, close-up, eye-level, front three-quarter view, 85mm lens. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "hay tecnología que se vende cara… y registros. A mí me importaban los registros."
+      }
+    },
+    {
+      "id": "scene_19",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "base"
+          },
+          {
+            "id": "tae_min",
+            "pose": "recuerdo"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair, holding a creased photograph in the firelight at deep night — rendered as a two-panel composite on a pure white webtoon page, white space occupying 30% of the canvas. exactly two image panels. Panel A: macro, high-angle, point-of-view, 100mm lens: Ji-ho's black fingerless gloves cradling a worn creased photograph, its corners soft from years of handling, warm campfire light across the paper. Panel B: extreme close-up, eye-level, front view, 85mm lens: the photograph itself showing Tae-min, a tall neat Korean man of twenty-eight with combed black hair and a serious protective face in a tidy dark coat, standing straight with a faint reluctant smile. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Tae-min, mi hermano, desapareció hace tres años cerca de un Obelisco."
+      }
+    },
+    {
+      "id": "scene_20",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "campamento_ruinas",
+          "view": "entrada_grieta"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair, closing his gloved fist around a creased photograph at deep night — rendered as a two-panel composite on a matte-black webtoon page, black space occupying 32% of the canvas. exactly two image panels. Panel A: macro, top-down view, point-of-view, 100mm lens: his black fingerless glove folding the worn photograph closed against his palm, knuckles tensing, firelight dying at the edge of the frame. Panel B: wide shot, low-angle, front view, 24mm lens: the black obelisk tower rising half-buried out of the ruined slabs in the distance, its tilted facets swallowing the night, cold and silent, thin mist at its base. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Nunca hubo cuerpo que enterrar. Me había advertido"
+      }
+    },
+    {
+      "id": "scene_21",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "tae_min",
+            "pose": "recuerdo"
+          },
+          {
+            "id": "ji_ho",
+            "pose": "base"
+          }
+        ]
+      },
+      "visual": {
+        "image_prompt": "Sepia-tinted memory sequence, warm faded monochrome, rendered as a two-panel composite. exactly two image panels. Panel A: medium close-up, eye-level, front view, 70mm lens: Tae-min, Ji-ho's older brother, a tall neat twenty-eight-year-old Korean man with short combed black hair and a serious protective face, standing in a plain hallway at night, a phone pressed to his ear, brow tense with warning, mouth open mid-sentence, his free hand raised as if pleading to be heard, the whole panel washed in soft sepia grain. Panel B: medium shot, eye-level, front three-quarter view, 50mm lens: Ji-ho three years younger, a lean twenty-two-year-old Korean man with the same short messy black hair but a lighter easier face, wearing a plain casual hoodie, laughing openly as he pulls an old phone away from his ear and lowers it to hang up, eyes closed mid-laugh, head tipped back, his free hand loose at his side, behind him a small cluttered rented room at night with a narrow bed, stacked boxes and a single hanging bulb, the whole panel washed in soft sepia grain like an old memory. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "que algo se llevaba gente cerca de esos lugares… y le colgué riéndome. [short pause]"
+      }
+    },
+    {
+      "id": "scene_22",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "base"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair and faint dark circles, sitting rigid by the campfire at deep night with old guilt hardening his face — rendered as one large inset on a matte-black webtoon page, black space occupying 35% of the canvas. exactly one image panel. Panel A: close-up, eye-level, front view, 85mm lens: his face lit only from below by orange firelight against pure darkness, jaw locked, dark-brown eyes fixed on the flames without seeing them, the creased photograph pressed flat against his chest under his gloved right hand, his left hand clenched on his knee, thick black void wrapping the bordered panel. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Paranoico. Fue la última palabra que le dije a mi hermano."
+      }
+    },
+    {
+      "id": "scene_23",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "base"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man in a worn dark-gray technical jacket, raising both open hands into the firelight at deep night — rendered as one large inset on a pure white webtoon page, white space occupying 33% of the canvas. exactly one image panel. Panel A: medium close-up, high-angle, point-of-view, 70mm lens: his two hands in black fingerless gloves turned palms-up over the campfire glow, bare fingertips flexing slightly, small old burn scars dotting the fingertips, his shadowed face soft behind the hands with dark-brown eyes looking down at his own palms, warm orange light pooling in the cupped hands against the clean white margin. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Mi boleto de entrada es mi Resonancia,"
+      }
+    },
+    {
+      "id": "scene_24",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "campamento"
+          }
+        ],
+        "escenario": {
+          "id": "campamento_ruinas",
+          "view": "fogata"
+        }
+      },
+      "visual": {
+        "image_prompt": "Tall vertical action panel: Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair, standing beside the low campfire among concrete ruins at deep night, rolling his shoulders back and spreading the bare fingers of his fingerless-gloved right hand wide as he presents it to the seated crew, half-smirk without warmth on his face, dark-brown eyes scanning the men around the fire, his left thumb hooked in his backpack strap, the stone-ringed flames throwing tall shadows across cracked slabs and strung tarps behind him, medium full-body shot, low-angle, front three-quarter view, 35mm lens. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "el poder que la guerra despertó en algunos. La mía se llama Hurto."
+      }
+    },
+    {
+      "id": "scene_25",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "campamento_ruinas",
+          "view": "base"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair, reaching toward the offered forearm of a fire-wielding raider by the campfire at deep night — rendered as a two-panel composite on a pure white webtoon page, white space occupying 30% of the canvas. exactly two image panels. Panel A: medium shot, eye-level, profile view, 50mm lens: a wiry Korean raider in his late thirties with a shaved head, gray stubble, old burn scars mottling his forearms and a scorched orange scarf over dark field gear, grinning as he rolls up his sleeve and extends his bare forearm across the firelight. Panel B: close-up, high-angle, over-the-shoulder view, 85mm lens: Ji-ho's fingerless-gloved right hand reaching out, bare fingertips an inch from the scarred forearm, his focused dark-brown eyes and set mouth framed past the raider's shoulder. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "En el campamento, el del fuego me tendió el brazo para ver el truco."
+      }
+    },
+    {
+      "id": "scene_26",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "hurto_llama"
+          }
+        ]
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical object detail: macro shot of first contact at deep night, the bare fingertips of Ji-ho, a lean twenty-five-year-old Korean man wearing black fingerless gloves, pressing flat onto the burn-scarred bare forearm of a wiry older raider, and from the point of touch thin rivers of warm golden-orange light flowing up across the back of Ji-ho's hand and under his glove toward his wrist, the veins of light soft and liquid like borrowed blood, campfire glow blurred warm in the background, both arms sharply lit against the dark camp, macro, top-down view, point-of-view, 100mm lens. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Lo toqué… y su calor me subió por la mano"
+      }
+    },
+    {
+      "id": "scene_27",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "hurto_llama"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair and parted lips of quiet surprise at deep night, warm stolen heat climbing his arm — rendered as one large inset on a matte-black webtoon page, black space occupying 34% of the canvas. exactly one image panel. Panel A: medium close-up, low-angle, front three-quarter view, 70mm lens: Ji-ho's raised right arm glowing from within, soft golden-orange rivers of light tracing up from his fingerless-gloved hand along the forearm toward his rolled sleeve, his dark-brown eyes wide and reflecting the glow, left hand half-raised as if to steady the arm, the warmth the only light against the surrounding black void. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "como sangre prestada, fácil, porque él quería dármelo."
+      }
+    },
+    {
+      "id": "scene_28",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "hurto_llama"
+          }
+        ],
+        "escenario": {
+          "id": "campamento_ruinas",
+          "view": "base"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical object detail: the open right palm of Ji-ho, a lean twenty-five-year-old Korean man in a worn dark-gray technical jacket and black fingerless gloves, held up at chest height at deep night, a single tiny match-sized flame standing upright in the center of the bare palm, its small light painting his amazed face from below, dark-brown eyes locked on the flame, his left hand cupped protectively beside it, behind him the blurred stone-ringed campfire and the shadowed shapes of seated raiders among the ruined slabs, extreme close-up, eye-level, front view, 85mm lens. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "En mi palma nació una llama del tamaño de un cerillo."
+      }
+    },
+    {
+      "id": "scene_29",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "quemandose"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man in black fingerless gloves, watching a stolen flame die in his bare palm at deep night — rendered as a three-panel composite on a pure white webtoon page, white space occupying 30% of the canvas. exactly three image panels. Panel A: macro, eye-level, front view, 100mm lens: the tiny match-sized flame standing bright in the center of his open right palm, warm light on the skin. Panel B: macro, high-angle, point-of-view, 85mm lens: the same palm as the flame shrinks to a dying ember-spark, thin smoke curling off the skin, the fingers twitching. Panel C: close-up, top-down view, front view, 70mm lens: the palm afterward, angry red blisters swelling across the reddened skin, his other gloved hand wrapping a strip of gauze around it. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Diez segundos me duró. Las ampollas, dos semanas."
+      }
+    },
+    {
+      "id": "scene_30",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "base"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair and a dry humorless half-smile at deep night, shrugging by the fire — rendered as one large inset on a matte-black webtoon page, black space occupying 31% of the canvas. exactly one image panel. Panel A: medium shot, eye-level, front three-quarter view, 50mm lens: Ji-ho seated on a broken slab, shoulders lifted in a resigned shrug, gauze-wrapped right hand raised palm-up as if weighing half a payment, left elbow on his knee, dark-brown eyes flat with old irony, orange firelight carving him out of the surrounding black void, the strap of his patched backpack across his chest. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Por eso, cuando alguien me contrata, me paga la mitad:"
+      }
+    },
+    {
+      "id": "scene_31",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "base"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man, baring his forearms in the firelight at deep night to show what stealing costs — rendered as one large inset on a pure white webtoon page, white space occupying 35% of the canvas. exactly one image panel. Panel A: close-up, high-angle, point-of-view, 85mm lens: both of Ji-ho's forearms turned up out of pushed-back dark-gray sleeves, mapped with old pale burn scars, faded bruise shadows and one fresh gauze wrap around the right palm, his fingerless-gloved hands half-curled, firelight warming the scarred skin against the clean white margin, thick black panel border. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "robo poderes de bolsillo y los pago con mi propio pellejo."
+      }
+    },
+    {
+      "id": "scene_32",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "min_seok",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "campamento_ruinas",
+          "view": "base"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Min-seok, a broad-shouldered Korean porter around thirty with short practical black hair, thick calloused hands and a calm steady face, sitting unmoved across the campfire at deep night while others laugh — rendered as a two-panel composite on a pure white webtoon page, white space occupying 32% of the canvas. exactly two image panels. Panel A: medium shot, eye-level, front view, 50mm lens: Min-seok seated squarely on a slab across the flames, strap-covered porter vest over his dark work shirt, quietly coiling a rope with both thick hands, steady dark eyes on his work, no smile and no mockery on his serene face. Panel B: macro, low-angle, profile view, 100mm lens: the front of his loaded vest, canvas straps and metal hooks in worn rows, firelight glinting off buckles. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Min-seok era el único que no se rió. El cargador del equipo:"
+      }
+    },
+    {
+      "id": "scene_33",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "min_seok",
+            "pose": "cargando_equipo"
+          }
+        ],
+        "escenario": {
+          "id": "campamento_ruinas",
+          "view": "base"
+        }
+      },
+      "visual": {
+        "image_prompt": "Tall vertical action panel: Min-seok, a broad-shouldered Korean porter around thirty with short practical black hair and a calm steady face, standing by the campfire at deep night lifting one thick arm, and from his single grip hangs an impossible chain of gear, two canvas packs, a fuel can and a coiled rope, each object seamlessly stuck to the next with nothing tying them, faint warm shimmer lining every joined surface, his other hand relaxed at his side, his strap-covered vest and old polished carabiner catching orange light, cracked concrete slabs and strung tarps behind him, full-body shot, low-angle, front three-quarter view, 35mm lens. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "su Resonancia, Adhesión, pegaba una cosa con otra hasta que él decidiera soltarla."
+      }
+    },
+    {
+      "id": "scene_34",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "min_seok",
+            "pose": "cargando_equipo"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Min-seok, a broad-shouldered Korean porter around thirty with short practical black hair, hauling the packed gear of six men fused directly onto his own back at deep night without one complaint — rendered as one large inset on a matte-black webtoon page, black space occupying 33% of the canvas. exactly one image panel. Panel A: full-body shot, low-angle, rear three-quarter view, 35mm lens: Min-seok walking steadily through the dark camp, a towering stacked load of six packs clinging flush against his wide back and shoulders, held there only by a faint warm shimmer glowing at every point of contact between fabric and skin, his posture straight under weight that would fold another man, both thick hands hanging loose and relaxed at his sides, short practical black hair and calm profile edged by faint firelight, black void surrounding the bordered panel. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Cargaba lo de los seis sin quejarse,"
+      }
+    },
+    {
+      "id": "scene_35",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "min_seok",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "campamento_ruinas",
+          "view": "fogata"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Min-seok, a broad-shouldered Korean porter around thirty with short practical black hair and a serene face, living by his quiet code at the night camp — rendered as a two-panel composite on a pure white webtoon page, white space occupying 30% of the canvas. exactly two image panels. Panel A: medium shot, eye-level, profile view, 50mm lens: Min-seok placing a dented canteen directly into the open hand of a seated raider, pressing it into the palm rather than dropping it, his thick fingers careful, the raider's face out of frame. Panel B: medium shot, high-angle, front three-quarter view, 70mm lens: Min-seok eating last, seated slightly apart with a small tin bowl, taking his first spoonful while the shapes of others around the fire are already halfway done, his calm eyes lowered, vest buckles glinting. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "devolvía cada cosa en la mano y comía al último."
+      }
+    },
+    {
+      "id": "scene_36",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "min_seok",
+            "pose": "reparando_correa"
+          }
+        ],
+        "escenario": {
+          "id": "campamento_ruinas",
+          "view": "base"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Min-seok, a broad-shouldered Korean porter around thirty with a calm steady face, noticing a broken strap before the descent at deep night — rendered as a two-panel composite on a pure white webtoon page, white space occupying 31% of the canvas. exactly two image panels. Panel A: macro, high-angle, point-of-view, 100mm lens: a patched backpack sitting on a cracked slab in firelight, one canvas shoulder strap torn clean through, frayed threads splayed at the break. Panel B: medium close-up, eye-level, profile view, 70mm lens: Min-seok kneeling beside the pack, short practical black hair and strap-covered vest lit warm, his steady dark eyes on the torn strap, one thick hand lifting the two broken ends together while the other braces the pack. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Antes de bajar vio la correa reventada de mi mochila"
+      }
+    },
+    {
+      "id": "scene_37",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "min_seok",
+            "pose": "reparando_correa"
+          }
+        ]
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical object detail: macro shot of two thick calloused fingers of Min-seok, a broad-shouldered Korean porter around thirty, pressing the two torn ends of a canvas backpack strap together at deep night, a soft warm shimmer of light sealing the frayed break seamlessly under his fingertips like an invisible weld, the mended fibers knitting into one clean strap, the edge of his strap-covered vest sleeve visible, warm campfire light washing the leather and canvas, deep shadow beyond the hands, macro, top-down view, point-of-view, 100mm lens. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "y la dejó pegada con dos dedos."
+      }
+    },
+    {
+      "id": "scene_38",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "base"
+          },
+          {
+            "id": "min_seok",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "campamento_ruinas",
+          "view": "base"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair, questioning the quiet porter who just mended his strap at deep night — rendered as a two-panel composite on a pure white webtoon page, white space occupying 33% of the canvas. exactly two image panels. Panel A: close-up, eye-level, profile view, 85mm lens: Ji-ho (lean, dark-gray technical jacket, fingerless gloves) holding his mended backpack strap up in his left hand, eyebrows raised in dry skepticism toward the right of frame, lips parted mid-question. Panel B: medium shot, low-angle, front three-quarter view, 50mm lens: Min-seok (broad-shouldered, strap-covered porter vest, short practical black hair, calm steady face) already turning away toward the stacked gear, one thick hand lifting a coil of rope, firelight and ruined slabs behind him. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "—¿Cuánto va a durar? —le pregunté."
+      }
+    },
+    {
+      "id": "scene_39",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "min_seok",
+            "pose": "base"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Min-seok, a broad-shouldered Korean porter around thirty with short practical black hair, answering over his shoulder with quiet iron at deep night — rendered as one large inset on a matte-black webtoon page, black space occupying 34% of the canvas. exactly one image panel. Panel A: close-up, eye-level, rear three-quarter view, 85mm lens: Min-seok's head turned back over the strap-covered shoulder of his porter vest, calm dark eyes level and unblinking, mouth set in a firm line that is almost a warning, warm firelight tracing his jaw and the old polished carabiner at his chest, pure black void around the bordered panel. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "—Hasta que yo la suelte. Y no vuelvas a romperla."
+      }
+    },
+    {
+      "id": "scene_40",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "campamento_ruinas",
+          "view": "base"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical character close-up of Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair and faint dark circles, standing still in the dying firelight at deep night, looking down at the mended canvas strap now settled on his shoulder, his gloved right hand resting flat over the repaired seam as if weighing the words that came with it, dark-brown eyes lowered and thoughtful, breath visible in the cold, the low campfire burning down to embers behind him among cracked slabs and strung tarps, close-up, high-angle, front three-quarter view, 70mm lens. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[short pause] Hay frases que uno no sabe que va a cargar para siempre."
+      }
+    },
+    {
+      "id": "scene_41",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "min_seok",
+            "pose": "base"
+          }
+        ]
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical object detail: macro shot of an old metal carabiner hanging from the chest strap of a loaded porter vest at deep night, its steel gate and spine polished mirror-smooth from years of bare hands, tiny nicks and worn edges catching warm orange campfire light, the canvas straps and one metal hook of the vest of Min-seok, a broad-shouldered Korean porter around thirty, framing it softly out of focus, the carabiner swaying slightly mid-step, deep shadow behind, macro, low-angle, front view, 100mm lens. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Del chaleco le colgaba un mosquetón viejo, pulido de puro uso."
+      }
+    },
+    {
+      "id": "scene_42",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "min_seok",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "campamento_ruinas",
+          "view": "base"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Min-seok, a broad-shouldered Korean porter around thirty with short practical black hair and a calm steady face, quietly finishing the camp work no one asked him to do at deep night — rendered as one large inset on a pure white webtoon page, white space occupying 30% of the canvas. exactly one image panel. Panel A: full-body shot, eye-level, profile view, 35mm lens: Min-seok crouched by the banked campfire, strap-covered vest taut across his wide back, both thick hands gently stacking the crew's scattered tools into one neat row on a slab, the old polished carabiner hanging still at his chest, ember light soft on his serene profile, clean white margin around the thick-bordered panel. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Eso era casi todo lo que yo sabía de él:"
+      }
+    },
+    {
+      "id": "scene_43",
+      "type": "narrative_card",
+      "card": {
+        "text": "Sostenía cosas ajenas sin dejarlas caer",
+        "mode": "editor"
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "sostenía cosas ajenas sin dejarlas caer."
+      }
+    },
+    {
+      "id": "scene_44",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "base"
+          },
+          {
+            "id": "min_seok",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_obelisco",
+          "view": "descenso"
+        }
+      },
+      "visual": {
+        "image_prompt": "Tall vertical action panel: a single-file line of six raiders descending through a narrow vertical fissure at deep night, camera positioned inside the crack among raw torn earth and broken rebar looking down the shaft as headlamp beams cross in the tight space, at the middle of the line Ji-ho (a lean twenty-five-year-old Korean man, worn dark-gray technical jacket, patched backpack with one freshly mended strap, fingerless gloves gripping the rock edge) lowering himself with both hands, below him Min-seok (a broad-shouldered Korean porter around thirty, strap-covered vest, towering load of packs bound to his back, old polished carabiner at his chest) stepping down steadily, the other four raiders in dark practical gear above and below as lamplit shapes squeezed between the narrowing walls, the raw fissure giving way lower down to the first seamless dark mineral surfaces of the alien structure, wide shot, high-angle, front three-quarter view, 24mm lens. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Bajamos por una grieta del flanco norte."
+      }
+    },
+    {
+      "id": "scene_45",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "base"
+          },
+          {
+            "id": "min_seok",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_obelisco",
+          "view": "camara_alta"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Six small raiders with headlamps dwarfed inside a black alien corridor at deep night, its geometry built for bodies that were never human — rendered as a two-panel composite on a matte-black webtoon page, black space occupying 30% of the canvas. exactly two image panels. Panel A: true long shot, bird's-eye view, front view, 24mm lens: the corridor of seamless dark mineral seen from high above, walls leaning at tilted impossible angles, the ceiling plunging and soaring, six tiny lamplit figures walking in file across the polished black floor, among them the lean dark-gray-jacketed silhouette of Ji-ho and the wide loaded silhouette of Min-seok. Panel B: macro, eye-level, profile view, 100mm lens: one wall joint where three black mineral planes meet at an angle no human mason would cut, faint cold reflections tracing the seam. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Adentro, pasillos negros para cuerpos que no eran como los nuestros."
+      }
+    },
+    {
+      "id": "scene_46",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "base"
+          },
+          {
+            "id": "min_seok",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_obelisco",
+          "view": "pasillo"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "A lean young Korean scout with a narrow sharp face, short cropped hair, lightweight climbing harness over dark gear and a small chest-mounted lamp, snapping his raised fist shut in the black alien corridor at deep night — rendered as a two-panel composite on a pure white webtoon page, white space occupying 30% of the canvas. exactly two image panels. Panel A: close-up, low-angle, rear three-quarter view, 85mm lens: the scout's clenched fist raised sharp against the darkness, his chest lamp throwing a hard cone forward, tendons tight in his forearm. Panel B: medium shot, eye-level, front view, 50mm lens: the line freezing mid-step behind him, Ji-ho (lean, twenty-five, dark-gray technical jacket, fingerless gloves) halting with one hand out for balance, Min-seok (broad-shouldered porter, strap-covered vest, loaded back) planting his boots without a sound, headlamps steadying on the tilted black mineral walls. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "A los veinte minutos, el explorador cerró el puño:"
+      }
+    },
+    {
+      "id": "scene_47",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "escenario": {
+          "id": "tunel_obelisco",
+          "view": "puerta_sellada"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "A massive sealed alien door of layered black mineral standing ajar with fresh blood on its frame at deep night — rendered as a two-panel composite on a matte-black webtoon page, black space occupying 32% of the canvas. exactly two image panels. Panel A: wide shot, low-angle, front view, 24mm lens: the huge angular door plates parted by a narrow gap, absolute darkness pouring out of the opening, headlamp beams from off-frame grazing the tilted corridor walls that frame it. Panel B: macro, eye-level, front three-quarter view, 100mm lens: the lower door frame in hard lamplight, a smeared handprint drag of fresh stylized red blood across the black mineral edge, still glistening wet, one thin trickle running down the stone. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "una puerta sellada estaba abierta, con sangre fresca en el marco."
+      }
+    },
+    {
+      "id": "scene_48",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "decidiendo"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_obelisco",
+          "view": "puerta_sellada"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-bleed vertical webtoon panel split into exactly two image panels stacked. Panel A: extreme close-up, eye-level, front view, 100mm lens: the eyes of Ji-ho, a lean twenty-five-year-old Korean man with short messy black hair, locked on the bloodied alien door at deep night, pupils tight with alarm, sweat sliding past his brow, headlamp glare rimming his lashes. Panel B: medium shot, low-angle, profile view, 50mm lens: the same Ji-ho a heartbeat later, worn dark-gray technical jacket and patched backpack squared, chin lifting as he waves the crew forward with his gloved right hand, left hand tight on his shoulder strap, mouth opening on the order, the massive layered black mineral door ajar behind him with darkness leaking from the gap. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Debí decir que nos regresáramos. [inhales deeply] Dije que siguiéramos."
+      }
+    },
+    {
+      "id": "scene_49",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ho",
+            "pose": "base"
+          },
+          {
+            "id": "min_seok",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "tunel_obelisco",
+          "view": "pasillo"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Ji-ho, a lean twenty-five-year-old Korean man in a worn dark-gray technical jacket, stepping with the crew into a darkness that does not end at deep night — rendered as one large inset on a matte-black webtoon page, black space occupying 38% of the canvas. exactly one image panel. Panel A: wide shot, eye-level, rear view, 35mm lens: five small figures from behind crossing the threshold beyond the door, their headlamp cones shrinking as the black swallows them, Ji-ho's patched backpack and Min-seok's towering load recognizable in silhouette at the center of the group, the tilted mineral walls barely traced by the dying light, the far end of the corridor pure fathomless black pressing against the small bordered panel. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[whispers] La oscuridad nos estaba esperando."
+      }
+    },
+    {
+      "id": "scene_50",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "escenario": {
+          "id": "tunel_obelisco",
+          "view": "pasillo"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical manhwa splash panel: a lean young Korean scout with a narrow sharp face, short cropped hair, lightweight climbing harness over dark gear and a small chest-mounted lamp, ripped violently sideways off his feet into the pitch-black depth of the alien corridor at deep night, his body stretched horizontal mid-air with arms flung forward and fingers clawing at nothing, mouth open in a scream that never sounds, his chest lamp swinging a wild streak of light across the tilted black mineral walls, his boots trailing loose gravel, the darkness ahead of him total and shapeless, swallowing his lower legs already, speed lines dragging toward the black, wide shot, knee-level, profile view, 35mm lens, Dutch angle. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, finished material texture, consistent character design, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Y cobró primero al explorador: un jalón, ni un grito."
+      }
+    }
+  ],
+  "editing": {
+    "caption_style": {
+      "enabled": true,
+      "font": "Montserrat ExtraBold",
+      "size": 64,
+      "position": "center_lower"
+    },
+    "narrative_card_style": {
+      "font": "Montserrat",
+      "size": 72
+    },
+    "panel_motion": {
+      "enabled": true,
+      "apply_to": "all_panels",
+      "static_zoom": 1.04,
+      "static_pan": 4,
+      "animated_zoom": 1.02,
+      "animated_pan": 2,
+      "cycle": [
+        "bottom_to_top",
+        "top_to_bottom",
+        "bottom_left_to_top_right",
+        "top_right_to_bottom_left",
+        "slow_push_in"
+      ]
+    }
+  },
+  "tts_export": {
+    "language": "es-419",
+    "mode": "dialogue",
+    "model_id": "eleven_v3",
+    "elevenlabs_speed": 1,
+    "edit_speed": 1.4,
+    "voices": {
+      "narrador": "452WrNT9o8dphaYW5YGU"
+    },
+    "dialogue": [
+      {
+        "scene_id": "scene_01",
+        "speaker": "narrador",
+        "text": "Todo poder que robo dura diez segundos. [short pause]"
+      },
+      {
+        "scene_id": "scene_02",
+        "speaker": "narrador",
+        "text": "A los diez, desaparece. Siempre, sin una sola excepción."
+      },
+      {
+        "scene_id": "scene_03",
+        "speaker": "narrador",
+        "text": "El que mantiene un cadáver pegado a mi espalda lleva cuarenta y tres."
+      },
+      {
+        "scene_id": "scene_04",
+        "speaker": "narrador",
+        "text": "El cadáver se llama Min-seok. Pesa el doble de lo que pesaba vivo…"
+      },
+      {
+        "scene_id": "scene_05",
+        "speaker": "narrador",
+        "text": "o a lo mejor soy yo, que ya no puedo con nada."
+      },
+      {
+        "scene_id": "scene_06",
+        "speaker": "narrador",
+        "text": "Corro por un túnel negro, sin cuerda ni arnés,"
+      },
+      {
+        "scene_id": "scene_07",
+        "speaker": "narrador",
+        "text": "con los hombres que mataron al resto del equipo detrás de mí."
+      },
+      {
+        "scene_id": "scene_08",
+        "speaker": "narrador",
+        "text": "Su pecho va apretado contra mi espalda, y la copia de su poder"
+      },
+      {
+        "scene_id": "scene_09",
+        "speaker": "narrador",
+        "text": "sigue ahí: tibia, firme, agarrándolo a mí como una mano abierta."
+      },
+      {
+        "scene_id": "scene_10",
+        "speaker": "narrador",
+        "text": "Diez. Veinte. Cuarenta. El poder no se apaga."
+      },
+      {
+        "scene_id": "scene_11",
+        "speaker": "narrador",
+        "text": "Min-seok está muerto. [short pause] Yo no lo suelto."
+      },
+      {
+        "scene_id": "scene_12",
+        "speaker": "narrador",
+        "text": "Y su poder no me suelta a mí."
+      },
+      {
+        "scene_id": "scene_13",
+        "speaker": "narrador",
+        "text": "Ese día, Min-seok amaneció vivo. Empiecen por ahí."
+      },
+      {
+        "scene_id": "scene_14",
+        "speaker": "narrador",
+        "text": "Éramos seis, bajando de noche a saquear un Obelisco: una de esas torres"
+      },
+      {
+        "scene_id": "scene_15",
+        "speaker": "narrador",
+        "text": "que los aliens dejaron clavadas en Corea cuando terminó la invasión, hace doce años."
+      },
+      {
+        "scene_id": "scene_16",
+        "speaker": "narrador",
+        "text": "Uno de los pequeños. De los que no salen en los mapas."
+      },
+      {
+        "scene_id": "scene_17",
+        "speaker": "narrador",
+        "text": "Yo acepté la mitad de la paga con tal de entrar, porque ahí abajo"
+      },
+      {
+        "scene_id": "scene_18",
+        "speaker": "narrador",
+        "text": "hay tecnología que se vende cara… y registros. A mí me importaban los registros."
+      },
+      {
+        "scene_id": "scene_19",
+        "speaker": "narrador",
+        "text": "Tae-min, mi hermano, desapareció hace tres años cerca de un Obelisco."
+      },
+      {
+        "scene_id": "scene_20",
+        "speaker": "narrador",
+        "text": "Nunca hubo cuerpo que enterrar. Me había advertido"
+      },
+      {
+        "scene_id": "scene_21",
+        "speaker": "narrador",
+        "text": "que algo se llevaba gente cerca de esos lugares… y le colgué riéndome. [short pause]"
+      },
+      {
+        "scene_id": "scene_22",
+        "speaker": "narrador",
+        "text": "Paranoico. Fue la última palabra que le dije a mi hermano."
+      },
+      {
+        "scene_id": "scene_23",
+        "speaker": "narrador",
+        "text": "Mi boleto de entrada es mi Resonancia,"
+      },
+      {
+        "scene_id": "scene_24",
+        "speaker": "narrador",
+        "text": "el poder que la guerra despertó en algunos. La mía se llama Hurto."
+      },
+      {
+        "scene_id": "scene_25",
+        "speaker": "narrador",
+        "text": "En el campamento, el del fuego me tendió el brazo para ver el truco."
+      },
+      {
+        "scene_id": "scene_26",
+        "speaker": "narrador",
+        "text": "Lo toqué… y su calor me subió por la mano"
+      },
+      {
+        "scene_id": "scene_27",
+        "speaker": "narrador",
+        "text": "como sangre prestada, fácil, porque él quería dármelo."
+      },
+      {
+        "scene_id": "scene_28",
+        "speaker": "narrador",
+        "text": "En mi palma nació una llama del tamaño de un cerillo."
+      },
+      {
+        "scene_id": "scene_29",
+        "speaker": "narrador",
+        "text": "Diez segundos me duró. Las ampollas, dos semanas."
+      },
+      {
+        "scene_id": "scene_30",
+        "speaker": "narrador",
+        "text": "Por eso, cuando alguien me contrata, me paga la mitad:"
+      },
+      {
+        "scene_id": "scene_31",
+        "speaker": "narrador",
+        "text": "robo poderes de bolsillo y los pago con mi propio pellejo."
+      },
+      {
+        "scene_id": "scene_32",
+        "speaker": "narrador",
+        "text": "Min-seok era el único que no se rió. El cargador del equipo:"
+      },
+      {
+        "scene_id": "scene_33",
+        "speaker": "narrador",
+        "text": "su Resonancia, Adhesión, pegaba una cosa con otra hasta que él decidiera soltarla."
+      },
+      {
+        "scene_id": "scene_34",
+        "speaker": "narrador",
+        "text": "Cargaba lo de los seis sin quejarse,"
+      },
+      {
+        "scene_id": "scene_35",
+        "speaker": "narrador",
+        "text": "devolvía cada cosa en la mano y comía al último."
+      },
+      {
+        "scene_id": "scene_36",
+        "speaker": "narrador",
+        "text": "Antes de bajar vio la correa reventada de mi mochila"
+      },
+      {
+        "scene_id": "scene_37",
+        "speaker": "narrador",
+        "text": "y la dejó pegada con dos dedos."
+      },
+      {
+        "scene_id": "scene_38",
+        "speaker": "narrador",
+        "text": "—¿Cuánto va a durar? —le pregunté."
+      },
+      {
+        "scene_id": "scene_39",
+        "speaker": "narrador",
+        "text": "—Hasta que yo la suelte. Y no vuelvas a romperla."
+      },
+      {
+        "scene_id": "scene_40",
+        "speaker": "narrador",
+        "text": "[short pause] Hay frases que uno no sabe que va a cargar para siempre."
+      },
+      {
+        "scene_id": "scene_41",
+        "speaker": "narrador",
+        "text": "Del chaleco le colgaba un mosquetón viejo, pulido de puro uso."
+      },
+      {
+        "scene_id": "scene_42",
+        "speaker": "narrador",
+        "text": "Eso era casi todo lo que yo sabía de él:"
+      },
+      {
+        "scene_id": "scene_43",
+        "speaker": "narrador",
+        "text": "sostenía cosas ajenas sin dejarlas caer."
+      },
+      {
+        "scene_id": "scene_44",
+        "speaker": "narrador",
+        "text": "Bajamos por una grieta del flanco norte."
+      },
+      {
+        "scene_id": "scene_45",
+        "speaker": "narrador",
+        "text": "Adentro, pasillos negros para cuerpos que no eran como los nuestros."
+      },
+      {
+        "scene_id": "scene_46",
+        "speaker": "narrador",
+        "text": "A los veinte minutos, el explorador cerró el puño:"
+      },
+      {
+        "scene_id": "scene_47",
+        "speaker": "narrador",
+        "text": "una puerta sellada estaba abierta, con sangre fresca en el marco."
+      },
+      {
+        "scene_id": "scene_48",
+        "speaker": "narrador",
+        "text": "Debí decir que nos regresáramos. [inhales deeply] Dije que siguiéramos."
+      },
+      {
+        "scene_id": "scene_49",
+        "speaker": "narrador",
+        "text": "[whispers] La oscuridad nos estaba esperando."
+      },
+      {
+        "scene_id": "scene_50",
+        "speaker": "narrador",
+        "text": "Y cobró primero al explorador: un jalón, ni un grito."
+      }
+    ],
+    "full_script": "Todo poder que robo dura diez segundos. [short pause]\nA los diez, desaparece. Siempre, sin una sola excepción.\nEl que mantiene un cadáver pegado a mi espalda lleva cuarenta y tres.\nEl cadáver se llama Min-seok. Pesa el doble de lo que pesaba vivo…\no a lo mejor soy yo, que ya no puedo con nada.\nCorro por un túnel negro, sin cuerda ni arnés,\ncon los hombres que mataron al resto del equipo detrás de mí.\nSu pecho va apretado contra mi espalda, y la copia de su poder\nsigue ahí: tibia, firme, agarrándolo a mí como una mano abierta.\nDiez. Veinte. Cuarenta. El poder no se apaga.\nMin-seok está muerto. [short pause] Yo no lo suelto.\nY su poder no me suelta a mí.\nEse día, Min-seok amaneció vivo. Empiecen por ahí.\nÉramos seis, bajando de noche a saquear un Obelisco: una de esas torres\nque los aliens dejaron clavadas en Corea cuando terminó la invasión, hace doce años.\nUno de los pequeños. De los que no salen en los mapas.\nYo acepté la mitad de la paga con tal de entrar, porque ahí abajo\nhay tecnología que se vende cara… y registros. A mí me importaban los registros.\nTae-min, mi hermano, desapareció hace tres años cerca de un Obelisco.\nNunca hubo cuerpo que enterrar. Me había advertido\nque algo se llevaba gente cerca de esos lugares… y le colgué riéndome. [short pause]\nParanoico. Fue la última palabra que le dije a mi hermano.\nMi boleto de entrada es mi Resonancia,\nel poder que la guerra despertó en algunos. La mía se llama Hurto.\nEn el campamento, el del fuego me tendió el brazo para ver el truco.\nLo toqué… y su calor me subió por la mano\ncomo sangre prestada, fácil, porque él quería dármelo.\nEn mi palma nació una llama del tamaño de un cerillo.\nDiez segundos me duró. Las ampollas, dos semanas.\nPor eso, cuando alguien me contrata, me paga la mitad:\nrobo poderes de bolsillo y los pago con mi propio pellejo.\nMin-seok era el único que no se rió. El cargador del equipo:\nsu Resonancia, Adhesión, pegaba una cosa con otra hasta que él decidiera soltarla.\nCargaba lo de los seis sin quejarse,\ndevolvía cada cosa en la mano y comía al último.\nAntes de bajar vio la correa reventada de mi mochila\ny la dejó pegada con dos dedos.\n—¿Cuánto va a durar? —le pregunté.\n—Hasta que yo la suelte. Y no vuelvas a romperla.\n[short pause] Hay frases que uno no sabe que va a cargar para siempre.\nDel chaleco le colgaba un mosquetón viejo, pulido de puro uso.\nEso era casi todo lo que yo sabía de él:\nsostenía cosas ajenas sin dejarlas caer.\nBajamos por una grieta del flanco norte.\nAdentro, pasillos negros para cuerpos que no eran como los nuestros.\nA los veinte minutos, el explorador cerró el puño:\nuna puerta sellada estaba abierta, con sangre fresca en el marco.\nDebí decir que nos regresáramos. [inhales deeply] Dije que siguiéramos.\n[whispers] La oscuridad nos estaba esperando.\nY cobró primero al explorador: un jalón, ni un grito."
+  }
+}

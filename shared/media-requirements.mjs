@@ -73,9 +73,14 @@ export function projectMediaSignature(projectJson) {
       type: s.type || "",
       render_mode: s.render_mode || "",
       image_prompt: scenePrompt(s),
+      // V6 multipanel: el resumen de pagina NO es el prompt generable. La firma debe incluir prompts,
+      // fuentes y geometria de cada slot para no adoptar celdas/JPG finales de otro blueprint.
+      page_blueprint: s?.visual?.page_blueprint || null,
+      references: s?.references || null,
       animation_prompt: s.animation_prompt || s.animationPrompt || "",
       voiceover: s.voiceover?.text || "",
       speaker: s.voiceover?.speaker || "",
+      narration_ref: s.narration_ref || null,
       card: s.card?.text || "",
     };
   });
@@ -86,6 +91,7 @@ export function projectMediaSignature(projectJson) {
     aspect_ratio: projectJson?.project?.aspect_ratio || projectJson?.project?.aspectRatio || "",
     clip_order: getClipOrder(projectJson),
     scenes: mediaScenes,
+    narration_track: projectJson?.narration_track || null,
     tts: {
       mode: tts.mode || "",
       model_id: tts.model_id || "",

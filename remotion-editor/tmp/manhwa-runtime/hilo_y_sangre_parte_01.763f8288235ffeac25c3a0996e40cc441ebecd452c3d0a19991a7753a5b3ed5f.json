@@ -1,0 +1,1850 @@
+{
+  "project": {
+    "preset": "novela-coreana",
+    "title": "Crie veinte anos a esa nina. Su madre volvio - Parte 1",
+    "subtitle": "El dobladillo",
+    "serie": "hilo_y_sangre",
+    "slug": "hilo_y_sangre_parte_01",
+    "series": {
+      "id": "hilo_y_sangre",
+      "part": 1,
+      "is_cliffhanger": true
+    },
+    "language": "es",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "reuse_ingredients": true,
+    "grok_clip_seconds": "6",
+    "scene_target_seconds": 4,
+    "voice_target_seconds": [
+      3,
+      4
+    ],
+    "voice_ceiling_seconds": "5",
+    "hook": "La nina que crie veinte anos se casa en cuarenta dias.",
+    "motor": "A_injusticia (secundario: D_abandono)",
+    "world": "A_moderno_realista",
+    "allow_supernatural": false,
+    "allow_historical": false
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "fish"
+    }
+  },
+  "characters": {
+    "jeong_hui": {
+      "display_name": "Jeong-hui",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/hilo_y_sangre/jeong_hui_base.png",
+          "prompt": "Character reference, vertical 9:16, single Korean woman, age 54, realistic East-Asian features, round tired face with fine lines, short black hair pushed back with reading glasses resting on her head, working hands with callused fingertips, plain grey knit sweater under a quilted work vest with pins on the lapel, warm steady expression, empty hands, standing upright, neutral soft grey studio background. Cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "midiendo": {
+          "mode": "generate",
+          "asset": "assets/characters/hilo_y_sangre/jeong_hui_midiendo.png",
+          "reference_pose": "base",
+          "prompt": "Same character Jeong-hui, same face and short black hair with reading glasses down on her nose, same grey sweater and pinned work vest, standing upright leaning slightly forward, a yellow tape measure held taut between both raised hands at chest height, concentrated expression, neutral studio background."
+        },
+        "sentada_maquina": {
+          "mode": "generate",
+          "asset": "assets/characters/hilo_y_sangre/jeong_hui_sentada_maquina.png",
+          "reference_pose": "base",
+          "prompt": "Same character Jeong-hui, same face and short black hair, same grey sweater and pinned work vest, seated on a low stool at a sewing machine, upright posture leaning slightly forward, both hands resting flat on the machine bed in front of her, feet flat on the floor, neutral studio background."
+        },
+        "abrigo_calle": {
+          "mode": "generate",
+          "asset": "assets/characters/hilo_y_sangre/jeong_hui_abrigo_calle.png",
+          "reference_pose": "base",
+          "prompt": "Same character Jeong-hui, same face and short black hair, a plain brown padded coat buttoned over the grey sweater, no glasses, standing upright, both hands empty at her sides, guarded worried expression, neutral studio background."
+        }
+      }
+    },
+    "da_yeong": {
+      "display_name": "Da-yeong",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/hilo_y_sangre/da_yeong_base.png",
+          "prompt": "Character reference, vertical 9:16, single Korean woman, age 26, realistic East-Asian features, oval face with a small mole under one eye, long dark brown hair tied in a low ponytail, plain beige sweater and jeans, open trusting expression, empty hands, standing upright, neutral soft grey studio background. Cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "vestido_prueba": {
+          "mode": "generate",
+          "asset": "assets/characters/hilo_y_sangre/da_yeong_vestido_prueba.png",
+          "reference_pose": "base",
+          "prompt": "Same character Da-yeong, same face and long dark brown hair now loose, a simple unfinished white wedding dress with pins along one seam and the hem still raw, standing upright on a low fitting stool, both arms held slightly out from her sides, uncertain happy expression, neutral studio background."
+        },
+        "sentada_taller": {
+          "mode": "generate",
+          "asset": "assets/characters/hilo_y_sangre/da_yeong_sentada_taller.png",
+          "reference_pose": "base",
+          "prompt": "Same character Da-yeong, same face and low ponytail, same beige sweater and jeans, seated on a plastic stool, upright posture, both hands closed together on her lap, feet flat on the floor, thoughtful troubled expression, neutral studio background."
+        }
+      }
+    },
+    "ji_ah": {
+      "display_name": "Ji-ah",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/hilo_y_sangre/ji_ah_base.png",
+          "prompt": "Character reference, vertical 9:16, single Korean woman, age 47, realistic East-Asian features, narrow face with the same small mole under one eye, dark hair in a smooth low bun, expensive camel coat over a cream blouse, a thin gold watch, careful uncertain expression, empty hands, standing upright, neutral soft grey studio background. Cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "sentada_taller": {
+          "mode": "generate",
+          "asset": "assets/characters/hilo_y_sangre/ji_ah_sentada_taller.png",
+          "reference_pose": "base",
+          "prompt": "Same character Ji-ah, same face and smooth low bun, same camel coat, seated stiffly on a plastic stool with her knees together and angled to one side, upright posture, both hands holding a handbag on her lap, feet flat on the floor, tense controlled expression, neutral studio background."
+        }
+      }
+    },
+    "jae_gon": {
+      "display_name": "Jae-gon",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/hilo_y_sangre/jae_gon_base.png",
+          "prompt": "Character reference, vertical 9:16, single Korean man, age 58, realistic East-Asian features, heavy jaw and thinning combed-back hair, dark suit with an open collar and no tie, a signet ring, affable calculating expression, empty hands, standing upright, neutral soft grey studio background. Cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        }
+      }
+    }
+  },
+  "escenarios": {
+    "taller": {
+      "display_name": "Taller de arreglos",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/hilo_y_sangre/taller_base.png",
+          "prompt": "EMPTY tiny Korean alterations shop seen from the street door, a sewing machine on a worn table, bolts of cloth stacked to the ceiling, a full-length mirror, a rail of garments in plastic covers, a low fitting stool, warm yellow lamp light, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "espejo": {
+          "mode": "generate",
+          "asset": "assets/escenarios/hilo_y_sangre/taller_espejo.png",
+          "reference_view": "base",
+          "prompt": "Same alterations shop, new camera position facing the full-length mirror beside the fitting stool, the mirror frame and the low stool in the foreground, the cloth bolts reflected behind, same warm lamp light, empty set, no people, no text."
+        },
+        "desde_la_calle": {
+          "mode": "generate",
+          "asset": "assets/escenarios/hilo_y_sangre/taller_desde_la_calle.png",
+          "reference_view": "base",
+          "prompt": "Same alterations shop, new camera position from outside the street door looking in through the glass, the doorframe in the foreground, the sewing machine and cloth bolts inside, cold street light against the warm interior, empty set, no people, no text."
+        },
+        "close_maquina": {
+          "mode": "generate",
+          "asset": "assets/escenarios/hilo_y_sangre/taller_close_maquina.png",
+          "reference_view": "base",
+          "prompt": "Same alterations shop, extreme close view of the sewing machine bed with a spool of white thread and a pincushion in the foreground, fabric under the presser foot, shallow depth of field, warm lamp light, empty set, no people, no text."
+        }
+      }
+    },
+    "trastienda": {
+      "display_name": "Trastienda del taller",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/hilo_y_sangre/trastienda_base.png",
+          "prompt": "EMPTY narrow back room behind an alterations shop, a folded floor mattress against one wall, a low table with a kettle, a wardrobe with a curtain instead of a door, faded flower wallpaper, one small window, warm dim lamp light, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "desde_el_ropero": {
+          "mode": "generate",
+          "asset": "assets/escenarios/hilo_y_sangre/trastienda_desde_el_ropero.png",
+          "reference_view": "base",
+          "prompt": "Same narrow back room, new camera position from beside the curtained wardrobe looking back at the doorway, the low table with the kettle in the middle foreground, the folded mattress against the wall, same warm dim lamp light, empty set, no people, no text."
+        },
+        "close_caja": {
+          "mode": "generate",
+          "asset": "assets/escenarios/hilo_y_sangre/trastienda_close_caja.png",
+          "reference_view": "base",
+          "prompt": "Same back room, extreme close view of the low table with an old biscuit tin open on it and folded fabric scraps inside, a small worn notebook beside it, dust in the lamp light, shallow depth of field, empty set, no people, no text."
+        }
+      }
+    },
+    "callejon": {
+      "display_name": "Callejón del mercado",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/hilo_y_sangre/callejon_base.png",
+          "prompt": "EMPTY narrow Korean market alley at dusk seen from one end, shuttered stalls, tangled cables overhead, wet uneven pavement, a single lit shop window halfway down, cold blue evening against one warm rectangle of light, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "frente_al_taller": {
+          "mode": "generate",
+          "asset": "assets/escenarios/hilo_y_sangre/callejon_frente_al_taller.png",
+          "reference_view": "base",
+          "prompt": "Same market alley, new camera position directly in front of the lit alterations shop window looking at the glass door, the wet pavement in the foreground, the warm interior glowing beyond the glass, cold blue evening light, empty set, no people, no text."
+        }
+      }
+    }
+  },
+  "ingredients": [
+    {
+      "id": "libreta_medidas",
+      "type": "entity",
+      "generation_prompt": "Single small worn notebook lying open, cream ruled pages with twenty short handwritten ink lines listed one under another, the paper soft and thumbed at the corner, no readable text, neutral dark background, extreme detail, realistic photography, no logo.",
+      "output_file": "assets/ingredients/hilo_y_sangre/libreta_medidas.png"
+    },
+    {
+      "id": "cinta_metrica",
+      "type": "entity",
+      "generation_prompt": "Single yellow cloth tape measure coiled loosely on a worn wooden table beside a red pincushion stuck with pins, the printed markings faded with use, no readable numbers, neutral background, extreme detail, realistic photography, no text, no logo.",
+      "output_file": "assets/ingredients/hilo_y_sangre/cinta_metrica.png"
+    },
+    {
+      "id": "registro_familiar",
+      "type": "entity",
+      "generation_prompt": "Single official Korean family registry document on cream paper with faint printed table lines and a red seal in the corner, one row left conspicuously blank, no readable text, neutral dark background, extreme detail, realistic photography, no logo.",
+      "output_file": "assets/ingredients/hilo_y_sangre/registro_familiar.png"
+    },
+    {
+      "id": "foto_infancia",
+      "type": "entity",
+      "generation_prompt": "Single small faded colour photograph of a five-year-old East-Asian girl standing alone in front of a shop shutter, the corners bent and one edge torn, lying on a worn wooden table, neutral background, extreme detail, realistic photography, no text, no logo.",
+      "output_file": "assets/ingredients/hilo_y_sangre/foto_infancia.png"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_01",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "midiendo"
+          },
+          {
+            "id": "da_yeong",
+            "pose": "vestido_prueba"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui and the provided Da-yeong in the provided alterations shop: establishing wide shot from the street door, floor to ceiling visible, Da-yeong standing on the low fitting stool in an unfinished white wedding dress and Jeong-hui kneeling at her hem with the tape measure, both small in the lower third among bolts of cloth stacked to the ceiling, warm yellow lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the raw hem of the dress swings as Jeong-hui pulls the tape taut at the girl's ankle; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, tense] La niña que crié veinte años se casa en cuarenta días.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "VEINTE AÑOS",
+        "highlight_words": [
+          "veinte"
+        ]
+      }
+    },
+    {
+      "id": "scene_02",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "midiendo"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "espejo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui in the provided shop mirror view: medium shot, camera behind her shoulder (from behind) facing the full-length mirror, Jeong-hui in the foreground seen from behind kneeling beside the fitting stool with the tape measure taut between both hands, her face visible only in the glass, the cloth bolts reflected behind, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she pulls the tape taut and reads it without writing it down, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Le he tomado las medidas cada cumpleaños. Desde los seis.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_03",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "trastienda",
+          "view": "close_caja"
+        },
+        "ingredients": [
+          "libreta_medidas"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided measurements notebook in the provided back room close view: Insert shot: extreme close-up of a small worn notebook lying open on a low table, twenty short handwritten ink lines listed one under another down the ruled page, the paper thumbed soft at the corner, dust in the lamp light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): a thumb slides down the column of twenty handwritten lines and stops at the last; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Veinte líneas. Con mi letra.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_04",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ah",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "callejon",
+          "view": "frente_al_taller"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-ah in the provided alley view in front of the shop: full body shot, head to feet in frame, camera in the alley facing the shop window, Ji-ah standing on the wet pavement in an expensive camel coat looking in through the glass, both feet on the ground, both hands closed in front of her, cold blue evening light against the warm shop window. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she stands on the wet pavement looking in through the glass and does not knock, mouth closed, not speaking; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Y la mujer que la dejó a los cinco volvió a cobrarla.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "VOLVIÓ A COBRARLA",
+        "highlight_words": [
+          "volvió"
+        ]
+      }
+    },
+    {
+      "id": "scene_05",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ah",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "desde_la_calle"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-ah in the provided shop street-door view: medium shot, camera outside the street door looking in through the glass, the doorframe in the foreground, Ji-ah pushing the glass door open from the street, both feet on the threshold, the warm interior beyond her, cold street light on her back. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she pushes the glass door open and the shop bell above it swings, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Entró sin tocar. Como si fuera suya.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_06",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_yeong",
+            "pose": "vestido_prueba"
+          },
+          {
+            "id": "ji_ah",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-yeong and the provided Ji-ah in the provided alterations shop: full body shot, head to feet in frame, camera from the street door at eye level, Da-yeong on frame-right standing on the fitting stool in the unfinished dress facing frame-left, Ji-ah on frame-left just inside the door facing frame-right, both feet on the worn floor, the cloth bolts around them, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the girl on the stool goes completely still with her arms still held out, mouths closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Mi hija se quedó quieta arriba del banquito.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_07",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_yeong",
+            "pose": "vestido_prueba"
+          },
+          {
+            "id": "ji_ah",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "espejo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-yeong and the provided Ji-ah in the provided shop mirror view: medium close-up, chest up, camera facing the full-length mirror, the two women reflected side by side in the glass, the same small mole under one eye on each face, warm lamp light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the two reflected faces hold still side by side in the mirror, mouths closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "En el espejo se veían iguales. El mismo lunar.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "EL MISMO LUNAR",
+        "highlight_words": [
+          "lunar"
+        ]
+      }
+    },
+    {
+      "id": "scene_08",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui in the provided alterations shop: medium shot, camera from the street door at eye level, Jeong-hui standing beside the sewing table, her body BEHIND the table line, both feet on the worn floor, both hands still holding the tape measure, her face turned toward the door, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the tape measure slides out of her hands and hangs from one finger, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Yo me llamo Ku Jeong-hui. Arreglo ropa desde los diecinueve.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "KU JEONG-HUI",
+        "highlight_words": [
+          "Jeong-hui"
+        ]
+      }
+    },
+    {
+      "id": "scene_09",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "close_maquina"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui in the provided sewing machine close view: Insert shot: close-up of Jeong-hui's hands only, no face in frame, her callused fingertips resting on the machine bed beside a spool of white thread and a pincushion, the fabric stopped under the presser foot, warm lamp light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her callused fingers press flat on the machine bed and stop; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Esta tienda mide tres metros. La renté a los veinticuatro.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_10",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_yeong",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-yeong in the provided alterations shop: full body shot, head to feet in frame, camera from the street door at eye level, Da-yeong standing in the middle of the small shop in a beige sweater and jeans, both feet on the worn floor, both hands at her sides, the cloth bolts and the mirror around her, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she stands in the middle of the shop and looks from one woman to the other, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Ella es Da-yeong. La dejaron aquí a los cinco años.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_11",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "trastienda",
+          "view": "close_caja"
+        },
+        "ingredients": [
+          "foto_infancia"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided childhood photograph in the provided back room close view: Insert shot: extreme close-up of a small faded colour photograph of a five-year-old girl standing alone in front of a shop shutter, the corners bent and one edge torn, lying on the worn wooden table, dust in the lamp light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the lamp light creeps slowly across the bent corner of the old photograph; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Con una bolsa de ropa y una nota de cuatro palabras.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_12",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "espejo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui in the provided shop mirror view: medium close-up, chest up, camera facing the full-length mirror, Jeong-hui's face reflected in the glass with the reading glasses pushed up on her head, her mouth closed, the shop warm and small behind her reflection. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her reflection holds her own look in the glass without blinking, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Esperé que volvieran tres meses. Después dejé de esperar.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_13",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ah",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "desde_la_calle"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-ah in the provided shop street-door view: medium shot, camera outside the street door looking in, the doorframe in the foreground, Ji-ah standing just inside the glass facing camera, both feet on the floor, mouth clearly visible, both hands holding her handbag, warm interior light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ji-ah begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Ji-ah moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "La mujer habló despacio: —Vengo a ver a mi hija.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_14",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui in the provided alterations shop: medium shot, camera from the street door at eye level, Jeong-hui standing beside the sewing table, her body BEHIND the table line, both feet on the floor, face frontal, mouth clearly visible, both hands flat on the fabric, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Jeong-hui begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Jeong-hui moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Aquí no hay ninguna hija suya.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_15",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ah",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "desde_la_calle"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-ah in the provided shop street-door view: full body shot, head to feet in frame, camera outside the street door looking in through the glass, the doorframe in the foreground, Ji-ah standing inside facing camera, both feet flat on the floor, mouth clearly visible, one hand opening her handbag, warm interior light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ji-ah begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Ji-ah moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Traigo los papeles. Yo nunca renuncié a ella.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "NUNCA RENUNCIÉ",
+        "highlight_words": [
+          "renuncié"
+        ]
+      }
+    },
+    {
+      "id": "scene_16",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui in the provided alterations shop: medium close-up, chest up, camera from the street door at eye level, Jeong-hui's face going very still, her mouth closed, both hands stopped flat on the fabric, the warm lamp behind her. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her hands stay flat on the fabric and do not move at all, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[soft, trembling, hurt] Y tenía razón. Ese papel nunca lo firmó nadie.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_17",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "taller",
+          "view": "close_maquina"
+        },
+        "ingredients": [
+          "registro_familiar"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided family registry in the provided sewing machine close view: Insert shot: extreme close-up of an official family registry sheet laid on the sewing table beside the pincushion, faint printed table lines and a red seal in the corner, one row left conspicuously blank, warm lamp light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the registry sheet is set down on the sewing table and one blank row catches the lamp; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "En ese renglón, donde va la madre, no hay nada. Veinte años.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_18",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_yeong",
+            "pose": "vestido_prueba"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "espejo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-yeong in the provided shop mirror view: medium shot, camera facing the full-length mirror, Da-yeong standing on the fitting stool in the unfinished dress with her reflection beside her, both feet on the stool, mouth clearly visible, both arms lowered now, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Da-yeong begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Da-yeong moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Mi hija preguntó bajito: —¿Usted es mi mamá?",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_19",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ah",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-ah in the provided alterations shop: full body shot, head to feet in frame, camera from the street door at eye level, Ji-ah standing among the cloth bolts facing camera, both feet on the worn floor, mouth clearly visible, her careful control breaking at the mouth, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ji-ah begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Ji-ah moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Te busqué mucho tiempo. Perdóname.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_20",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "base"
+          },
+          {
+            "id": "da_yeong",
+            "pose": "vestido_prueba"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui and the provided Da-yeong in the provided alterations shop: medium shot, camera behind Jeong-hui's shoulder (over-the-shoulder) from the street door, Jeong-hui's shoulder blurred on frame-left in the foreground, Da-yeong on frame-right on the fitting stool in the unfinished dress facing frame-left, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the girl on the stool turns her face away from Jeong-hui toward the other woman, mouths closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Yo no dije nada. No supe qué se dice ahí.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_21",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "sentada_maquina"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "close_maquina"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui in the provided sewing machine close view: full body shot, head to feet in frame, camera at the sewing table at eye level, Jeong-hui seated at the machine, her body BEHIND the table line, both feet flat on the floor, both hands feeding white fabric under the presser foot, her face down at the work, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she feeds the white fabric under the foot and the needle does not start, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Esa noche seguí cosiendo el vestido. Como si nada.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_22",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_yeong",
+            "pose": "sentada_taller"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-yeong in the provided alterations shop: medium close-up, chest up, camera from the street door at eye level, Da-yeong seated on the plastic stool facing camera three-quarters, mouth clearly visible, both hands closed on her lap, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Da-yeong begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Da-yeong moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Mamá, ¿por qué nunca me dijiste que existía?",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_23",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "sentada_maquina"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "close_maquina"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui in the provided sewing machine close view: medium shot, camera at the sewing table at eye level, Jeong-hui seated at the machine facing camera, the machine bed in the foreground, both feet on the floor, mouth clearly visible, both hands still on the fabric, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Jeong-hui begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Jeong-hui moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Porque no volvió. Eso fue lo que pasó.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_24",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "sentada_maquina"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "espejo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui in the provided shop mirror view: medium close-up, chest up, camera facing the full-length mirror, Jeong-hui's reflection at the machine with her eyes going down to the fabric, her mouth closed, the shop warm behind her. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her reflection looks away first, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Fue la primera mentira que le dije en veinte años.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "LA PRIMERA MENTIRA",
+        "highlight_words": [
+          "mentira"
+        ]
+      }
+    },
+    {
+      "id": "scene_25",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_yeong",
+            "pose": "sentada_taller"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-yeong in the provided alterations shop: full body shot, head to feet in frame, camera from the street door at eye level, Da-yeong seated on the plastic stool with a lit phone in both hands, both feet on the worn floor, the cloth bolts around her, warm lamp light on her face. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the phone screen lights her face from below while she reads, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Se quedó con el teléfono prendido hasta las tres.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_26",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ah",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "callejon",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-ah in the provided market alley: establishing wide shot from one end of the alley, floor to ceiling visible, Ji-ah small in the lower third walking down the narrow market alley in her camel coat between shuttered stalls, tangled cables overhead, the single lit shop window ahead of her, cold blue evening. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she walks down the alley toward the one lit window and every other shutter stays closed; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Volvió el sábado. Y el domingo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_27",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ah",
+            "pose": "sentada_taller"
+          },
+          {
+            "id": "da_yeong",
+            "pose": "sentada_taller"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-ah and the provided Da-yeong in the provided alterations shop: medium shot, camera behind Da-yeong's shoulder (over-the-shoulder) from the street door, Da-yeong's shoulder blurred on frame-right in the foreground, Ji-ah on frame-left seated stiffly on a plastic stool with her handbag on her lap facing frame-right, both feet on the worn floor, the cloth bolts around them, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the two of them sit knee to knee on the plastic stools and neither one leaves, mouths closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Se sentaban en mis banquitos. Las dos, horas.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_28",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "sentada_maquina"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "close_maquina"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui in the provided sewing machine close view: Insert shot: close-up of Jeong-hui's hands only, no face in frame, her fingers guiding white fabric under the needle while two blurred figures sit talking in the background of the shop, warm lamp light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the needle runs a straight line while the two blurred figures talk behind her; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Yo cosía. Se oye todo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_29",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ah",
+            "pose": "sentada_taller"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-ah in the provided alterations shop: medium close-up, chest up, camera from the street door at eye level, Ji-ah seated on the plastic stool facing camera three-quarters, mouth clearly visible, both hands on the handbag in her lap, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ji-ah begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Ji-ah moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Tenía veintiuno. No tenía dónde meterte.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_30",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ah",
+            "pose": "sentada_taller"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-ah in the provided alterations shop: medium shot, camera from the street door at eye level, Ji-ah seated on the plastic stool, her body BEHIND the stool line, both feet on the floor, face frontal, mouth clearly visible, one hand opening toward the girl, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ji-ah begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Ji-ah moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Iba a volver por ti en un año. Se me hicieron veinte.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_31",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_yeong",
+            "pose": "sentada_taller"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "espejo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-yeong in the provided shop mirror view: medium close-up, chest up, camera facing the full-length mirror, Da-yeong's face reflected in the glass listening, her mouth closed, her eyes wet, the shop warm behind her reflection. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her reflection blinks once and a tear does not fall, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Mi hija le creyó. Yo también le habría creído.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_32",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jae_gon",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "callejon",
+          "view": "frente_al_taller"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jae-gon in the provided alley view in front of the shop: full body shot, head to feet in frame, camera in the alley facing the shop window, Jae-gon standing on the wet pavement in a dark suit with an open collar, both feet on the ground, both hands in his pockets, looking in through the glass without entering, cold blue evening light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): he looks in through the glass with both hands in his pockets and does not go in, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El jueves siguiente vino un hombre con ella. Se quedó afuera.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_33",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "base"
+          },
+          {
+            "id": "jae_gon",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "desde_la_calle"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui and the provided Jae-gon in the provided shop street-door view: medium shot, camera behind Jae-gon's shoulder (over-the-shoulder) outside the street door, Jae-gon's shoulder blurred on frame-left in the foreground, Jeong-hui on frame-right inside the shop facing him through the glass, the doorframe between them, cold evening outside against the warm interior. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the two of them look at each other through the glass and neither one opens the door, mouths closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Nos miramos por el vidrio. Ese hombre no venía por ella.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_34",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jae_gon",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "callejon",
+          "view": "frente_al_taller"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jae-gon in the provided alley view in front of the shop: medium close-up, chest up, camera in the alley at eye level, Jae-gon facing camera three-quarters on the wet pavement, mouth clearly visible, a small affable smile, the shop light warm on one side of his face. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Jae-gon begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Jae-gon moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El hombre me habló afuera: —Señora, no le queremos quitar nada.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_35",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jae_gon",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "callejon",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jae-gon in the provided market alley: medium shot, camera in the alley at eye level, Jae-gon standing on the wet pavement, both feet on the ground, face frontal, mouth clearly visible, one hand smoothing his jacket, the shuttered stalls behind him, cold evening light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Jae-gon begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Jae-gon moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Solo queremos que la boda salga como debe salir.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "COMO DEBE SALIR",
+        "highlight_words": [
+          "boda"
+        ]
+      }
+    },
+    {
+      "id": "scene_36",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "abrigo_calle"
+          }
+        ],
+        "escenario": {
+          "id": "callejon",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui in the provided market alley: medium close-up, chest up, camera in the alley at eye level, Jeong-hui standing on the wet pavement in her brown padded coat, her face frontal and hard, both hands closed at her sides, cold blue evening light on her face. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her hands close into fists inside her coat sleeves, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Dijo la boda. No dijo mi hija.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "NO DIJO MI HIJA",
+        "highlight_words": [
+          "hija"
+        ]
+      }
+    },
+    {
+      "id": "scene_37",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "base"
+          },
+          {
+            "id": "da_yeong",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "trastienda",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui and the provided Da-yeong in the provided back room: establishing wide shot from the doorway, floor to ceiling visible, Jeong-hui and Da-yeong small in the lower third seated on the floor of the narrow back room on either side of the low table, the folded mattress against the wall, the biscuit tin open between them, warm dim lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she lifts the lid off the old biscuit tin between them and sets it aside; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Esa noche saqué la caja de galletas de arriba del ropero.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_38",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "trastienda",
+          "view": "close_caja"
+        },
+        "ingredients": [
+          "libreta_medidas"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided measurements notebook in the provided back room close view: Insert shot: extreme close-up of the small worn notebook opened flat on the low table beside folded fabric scraps in an old biscuit tin, twenty short handwritten lines running down the ruled page, warm lamp light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): a finger runs down the twenty handwritten lines from the first to the last; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Veinte líneas. Una por cada cumpleaños suyo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "VEINTE LÍNEAS",
+        "highlight_words": [
+          "líneas"
+        ]
+      }
+    },
+    {
+      "id": "scene_39",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "trastienda",
+          "view": "desde_el_ropero"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui in the provided back room wardrobe view: medium shot, camera from beside the wardrobe looking back at the doorway, the low table in the middle foreground, Jeong-hui seated on the floor BEHIND the table line, both hands open over the open notebook, face frontal, mouth clearly visible, warm dim lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Jeong-hui begins speaking immediately, lips clearly moving through a short deliberate sentence; slow push-in; IMPORTANT: ONLY Jeong-hui moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Aquí estás desde los seis. Un renglón por año.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_40",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_yeong",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "trastienda",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-yeong in the provided back room: medium close-up, chest up, camera from the doorway at eye level, Da-yeong seated on the floor facing camera three-quarters, mouth clearly visible, the open notebook held in both hands, warm lamp light on her face. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Da-yeong begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Da-yeong moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Mamá, esto no vale en ningún lado.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_41",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "trastienda",
+          "view": "desde_el_ropero"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui in the provided back room wardrobe view: medium close-up, chest up, camera from beside the wardrobe at eye level, Jeong-hui seated on the floor facing camera, mouth clearly visible, her eyes steady, both hands open on her knees, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Jeong-hui begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Jeong-hui moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Vale aquí. Con eso te hice el vestido.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_42",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "base"
+          },
+          {
+            "id": "da_yeong",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "trastienda",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui and the provided Da-yeong in the provided back room: full body shot, head to feet in frame, camera behind Da-yeong's shoulder (over-the-shoulder) from the doorway, Da-yeong seated in the foreground seen from behind on the floor, Jeong-hui on frame-left seated on the floor beyond the low table, both on the worn floor, warm dim lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the girl reaches across the low table and holds the older woman's hand, mouths closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Me agarró la mano. Los conté.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_43",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "sentada_maquina"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui in the provided alterations shop: medium shot, camera from the street door at eye level, Jeong-hui seated at the sewing machine with the almost finished white dress spread across the table, her body BEHIND the table line, both feet on the floor, both hands smoothing the fabric, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she smooths the almost finished white dress flat across the sewing table, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El miércoles terminé el dobladillo. Faltaban treinta y ocho días.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_44",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ah",
+            "pose": "base"
+          },
+          {
+            "id": "jae_gon",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "desde_la_calle"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-ah and the provided Jae-gon in the provided shop street-door view: full body shot, head to feet in frame, camera outside the street door looking in, the doorframe in the foreground, Ji-ah on frame-left and Jae-gon on frame-right standing together just inside the shop, both feet on the floor, a stiff envelope in her hands, warm interior light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the two of them step inside together and the shop bell swings above them, mouths closed, not speaking; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Entraron los dos juntos. Ella traía un sobre.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_45",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "taller",
+          "view": "close_maquina"
+        },
+        "ingredients": [
+          "registro_familiar"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided family registry in the provided sewing machine close view: Insert shot: extreme close-up of the official family registry sheet laid on the sewing table over the white dress fabric, the red corner seal and the printed table lines, the blank row facing up, warm lamp light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the registry sheet is laid down flat on top of the white dress fabric; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Puso el registro encima del vestido. Sobre la tela.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_46",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_ah",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ji-ah in the provided alterations shop: medium shot, camera from the street door at eye level, Ji-ah standing beside the sewing table, her body BEHIND the table line, both feet on the floor, face frontal, mouth clearly visible, one hand flat on the registry sheet, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ji-ah begins speaking immediately, lips clearly moving through a short deliberate sentence; static camera; IMPORTANT: ONLY Ji-ah moves their mouth; everyone else keeps their mouths closed and still. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "—Mi nombre entra en ese renglón antes de la boda.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_47",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_yeong",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "espejo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-yeong in the provided shop mirror view: medium close-up, chest up, camera facing the full-length mirror, Da-yeong's face reflected in the glass with her mouth closed and her eyes moving between the two women out of frame, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her reflected eyes move from one side to the other and stop, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Mi hija no dijo que no.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_48",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "base"
+          },
+          {
+            "id": "da_yeong",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui and the provided Da-yeong in the provided alterations shop: full body shot, head to feet in frame, camera from the street door at eye level, Jeong-hui on frame-left standing beside the sewing table and Da-yeong on frame-right walking toward the door with her coat over one arm, both feet on the worn floor, the white dress spread on the table between them, warm lamp light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the girl takes her coat off the rail and walks toward the door without turning around, mouths closed, not speaking; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Agarró su abrigo. Se fue con ellos.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "SE FUE CON ELLOS",
+        "highlight_words": [
+          "fue"
+        ]
+      }
+    },
+    {
+      "id": "scene_49",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "desde_la_calle"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui in the provided shop street-door view: establishing wide shot from outside the street door, floor to ceiling visible, Jeong-hui small alone inside the lit shop behind the glass with the white dress on the table, the alley dark and empty in the foreground, cold blue evening against the one warm rectangle of light. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the shop bell stops swinging behind the glass and the alley outside stays empty; slow dolly out. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Se cerró la puerta. Sonó la campanita.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_50",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "jeong_hui",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "taller",
+          "view": "close_maquina"
+        },
+        "ingredients": [
+          "cinta_metrica"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Jeong-hui and the provided tape measure in the provided sewing machine close view: Insert shot: close-up of Jeong-hui's hands only, no face in frame, her callused fingers coiling the yellow tape measure slowly on the empty sewing table beside the finished white dress, warm lamp light, shallow depth of field. Cinematic Korean family melodrama, realistic East-Asian characters, warm lived-in working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her fingers coil the yellow tape measure into a slow tight circle; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, knowing] Veinte años midiéndola. Y no tengo un solo papel.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "NI UN SOLO PAPEL",
+        "highlight_words": [
+          "papel"
+        ]
+      }
+    }
+  ],
+  "capcut_export": {
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18",
+      "scene_19",
+      "scene_20",
+      "scene_21",
+      "scene_22",
+      "scene_23",
+      "scene_24",
+      "scene_25",
+      "scene_26",
+      "scene_27",
+      "scene_28",
+      "scene_29",
+      "scene_30",
+      "scene_31",
+      "scene_32",
+      "scene_33",
+      "scene_34",
+      "scene_35",
+      "scene_36",
+      "scene_37",
+      "scene_38",
+      "scene_39",
+      "scene_40",
+      "scene_41",
+      "scene_42",
+      "scene_43",
+      "scene_44",
+      "scene_45",
+      "scene_46",
+      "scene_47",
+      "scene_48",
+      "scene_49",
+      "scene_50"
+    ],
+    "caption_style": {
+      "font": "bold sans-serif",
+      "position": "lower-third",
+      "color": "white",
+      "stroke": "black"
+    },
+    "title_cards": [
+      "CONTINUARA",
+      "PARTE 2: EL RENGLON EN BLANCO"
+    ],
+    "cliffhanger_card": "PARTE 2?",
+    "music_notes": [
+      "Piano suave con una nota que se repite",
+      "Cuerda grave cuando entra la mujer del abrigo"
+    ],
+    "sfx_notes": [
+      "Maquina de coser",
+      "Campanita de puerta de tienda",
+      "Cinta metrica que se enrolla",
+      "Lluvia fina en callejon",
+      "Lata de galletas que se abre"
+    ]
+  },
+  "audio": {
+    "voice_speed": 1.25,
+    "voice_rate": 1,
+    "music_volume": 0
+  },
+  "tts_export": {
+    "mode": "per_scene",
+    "voice_id": "bfed5c0810a347dbb62e8ccce7f59c48",
+    "note": "Una sola voz femenina narra todas las escenas, incluidos los dialogos. Fish Audio por escena."
+  }
+}

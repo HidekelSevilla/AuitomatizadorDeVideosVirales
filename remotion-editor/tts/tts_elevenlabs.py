@@ -41,7 +41,9 @@ from typing import Any, Optional
 from config import (
     CHUNK_MAX_CHARS, CHUNK_MIN_CHARS, ENV_API_KEY, LANGUAGE_CODE,
     CHANNEL_V2_SPEED, CHANNEL_V3_SPEED, MANHWA_DIALOGUE_EDIT_SPEED, MANHWA_DIALOGUE_V3_SPEED,
-    MANHWA_SYSTEM_VOICE_ID, MANHWA_V3_SPEED,
+    MANHWA_MODEL_ID, MANHWA_SYSTEM_VOICE_ID, MANHWA_V2_SIMILARITY_BOOST,
+    MANHWA_V2_SPEED, MANHWA_V2_STABILITY, MANHWA_V2_STYLE,
+    MANHWA_V2_USE_SPEAKER_BOOST, MANHWA_V3_SPEED,
     MANHWA_VOICE_ID, MAX_CONCURRENCY, MAX_RETRIES, MODEL_ID, OUTPUT_FORMAT, PUBLIC_DIR,
     RETRY_BASE_SECONDS, SEED, SIMILARITY_BOOST, STABILITY, STYLE,
     SPEED, USD_PER_1000_CREDITS, V3_AUDIO_CLEANUP, V3_AUDIO_CLEANUP_FILTER,
@@ -210,6 +212,21 @@ def _scene_speakers(doc: dict) -> dict[str, str]:
 def is_dialogue_mode(doc: dict) -> bool:
     tx = doc.get("tts_export") or {}
     return str(tx.get("mode") or "").strip().lower() == "dialogue" or isinstance(tx.get("dialogue"), list)
+
+
+def uses_text_to_dialogue(doc: dict) -> bool:
+    """Text to Dialogue es exclusivo de eleven_v3.
+
+    Los JSON manhwa conservan dialogue[] para el mapeo escena->voz incluso cuando usan
+    Multilingual v2. En ese caso se sintetiza full_script como narracion continua; enviar
+    esas filas al endpoint /text-to-dialogue produciria un fallo antes de generar audio.
+    """
+    if not is_dialogue_mode(doc):
+        return False
+    tx = doc.get("tts_export") or {}
+    pt = (doc.get("pipeline") or {}).get("tts") or {}
+    model_id = str(tx.get("model_id") or pt.get("model_id") or (MANHWA_MODEL_ID if is_manhwa(doc) else MODEL_ID))
+    return model_id == "eleven_v3"
 
 
 def _merge_voice_settings(base: dict, tx: dict) -> dict:
@@ -608,14 +625,29 @@ def _resolve_settings(doc: dict, voice_id_override: Optional[str] = None) -> dic
     s = _default_settings(resolved_voice_id)
     if tx.get("model_id"):
         s["model_id"] = tx["model_id"]
+    elif is_manhwa(doc):
+        s["model_id"] = MANHWA_MODEL_ID
     if tx.get("output_format"):
         s["output_format"] = tx["output_format"]
     if tx.get("language_code"):
         s["language_code"] = tx["language_code"]
     if isinstance(tx.get("seed"), int):
         s["seed"] = tx["seed"]
-    vs = tx.get("voice_settings") or {}
+    vs = tx.get("voice_settings") or tx.get("settings") or {}
     manhwa_default_voice = is_manhwa(doc) and resolved_voice_id == MANHWA_VOICE_ID
+    if is_manhwa(doc) and s.get("model_id") == "eleven_multilingual_v2":
+        s["voice_settings"].update({
+            "stability": MANHWA_V2_STABILITY,
+            "similarity_boost": MANHWA_V2_SIMILARITY_BOOST,
+            "style": MANHWA_V2_STYLE,
+            "use_speaker_boost": MANHWA_V2_USE_SPEAKER_BOOST,
+            "speed": MANHWA_V2_SPEED,
+        })
+        if "elevenlabs_speed" in tx:
+            try:
+                s["voice_settings"]["speed"] = float(tx["elevenlabs_speed"])
+            except (TypeError, ValueError):
+                pass
     if resolved_voice_id != VOICE_ID and not manhwa_default_voice and not (isinstance(vs, dict) and "speed" in vs):
         s["voice_settings"].pop("speed", None)
     if vs:
@@ -1222,7 +1254,7 @@ def synthesize_historias(json_path: str | Path, *, voice_id: Optional[str] = Non
         return None
 
     slug = (doc.get("project") or {}).get("slug") or json_path.stem
-    if is_dialogue_mode(doc):
+    if uses_text_to_dialogue(doc):
         return synthesize_dialogue(json_path, doc, voice_id=voice_id)
 
     full_script, spans = build_scene_spans(doc)

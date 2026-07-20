@@ -53,6 +53,33 @@ assert.equal(byId.scene_05.changeLevel, "major");
 assert.equal(parsed.project.ttsExport.full_script.length, 6, "tts_export.full_script con 6 lineas");
 assert.deepEqual(parsed.project.capcutExport.clip_order, ["scene_01","scene_02","scene_03","scene_04","scene_05","scene_06"]);
 
+// El contrato humano suele escribir "Grok" con mayuscula. El loader debe normalizarlo y nunca caer al
+// proveedor global guardado (que podria ser Flow) por una diferencia de casing.
+{
+  const providerCase = parseProject({
+    project: { title: "Proveedor Grok", preset: "manhwa" },
+    pipeline: { image_generation: { tool: "Grok" } },
+    scenes: [{ id: "s1", visual: { image_prompt: "pagina Grok" } }],
+  });
+  assert.equal(providerCase.ok, true, providerCase.errors?.join("\n"));
+  assert.equal(providerCase.project.provider, "grok");
+  assert.equal(providerCase.project.imageProvider, "grok");
+}
+
+// Una corrida comparativa puede exigir un proyecto Flow realmente nuevo aunque la preferencia global
+// sea reutilizar el abierto. El flag se conserva normalizado para que el SW pueda fallar cerrado.
+{
+  const freshFlow = parseProject({
+    project: { title: "Flow limpio", serie: "flow_limpio", force_new_flow_project: true },
+    pipeline: { image_generation: { tool: "flow" }, animation: { tool: "none" } },
+    scenes: [{ id: "s1", visual: { image_prompt: "imagen de prueba" } }],
+  });
+  assert.equal(freshFlow.ok, true, freshFlow.errors?.join("\n"));
+  assert.equal(freshFlow.project.forceNewFlowProject, true);
+  assert.equal(freshFlow.project.imageProvider, "flow");
+  assert.equal(freshFlow.project.imageOnly, true);
+}
+
 // --- Dry-run no debe romper con el esquema nuevo y debe reflejar las refs ---
 const plan = dryRunPlan(parsed.scenes, null);
 assert.equal(plan.length, 6, "plan de 6 escenas");

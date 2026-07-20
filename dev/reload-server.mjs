@@ -24,10 +24,19 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DOWNLOADS_DIR = path.resolve(os.homedir(), "Downloads");
 const WS_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
-// Carpetas/archivos que NO disparan reload. (remotion-editor incluido: escribir audio/clips ahi
-// NO debe recargar la extension.)
-const IGNORE = [/[\\/]dev[\\/]/, /[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/, /[\\/]tests[\\/]/,
-  /[\\/]assets[\\/]__asset_store_test_/, /[\\/]remotion-editor[\\/]/, /\.output$/];
+// Reload con lista BLANCA: el repo tambien contiene assets, JSON, medios, logs y .git. Vigilar todo el
+// arbol hacia que cada imagen guardada recargara el service worker a mitad de onLoadJson/descarga y
+// cerrara el canal de mensajes. Solo el codigo que Chrome carga como extension puede dispararlo.
+const EXTENSION_RELOAD_DIRS = new Set(["background", "content", "lib", "offscreen", "shared", "sidepanel"]);
+const EXTENSION_RELOAD_FILES = new Set(["manifest.json", "dev/reload-client.js"]);
+
+function shouldReloadExtensionFile(filename) {
+  const rel = String(filename || "").replace(/\\/g, "/").replace(/^\.\//, "");
+  if (!rel || /(^|\/)node_modules\//.test(rel) || /(^|\/)\.git(?:\/|$)/.test(rel) || /\.output$/.test(rel)) return false;
+  if (EXTENSION_RELOAD_FILES.has(rel)) return true;
+  const top = rel.split("/", 1)[0];
+  return EXTENSION_RELOAD_DIRS.has(top) && /\.(?:js|mjs|html|css|json)$/.test(rel);
+}
 
 // Solo se permite escribir dentro de esta carpeta via POST /save (sink de medios de la extension).
 const PUBLIC_DIR = path.join(ROOT, "remotion-editor", "public");
@@ -38,6 +47,10 @@ const V3_AUDIO_CLEANUP_FILTER = process.env.ELEVENLABS_V3_AUDIO_CLEANUP_FILTER
   + "alimiter=limit=0.95";
 
 const clients = new Set();
+const RUNTIME_PROJECT_DIR = path.join(ROOT, "remotion-editor", "tmp", "manhwa-runtime");
+// slug -> ruta de un snapshot inmutable. Nunca guardamos aqui el objeto vivo ni releemos primero el
+// JSON mutable de queue durante una composicion: las celdas y el blueprint deben pertenecer al mismo run.
+const runtimeProjectsBySlug = new Map();
 
 const pathKey = (p) => process.platform === "win32" ? String(p).toLowerCase() : String(p);
 const isWithin = (candidate, parent) => pathKey(candidate) === pathKey(parent)
@@ -50,6 +63,39 @@ const allowedMoveSource = (candidate) => isWithin(candidate, DOWNLOADS_DIR)
   || (ALLOW_TEST_MOVE_SOURCES && isWithin(candidate, ROOT));
 const mayDeleteMoveSource = (candidate) => isWithin(candidate, DOWNLOADS_DIR);
 const samePath = (a, b) => pathKey(a) === pathKey(b);
+
+function manhwaPageArtifacts(slug, sceneId) {
+  const images = path.join(PUBLIC_DIR, slug, "images");
+  return [
+    path.join(images, `${sceneId}.jpg`),
+    path.join(images, `${sceneId}.composition.json`),
+    path.join(images, `${sceneId}.background-mask.png`),
+  ];
+}
+
+// Invalida el conjunto derivado como una unidad logica: primero aparta TODOS los artefactos y solo
+// despues los borra. Si un rename falla, revierte los ya apartados y no deja JPG nuevo con mask viejo.
+function invalidateManhwaPageArtifacts(slug, sceneId) {
+  const token = `${process.pid}-${Date.now()}-${crypto.randomBytes(4).toString("hex")}`;
+  const moved = [];
+  try {
+    for (const artifact of manhwaPageArtifacts(slug, sceneId)) {
+      if (!fs.existsSync(artifact)) continue;
+      const tombstone = `${artifact}.stale-${token}`;
+      fs.renameSync(artifact, tombstone);
+      moved.push([artifact, tombstone]);
+    }
+  } catch (error) {
+    for (const [artifact, tombstone] of moved.reverse()) {
+      try { if (fs.existsSync(tombstone)) fs.renameSync(tombstone, artifact); } catch { /* conserva lo recuperable */ }
+    }
+    throw error;
+  }
+  for (const [, tombstone] of moved) {
+    try { fs.rmSync(tombstone, { force: true }); } catch { /* el canonical ya quedo invalidado */ }
+  }
+  return moved.length;
+}
 
 // Pillow solo decodifica/reduce; la decision vive en shared/grok-image-quality.mjs para que los
 // umbrales calibrados sean una sola fuente de verdad. Salida JSON/base64 mantiene el helper Node
@@ -71,6 +117,69 @@ with Image.open(p) as src:
       "width": im.width, "height": im.height,
       "rgba": base64.b64encode(im.tobytes()).decode("ascii")}))
 `;
+
+// Segunda barrera para Flow: una referencia subida y un resultado comparten alt=/edit/ en el DOM.
+// Comparamos los BYTES descargados contra cada referencia, tolerando resize/recompresion JPEG. Los
+// umbrales son deliberadamente estrictos: detectan la misma imagen, no una composicion solo parecida.
+const IMAGE_REFERENCE_COMPARE_PY = String.raw`
+import json, math, sys
+from PIL import Image, ImageChops, ImageStat
+
+candidate_path, reference_paths = sys.argv[1], sys.argv[2:]
+try:
+    method = Image.Resampling.LANCZOS
+except AttributeError:
+    method = Image.LANCZOS
+
+def prepared(path, mode, size):
+    with Image.open(path) as src:
+        src.load()
+        return src.convert(mode).resize(size, method)
+
+def dhash(path):
+    im = prepared(path, "L", (9, 16))
+    px = list(im.getdata())
+    bits = []
+    for y in range(16):
+        row = y * 9
+        bits.extend(px[row + x] > px[row + x + 1] for x in range(8))
+    return bits
+
+c_rgb = prepared(candidate_path, "RGB", (96, 96))
+c_gray = list(c_rgb.convert("L").getdata())
+c_hash = dhash(candidate_path)
+out = []
+for ref_path in reference_paths:
+    r_rgb = prepared(ref_path, "RGB", (96, 96))
+    r_gray = list(r_rgb.convert("L").getdata())
+    diff = ImageChops.difference(c_rgb, r_rgb)
+    mae = sum(ImageStat.Stat(diff).mean) / (3.0 * 255.0)
+    cm = sum(c_gray) / len(c_gray)
+    rm = sum(r_gray) / len(r_gray)
+    numerator = sum((a - cm) * (b - rm) for a, b in zip(c_gray, r_gray))
+    cden = sum((a - cm) ** 2 for a in c_gray)
+    rden = sum((b - rm) ** 2 for b in r_gray)
+    correlation = numerator / math.sqrt(cden * rden) if cden > 0 and rden > 0 else (1.0 if mae == 0 else 0.0)
+    r_hash = dhash(ref_path)
+    distance = sum(a != b for a, b in zip(c_hash, r_hash))
+    near_exact = correlation >= 0.999 and mae <= 0.004 and distance <= 5
+    out.append({"path": ref_path, "correlation": correlation, "mae": mae,
+                "dhashDistance": distance, "nearExact": near_exact})
+print(json.dumps(out))
+`;
+
+function compareImageToReferences(candidate, references) {
+  if (!references.length) return [];
+  const py = process.env.FLOW_IMAGE_PYTHON || "python";
+  const compared = spawnSync(py, ["-c", IMAGE_REFERENCE_COMPARE_PY, candidate, ...references], {
+    encoding: "utf8", windowsHide: true, maxBuffer: 2 * 1024 * 1024,
+  });
+  if (compared.status !== 0) {
+    throw new Error(`no pude comparar imagen con referencias: ${(compared.stderr || compared.error?.message || "Pillow fallo").trim()}`);
+  }
+  try { return JSON.parse(String(compared.stdout || "[]").trim()); }
+  catch { throw new Error("el comparador de referencias devolvio datos invalidos"); }
+}
 
 function inspectImageFile(abs) {
   const ext = path.extname(abs).toLowerCase();
@@ -138,7 +247,11 @@ function cors(res) {
 const remote = {
   state: null,
   stateUpdatedAt: 0,
-  commandSeq: 0,
+  // El service worker persiste lastCommandId, pero este servidor de desarrollo se
+  // reinicia con frecuencia. Un contador que volviera a 0 podria repetir el ID
+  // ya confirmado por la extension y hacer que la primera orden nueva se pierda.
+  // Partir del reloj mantiene los IDs crecientes entre reinicios del servidor.
+  commandSeq: Date.now(),
   commands: [],
   eventSeq: 0,
   events: [],
@@ -169,8 +282,44 @@ function readJsonBody(req, maxBytes = 8 * 1024 * 1024) {
 }
 
 function sendJson(res, obj, status = 200) {
-  res.writeHead(status, { "content-type": "application/json" });
+  // Chrome extension fetch debe decodificar comandos y prompts en UTF-8. Sin charset, algunas
+  // versiones de Chromium trataban los bytes como Windows-1252 y convertian "Ladrón" en mojibake.
+  res.writeHead(status, { "content-type": "application/json; charset=utf-8" });
   res.end(JSON.stringify(obj));
+}
+
+function persistRuntimeProjectSnapshot(slug, project) {
+  const normalizedSlug = slugify(String(slug || ""));
+  if (!normalizedSlug) throw new Error("slug invalido para snapshot runtime");
+  const payload = JSON.stringify(project, null, 2);
+  const digest = crypto.createHash("sha256").update(payload).digest("hex");
+  const token = `${normalizedSlug}.${digest}.json`;
+  fs.mkdirSync(RUNTIME_PROJECT_DIR, { recursive: true });
+  const finalPath = path.join(RUNTIME_PROJECT_DIR, token);
+  if (!fs.existsSync(finalPath)) {
+    const tempPath = path.join(RUNTIME_PROJECT_DIR, `.${token}.${process.pid}.${Date.now()}.tmp`);
+    try {
+      fs.writeFileSync(tempPath, payload, "utf8");
+      fs.renameSync(tempPath, finalPath);
+    } finally {
+      try { fs.rmSync(tempPath, { force: true }); } catch { /* noop */ }
+    }
+  }
+  runtimeProjectsBySlug.set(normalizedSlug, finalPath);
+  return { token, path: finalPath };
+}
+
+function runtimeProjectSnapshotPath(slug, token = "") {
+  const normalizedSlug = slugify(String(slug || ""));
+  const rawToken = String(token || "").trim();
+  if (rawToken) {
+    const expectedPrefix = `${normalizedSlug}.`;
+    if (!rawToken.startsWith(expectedPrefix) || !/^[a-z0-9_-]+\.[a-f0-9]{64}\.json$/.test(rawToken)) return null;
+    const candidate = path.join(RUNTIME_PROJECT_DIR, rawToken);
+    return fs.existsSync(candidate) && fs.statSync(candidate).isFile() ? candidate : null;
+  }
+  const cachedPath = runtimeProjectsBySlug.get(normalizedSlug);
+  return cachedPath && fs.existsSync(cachedPath) ? cachedPath : null;
 }
 
 function pushRemoteEvent(event) {
@@ -196,6 +345,12 @@ const server = http.createServer((req, res) => {
       sendJson(res, { ok: false, accepted: false, error: "ruta de imagen no permitida" }, 403);
       return;
     }
+    const referencePaths = u.searchParams.getAll("reference").map((value) => path.resolve(value));
+    const forbiddenReference = referencePaths.find((candidate) => !(isWithin(candidate, ROOT) || isWithin(candidate, DOWNLOADS_DIR)));
+    if (forbiddenReference) {
+      sendJson(res, { ok: false, accepted: false, error: "ruta de referencia no permitida" }, 403);
+      return;
+    }
     try {
       const result = inspectImageFile(abs);
       if (!result.accepted) {
@@ -204,7 +359,23 @@ const server = http.createServer((req, res) => {
         sendJson(res, { ok: false, ...result, error }, 422);
         return;
       }
-      sendJson(res, { ok: true, ...result, path: abs });
+      for (const reference of referencePaths) {
+        if (!fs.existsSync(reference) || !fs.statSync(reference).isFile()) {
+          throw new Error(`referencia no encontrada: ${reference}`);
+        }
+      }
+      const comparisons = compareImageToReferences(abs, referencePaths);
+      const duplicate = comparisons.find((item) => item.nearExact);
+      if (duplicate) {
+        const error = `imagen rechazada: duplica casi exactamente la referencia ${path.basename(duplicate.path)}`;
+        log(`RECHAZADO image/validate ${path.basename(abs)}: ${error}`);
+        sendJson(res, {
+          ok: false, accepted: false, reason: "duplicates_reference", error,
+          sha256: result.sha256, duplicateReference: duplicate, comparisons,
+        }, 422);
+        return;
+      }
+      sendJson(res, { ok: true, ...result, comparisons, path: abs });
     } catch (e) {
       const error = String(e?.message || e);
       log(`ERROR image/validate ${path.basename(abs)}: ${error}`);
@@ -466,14 +637,139 @@ const server = http.createServer((req, res) => {
       try {
         const p = JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}");
         const out = prepareProjectMedia(p);
+        const snapshot = persistRuntimeProjectSnapshot(out.slug, p);
         res.writeHead(200, { "content-type": "application/json" });
-        res.end(JSON.stringify({ ok: true, ...out }));
+        res.end(JSON.stringify({ ok: true, ...out, runtimeSnapshot: snapshot.token }));
       } catch (e) {
         res.writeHead(500, { "content-type": "application/json" });
         res.end(JSON.stringify({ ok: false, error: String(e?.message || e) }));
       }
     });
     req.on("error", () => { try { res.writeHead(400); res.end(JSON.stringify({ ok: false, error: "bad request" })); } catch { /* noop */ } });
+    return;
+  }
+
+  // POST /manhwa/invalidate-page : retake de una celda invalida JPG + provenance + mask juntos.
+  if (req.method === "POST" && u.pathname === "/manhwa/invalidate-page") {
+    readJsonBody(req).then((body) => {
+      const slug = slugify(String(body?.slug || ""));
+      const sceneId = String(body?.sceneId || "").trim();
+      if (!slug || !/^[a-z0-9][a-z0-9_-]*$/.test(sceneId)) {
+        sendJson(res, { ok: false, error: "slug/sceneId invalido" }, 400);
+        return;
+      }
+      try {
+        const removed = invalidateManhwaPageArtifacts(slug, sceneId);
+        sendJson(res, { ok: true, removed });
+      } catch (error) {
+        sendJson(res, { ok: false, error: String(error?.message || error) }, 500);
+      }
+    }).catch((e) => sendJson(res, { ok: false, error: String(e?.message || e) }, 400));
+    return;
+  }
+
+  // POST /manhwa/compose-page: compatibilidad exclusiva con paginas V6 basadas en celdas.
+  // V7 es Grok-native y nunca entra aqui: la imagen descargada ya es la pagina final.
+  if (req.method === "POST" && u.pathname === "/manhwa/compose-page") {
+    readJsonBody(req).then((body) => {
+      const slug = slugify(String(body?.slug || ""));
+      const sceneId = String(body?.sceneId || "").trim();
+      const jobName = String(body?.jobName || "").trim();
+      const runtimeSnapshot = String(body?.runtimeSnapshot || "").trim();
+      if (!slug || !/^[a-z0-9][a-z0-9_-]*$/.test(sceneId)
+          || (jobName && !/^[a-z0-9][a-z0-9_-]*$/i.test(jobName))) {
+        sendJson(res, { ok: false, error: "slug/sceneId invalido" }, 400);
+        return;
+      }
+      const remotionRoot = path.join(ROOT, "remotion-editor");
+      // Fuente primaria: snapshot exacto escrito al cargar el proyecto. El archivo de queue puede ser
+      // editado mientras Grok genera celdas; releerlo aqui mezclaria prompts A con layout/fuentes B.
+      let projectPath = runtimeProjectSnapshotPath(slug, runtimeSnapshot);
+      if (runtimeSnapshot && !projectPath) {
+        sendJson(res, { ok: false, error: `snapshot runtime invalido o ausente para ${slug}; vuelve a cargar el proyecto` }, 409);
+        return;
+      }
+      if (!projectPath) {
+        // Compatibilidad para un estado persistido por una extension anterior al snapshot. Los runs
+        // nuevos siempre traen runtimeSnapshot; este fallback permite recuperar uno viejo tras update.
+        projectPath = jobName ? queueJsonPath(jobName) : null;
+      }
+      if (!projectPath) {
+        sendJson(res, { ok: false, error: `no tengo el snapshot productor para ${slug}; vuelve a cargarlo` }, 404);
+        return;
+      }
+      let project;
+      let projectRaw = "";
+      try {
+        projectRaw = fs.readFileSync(projectPath, "utf8").replace(/^\uFEFF/, "");
+        project = JSON.parse(projectRaw);
+      }
+      catch (e) { sendJson(res, { ok: false, error: `no pude leer JSON productor: ${e?.message || e}` }, 400); return; }
+      if (runtimeSnapshot) {
+        const expectedDigest = runtimeSnapshot.split(".").at(-2);
+        const actualDigest = crypto.createHash("sha256").update(projectRaw).digest("hex");
+        if (actualDigest !== expectedDigest) {
+          sendJson(res, { ok: false, error: "snapshot runtime alterado; vuelve a cargar el proyecto" }, 409);
+          return;
+        }
+      }
+      const projectSlug = slugify(project?.project?.slug || project?.project?.title || "");
+      const scene = (Array.isArray(project?.scenes) ? project.scenes : []).find((item) => item?.id === sceneId);
+      const page = scene?.visual?.page_blueprint;
+      if (projectSlug !== slug || !page || typeof page !== "object") {
+        sendJson(res, { ok: false, error: `el JSON productor no contiene page_blueprint para ${sceneId}` }, 400);
+        return;
+      }
+      const isV7 = project?.v7_contract?.version === "7.0";
+      if (isV7) {
+        sendJson(res, {
+          ok: false,
+          error: "V7 usa GROK_NATIVE_PAGE: Grok entrega el JPG completo y el editor no compone paneles.",
+        }, 409);
+        return;
+      }
+      const adapterEnabled = project?.v6_contract?.runtime_adapter?.page_blueprint_slots_integrated === true;
+      if (!adapterEnabled) {
+        sendJson(res, { ok: false, error: "adaptador page_blueprint no autorizado por v6_contract" }, 400);
+        return;
+      }
+      const composer = path.join(remotionRoot, "tools", "manhwa-v6", "compose_pages_v6.py");
+      if (!fs.existsSync(composer)) {
+        sendJson(res, { ok: false, error: `compositor ausente: ${path.relative(ROOT, composer)}` }, 500);
+        return;
+      }
+      const publicRoot = path.join(remotionRoot, "public", slug);
+      const outputDir = path.join(publicRoot, "images");
+      fs.mkdirSync(outputDir, { recursive: true });
+      // Ninguna composicion (incluido un fallo) puede heredar .composition.json o mask de una revision
+      // anterior. El compositor publica los tres desde staging; este borrado previo cierra el stale-mask.
+      invalidateManhwaPageArtifacts(slug, sceneId);
+      const py = process.env.FLOW_IMAGE_PYTHON || "python";
+      const child = spawn(py, [composer, projectPath, publicRoot, "--output-dir", outputDir, "--scene-id", sceneId], {
+        cwd: remotionRoot,
+        windowsHide: true,
+      });
+      let stdout = "", stderr = "", finished = false;
+      child.stdout?.on("data", (chunk) => { stdout += chunk; if (stdout.length > 1_000_000) stdout = stdout.slice(-200_000); });
+      child.stderr?.on("data", (chunk) => { stderr += chunk; if (stderr.length > 1_000_000) stderr = stderr.slice(-200_000); });
+      const timeout = setTimeout(() => { if (!finished) { try { child.kill("SIGKILL"); } catch { /* noop */ } } }, 120_000);
+      const finish = (code, spawnError = null) => {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timeout);
+        const finalPath = path.join(outputDir, `${sceneId}.jpg`);
+        const ok = code === 0 && fileOk(finalPath);
+        if (!ok) log(`ERROR manhwa/compose-page ${sceneId}: ${spawnError || stderr || stdout || `exit ${code}`}`);
+        sendJson(res, ok ? {
+          ok: true,
+          path: path.relative(ROOT, finalPath),
+          abspath: finalPath,
+          stdout: stdout.trim().slice(-4000),
+        } : { ok: false, error: spawnError || stderr.trim() || stdout.trim() || `exit ${code}` }, ok ? 200 : 500);
+      };
+      child.on("error", (e) => finish(null, e?.message || String(e)));
+      child.on("close", (code) => finish(code));
+    }).catch((e) => sendJson(res, { ok: false, error: String(e?.message || e) }, 400));
     return;
   }
 
@@ -498,7 +794,7 @@ const server = http.createServer((req, res) => {
         return;
       }
       if (samePath(fromAbs, dest)) {
-        sendJson(res, { ok: true, noop: true, path: path.relative(ROOT, dest) });
+        sendJson(res, { ok: true, noop: true, path: path.relative(ROOT, dest), abspath: dest });
         return;
       }
       if (!fs.existsSync(fromAbs)) {
@@ -531,7 +827,7 @@ const server = http.createServer((req, res) => {
         try { fs.unlinkSync(fromAbs); } catch { /* si Chrome aun lo tiene tomado, no es critico: queda copia en Descargas */ }
       }
       res.writeHead(200, { "content-type": "application/json" });
-      res.end(JSON.stringify({ ok: true, path: path.relative(ROOT, dest) }));
+      res.end(JSON.stringify({ ok: true, path: path.relative(ROOT, dest), abspath: dest }));
       log(`${mayDeleteMoveSource(fromAbs) ? "movido" : "copiado"} ${path.basename(fromAbs)} -> ${path.relative(ROOT, dest)}`);
     } catch (e) {
       res.writeHead(500, { "content-type": "text/plain" });
@@ -1065,7 +1361,7 @@ let pending = new Set();
 fs.watch(ROOT, { recursive: true }, (_event, filename) => {
   if (!filename) return;
   const rel = filename.toString();
-  if (IGNORE.some((re) => re.test(path.sep + rel))) return;
+  if (!shouldReloadExtensionFile(rel)) return;
   pending.add(rel);
   clearTimeout(timer);
   timer = setTimeout(() => {

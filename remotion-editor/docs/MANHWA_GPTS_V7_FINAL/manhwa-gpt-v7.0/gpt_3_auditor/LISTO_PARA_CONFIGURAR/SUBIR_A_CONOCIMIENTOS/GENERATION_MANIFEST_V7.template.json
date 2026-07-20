@@ -1,0 +1,53 @@
+{
+  "schema": "GENERATION_MANIFEST_V7",
+  "version": "7.0",
+  "template_status": "PENDING_REAL_GENERATION_DATA",
+  "template_notice": "FAIL-CLOSED: one factual record per Grok-native scene JPG. Never invent provider data or provenance.",
+  "project_sha256": "REPLACE_WITH_REAL_SEMANTIC_PROJECT_SHA256",
+  "project_hash_semantics": "SHA-256 of sorted compact UTF-8 JSON with integral floats and negative zero normalized",
+  "generated_at": "REPLACE_WITH_REAL_UTC_TIMESTAMP",
+  "source_record_schema": {
+    "shot_id": "exact scene.id from producer JSON",
+    "prompt": "exact scene.visual.image_prompt submitted byte-for-byte to Grok",
+    "model": "actual provider/model version or NOT_EXPOSED_BY_PROVIDER",
+    "settings": {
+      "aspect_ratio": "9:16",
+      "seed": "actual integer or null when unavailable"
+    },
+    "job_id": "actual provider job ID or documented durable local request ID",
+    "output_path": "exact images/scene_XX.jpg direct Grok output path",
+    "output_sha256": "actual lowercase SHA-256 of the direct JPG bytes",
+    "generation_attempt": "integer 1..3",
+    "status": "APPROVED for release",
+    "attempt_history": [
+      {
+        "attempt": 1,
+        "submitted_at": "actual UTC timestamp",
+        "prompt": "exact natural full-page prompt for this attempt",
+        "model": "actual provider/model version or NOT_EXPOSED_BY_PROVIDER",
+        "settings": {
+          "aspect_ratio": "9:16",
+          "seed": null
+        },
+        "references": [
+          {
+            "path": "actual relative reference path",
+            "sha256": "actual SHA-256 of those exact bytes"
+          }
+        ],
+        "job_id": "actual provider job ID or durable local request ID",
+        "output_path": "required for GENERATED/APPROVED; rejected may omit only with factual error",
+        "output_sha256": "required for GENERATED/APPROVED; rejected may omit only with factual error",
+        "error": "required factual provider error only when REJECTED has no output",
+        "status": "REJECTED, GENERATED or APPROVED"
+      }
+    ],
+    "references": [
+      {
+        "path": "exact scene.references_v7 source_path actually sent",
+        "sha256": "exact SHA-256 of those bytes"
+      }
+    ]
+  },
+  "sources": []
+}

@@ -1,0 +1,414 @@
+{
+  "project": {
+    "slug": "juicios_medievales_animales_reel",
+    "title": "Juicios medievales contra animales",
+    "language": "es-MX",
+    "preset": "historias_reel",
+    "aspect_ratio": "9:16",
+    "orientation": "vertical",
+    "visual_style": "A_rico_pintado",
+    "topic": "Los procesos legales contra animales individuales y plagas en la Europa medieval y premoderna, usando el caso de Falaise de 1386 como prueba temprana",
+    "tone": "documental de misterio histórico, morbo simbólico, absurdo legal, precisión académica y cierre reflexivo",
+    "duration_estimate_s": 77.5,
+    "speed_final": 1,
+    "scene_count": 18,
+    "tts_model": "eleven_v3"
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok",
+      "note": "Imágenes verticales por defecto; algunas escenas pueden animarse si render_mode=animated."
+    },
+    "animation": {
+      "tool": "grok_video",
+      "note": "Solo se usa en escenas con render_mode animated; el resto queda estático."
+    },
+    "render": {
+      "tool": "remotion_ffmpeg",
+      "motion": "Movimiento motivado: static por default; push_in para tensión judicial; pan solo para calles o multitudes; shake no se usa para evitar gore.",
+      "timing": "duration_target_s = duración mínima; congelar imagen en silencio si la narración acaba antes; hold_priority alta = no recortar."
+    },
+    "audio": {
+      "tool": "elevenlabs",
+      "note": "UNA sola voz continua; los voice/scene_NNN.mp3 son rebanadas por timestamps."
+    }
+  },
+  "characters": [
+    {
+      "id": "cerda_falaise",
+      "name": "Cerda de Falaise",
+      "role": "animal acusado en el caso de 1386 usado como prueba temprana del fenómeno",
+      "visual": "Animal estilizado 2D, color rosa-marrón apagado, ojos simples y expresión confundida; aparece con cadena simbólica suelta o ante el tribunal, nunca gore ni realismo."
+    },
+    {
+      "id": "juez_medieval",
+      "name": "Juez medieval",
+      "role": "autoridad secular que preside el juicio contra el animal",
+      "visual": "Monito blanco con toga judicial oscura, gorro plano, pergaminos, sello de cera y gesto severo."
+    },
+    {
+      "id": "escribano",
+      "name": "Escribano",
+      "role": "registra testigos, sentencia y procedimiento",
+      "visual": "Monito blanco con túnica marrón, pluma, tintero, atril y expresión nerviosa."
+    },
+    {
+      "id": "testigos",
+      "name": "Testigos y vecinos",
+      "role": "comunidad afectada que observa y declara",
+      "visual": "Monitos blancos con túnicas de lana, capuchas, cinturones, canastas y gestos de miedo, duelo o desconcierto."
+    },
+    {
+      "id": "clerigos",
+      "name": "Clérigos y autoridades eclesiásticas",
+      "role": "participan en procedimientos contra plagas enteras",
+      "visual": "Monitos blancos con sotanas negras o crema, crucifijos pequeños, pergaminos eclesiásticos y gestos solemnes."
+    },
+    {
+      "id": "defensor",
+      "name": "Defensor legal",
+      "role": "figura que representa la formalidad absurda de algunos procedimientos contra plagas",
+      "visual": "Monito blanco con toga oscura, mano levantada, pergaminos y mirada incómoda."
+    },
+    {
+      "id": "plagas",
+      "name": "Ratas, insectos y langostas",
+      "role": "plagas colectivas citadas o procesadas simbólicamente",
+      "visual": "Pequeños íconos animales estilizados, oscuros y simples, nunca realistas ni grotescos."
+    },
+    {
+      "id": "narrador",
+      "name": "Narrador visual",
+      "role": "monito presentador para láminas, mapas, comparaciones y cierres",
+      "visual": "Monito blanco liso sin vestuario, cabeza redonda, ojos grandes y gestos expresivos."
+    }
+  ],
+  "ingredients": {
+    "cerda_falaise": "Animal estilizado no realista, rosa-marrón apagado, ojos simples de confusión, cadena simbólica suelta cuando aparece ante el tribunal. Nunca gore ni sufrimiento explícito.",
+    "juez_medieval": "Monito blanco con cabeza redonda lisa, sin pelo ni barba, toga judicial oscura, gorro plano, pergaminos, sello de cera y gesto severo.",
+    "escribano": "Monito blanco con túnica marrón, pluma, tintero, atril, libro de registro y expresión ansiosa.",
+    "testigos_y_vecinos": "Monitos blancos con túnicas de lana, capuchas, cinturones simples, canastas, botas de cuero, rostros de duelo, miedo o incredulidad.",
+    "clerigos": "Monitos blancos con sotanas negras o crema, crucifijos pequeños, pergaminos eclesiásticos, libros y gestos solemnes.",
+    "defensor": "Monito blanco con toga oscura, pergaminos, mano levantada como si argumentara y mirada incómoda por defender una plaga que no puede hablar.",
+    "plagas": "Ratas, insectos y langostas como íconos pequeños, oscuros y estilizados; se usan para representar procedimientos colectivos, nunca como animales realistas o asquerosos.",
+    "narrador": "Monito blanco liso sin vestuario, cabeza redonda y ojos grandes, usado solo en láminas, comparaciones y reacciones.",
+    "fuentes_produccion": "Fuentes para caption o documento de producción: JSTOR Daily, When Societies Put Animals on Trial; Library of Congress, Animals on Trial: Formal Legal Proceedings, Criminal Acts, and Torts of Animals; Springer / Sophia, Casting Justice Before Swine; University of Groningen research profile sobre animal trials; Leiden Medievalists Blog sobre el caso de Falaise y la tradición de E. P. Evans.",
+    "caption_sugerido": "En la Europa medieval y premoderna existieron procesos legales contra animales. Algunos fueron juicios seculares contra animales individuales, como cerdos acusados de matar personas; otros fueron procedimientos eclesiásticos contra plagas como ratas o insectos. El caso de Falaise de 1386, en Francia, es uno de los ejemplos más citados: una cerda fue procesada y ejecutada públicamente tras la muerte de un niño. Fuentes consultadas: JSTOR Daily, Library of Congress, Springer / Sophia y University of Groningen.",
+    "notas_precision": "No presentar todos los casos como estrictamente medievales: usar Europa medieval y premoderna. El caso de Falaise se usa como ejemplo citado, pero evitar detalles gráficos como vestir al animal o tortura si no se van a documentar en pantalla. El cierre es interpretativo: estos procedimientos podían ayudar a restaurar un orden social o religioso, no fueron únicamente miedo ni búsqueda simple de culpables.",
+    "regla_consistencia": "Personajes recurrentes = SIEMPRE el mismo monito; se distinguen por vestuario, postura y props. Animales = simples, estilizados y no realistas. Violencia siempre simbólica: sombras, siluetas, juicio, pergaminos y reacciones; nunca gore, sangre ni heridas realistas."
+  },
+  "scenes": [
+    {
+      "scene_id": "scene_001",
+      "panel_type": "cinematica",
+      "beat_type": "misterio",
+      "duration_target_s": 4.4,
+      "hold_priority": "alta",
+      "motion": "push_in",
+      "render_mode": "static",
+      "text_in_image": "EL ACUSADO ERA UN CERDO",
+      "label_type": "title",
+      "voiceover": {
+        "text": "[curious] En este tribunal, el acusado no podía hablar… ni entender la ley."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a dim medieval courtroom with a worried stylized pig standing before a tall wooden judge bench, the judge leaning forward, a scribe freezing mid-quill, witnesses staring in disbelief; stone walls, candles, legal scrolls, chains shown only as loose symbols, heavy shadows; impossible trial mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. HERO RULE: the white stick-figure characters and the stylized animal defendant are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: cold candle gold, courtroom brown, muted pink pig, deep stone gray. Camera: dramatic LOW-ANGLE CLOSE-UP. a bold hand-painted Spanish title reads \"EL ACUSADO ERA UN CERDO\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. All text in clear bold Spanish exactly as written. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    },
+    {
+      "scene_id": "scene_002",
+      "panel_type": "cinematica",
+      "beat_type": "misterio",
+      "duration_target_s": 3.1,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "NO ERA HUMANO",
+      "label_type": "title",
+      "voiceover": {
+        "text": "[short pause] Ni siquiera era humano."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW the pig defendant in the center of the courtroom, framed between giant human judges and clerks, all eyes turned toward it; medieval bench, parchment stacks, torchlight, dusty floor and silent crowd behind; absurd but unsettling mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. HERO RULE: the white stick-figure characters and the stylized animal defendant are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: desaturated parchment beige, pig pink-brown, black robe shadows and candle orange. Camera: centered symmetrical MEDIUM SHOT. a bold hand-painted Spanish title reads \"NO ERA HUMANO\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. All text in clear bold Spanish exactly as written. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    },
+    {
+      "scene_id": "scene_003",
+      "panel_type": "cinematica",
+      "beat_type": "misterio",
+      "duration_target_s": 4.2,
+      "hold_priority": "alta",
+      "motion": "push_in",
+      "render_mode": "static",
+      "text_in_image": "CONDENADO",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Era un cerdo, y el juez estaba a punto de condenarlo a muerte."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW the judge raising a sentencing scroll while the pig lowers its head and the crowd recoils, a hooded executioner silhouette waiting far in the background, no graphic violence; medieval court hall with a narrow window, gallows only as tiny distant symbol; chilling legal mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. HERO RULE: the white stick-figure characters and the stylized animal defendant are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: ink black, parchment tan, muted red seal and dim blue shadows. Camera: DYNAMIC ANGLE MEDIUM SHOT. a bold hand-painted Spanish title reads \"CONDENADO\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. All text in clear bold Spanish exactly as written. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    },
+    {
+      "scene_id": "scene_004",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 4.4,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "FALAISE 1386",
+      "label_type": "title",
+      "voiceover": {
+        "text": "En mil trescientos ochenta y seis, en Falaise, Francia, una cerda fue procesada tras la muerte de un niño."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a medieval French town square outside the courthouse, grieving family silhouettes near a small covered bundle while guards lead the stylized sow toward the court, all non-graphic and respectful; timber houses, church tower, muddy street, onlookers and winter light; tragic origin mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. HERO RULE: the white stick-figure characters and the stylized animal defendant are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: cold gray morning, muddy brown, muted wool colors and pale parchment light. Camera: WIDE SHOT. a bold hand-painted Spanish title reads \"FALAISE 1386\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. All text in clear bold Spanish exactly as written. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    },
+    {
+      "scene_id": "scene_005",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 3.6,
+      "hold_priority": "normal",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "TESTIGOS",
+      "label_type": "micro",
+      "voiceover": {
+        "text": "Hubo testigos, tribunal y sentencia."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW three witnesses raising hands before the judge, a scribe writing quickly and the pig defendant visible beside the bench; wooden rail, candlelit wall, legal ledgers, crowd murmurs; formal procedure mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. HERO RULE: the white stick-figure characters and the stylized animal defendant are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: warm wood brown, ink black, candle yellow and muted cloth colors. Camera: OVER-THE-SHOULDER WIDE SHOT. one SMALL discreet hand-painted label reading \"TESTIGOS\" on a little aged-parchment tag with a thin small red arrow pointing to the subject, kept small and unobtrusive in a corner, NOT a big headline, NOT modern infographic. The only text is that small label, in clear Spanish exactly as written; no other text anywhere. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    },
+    {
+      "scene_id": "scene_006",
+      "panel_type": "cinematica",
+      "beat_type": "misterio",
+      "duration_target_s": 4,
+      "hold_priority": "alta",
+      "motion": "push_in",
+      "render_mode": "static",
+      "text_in_image": "EJECUCIÓN PÚBLICA",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Al final, ejecución pública."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a public square shown from far away with the pig as a small simplified silhouette under a dark symbolic gallows shape, townspeople looking away or covering their eyes, no visible suffering, no blood; church bells, cloudy sky, cobblestones and long shadows; grim non-graphic mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. HERO RULE: the white stick-figure characters and the stylized animal defendant are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: storm gray, faded tan, cold blue shadows and small muted red accents. Camera: HIGH-ANGLE EXTREME WIDE SHOT. a bold hand-painted Spanish title reads \"EJECUCIÓN PÚBLICA\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. All text in clear bold Spanish exactly as written. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    },
+    {
+      "scene_id": "scene_007",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 4.2,
+      "hold_priority": "normal",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "ORDEN ROTO",
+      "label_type": "title",
+      "voiceover": {
+        "text": "[appalled] Para quienes presenciaron aquello, el animal no era solo peligroso."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW town elders and families pointing from the courthouse to the pig while a cracked balance-scale symbol hangs above them, everyone anxious rather than angry; medieval town square, court door, market stalls and church tower in background; community shaken mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. HERO RULE: the white stick-figure characters and the stylized animal defendant are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: dusty village beige, black robes, worried red, soft overcast blue. Camera: MEDIUM WIDE SHOT. a bold hand-painted Spanish title reads \"ORDEN ROTO\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. All text in clear bold Spanish exactly as written. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    },
+    {
+      "scene_id": "scene_008",
+      "panel_type": "diagrama",
+      "beat_type": "narrativa",
+      "duration_target_s": 4,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "RESTAURAR ORDEN",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Había roto el orden de la comunidad… y debía recibir castigo."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — an explainer slide composition: a dominant diagram shows a broken village circle being stitched back together by a judge's gavel, a tiny pig icon and a small narrator pointing at the cracked circle; props include scales, scroll and church bell; interpretive explanation mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. SLIDE HERO RULE: the text or diagram is the main subject and dominates the frame; the white stick-figure is present but SMALL and to the side, still expressive with the round white head, big eyes, NO hair; stylized animal icons may appear only as simple symbols; keep some simple styled background and props, never a dead empty wash. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: parchment cream, cracked ink black, repair-thread red and subdued gold. Camera: flat front-on slide/diagram view. a bold hand-painted Spanish title reads \"RESTAURAR ORDEN\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. All text in clear bold Spanish exactly as written. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    },
+    {
+      "scene_id": "scene_009",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 4.2,
+      "hold_priority": "normal",
+      "motion": "pan",
+      "render_mode": "animated",
+      "text_in_image": "CERDOS EN LAS CALLES",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Los cerdos aparecían con frecuencia porque vivían entre las personas."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW several stylized pigs wandering through a busy medieval street while townspeople carry baskets, children hide behind adults and a scribe watches nervously; market stalls, mud, buckets, timber houses and loose animals; everyday-risk mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. HERO RULE: the white stick-figure characters and the stylized animal defendant are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: earthy market browns, wool green, pig pink-brown and cloudy sky blue. Camera: WIDE STREET SHOT. a bold hand-painted Spanish title reads \"CERDOS EN LAS CALLES\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. All text in clear bold Spanish exactly as written. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed.",
+      "animation_prompt": "Slow cinematic pan through the medieval street, subtle crowd movement and drifting dust, preserve exact composition, characters, style and text. No gore, no new objects."
+    },
+    {
+      "scene_id": "scene_010",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 4,
+      "hold_priority": "normal",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "(sin texto)",
+      "label_type": null,
+      "voiceover": {
+        "text": "Recorrían calles y podían atacar a niños sin vigilancia."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a worried mother pulls a child back from a passing pig while neighbors react with alarm, with the pig shown startled rather than monstrous; narrow medieval lane, baskets, puddles, doorways, hanging laundry and town life; tense everyday danger mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. HERO RULE: the white stick-figure characters and the stylized animal defendant are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: narrow-street gray, warm wool colors, muddy brown and pale daylight. Camera: DYNAMIC ANGLE MEDIUM SHOT. Absolutely no text, no letters, no words anywhere. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    },
+    {
+      "scene_id": "scene_011",
+      "panel_type": "cinematica",
+      "beat_type": "misterio",
+      "duration_target_s": 3.6,
+      "hold_priority": "alta",
+      "motion": "push_in",
+      "render_mode": "static",
+      "text_in_image": "NO SOLO CERDOS",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Pero no fue el único tipo de juicio."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW the courtroom doors opening to reveal not one pig but shadowy icons of rats, locusts and insects hovering over legal scrolls, while judges and clerics stare in disbelief; stone archway, candles, scroll piles and dark hallway; escalation mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. HERO RULE: the white stick-figure characters and the stylized animal defendant are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: deep court shadow, candle gold, parchment beige and ominous green-gray. Camera: LOW-ANGLE WIDE SHOT. a bold hand-painted Spanish title reads \"NO SOLO CERDOS\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. All text in clear bold Spanish exactly as written. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    },
+    {
+      "scene_id": "scene_012",
+      "panel_type": "diagrama",
+      "beat_type": "narrativa",
+      "duration_target_s": 4.3,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "EUROPA PREMODERNA",
+      "label_type": "title",
+      "voiceover": {
+        "text": "[thoughtful] En la Europa medieval y premoderna, también hubo procedimientos contra plagas enteras."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — an explainer slide composition: a large map of western Europe with tiny court icons, church icons and pest swarms marked by red arrows; a small narrator points to the map while holding a parchment; props include quill, seal and miniature courthouse; historical-context mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. SLIDE HERO RULE: the text or diagram is the main subject and dominates the frame; the white stick-figure is present but SMALL and to the side, still expressive with the round white head, big eyes, NO hair; stylized animal icons may appear only as simple symbols; keep some simple styled background and props, never a dead empty wash. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: map parchment tan, red arrows, faded blue rivers and black ink. Camera: flat front-on slide/diagram view. a bold hand-painted Spanish title reads \"EUROPA PREMODERNA\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. All text in clear bold Spanish exactly as written. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    },
+    {
+      "scene_id": "scene_013",
+      "panel_type": "diagrama",
+      "beat_type": "narrativa",
+      "duration_target_s": 4,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "RATAS E INSECTOS",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Ratas que devoraban cosechas. Insectos que destruían campos."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — an explainer slide composition: a dominant split diagram shows a field eaten by rats on one side and crops stripped by locusts on the other, with a small cleric and narrator pointing at the damage; wheat stalks, tiny pest silhouettes and warning arrows; crop-destruction mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. SLIDE HERO RULE: the text or diagram is the main subject and dominates the frame; the white stick-figure is present but SMALL and to the side, still expressive with the round white head, big eyes, NO hair; stylized animal icons may appear only as simple symbols; keep some simple styled background and props, never a dead empty wash. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: wheat gold, pest charcoal, field green and parchment cream. Camera: flat front-on slide/diagram view. a bold hand-painted Spanish title reads \"RATAS E INSECTOS\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. All text in clear bold Spanish exactly as written. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    },
+    {
+      "scene_id": "scene_014",
+      "panel_type": "cinematica",
+      "beat_type": "narrativa",
+      "duration_target_s": 4.6,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "CITACIONES",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Se nombraban defensores y se emitían citaciones contra criaturas que jamás podrían presentarse."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a church court scene where a robed advocate holds a parchment toward a swarm of tiny rats and insects painted as simple icons while clerics look embarrassed and a scribe keeps writing; monastery chamber, legal books, candles, cross, open window to fields; absurd formal procedure mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. HERO RULE: the white stick-figure characters and the stylized animal defendant are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: monastery brown, parchment cream, clerical black and muted pest gray. Camera: MEDIUM WIDE SHOT. a bold hand-painted Spanish title reads \"CITACIONES\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. All text in clear bold Spanish exactly as written. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    },
+    {
+      "scene_id": "scene_015",
+      "panel_type": "reaccion",
+      "beat_type": "narrativa",
+      "duration_target_s": 3.3,
+      "hold_priority": "normal",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "ABSURDO HOY",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Hoy parece absurdo."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a plain narrator stick-figure staring at a tiny courtroom where a rat icon sits at the defense table, eyes wide and hands raised in disbelief; half-modern reaction space blended with medieval props, scrolls and gavel; comic disbelief mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. HERO RULE: the white stick-figure characters and the stylized animal defendant are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: clean parchment beige, reaction white, muted blue and small red accents. Camera: CENTERED MEDIUM SHOT. a bold hand-painted Spanish title reads \"ABSURDO HOY\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. All text in clear bold Spanish exactly as written. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    },
+    {
+      "scene_id": "scene_016",
+      "panel_type": "diagrama",
+      "beat_type": "narrativa",
+      "duration_target_s": 4.5,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "NOMBRAR / JUZGAR / CASTIGAR",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Pero esos procesos convertían miedo y pérdida en algo que la comunidad podía nombrar, juzgar y castigar."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — an explainer slide composition: a dominant three-step diagram with icons: fear cloud, legal scales, public sentence, connected by red arrows; a small narrator points from fear to order; background has faint courthouse, field and village silhouettes; explanation-payoff mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. SLIDE HERO RULE: the text or diagram is the main subject and dominates the frame; the white stick-figure is present but SMALL and to the side, still expressive with the round white head, big eyes, NO hair; stylized animal icons may appear only as simple symbols; keep some simple styled background and props, never a dead empty wash. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: ink black, muted red arrows, parchment tan and solemn blue-gray. Camera: flat front-on slide/diagram view. a bold hand-painted Spanish title reads \"NOMBRAR / JUZGAR / CASTIGAR\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. All text in clear bold Spanish exactly as written. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    },
+    {
+      "scene_id": "scene_017",
+      "panel_type": "comparacion",
+      "beat_type": "cierre",
+      "duration_target_s": 4,
+      "hold_priority": "alta",
+      "motion": "static",
+      "render_mode": "static",
+      "text_in_image": "PEZUÑAS / COLA / PLAGA",
+      "label_type": "title",
+      "voiceover": {
+        "text": "[short pause] El acusado podía tener pezuñas, cola… o ser una plaga completa."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — an explainer slide composition: a large illustrated comparison row shows a hoof, a tail and a swarm cloud as three bold icons, while the small narrator looks unsettled and points at all three; simple medieval scroll background with legal seal and gavel; final-summary mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. SLIDE HERO RULE: the text or diagram is the main subject and dominates the frame; the white stick-figure is present but SMALL and to the side, still expressive with the round white head, big eyes, NO hair; stylized animal icons may appear only as simple symbols; keep some simple styled background and props, never a dead empty wash. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: parchment cream, icon charcoal, seal red and muted gold. Camera: flat front-on slide/diagram view. a bold hand-painted Spanish title reads \"PEZUÑAS / COLA / PLAGA\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. All text in clear bold Spanish exactly as written. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    },
+    {
+      "scene_id": "scene_018",
+      "panel_type": "cinematica",
+      "beat_type": "cierre",
+      "duration_target_s": 5,
+      "hold_priority": "alta",
+      "motion": "push_in",
+      "render_mode": "static",
+      "text_in_image": "ANTE LA LEY",
+      "label_type": "title",
+      "voiceover": {
+        "text": "Cuando el orden se rompía, llevaban incluso a los animales ante la ley… para intentar restaurarlo."
+      },
+      "image_prompt": "CLEAR LITERAL SCENE — it must SHOW a final solemn courtroom tableau where the judge's bench, villagers, clerics, a stylized pig and small pest icons all face a glowing balance scale, with no violence shown; medieval court opens into a village behind it, candles fading, dawn light entering; haunting reflective closure mood. Rich painterly 2D cartoon illustration with soft shading and textured brushwork, hand-painted look, bold clean outlines, soft natural light. NOT 3D, NOT Pixar, NOT dark, NOT cluttered. Funny minimalist white stick-figure people: round off-white heads, thin black stick limbs, simple oval bodies, big round expressive eyes, exaggerated comic faces. Animal defendants are simple stylized 2D animals only when the scene explicitly requires them, never realistic, never gore. HERO RULE: the white stick-figure characters and the stylized animal defendant are LARGE in the foreground and the clear main subject, big and prominent with expressive faces; the setting is fully detailed BEHIND and around them with depth and props, but stays smaller than the characters and never becomes the main subject. RICH ENVIRONMENT: fill the frame with a real, specific, detailed setting with depth (clear foreground, midground and background), props and atmospheric light — NEVER a flat empty color wash behind the characters. CHARACTERIZE BY CULTURE: every human stick-figure is dressed for its role so the viewer instantly reads who they are, while KEEPING the round white stick-figure head, big eyes, NO hair, NO beard. Medieval judges: long dark judicial robes, flat caps, wooden bench, scrolls and stern expressions. Medieval scribes and clerks: brown wool robes, ink pots, quills, ledgers and anxious eyes. Town witnesses and families: rough wool tunics, hoods, simple belts, baskets and worried faces. Executioner: hooded dark robe and rope shown only symbolically, never graphic. Church clerics: black or cream cassocks, simple tonsure-like cap shape, cross pendant, church court scrolls. Defenders or legal advocates: dark robe, parchment notes and raised hand arguing. Animal defendants: simple stylized 2D non-realistic animals with clean outlines, such as a muted pink-brown pig with worried dot eyes and a loose symbolic chain, tiny rats, locusts or insects; they are NEVER cute mascots and NEVER realistic. The narrator / a generic onlooker stays a plain white stick-figure with NO costume. Distinguish roles by costume. EVERY character is HIGHLY EXPRESSIVE and DYNAMIC: an exaggerated emotion and an active pose, never stiff; often show several stick-figures and elements interacting, not one lone figure; play with color by the moment but keep it tasteful, NOT oversaturated; make each scene feel different from the last. Tasteful and NON-GRAPHIC: convey violence or death ONLY through stylized suggestion — silhouettes, simplified stick-figures with simple X-marks for eyes, still figures, stakes, shadows, crows, smoke, dark landscape and distant shapes. NEVER explicit gore, blood, organs or realistic wounds. Suggest clearly, never show crudely. Palette: fading candle gold, dawn blue, parchment white and soft shadow gray. Camera: CENTERED SYMMETRICAL WIDE SHOT. a bold hand-painted Spanish title reads \"ANTE LA LEY\" in clean bold flat letters with a big red arrow pointing to the central subject, NOT ornate, NOT gold-edged. All text in clear bold Spanish exactly as written. SIMPLE UNCLUTTERED composition with generous negative space, readable at a glance, NOT busy. VERTICAL 9:16 short-video framing, subject centered with room for big text. Vertical 9:16, full-bleed."
+    }
+  ],
+  "render_export": {
+    "renderer": "remotion_ffmpeg",
+    "clip_order": [
+      "scene_001",
+      "scene_002",
+      "scene_003",
+      "scene_004",
+      "scene_005",
+      "scene_006",
+      "scene_007",
+      "scene_008",
+      "scene_009",
+      "scene_010",
+      "scene_011",
+      "scene_012",
+      "scene_013",
+      "scene_014",
+      "scene_015",
+      "scene_016",
+      "scene_017",
+      "scene_018"
+    ]
+  },
+  "tts_export": {
+    "engine": "elevenlabs",
+    "model_id": "eleven_v3",
+    "voice_id": "8mBRP99B2Ng2QwsJMFQl",
+    "voice_name": "voz principal del canal",
+    "voice_settings": {
+      "stability": 0,
+      "similarity_boost": 0.75,
+      "style": 0,
+      "speed": 1.2
+    },
+    "language_code": "es",
+    "output_format": "mp3_44100_192",
+    "seed": 13860001,
+    "routing_note": "Reel vertical menor a cinco mil caracteres: usar eleven_v3 con tags simples y pausas de texto, sin SSML.",
+    "pronunciation_notes": "Falaise: Fa-lés. Europa premoderna: pronunciar natural. Eclesiásticas: e-cle-siás-ti-cas. Citaciones: ci-ta-cio-nes.",
+    "full_script": "[curious] En este tribunal, el acusado no podía hablar… ni entender la ley. [short pause] Ni siquiera era humano. Era un cerdo, y el juez estaba a punto de condenarlo a muerte. En mil trescientos ochenta y seis, en Falaise, Francia, una cerda fue procesada tras la muerte de un niño. Hubo testigos, tribunal y sentencia. Al final, ejecución pública. [appalled] Para quienes presenciaron aquello, el animal no era solo peligroso. Había roto el orden de la comunidad… y debía recibir castigo. Los cerdos aparecían con frecuencia porque vivían entre las personas. Recorrían calles y podían atacar a niños sin vigilancia. Pero no fue el único tipo de juicio. [thoughtful] En la Europa medieval y premoderna, también hubo procedimientos contra plagas enteras. Ratas que devoraban cosechas. Insectos que destruían campos. Se nombraban defensores y se emitían citaciones contra criaturas que jamás podrían presentarse. Hoy parece absurdo. Pero esos procesos convertían miedo y pérdida en algo que la comunidad podía nombrar, juzgar y castigar. [short pause] El acusado podía tener pezuñas, cola… o ser una plaga completa. Cuando el orden se rompía, llevaban incluso a los animales ante la ley… para intentar restaurarlo."
+  }
+}

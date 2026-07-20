@@ -1,0 +1,1701 @@
+{
+  "project": {
+    "title": "El Testamento del Villano - Parte 7: El dueño más grande",
+    "preset": "manhwa",
+    "serie": "herencia_confiscada",
+    "slug": "herencia_confiscada_parte_07",
+    "language": "es-419",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "part": 7
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "elevenlabs",
+      "voice_id": "452WrNT9o8dphaYW5YGU",
+      "language": "es-419"
+    },
+    "editing": {
+      "tool": "capcut"
+    }
+  },
+  "characters": {
+    "do_yun": {
+      "display_name": "Han Do-yun",
+      "poses": {
+        "n4_infiltracion": {
+          "mode": "existing",
+          "asset": "assets/characters/herencia_confiscada/do_yun_n4_infiltracion.png",
+          "prompt": "Same evolved character Han Do-yun at tolerance level four, same matured face, steady dark-brown eyes and defined jawline, same taller hardened lean build, now in night infiltration gear: a dark charcoal work jacket zipped high with a soft hood down, black work pants, dark gloves with the right glove's back cut open showing the deep-crimson wax-seal sigil glowing alive, worn dark sneakers, a slim rope coil clipped at his hip, alert focused expression, gaze straight ahead, full-body centered front-facing reference. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 character reference sheet composition, plain neutral gray background."
+        },
+        "n4_civil": {
+          "mode": "existing",
+          "asset": "assets/characters/herencia_confiscada/do_yun_n4_civil.png",
+          "prompt": "Full-body front-facing character reference of Han Do-yun evolved to tolerance level four: oval face fully matured, dark circles gone, large steady dark-brown eyes, messy short black hair now falling with intention, lean hardened build another centimeter taller with straight spine and open shoulders, defined jawline, quiet composed presence, wearing his plain gray hoodie and dark jeans with worn sneakers, the seal on his right hand dormant ash-gray, both empty hands relaxed at his sides, calm guarded expression, gaze straight ahead. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 character reference sheet composition, plain neutral gray background."
+        }
+      }
+    },
+    "yeon_woo": {
+      "display_name": "Cha Yeon-woo",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/herencia_confiscada/yeon_woo_base.png",
+          "prompt": "Full-body front-facing character reference of Cha Yeon-woo, a tall composed thirty-two-year-old Korean tracking agent with black hair pulled into a tight low bun, cold sharp gray eyes, a thin pale scar across her left eyebrow, upright disciplined posture, wearing a charcoal-gray trench coat over a black tactical uniform with a magnetic badge on the chest, black gloves, sturdy black boots, empty gloved hands relaxed at her sides, not holding anything, unreadable calm expression, gaze straight ahead. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 character reference sheet composition, plain neutral gray background."
+        },
+        "combate": {
+          "mode": "generate",
+          "asset": "assets/characters/herencia_confiscada/yeon_woo_combate.png",
+          "reference_pose": "base",
+          "prompt": "Same character Cha Yeon-woo, same black hair in a tight low bun, cold gray eyes and thin scar across her left eyebrow, the trench coat gone: black tactical uniform with sleeves pushed up, magnetic badge removed leaving a pale rectangle on her chest, a compact service pistol held low in both gloved hands in a trained ready stance, knees soft, shoulders squared, fierce focused expression, gaze straight ahead, full-body centered reference of the combat stance. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 character reference sheet composition, plain neutral gray background."
+        }
+      }
+    },
+    "kang_min": {
+      "display_name": "Seol Kang-min, el Alba",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/herencia_confiscada/kang_min_base.png",
+          "prompt": "Full-body front-facing character reference of Seol Kang-min, an imposing forty-four-year-old Korean national hero with slicked-back prematurely silver hair, broad jaw, faint smile lines, practiced confident camera smile, tall broad-shouldered build, wearing ceremonial white armor with golden edges and a short white cape, a golden sun emblem on the chest plate, armored boots, empty hands relaxed at his sides, not holding anything, gaze straight ahead. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 character reference sheet composition, plain neutral gray background."
+        },
+        "campo": {
+          "mode": "generate",
+          "asset": "assets/characters/herencia_confiscada/kang_min_campo.png",
+          "reference_pose": "base",
+          "prompt": "Same character Seol Kang-min, same slicked-back silver hair and broad jaw, the practiced smile absent, wearing his ceremonial white armor with golden edges stripped for the field: cape removed, gauntlets locked tight, a martial forward stance with one armored hand half-raised in command, boots planted wide, cold flat authority in his eyes, full-body centered reference of the field stance. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 character reference sheet composition, plain neutral gray background."
+        },
+        "traje_tv": {
+          "mode": "existing",
+          "asset": "assets/characters/herencia_confiscada/kang_min_traje_tv.png",
+          "reference_pose": "base",
+          "prompt": "Same character Seol Kang-min, same slicked-back prematurely silver hair, same broad jaw and practiced camera smile, same tall broad-shouldered build, now wearing an expensive midnight-blue suit with a golden sun pin on the lapel, white shirt and dark tie, standing straight with both empty hands resting on the sides of an invisible podium height, composed public-appearance posture, gaze straight ahead. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 character reference sheet composition, plain neutral gray background."
+        }
+      }
+    },
+    "oficial_rastreo": {
+      "display_name": "Oficial de Rastreo",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/herencia_confiscada/oficial_rastreo_base.png",
+          "prompt": "Full-body front-facing character reference of a generic tracking-division field officer, an athletic Korean adult in a dark navy tactical uniform with a small eye-and-shield emblem on the chest plate, black half-visor cap shading the upper face, heavy boots, and bulky copper-plated gauntlets covering both hands and forearms with thin amber seam-lights, empty gauntleted hands relaxed at his sides, not holding anything, neutral disciplined posture, gaze straight ahead. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 character reference sheet composition, plain neutral gray background."
+        }
+      }
+    },
+    "sistema_ui": {
+      "display_name": "Ventana del Albacea",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/herencia_confiscada/sistema_ui_base.png",
+          "prompt": "A translucent deep-crimson system window, thin rectangular frame with small corner notches, faint scan-lines across its surface, a small wax-seal emblem at the top edge, blank empty message area, centered on a plain flat dark-gray featureless backdrop. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, high contrast, vertical 9:16 UI reference composition."
+        }
+      }
+    }
+  },
+  "escenarios": {
+    "canal_tormenta": {
+      "display_name": "Canal de tormenta",
+      "views": {
+        "tunel_base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/herencia_confiscada/canal_tormenta_tunel_base.png",
+          "prompt": "Wide storm-drain tunnel beneath the district at deep night, curved concrete walls stained with old waterlines, a shallow center channel of still black water, thick support pillars in a receding row, faint blue light falling through a distant street grate, dry raised walkways on both sides, no people, no readable text. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 environment concept art composition, painted background."
+        },
+        "rejilla_luz": {
+          "mode": "existing",
+          "asset": "assets/escenarios/herencia_confiscada/canal_tormenta_rejilla_luz.png",
+          "reference_view": "tunel_base",
+          "prompt": "Same storm-drain tunnel at deep night, NEW SHOT looking up from the dry walkway at a street grate high in the curved ceiling, pale bars of blue-white light dropping through the grille onto the concrete and the still channel water, dust drifting in the beams, the tunnel mouth fading dark on both sides, no people, no readable text. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 environment concept art composition, painted background."
+        },
+        "compuerta": {
+          "mode": "generate",
+          "asset": "assets/escenarios/herencia_confiscada/canal_tormenta_compuerta.png",
+          "reference_view": "tunel_base",
+          "prompt": "Same storm-drain system at deep night, NEW SHOT of an old floodgate chamber: a massive rusted steel gate holding back deep water, groaning bolted seams weeping thin jets, heavy corroded bolts in a cross pattern, a raised side platform with a dead control wheel, warning stripes long faded, the tunnel narrowing beyond, no people, no readable text. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 environment concept art composition, painted background."
+        },
+        "boca_rio": {
+          "mode": "generate",
+          "asset": "assets/escenarios/herencia_confiscada/canal_tormenta_boca_rio.png",
+          "reference_view": "tunel_base",
+          "prompt": "The storm-drain outfall at the river's edge at deep night, a huge concrete mouth spilling water down mossy steps into the dark Han river, rocks and mud flats around the outflow, a rusted railing above, the far city lights smeared on the black water, a small abandoned fishing spot with a crate and rod stand nearby, no people, no readable text. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 environment concept art composition, painted background."
+        }
+      }
+    },
+    "calle_tunel": {
+      "display_name": "Calles del distrito",
+      "views": {
+        "calle_cruce": {
+          "mode": "existing",
+          "asset": "assets/escenarios/herencia_confiscada/calle_tunel_calle_cruce.png",
+          "prompt": "Empty narrow Seoul side street at deep night, closed metal shutters of small shops, a lone humming streetlamp casting a cold pool of light on wet asphalt, tangled overhead cables against the dark sky, a zebra crossing in the foreground, no people, no vehicles, no readable signs. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 environment concept art composition, painted background."
+        }
+      }
+    },
+    "plaza_barrio": {
+      "display_name": "Plaza del barrio",
+      "views": {
+        "tarima_pantallas": {
+          "mode": "existing",
+          "asset": "assets/escenarios/herencia_confiscada/plaza_barrio_tarima_pantallas.png",
+          "prompt": "Small concrete plaza of a working-class Seoul district at daytime light, a temporary white stage with a podium at the far end flanked by two tall LED screens on scaffolding, cables taped across the ground, folding barriers marking a corridor, modest apartment blocks and shop signs blurred around the plaza edges, overcast flat daylight, blank bright screens, no people, no readable text. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 environment concept art composition, painted background."
+        }
+      }
+    }
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "kang_min",
+            "pose": "traje_tv"
+          }
+        ],
+        "escenario": {
+          "id": "calle_tunel",
+          "view": "calle_cruce"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-bleed vertical webtoon panel, wide shot, low-angle, front view, using a 24mm lens: the dark district street at deep night with every public screen burning the same broadcast, Seol Kang-min in his midnight-blue suit and golden sun pin raised mid-address across a building-mounted display, one open palm turned generously upward while armored vans roll beneath his giant image, the wet asphalt carrying his light like a coronation. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "El robo al Depósito le regaló al Alba lo único que le faltaba: permiso. [pause]"
+      }
+    },
+    {
+      "id": "scene_02",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "oficial_rastreo",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "calle_tunel",
+          "view": "calle_cruce"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The emptied city under curfew: the narrow shuttered street at deep night with two tracking officers in navy uniforms and copper gauntlets posted motionless under the lone streetlamp, no civilians anywhere, a stray newspaper page dragging across the zebra crossing in the wind. Matte-black webtoon page with one large wide inset; black space occupying 35% of the canvas. exactly one image panel. Panel A: wide shot, eye-level, front view, using a 35mm lens. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Estado de emergencia, mando pleno, toque de queda."
+      }
+    },
+    {
+      "id": "scene_03",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "kang_min",
+            "pose": "traje_tv"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "A country applauding its own leash. Pure white webtoon page with two stacked panels; white space occupying 30% of the canvas. exactly two image panels. Panel A: medium shot, eye-level, front view, using a 50mm lens: anonymous Korean civilians in a bright living room clapping at a television glowing with the silver-haired hero's suited figure. Panel B: macro shot, low-angle, front view, using a 100mm lens: Seol Kang-min's white-gold gauntlet closing slowly into a fist at his side below the podium line, off-camera of his own broadcast. At deep night. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Corea le entregó la correa de la ciudad al hombre equivocado… y aplaudió."
+      }
+    },
+    {
+      "id": "scene_04",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          },
+          {
+            "id": "yeon_woo",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "tunel_base"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical webtoon panel, medium shot, eye-level, profile view, using a 50mm lens: Han Do-yun in his dark infiltration jacket standing before Cha Yeon-woo on the drain walkway at deep night, his head bowed in confession, empty hands open at his sides, while the tall agent in her trench coat listens with arms crossed, the still black channel doubling both figures between the pillars. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Bajé al canal a confesarle a mi aliada la ruina:"
+      }
+    },
+    {
+      "id": "scene_05",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "yeon_woo",
+            "pose": "base"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Cha Yeon-woo receiving the ruin of her wager without a flinch, her cold gray eyes fixed on the middle distance, the scar over her brow dead still, only her jaw feathering once, the drain gloom carving her composure into something more expensive than anger. Matte-black webtoon page with one large inset; black space occupying 35% of the canvas. exactly one image panel. Panel A: close-up, eye-level, three-quarter front view, using an 85mm lens. At deep night. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "sin expediente, su apuesta no tenía con qué cobrarse."
+      }
+    },
+    {
+      "id": "scene_06",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "yeon_woo",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "rejilla_luz"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Cha Yeon-woo speaking the arithmetic of catastrophe, standing in the bars of pale grate light with her arms uncrossing, her level voice worse than a shout, gray eyes finally turning to the camera with the verdict. Pure white webtoon page with one large inset; white space occupying 35% of the canvas. exactly one image panel. Panel A: medium close-up, slightly low-angle, front view, using a 70mm lens. At deep night. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Yeon-woo escuchó sin parpadear, y solo dijo: —Entonces al Alba ya no lo frena nada."
+      }
+    },
+    {
+      "id": "scene_07",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "rejilla_luz"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-bleed vertical webtoon panel, wide shot, low-angle, front view, using a 24mm lens: the storm-drain ambushed at midnight, harsh white searchlight beams stabbing down through every ceiling grate at once, canisters of white gas tumbling through the light bars and blooming into slow curtains over the black channel, the sanctuary turned into a lit stage. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Nos encontraron a medianoche. [inhales deeply] Reflectores por las rejillas, gas blanco en cortinas,"
+      }
+    },
+    {
+      "id": "scene_08",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "oficial_rastreo",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "tunel_base"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Elite tracking officers descending on rappel lines through the grate light, navy uniforms trimmed in black, copper gauntlets glinting as they slide with mechanical precision, four lines dropping at once between the pillars, boots aimed at the walkways. Matte-black webtoon page with one large tall inset; black space occupying 30% of the canvas. exactly one image panel. Panel A: wide action shot, low-angle, front view, using a 35mm lens. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "élites bajando en cuerdas como arañas de cobre."
+      }
+    },
+    {
+      "id": "scene_09",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The refuge betrayed in light. Pure white webtoon page with two stacked panels; white space occupying 30% of the canvas. exactly two image panels. Panel A: wide shot, high-angle, front view, using a 35mm lens: the drain's darkness dissolving under crossing searchlight beams, every hiding shadow burned away. Panel B: close-up, eye-level, front view, using an 85mm lens: Han Do-yun's matured face striped by a passing beam, teeth set, eyes already measuring exits, the hood shadow gone useless. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "El canal, mi único cielo sin drones, se llenó de luces."
+      }
+    },
+    {
+      "id": "scene_10",
+      "type": "panel",
+      "render_mode": "static",
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The leak made visible: a photocopied personal file lying open on a polished desk far away, the small ID photo of a young man with messy black hair rendered soft and blurred, a white-gold gauntleted fingertip pinning the page down at its corner. Matte-black webtoon page with one large inset; black space occupying 35% of the canvas. exactly one image panel. Panel A: macro shot, high-angle, front view, using a 100mm lens, cold desk-lamp light. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Nadie sabía llegar ahí. Nadie… menos el que se fue con mi expediente."
+      }
+    },
+    {
+      "id": "scene_11",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "tunel_base"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical webtoon panel, action shot, low-angle, three-quarter front view with a moderate Dutch tilt, using a 35mm lens: Han Do-yun whipping the crimson-edged rope in a wide horizontal arc at midnight, the line scything through three taut rappel cables at once, the cut ends snapping skyward, officers dropping the last meter off-balance into the gas haze, his seal blazing through the cut glove. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Peleamos como se pelea sin salida. SOGA barrió tres cuerdas de un tirón,"
+      }
+    },
+    {
+      "id": "scene_12",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          },
+          {
+            "id": "oficial_rastreo",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "tunel_base"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The walkway itself taken from under them. Matte-black webtoon page with two stacked panels; black space occupying 30% of the canvas. exactly two image panels. Panel A: action macro, eye-level, profile view, using a 100mm lens: the crimson-burning short sword shearing through the steel walkway plate in one diagonal stroke, molten edges glowing. Panel B: wide action shot, high-angle, front view, using a 35mm lens: two elite officers in navy and copper dropping with the cut grating into the shallow black channel, arms flailing, gas curling over the splash. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "FILO DE RONDA cortó la pasarela bajo sus botas,"
+      }
+    },
+    {
+      "id": "scene_13",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "tunel_base"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical webtoon panel, action shot, eye-level, front view, using a 35mm lens: Han Do-yun hurling the tame flame into the drifting steam and gas at midnight, the mixture igniting into a rolling orange curtain that swallows the searchlight beams whole, officers' silhouettes staggering blind behind the burning veil, his dark jacket rimmed in firelight. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "LUMBRE encendió el vapor en naranja,"
+      }
+    },
+    {
+      "id": "scene_14",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Han Do-yun ghosting between shouting silhouettes, crimson mist at his sneakers, his body slipping through the orange-lit haze while gauntleted arms point at empty air two steps behind his real position, the hunted man briefly unhuntable. Pure white webtoon page with one large dynamic inset; white space occupying 30% of the canvas. exactly one image panel. Panel A: action shot, eye-level, three-quarter front view with a slight Dutch tilt, using a 35mm lens. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "y PASO SORDO me movió entre gritos que apuntaban adonde yo ya no estaba."
+      }
+    },
+    {
+      "id": "scene_15",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The whole shelf working as one body. Matte-black webtoon page with two stacked panels; black space occupying 30% of the canvas. exactly two image panels. Panel A: macro shot, high-angle, front view, using a 100mm lens: Han Do-yun's marked right hand mid-cycle, the crimson seal blazing as a ribbon fragment tears away, rope coiled at his wrist and the burning short sword's grip crossing behind it. Panel B: action shot, low-angle, profile view, using a 35mm lens: the level-four fighter pivoting through the orange haze, flame in the off-hand, mist at his feet, every borrowed gift firing in the same breath. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Todo el anaquel junto, por primera vez, y el cuerpo cobrándome cada segundo. [exhales sharply]"
+      }
+    },
+    {
+      "id": "scene_16",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "yeon_woo",
+            "pose": "combate"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "rejilla_luz"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical webtoon panel, action shot, low-angle, three-quarter front view, using a 35mm lens: Cha Yeon-woo in her black tactical uniform without the trench coat, service pistol raised in both gloved hands, firing upward at a searchlight rig in the grate mouth at midnight, the beam bursting into sparks and dying, her scarred brow lit by the muzzle flash, spent light raining down around her planted stance. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Y Yeon-woo… Yeon-woo le disparó al reflector de su propia División para taparme la espalda."
+      }
+    },
+    {
+      "id": "scene_17",
+      "type": "narrative_card",
+      "card": {
+        "text": "Eligió en voz alta",
+        "mode": "editor"
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Eligió en voz alta."
+      }
+    },
+    {
+      "id": "scene_18",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "kang_min",
+            "pose": "campo"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "tunel_base"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical manhwa splash panel, wide shot, low-angle, front view, using a 24mm lens: Seol Kang-min descending the drain access stairs into the darkness at midnight, ceremonial white armor with golden edges burning bright against the black tunnel, cape gone, silver hair immaculate, boots unhurried on the wet steps, one gauntleted hand trailing the rail like a landlord touring his property, the orange fire-haze parting around his light. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Entonces bajó él: armadura blanca en la oscuridad, sin prisa, como quien visita una propiedad."
+      }
+    },
+    {
+      "id": "scene_19",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Han Do-yun staggering a half step as something inside him convulses, his marked hand flying to his chest, the crimson seal strobing out of rhythm, eyes wide at a pull no one else can feel. Matte-black webtoon page with one large inset; black space occupying 35% of the canvas. exactly one image panel. Panel A: medium close-up, eye-level, three-quarter front view, using a 70mm lens, firelight and searchbeams crossing him. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Y mi bóveda entera se sacudió."
+      }
+    },
+    {
+      "id": "scene_20",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "sistema_ui",
+            "pose": "base"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The section-three plaque in violent resonance, the translucent crimson panel slamming against its black ribbons, the long-shafted silhouette inside it blazing white-hot at the edges, wax fragments dancing off the seal, the interface void around it warping in rings with each howl. Matte-black webtoon page with one large inset; black space occupying 25% of the canvas. exactly one image panel. Panel A: macro shot, eye-level, front view, using a 100mm lens. At midnight inside the interface. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "La placa que vibraba con su voz ya no vibraba: aullaba, temblándome en las costillas."
+      }
+    },
+    {
+      "id": "scene_21",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          },
+          {
+            "id": "sistema_ui",
+            "pose": "base"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The name arriving like a burn. Pure white webtoon page with two stacked panels; white space occupying 30% of the canvas. exactly two image panels. Panel A: macro shot, eye-level, front view, using a 100mm lens: the small crimson window flaring so hot its corner notches glow white, scan-lines seizing. Panel B: close-up, eye-level, front view, using an 85mm lens: Han Do-yun's face lit crimson from below, lips parting around a name he does not want to own, firefight haze behind him. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "El Albacea escupió el nombre que me faltaba, en letras ardiendo."
+      }
+    },
+    {
+      "id": "scene_22",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "sistema_ui",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "tunel_base"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "A translucent deep-crimson system window fills most of the frame over the blurred drain battle displaying the text 'DUEÑO ORIGINAL IDENTIFICADO: SEOL KANG-MIN.' in clean bold uppercase lettering, centered, thin rectangular frame with small corner notches, faint scan-lines burning steady now, a small wax-seal emblem at the top edge, the white-gold glow of an armored figure smeared far behind the panel. At midnight. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. exact text only, no additional text or labels, no speech bubbles, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "sistema",
+        "text": "[cold] DUEÑO ORIGINAL IDENTIFICADO: SEOL KANG-MIN."
+      }
+    },
+    {
+      "id": "scene_23",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "kang_min",
+            "pose": "campo"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The hero of Korea rendered as what he is: Seol Kang-min's imposing white-gold figure standing in a void of clean white space, and where his shadow should fall, nothing at all, his practiced face composed over absolutely hollow eyes, a monument with the statue missing. Pure white webtoon page with one large isolated inset; white space occupying 35% of the canvas. exactly one image panel. Panel A: full-body shot, eye-level, front view, using a 50mm lens. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[surprised] El héroe de Corea estaba vacío."
+      }
+    },
+    {
+      "id": "scene_24",
+      "type": "panel",
+      "render_mode": "static",
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The brotherhood of the emptied, remembered in sepia. Pure white webtoon page with two stacked panels; white space occupying 30% of the canvas. exactly two image panels. Panel A: close-up, eye-level, front view, using a 70mm lens, warm sepia memory tone: the mountainous flat-nosed giant's weathered face, wet eyes pleading over an open beggar's palm. Panel B: close-up, eye-level, front view, using a 70mm lens, warm sepia memory tone: the heavyset welder's resigned face behind the van glass, zip-cuffed hands on his lap. At midnight in the memory. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "El Recaudador le arrancó el poder como al Ariete, como al soldador…"
+      }
+    },
+    {
+      "id": "scene_25",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "kang_min",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "plaza_barrio",
+          "view": "tarima_pantallas"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical webtoon panel, wide shot, low-angle, front view, using a 35mm lens: a gleaming bronze statue of the silver-haired hero in his caped ceremonial armor rising over a public plaza at midnight, floodlit from below, flowers and offerings heaped at its pedestal, the pose noble and triumphant, the real night empty around its glory. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "y el país le hizo estatuas al cascarón."
+      }
+    },
+    {
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "tunel_base"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Sepia flash of the huntress's thick folder slamming open in memory — photos, dates, broken careers fanned across a desk, one detail suddenly burning bright — painted sepia-toned page, night in the memory, exactly one image panel. Overhead macro shot, 85mm lens: the spread of hollow-eyed fighter portraits, sepia grain, one photograph edge catching red light. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no watermark."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Y entendí para qué me enseñó Yeon-woo esa carpeta:"
+      },
+      "id": "scene_26"
+    },
+    {
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "tunel_base"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Rows of defeated hunter portraits in memory, every face drained and retired too young, arranged like a ledger of the emptied — Pure white webtoon page, white space occupying 35% of the canvas, exactly one image panel, sepia-washed, night in the memory. Grid-like composition, 50mm lens: a dozen small hollow faces, uniform and terrible, soft grain. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, clean white page background around the panel. no readable text, no watermark."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "veinte años de cazadores vacíos, veinte sin usar su poder en cámara…"
+      },
+      "id": "scene_27"
+    },
+    {
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "kang_min",
+            "pose": "campo"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "tunel_base"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Seol Kang-min standing untouched in the canal dark, white ceremonial armor immaculate, the first name on a ledger no one ever read — Matte-black webtoon page, black space occupying 30% of the canvas, exactly one image panel. Full shot, slight low angle, 50mm lens, at midnight: floodlight haze rimming the pale armor, his expression pleasant and hollow, water braiding past his boots. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background inside the panel. no readable text, no watermark."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "y el primero de la lista frente a mí."
+      },
+      "id": "scene_28"
+    },
+    {
+      "id": "scene_29",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          },
+          {
+            "id": "kang_min",
+            "pose": "campo"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "tunel_base"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Pity meeting its owner: Han Do-yun (right, dark jacket, seal glowing) and Seol Kang-min (left, white-gold armor) facing each other across the scorched walkway, the young man's matured face soft with unwanted compassion, and the hero reading that exact softness and hating it, his jaw hardening under the practiced calm. Matte-black webtoon page with one large wide inset; black space occupying 30% of the canvas. exactly one image panel. Panel A: medium shot, eye-level, profile view of both, using a 50mm lens, firelight dying between them. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[sad] Sentí algo peor que miedo: lástima. Y él la vio en mi cara, y la odió."
+      }
+    },
+    {
+      "id": "scene_30",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "kang_min",
+            "pose": "campo"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "tunel_base"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical webtoon panel, medium shot, slightly low-angle, front view, using a 50mm lens: Seol Kang-min extending one white-gold gauntleted hand palm-up toward the camera at midnight, his silver-haired face arranged into terrible reasonable calm, the offer held out like alms from a king, drain fires guttering orange along his armor's edges. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "—Devuélveme lo que ese ladrón me quitó —dijo, tranquilo, con la mano enguantada extendida—"
+      }
+    },
+    {
+      "id": "scene_31",
+      "type": "panel",
+      "render_mode": "static",
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The bribe drawn gentle on purpose. Pure white webtoon page with two stacked panels; white space occupying 30% of the canvas. exactly two image panels. Panel A: medium shot, high-angle, front view, using a 50mm lens: an empty teenage girl's bed in soft morning light, pale yellow blanket turned open and waiting, drawn like a promise. Panel B: macro shot, eye-level, front view, using a 100mm lens: the white-gold gauntlet still extended, patient, its open palm catching the drain's firelight. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "y tu hermana despierta mañana en su cama."
+      }
+    },
+    {
+      "id": "scene_32",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "kang_min",
+            "pose": "campo"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Seol Kang-min's face leaning into the firelight with the mask thinning, silver hair loose at one temple, the practiced warmth stripped down to raw twenty-year hunger, his voice landing each word like a signature line on a contract. Matte-black webtoon page with one large inset; black space occupying 30% of the canvas. exactly one image panel. Panel A: close-up, slightly low-angle, front view, using an 85mm lens. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Firma el traspaso, conserje. Corea recupera a su héroe… de verdad."
+      }
+    },
+    {
+      "id": "scene_33",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "kang_min",
+            "pose": "traje_tv"
+          }
+        ]
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical webtoon panel, medium shot, eye-level, front view, using a 50mm lens: a rapid montage composition of three overlapping translucent frames around Seol Kang-min's suited figure — the custody order with its gold seal, the midnight broadcast offer, the sealed district checkpoint — each frame tinted colder than the last, his composed face at the center of his own machinery. At midnight. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Todo fue él. Las custodias, la carnada, el cerco."
+      }
+    },
+    {
+      "id": "scene_34",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "kang_min",
+            "pose": "campo"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The hunt reframed in one image: Seol Kang-min's white-gold silhouette small and centered on clean white, holding not a weapon but an open ledger book against his chest plate, a collector come for a debt. Pure white webtoon page with one large isolated inset; white space occupying 35% of the canvas. exactly one image panel. Panel A: full-body shot, eye-level, front view, using a 50mm lens. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "No cazaba una amenaza: cobraba una herencia."
+      }
+    },
+    {
+      "id": "scene_35",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          },
+          {
+            "id": "sistema_ui",
+            "pose": "base"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "A question whispered to a dead man's clerk. Pure white webtoon page with two stacked panels; white space occupying 30% of the canvas. exactly two image panels. Panel A: close-up, eye-level, profile view, using a 70mm lens: Han Do-yun's lips barely moving, eyes still on the enemy, asking without sound. Panel B: macro shot, eye-level, front view, using a 100mm lens: the small crimson window snapping open beside his jaw, its wax-seal emblem hardening. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Le pregunté al Albacea si podía quitármela a la fuerza. La respuesta cayó como portazo:"
+      }
+    },
+    {
+      "id": "scene_36",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "sistema_ui",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "tunel_base"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "A translucent deep-crimson system window fills most of the frame over the blurred firelit drain displaying the text 'TRANSFERENCIA FORZADA: RECHAZADA. ÚLTIMA VOLUNTAD: PROTEGER AL HEREDERO.' in clean bold uppercase lettering, centered, thin rectangular frame with small corner notches locked rigid, faint scan-lines running slow and absolute, a small wax-seal emblem at the top edge stamped deep, the white-gold glow of the enemy smeared beyond it. At midnight. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. exact text only, no additional text or labels, no speech bubbles, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "sistema",
+        "text": "[cold] TRANSFERENCIA FORZADA: RECHAZADA. ÚLTIMA VOLUNTAD: PROTEGER AL HEREDERO."
+      }
+    },
+    {
+      "id": "scene_37",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Han Do-yun's face caught between battle and revelation, eyes flicking to the crimson words hanging beside him, the meaning rearranging everything he thought he carried, firelight and shadow trading places across his matured features. Matte-black webtoon page with one large inset; black space occupying 35% of the canvas. exactly one image panel. Panel A: close-up, eye-level, three-quarter front view, using an 85mm lens. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[thoughtful] Última voluntad. Palabra de testamento. El Albacea no me cuidaba por protocolo:"
+      }
+    },
+    {
+      "id": "scene_38",
+      "type": "panel",
+      "render_mode": "static",
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The dead man's handwriting behind the machine: a faint sepia overlay of an elderly ink-stained hand writing one careful line with a fountain pen, ghosted across the surface of a crimson interface panel, will and executor fused in a single image. Pure white webtoon page with one large inset; white space occupying 35% of the canvas. exactly one image panel. Panel A: macro shot, high-angle, front view, using a 100mm lens. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "se lo dejó escrito un muerto."
+      }
+    },
+    {
+      "id": "scene_39",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "kang_min",
+            "pose": "campo"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The smile dying after twenty years of service: Seol Kang-min's face settling into its true resting state, lips flat, jaw slack of all charm, the hollow eyes finally matching the mouth, silver hair catching one last gutter of orange flame. Matte-black webtoon page with one large inset; black space occupying 30% of the canvas. exactly one image panel. Panel A: extreme close-up, eye-level, front view, using a 100mm lens. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "El Alba me leyó la ventana en los ojos y dejó de sonreír:"
+      }
+    },
+    {
+      "id": "scene_40",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "kang_min",
+            "pose": "campo"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The threat delivered like a diagnosis. Pure white webtoon page with two stacked panels; white space occupying 30% of the canvas. exactly two image panels. Panel A: close-up, low-angle, front view, using an 85mm lens: Seol Kang-min's unsmiling mouth forming the promise, each word deliberate. Panel B: macro shot, eye-level, front view, using a 100mm lens: his white-gold gauntlet cracking its knuckles one by one, the golden sun emblem on his chest catching dying firelight. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "—Entonces te romperé despacio, hasta que firmar sea un alivio."
+      }
+    },
+    {
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "tunel_base"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Han Do-yun's face hardening into a decision, eyes cutting toward the ancient floodgate wheel down the tunnel, jaw set against the loss he is choosing — Matte-black webtoon page, black space occupying 30% of the canvas, exactly one image panel with one large inset. Main panel: close-up, 85mm lens, at midnight, reflector glare striping his resolved expression. Inset: the rusted floodgate wheel waiting in the dark. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background inside the panel. no readable text, no watermark."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[angry] Entonces decidí quemar mi único refugio."
+      },
+      "id": "scene_41"
+    },
+    {
+      "id": "scene_42",
+      "type": "panel",
+      "render_mode": "static",
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Every building's secret, drawn plain: a heavy old shut-off valve wheel rendered clean at the center of white space, pipe stubs sawn short around it, the humble master key of every structure ever built. Pure white webtoon page with one large isolated inset; white space occupying 35% of the canvas. exactly one image panel. Panel A: macro shot, eye-level, front view, using a 100mm lens. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Todo edificio tiene una llave de paso; un canal también. Cosa de conserjes."
+      }
+    },
+    {
+      "id": "scene_43",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          },
+          {
+            "id": "yeon_woo",
+            "pose": "combate"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "compuerta"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical webtoon panel, action shot, knee-level, rear three-quarter view, using a 35mm lens: Han Do-yun sprinting flat-out toward the massive rusted floodgate at midnight, the burning short sword low in his right hand, and Cha Yeon-woo in her black tactical uniform running one stride behind him with her pistol swept back along her forearm, searchlight beams chopping at their heels, the great weeping gate looming ahead. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Corrí a la compuerta con Yeon-woo pisándome la sombra,"
+      }
+    },
+    {
+      "id": "scene_44",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "compuerta"
+        }
+      },
+      "visual": {
+        "image_prompt": "Matte-black webtoon page, black space occupying 30% of the canvas, exactly one image panel. Action shot, low-angle, profile view with a moderate Dutch tilt, using a 35mm lens: Han Do-yun carving a blazing X across the floodgate's master bolts at midnight, the crimson-burning short sword trailing twin arcs of molten light, sheared bolt heads spinning free, the first pressurized jets of black water punching through the cuts around his braced silhouette. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "y FILO DE RONDA cortó los pernos de un tajo:"
+      },
+      "editor_motion": {
+        "enabled": false
+      }
+    },
+    {
+      "id": "scene_45",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "compuerta"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical manhwa splash panel, wide shot, low-angle, front view, using a 24mm lens: the great floodgate bursting open at midnight, a black wall of three storms' held water exploding into the tunnel in a single devouring wave, the rusted gate halves cartwheeling in the foam crest, searchlight beams shattering into spray rainbows against the flood's face. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background inside the panel. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "el agua de tres tormentas peleó por nosotros —"
+      }
+    },
+    {
+      "id": "scene_46",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "oficial_rastreo",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "tunel_base"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The river collecting the ambush. Matte-black webtoon page with two stacked panels; black space occupying 30% of the canvas. exactly two image panels. Panel A: wide action shot, high-angle, front view, using a 35mm lens: the flood tearing down the tunnel, rappel lines snapping, gas curtains swallowed, elite officers in navy and copper swept off the walkways clutching at pillars. Panel B: action macro, eye-level, profile view, using a 100mm lens: a single copper gauntlet breaking the churning surface, grasping, then pulled under by the current. At midnight. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "un río barriendo cuerdas, gas y orgullo imperial."
+      }
+    },
+    {
+      "id": "scene_47",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          },
+          {
+            "id": "yeon_woo",
+            "pose": "combate"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "boca_rio"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Two fugitives coughed out alive: Han Do-yun and Cha Yeon-woo sprawled on the mossy steps of the river outfall at deep night, both soaked black, chests heaving, her low bun collapsed loose around her scarred brow, his hood plastered flat, the flood still thundering out of the concrete mouth behind them into the Han. Pure white webtoon page with one large wide inset; white space occupying 30% of the canvas. exactly one image panel. Panel A: wide shot, high-angle, front view, using a 35mm lens. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Salimos escupidos a la boca del río, empapados y vivos."
+      }
+    },
+    {
+      "id": "scene_48",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "boca_rio"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical webtoon panel, medium shot, high-angle, front view, using a 50mm lens: a cracked smartphone abandoned on the fishing crate by the outfall at deep night, its splintered screen glowing with a news broadcast layout, an anchor desk and two portrait frames rendered soft and blurred, the dark river lapping below the rocks. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "En el teléfono roto de un pescador, la cadena nacional ya contaba su versión:"
+      }
+    },
+    {
+      "id": "scene_49",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "yeon_woo",
+            "pose": "base"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "The lie broadcast in official blue: a news graphic filling the dark, Cha Yeon-woo's formal agency portrait framed in a cold banner beside a black featureless silhouette with a crimson-marked hand, the word-shapes of the chyron blurred unreadable, her composed photo face unaware of its own theft. Matte-black webtoon page with one large inset; black space occupying 35% of the canvas. exactly one image panel. Panel A: medium shot, eye-level, front view, using a 50mm lens. At deep night. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "el portador secuestró a la agente Cha Yeon-woo."
+      }
+    },
+    {
+      "id": "scene_50",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "yeon_woo",
+            "pose": "combate"
+          }
+        ]
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "What the state takes back. Pure white webtoon page with two stacked panels; white space occupying 30% of the canvas. exactly two image panels. Panel A: macro shot, eye-level, front view, using a 100mm lens: the pale rectangle on Cha Yeon-woo's soaked uniform chest where her magnetic badge lived for ten years, water beading on the empty space. Panel B: close-up, eye-level, profile view, using an 85mm lens: her drenched face at the river's edge, jaw locked, gray eyes fixed on the far lights of the city that just disowned her. At deep night. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "Su placa, revocada. Su cara, junto a mi silueta."
+      }
+    },
+    {
+      "id": "scene_51",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          },
+          {
+            "id": "yeon_woo",
+            "pose": "combate"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "boca_rio"
+        }
+      },
+      "visual": {
+        "image_prompt": "Full-page vertical webtoon panel, medium shot, eye-level, profile view, using a 50mm lens: Han Do-yun offering Cha Yeon-woo a hand up from the mossy steps at deep night, both of them wrecked and dripping, his tired crooked half-smile against her flat unamused stare, the thundering outfall and the dark river framing the worst welcome speech ever given. Hand-drawn Korean manhwa webtoon illustration, controlled 2D flat cel shading, crisp inked lineart, cinematic lighting, vertical 9:16 webtoon panel composition, painted background. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "[whispers] —Bienvenida a mi lado de la cacería —le dije. No se rió. [pause]"
+      }
+    },
+    {
+      "id": "scene_52",
+      "type": "panel",
+      "render_mode": "static",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "n4_infiltracion"
+          },
+          {
+            "id": "yeon_woo",
+            "pose": "combate"
+          }
+        ],
+        "escenario": {
+          "id": "canal_tormenta",
+          "view": "boca_rio"
+        }
+      },
+      "editor_motion": {
+        "enabled": false
+      },
+      "visual": {
+        "image_prompt": "Two small soaked figures against a country that belongs to someone else now: Han Do-yun and Cha Yeon-woo standing side by side on the outfall rocks at deep night, backs to the camera, facing the vast glittering skyline across the black river, every distant screen in the city glowing the same white-gold shade. Matte-black webtoon page with one large tall inset; black space occupying 25% of the canvas. exactly one image panel. Panel A: wide shot, low-angle, rear view, using a 24mm lens. Hand-drawn Korean manhwa webtoon illustration, 2D flat cel shading, crisp inked lineart, vertical 9:16 composition. no readable text, no speech bubbles, no captions, no watermark, no logo."
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "El Alba no me quitó la bóveda esa noche: me quitó el país…"
+      }
+    },
+    {
+      "id": "scene_53",
+      "type": "narrative_card",
+      "card": {
+        "text": "Y a ella le quitó el nombre",
+        "mode": "editor"
+      },
+      "voiceover": {
+        "speaker": "narrador",
+        "text": "y a ella le quitó el nombre."
+      }
+    }
+  ],
+  "editing": {
+    "caption_style": {
+      "enabled": true,
+      "font": "Montserrat ExtraBold",
+      "size": 64,
+      "position": "center_lower"
+    },
+    "narrative_card_style": {
+      "font": "Montserrat",
+      "size": 72
+    },
+    "panel_motion": {
+      "enabled": true,
+      "apply_to": "all_panels",
+      "static_zoom": 1.04,
+      "static_pan": 4,
+      "animated_zoom": 1.02,
+      "animated_pan": 2,
+      "cycle": [
+        "bottom_to_top",
+        "top_to_bottom",
+        "bottom_left_to_top_right",
+        "top_right_to_bottom_left",
+        "slow_push_in"
+      ]
+    }
+  },
+  "tts_export": {
+    "language": "es-419",
+    "mode": "dialogue",
+    "model_id": "eleven_v3",
+    "elevenlabs_speed": 1,
+    "edit_speed": 1.4,
+    "voices": {
+      "narrador": "452WrNT9o8dphaYW5YGU",
+      "sistema": "iOeCMakiJ4CctfQaM9yd"
+    },
+    "dialogue": [
+      {
+        "scene_id": "scene_01",
+        "speaker": "narrador",
+        "text": "El robo al Depósito le regaló al Alba lo único que le faltaba: permiso. [pause]"
+      },
+      {
+        "scene_id": "scene_02",
+        "speaker": "narrador",
+        "text": "Estado de emergencia, mando pleno, toque de queda."
+      },
+      {
+        "scene_id": "scene_03",
+        "speaker": "narrador",
+        "text": "Corea le entregó la correa de la ciudad al hombre equivocado… y aplaudió."
+      },
+      {
+        "scene_id": "scene_04",
+        "speaker": "narrador",
+        "text": "Bajé al canal a confesarle a mi aliada la ruina:"
+      },
+      {
+        "scene_id": "scene_05",
+        "speaker": "narrador",
+        "text": "sin expediente, su apuesta no tenía con qué cobrarse."
+      },
+      {
+        "scene_id": "scene_06",
+        "speaker": "narrador",
+        "text": "Yeon-woo escuchó sin parpadear, y solo dijo: —Entonces al Alba ya no lo frena nada."
+      },
+      {
+        "scene_id": "scene_07",
+        "speaker": "narrador",
+        "text": "Nos encontraron a medianoche. [inhales deeply] Reflectores por las rejillas, gas blanco en cortinas,"
+      },
+      {
+        "scene_id": "scene_08",
+        "speaker": "narrador",
+        "text": "élites bajando en cuerdas como arañas de cobre."
+      },
+      {
+        "scene_id": "scene_09",
+        "speaker": "narrador",
+        "text": "El canal, mi único cielo sin drones, se llenó de luces."
+      },
+      {
+        "scene_id": "scene_10",
+        "speaker": "narrador",
+        "text": "Nadie sabía llegar ahí. Nadie… menos el que se fue con mi expediente."
+      },
+      {
+        "scene_id": "scene_11",
+        "speaker": "narrador",
+        "text": "Peleamos como se pelea sin salida. SOGA barrió tres cuerdas de un tirón,"
+      },
+      {
+        "scene_id": "scene_12",
+        "speaker": "narrador",
+        "text": "FILO DE RONDA cortó la pasarela bajo sus botas,"
+      },
+      {
+        "scene_id": "scene_13",
+        "speaker": "narrador",
+        "text": "LUMBRE encendió el vapor en naranja,"
+      },
+      {
+        "scene_id": "scene_14",
+        "speaker": "narrador",
+        "text": "y PASO SORDO me movió entre gritos que apuntaban adonde yo ya no estaba."
+      },
+      {
+        "scene_id": "scene_15",
+        "speaker": "narrador",
+        "text": "Todo el anaquel junto, por primera vez, y el cuerpo cobrándome cada segundo. [exhales sharply]"
+      },
+      {
+        "scene_id": "scene_16",
+        "speaker": "narrador",
+        "text": "Y Yeon-woo… Yeon-woo le disparó al reflector de su propia División para taparme la espalda."
+      },
+      {
+        "scene_id": "scene_17",
+        "speaker": "narrador",
+        "text": "Eligió en voz alta."
+      },
+      {
+        "scene_id": "scene_18",
+        "speaker": "narrador",
+        "text": "Entonces bajó él: armadura blanca en la oscuridad, sin prisa, como quien visita una propiedad."
+      },
+      {
+        "scene_id": "scene_19",
+        "speaker": "narrador",
+        "text": "Y mi bóveda entera se sacudió."
+      },
+      {
+        "scene_id": "scene_20",
+        "speaker": "narrador",
+        "text": "La placa que vibraba con su voz ya no vibraba: aullaba, temblándome en las costillas."
+      },
+      {
+        "scene_id": "scene_21",
+        "speaker": "narrador",
+        "text": "El Albacea escupió el nombre que me faltaba, en letras ardiendo."
+      },
+      {
+        "scene_id": "scene_22",
+        "speaker": "sistema",
+        "text": "[cold] DUEÑO ORIGINAL IDENTIFICADO: SEOL KANG-MIN."
+      },
+      {
+        "scene_id": "scene_23",
+        "speaker": "narrador",
+        "text": "[surprised] El héroe de Corea estaba vacío."
+      },
+      {
+        "scene_id": "scene_24",
+        "speaker": "narrador",
+        "text": "El Recaudador le arrancó el poder como al Ariete, como al soldador…"
+      },
+      {
+        "scene_id": "scene_25",
+        "speaker": "narrador",
+        "text": "y el país le hizo estatuas al cascarón."
+      },
+      {
+        "scene_id": "scene_26",
+        "speaker": "narrador",
+        "text": "Y entendí para qué me enseñó Yeon-woo esa carpeta:"
+      },
+      {
+        "scene_id": "scene_27",
+        "speaker": "narrador",
+        "text": "veinte años de cazadores vacíos, veinte sin usar su poder en cámara…"
+      },
+      {
+        "scene_id": "scene_28",
+        "speaker": "narrador",
+        "text": "y el primero de la lista frente a mí."
+      },
+      {
+        "scene_id": "scene_29",
+        "speaker": "narrador",
+        "text": "[sad] Sentí algo peor que miedo: lástima. Y él la vio en mi cara, y la odió."
+      },
+      {
+        "scene_id": "scene_30",
+        "speaker": "narrador",
+        "text": "—Devuélveme lo que ese ladrón me quitó —dijo, tranquilo, con la mano enguantada extendida—"
+      },
+      {
+        "scene_id": "scene_31",
+        "speaker": "narrador",
+        "text": "y tu hermana despierta mañana en su cama."
+      },
+      {
+        "scene_id": "scene_32",
+        "speaker": "narrador",
+        "text": "Firma el traspaso, conserje. Corea recupera a su héroe… de verdad."
+      },
+      {
+        "scene_id": "scene_33",
+        "speaker": "narrador",
+        "text": "Todo fue él. Las custodias, la carnada, el cerco."
+      },
+      {
+        "scene_id": "scene_34",
+        "speaker": "narrador",
+        "text": "No cazaba una amenaza: cobraba una herencia."
+      },
+      {
+        "scene_id": "scene_35",
+        "speaker": "narrador",
+        "text": "Le pregunté al Albacea si podía quitármela a la fuerza. La respuesta cayó como portazo:"
+      },
+      {
+        "scene_id": "scene_36",
+        "speaker": "sistema",
+        "text": "[cold] TRANSFERENCIA FORZADA: RECHAZADA. ÚLTIMA VOLUNTAD: PROTEGER AL HEREDERO."
+      },
+      {
+        "scene_id": "scene_37",
+        "speaker": "narrador",
+        "text": "[thoughtful] Última voluntad. Palabra de testamento. El Albacea no me cuidaba por protocolo:"
+      },
+      {
+        "scene_id": "scene_38",
+        "speaker": "narrador",
+        "text": "se lo dejó escrito un muerto."
+      },
+      {
+        "scene_id": "scene_39",
+        "speaker": "narrador",
+        "text": "El Alba me leyó la ventana en los ojos y dejó de sonreír:"
+      },
+      {
+        "scene_id": "scene_40",
+        "speaker": "narrador",
+        "text": "—Entonces te romperé despacio, hasta que firmar sea un alivio."
+      },
+      {
+        "scene_id": "scene_41",
+        "speaker": "narrador",
+        "text": "[angry] Entonces decidí quemar mi único refugio."
+      },
+      {
+        "scene_id": "scene_42",
+        "speaker": "narrador",
+        "text": "Todo edificio tiene una llave de paso; un canal también. Cosa de conserjes."
+      },
+      {
+        "scene_id": "scene_43",
+        "speaker": "narrador",
+        "text": "Corrí a la compuerta con Yeon-woo pisándome la sombra,"
+      },
+      {
+        "scene_id": "scene_44",
+        "speaker": "narrador",
+        "text": "y FILO DE RONDA cortó los pernos de un tajo:"
+      },
+      {
+        "scene_id": "scene_45",
+        "speaker": "narrador",
+        "text": "el agua de tres tormentas peleó por nosotros —"
+      },
+      {
+        "scene_id": "scene_46",
+        "speaker": "narrador",
+        "text": "un río barriendo cuerdas, gas y orgullo imperial."
+      },
+      {
+        "scene_id": "scene_47",
+        "speaker": "narrador",
+        "text": "Salimos escupidos a la boca del río, empapados y vivos."
+      },
+      {
+        "scene_id": "scene_48",
+        "speaker": "narrador",
+        "text": "En el teléfono roto de un pescador, la cadena nacional ya contaba su versión:"
+      },
+      {
+        "scene_id": "scene_49",
+        "speaker": "narrador",
+        "text": "el portador secuestró a la agente Cha Yeon-woo."
+      },
+      {
+        "scene_id": "scene_50",
+        "speaker": "narrador",
+        "text": "Su placa, revocada. Su cara, junto a mi silueta."
+      },
+      {
+        "scene_id": "scene_51",
+        "speaker": "narrador",
+        "text": "[whispers] —Bienvenida a mi lado de la cacería —le dije. No se rió. [pause]"
+      },
+      {
+        "scene_id": "scene_52",
+        "speaker": "narrador",
+        "text": "El Alba no me quitó la bóveda esa noche: me quitó el país…"
+      },
+      {
+        "scene_id": "scene_53",
+        "speaker": "narrador",
+        "text": "y a ella le quitó el nombre."
+      }
+    ],
+    "full_script": "El robo al Depósito le regaló al Alba lo único que le faltaba: permiso. [pause]\nEstado de emergencia, mando pleno, toque de queda.\nCorea le entregó la correa de la ciudad al hombre equivocado… y aplaudió.\nBajé al canal a confesarle a mi aliada la ruina:\nsin expediente, su apuesta no tenía con qué cobrarse.\nYeon-woo escuchó sin parpadear, y solo dijo: —Entonces al Alba ya no lo frena nada.\nNos encontraron a medianoche. [inhales deeply] Reflectores por las rejillas, gas blanco en cortinas,\nélites bajando en cuerdas como arañas de cobre.\nEl canal, mi único cielo sin drones, se llenó de luces.\nNadie sabía llegar ahí. Nadie… menos el que se fue con mi expediente.\nPeleamos como se pelea sin salida. SOGA barrió tres cuerdas de un tirón,\nFILO DE RONDA cortó la pasarela bajo sus botas,\nLUMBRE encendió el vapor en naranja,\ny PASO SORDO me movió entre gritos que apuntaban adonde yo ya no estaba.\nTodo el anaquel junto, por primera vez, y el cuerpo cobrándome cada segundo. [exhales sharply]\nY Yeon-woo… Yeon-woo le disparó al reflector de su propia División para taparme la espalda.\nEligió en voz alta.\nEntonces bajó él: armadura blanca en la oscuridad, sin prisa, como quien visita una propiedad.\nY mi bóveda entera se sacudió.\nLa placa que vibraba con su voz ya no vibraba: aullaba, temblándome en las costillas.\nEl Albacea escupió el nombre que me faltaba, en letras ardiendo.\n[cold] DUEÑO ORIGINAL IDENTIFICADO: SEOL KANG-MIN.\n[surprised] El héroe de Corea estaba vacío.\nEl Recaudador le arrancó el poder como al Ariete, como al soldador…\ny el país le hizo estatuas al cascarón.\nY entendí para qué me enseñó Yeon-woo esa carpeta:\nveinte años de cazadores vacíos, veinte sin usar su poder en cámara…\ny el primero de la lista frente a mí.\n[sad] Sentí algo peor que miedo: lástima. Y él la vio en mi cara, y la odió.\n—Devuélveme lo que ese ladrón me quitó —dijo, tranquilo, con la mano enguantada extendida—\ny tu hermana despierta mañana en su cama.\nFirma el traspaso, conserje. Corea recupera a su héroe… de verdad.\nTodo fue él. Las custodias, la carnada, el cerco.\nNo cazaba una amenaza: cobraba una herencia.\nLe pregunté al Albacea si podía quitármela a la fuerza. La respuesta cayó como portazo:\n[cold] TRANSFERENCIA FORZADA: RECHAZADA. ÚLTIMA VOLUNTAD: PROTEGER AL HEREDERO.\n[thoughtful] Última voluntad. Palabra de testamento. El Albacea no me cuidaba por protocolo:\nse lo dejó escrito un muerto.\nEl Alba me leyó la ventana en los ojos y dejó de sonreír:\n—Entonces te romperé despacio, hasta que firmar sea un alivio.\n[angry] Entonces decidí quemar mi único refugio.\nTodo edificio tiene una llave de paso; un canal también. Cosa de conserjes.\nCorrí a la compuerta con Yeon-woo pisándome la sombra,\ny FILO DE RONDA cortó los pernos de un tajo:\nel agua de tres tormentas peleó por nosotros —\nun río barriendo cuerdas, gas y orgullo imperial.\nSalimos escupidos a la boca del río, empapados y vivos.\nEn el teléfono roto de un pescador, la cadena nacional ya contaba su versión:\nel portador secuestró a la agente Cha Yeon-woo.\nSu placa, revocada. Su cara, junto a mi silueta.\n[whispers] —Bienvenida a mi lado de la cacería —le dije. No se rió. [pause]\nEl Alba no me quitó la bóveda esa noche: me quitó el país…\ny a ella le quitó el nombre."
+  }
+}
