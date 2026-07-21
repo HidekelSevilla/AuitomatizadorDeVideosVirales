@@ -1,0 +1,1169 @@
+{
+  "project": {
+    "preset": "novelas-coreanas-eng",
+    "title": "Seventeen Years - Part 2",
+    "subtitle": "The Signature",
+    "serie": "seventeen_years",
+    "slug": "seventeen_years_part_02",
+    "series": {
+      "id": "seventeen_years",
+      "part": 2,
+      "is_cliffhanger": true
+    },
+    "language": "en",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "reuse_ingredients": true,
+    "grok_clip_seconds": "6",
+    "scene_target_seconds": 4,
+    "voice_target_seconds": [
+      3,
+      4
+    ],
+    "voice_ceiling_seconds": "5",
+    "hook": "They sent one page to erase seventeen years. Taeo signed his half first."
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "fish"
+    }
+  },
+  "characters": {
+    "ji_young": {
+      "display_name": "Ji-young",
+      "poses": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/characters/seventeen_years/ji_young_base.png",
+          "prompt": "Character reference, vertical 9:16, single Korean woman, age forty-four, tired kind face, realistic East-Asian features, oval face, dark eyes, black hair tied back in a low bun, wearing a grey office-cleaning uniform, empty hands, neutral soft grey studio background. Cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark. Full-body reference: show the ENTIRE figure from head to feet including the shoes, the whole body uncropped and centered with empty space above and below."
+        },
+        "home": {
+          "mode": "existing",
+          "asset": "assets/characters/seventeen_years/ji_young_home.png",
+          "reference_pose": "base",
+          "prompt": "Same woman Ji-young, same face and hair, seated, wearing a worn beige cardigan over a plain shirt, empty hands, gentle weary expression, neutral soft grey studio background. No text, no logo. Full-body reference: show the ENTIRE figure from head to feet including the shoes, the whole body uncropped and centered with empty space above and below."
+        },
+        "blouse": {
+          "mode": "existing",
+          "asset": "assets/characters/seventeen_years/ji_young_blouse.png",
+          "reference_pose": "base",
+          "prompt": "Same woman Ji-young, same face and hair, wearing a simple modest navy blouse, her one good outfit, empty hands, restrained dignified expression, neutral soft grey studio background. No text, no logo. Full-body reference: show the ENTIRE figure from head to feet including the shoes, the whole body uncropped and centered with empty space above and below."
+        },
+        "coat": {
+          "mode": "existing",
+          "asset": "assets/characters/seventeen_years/ji_young_coat.png",
+          "reference_pose": "base",
+          "prompt": "Same woman Ji-young, same face and hair, standing, wearing a plain dark winter coat over the cardigan, empty hands, neutral soft grey studio background. No text, no logo. Full-body reference: show the ENTIRE figure from head to feet including the shoes, the whole body uncropped and centered with empty space above and below."
+        },
+        "phone": {
+          "mode": "generate",
+          "asset": "assets/characters/seventeen_years/ji_young_phone.png",
+          "reference_pose": "base",
+          "prompt": "Same woman Ji-young, same face and hair, in her grey cleaning uniform, holding an old phone to her ear with one hand, tense listening expression, neutral soft grey studio background. No text, no logo. Full-body reference: show the ENTIRE figure from head to feet including the shoes, the whole body uncropped and centered with empty space above and below."
+        }
+      }
+    },
+    "tae_o": {
+      "display_name": "Taeo",
+      "poses": {
+        "dining": {
+          "mode": "existing",
+          "asset": "assets/characters/seventeen_years/tae_o_dining.png",
+          "reference_pose": "uniform",
+          "prompt": "Same boy Taeo, same face and hair, wearing a new expensive tailored dark suit, empty hands, slightly stiff proud expression, neutral studio background. No text, no logo. Full-body reference: show the ENTIRE figure from head to feet including the shoes, the whole body uncropped and centered with empty space above and below."
+        }
+      }
+    },
+    "woo_seok": {
+      "display_name": "Wooseok",
+      "poses": {
+        "suit": {
+          "mode": "existing",
+          "asset": "assets/characters/seventeen_years/woo_seok_suit.png",
+          "prompt": "Character reference, vertical 9:16, single Korean man, age forty-nine, sharp confident face, greying temples, realistic East-Asian features, wearing an expensive charcoal tailored suit, empty hands, neutral soft grey studio background. Cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark. Full-body reference: show the ENTIRE figure from head to feet including the shoes, the whole body uncropped and centered with empty space above and below."
+        },
+        "seated": {
+          "mode": "existing",
+          "asset": "assets/characters/seventeen_years/woo_seok_seated.png",
+          "reference_pose": "suit",
+          "prompt": "Same man Wooseok, same face, seated at a table, expensive charcoal suit, empty hands, composed authoritative expression, neutral studio background. No text, no logo. Full-body reference: show the ENTIRE figure from head to feet including the shoes, the whole body uncropped and centered with empty space above and below."
+        }
+      }
+    },
+    "clerk": {
+      "display_name": "School clerk",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/seventeen_years/clerk_base.png",
+          "prompt": "Character reference, vertical 9:16, single Korean woman, age about fifty, kind tired administrative face, realistic East-Asian features, short sensible dark hair, wearing a plain cardigan, a phone headset, empty hands, neutral soft grey studio background. Cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark. Full-body reference: show the ENTIRE figure from head to feet including the shoes, the whole body uncropped and centered with empty space above and below."
+        }
+      }
+    }
+  },
+  "escenarios": {
+    "apartment": {
+      "display_name": "Small apartment",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/seventeen_years/apartment_base.png",
+          "prompt": "EMPTY small worn Korean apartment main room, low table, old sofa, thin curtains, modest warm dim lamp light, lived-in, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "kitchen": {
+          "mode": "existing",
+          "asset": "assets/escenarios/seventeen_years/apartment_kitchen.png",
+          "reference_view": "base",
+          "prompt": "New camera position: from the corner of the tiny kitchen looking at the small dining table and worn counter, close domestic framing. Keep the exact same small apartment, modest furniture and warm dim lighting as the reference. Empty set, no people, no text."
+        }
+      }
+    },
+    "office_building": {
+      "display_name": "Night office",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/seventeen_years/office_base.png",
+          "prompt": "EMPTY vast dark corporate office floor at night, rows of empty desks, city lights through floor-to-ceiling windows, cold blue-grey light, a cleaning cart, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "reflection": {
+          "mode": "existing",
+          "asset": "assets/escenarios/seventeen_years/office_reflection.png",
+          "reference_view": "base",
+          "prompt": "New camera position: close to a dark floor-to-ceiling window at night, the glass reflecting the empty office and city lights, reflection framing. Keep the exact same dark office and cold blue-grey lighting as the reference. Empty set, no people, no text."
+        }
+      }
+    },
+    "street": {
+      "display_name": "City street",
+      "views": {
+        "skyline": {
+          "mode": "existing",
+          "asset": "assets/escenarios/seventeen_years/street_skyline.png",
+          "prompt": "EMPTY wide city view, tall glass corporate towers rising over an ordinary working-class street, overcast cold light, the towers dominating the sky, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "curb": {
+          "mode": "existing",
+          "asset": "assets/escenarios/seventeen_years/street_curb.png",
+          "reference_view": "skyline",
+          "prompt": "New camera position: down at the ordinary street curb, the sidewalk in the foreground, the glass towers rising behind. Keep the exact same working-class street and overcast light as the reference. Empty set, no people, no text."
+        }
+      }
+    },
+    "notary_office": {
+      "display_name": "Notary office",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/seventeen_years/notary_base.png",
+          "prompt": "EMPTY cold modern law and notary office, a long dark signing table, leather chairs, glass wall with grey city light, sterile expensive, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "desk": {
+          "mode": "generate",
+          "asset": "assets/escenarios/seventeen_years/notary_desk.png",
+          "reference_view": "base",
+          "prompt": "New camera position: close over the dark signing table, a single document and an expensive pen in the foreground. Keep the exact same cold notary office and grey city light as the reference. Empty set, no people, no text."
+        }
+      }
+    },
+    "school_office": {
+      "display_name": "School front office",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/seventeen_years/school_office_base.png",
+          "prompt": "EMPTY tidy school administrative front office, a counter, a desk with a phone, filing shelves, soft neutral daylight, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        }
+      }
+    }
+  },
+  "ingredients": [
+    {
+      "id": "custody_papers",
+      "type": "entity",
+      "output_file": "assets/ingredients/seventeen_years/custody_papers.png",
+      "generation_prompt": "Insert product shot, a single formal legal document page and an expensive pen on a dark table, cold grey light, realistic, no readable text, no logo, no watermark, vertical 9:16."
+    },
+    {
+      "id": "receipts_box",
+      "type": "entity",
+      "output_file": "assets/ingredients/seventeen_years/receipts_box.png",
+      "generation_prompt": "Insert product shot, an old worn shoebox overflowing with many faded paper receipts and bills, on a worn kitchen table, warm dim light, realistic, no readable text, no logo, no watermark, vertical 9:16."
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_01",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "home"
+          }
+        ],
+        "escenario": {
+          "id": "apartment",
+          "view": "kitchen"
+        },
+        "ingredients": [
+          "custody_papers"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in a worn beige cardigan over a plain shirt, weary — medium close-up, chest up, high angle looking down at the table, she sits staring at a single legal page and a pen, both hands flat on the worn wood, modest warm dim light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she slowly slides the page an inch closer, staring at it, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, tense] They sent one page to erase seventeen years. Taeo signed his half first.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_02",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "home"
+          }
+        ],
+        "escenario": {
+          "id": "apartment",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in a worn beige cardigan over a plain shirt, weary — medium shot from the thighs up, camera from the doorway, she stands alone holding the folded document, the dim room around her, modest warm dim light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she lowers the folded document slowly to her side, mouth closed, not speaking, no direct eye contact with the camera; slow push-in. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "His father's lawyer had it couriered to my door.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_03",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "apartment",
+          "view": "kitchen"
+        },
+        "ingredients": [
+          "custody_papers"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided legal document — close-up insert, no face, the single legal page and pen resting on the worn kitchen table under the lamp, one blank signature line waiting, warm dim light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): a hand sets the pen down beside the page without signing, no face; static camera. Single continuous shot. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "One signature, and Taeo would never carry my name again.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_04",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "woo_seok",
+            "pose": "suit"
+          }
+        ],
+        "escenario": {
+          "id": "notary_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man about forty-nine, a sharp confident face with greying temples, in an expensive charcoal tailored suit — medium close-up, chest up, camera at the signing table, he sits glancing at his watch, composed and cold, grey city light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the man in the charcoal suit begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the man in the charcoal suit moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"Shall we begin?\" his father said, checking his watch.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_05",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "woo_seok",
+            "pose": "seated"
+          }
+        ],
+        "escenario": {
+          "id": "notary_office",
+          "view": "desk"
+        },
+        "ingredients": [
+          "custody_papers"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man about forty-nine, a sharp confident face with greying temples, in the charcoal suit, composed and authoritative — medium shot from the thighs up, over-the-shoulder from behind the document toward the man across the table, the page and pen out of focus in the foreground, he pushes them forward with two fingers, grey light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the man in the charcoal suit begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the man in the charcoal suit moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"Sign, and the boy's future is set.\"",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_06",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "tae_o",
+            "pose": "dining"
+          }
+        ],
+        "escenario": {
+          "id": "notary_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean teenage boy about seventeen, a clean bright face, short neat black hair, in a new expensive tailored dark suit, stiffly proud — medium close-up, chest up, camera across the table, he speaks flatly in his new suit, not meeting her eyes, grey city light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the teenage boy in the dark suit begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the teenage boy in the dark suit moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"It's just a name, Mom,\" Taeo said.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_07",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "blouse"
+          }
+        ],
+        "escenario": {
+          "id": "notary_office",
+          "view": "desk"
+        },
+        "ingredients": [
+          "custody_papers"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in a simple modest navy blouse, restrained and dignified — medium shot from the thighs up, camera at table level, she signs the page with a steady hand in her navy blouse, a calm restrained face, grey light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she signs her name in one slow steady stroke, mouth closed, not speaking, no direct eye contact with the camera; slow push-in. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "So I signed. Slowly. In my own name.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_08",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "coat"
+          }
+        ],
+        "escenario": {
+          "id": "street",
+          "view": "curb"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in a plain dark winter coat over her cardigan — full body shot, the whole figure head to feet and uncropped, camera frontal at the curb, she walks out of the tower's shadow onto the ordinary street, the glass towers rising behind her, cold overcast light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she walks two slow steps forward out of the tower's shadow, mouth closed, not speaking, no direct eye contact with the camera; slow lateral tracking left. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "I walked out past his father's tower.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_09",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "street",
+          "view": "skyline"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided city street skyline view — extreme wide shot, camera low looking up, one glass tower rising highest over the working-class street, cold overcast light, no people in frame. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): thin clouds slide slowly behind the tallest tower, no people; static camera. Single continuous shot. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "The one I scrub clean every night.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_10",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "office_building",
+          "view": "reflection"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in a grey office-cleaning uniform — medium shot from the thighs up, reflection framing in the dark glass, she pauses at the window at night in her uniform, her tired reflection over the city lights, cold blue-grey light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she lowers her cloth slowly, her reflection still, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "They shook hands like it was already over.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_11",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "office_building",
+          "view": "reflection"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in a grey office-cleaning uniform — medium close-up, chest up, reflection framing, she slides a folded carbon copy of the document into her uniform pocket, a small hard look, cold blue-grey light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she presses the folded copy flat into her pocket, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "They never asked why I kept a copy.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_12",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "home"
+          }
+        ],
+        "escenario": {
+          "id": "apartment",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in a worn beige cardigan over a plain shirt, weary — establishing wide shot, deep focus, over-the-shoulder from behind her in the doorway of her son's small empty room, the bed stripped, her shoulder out of focus in the foreground, modest warm dim light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she stands still in the doorway, then lowers her eyes, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "At home, Taeo's room still held the shape of him.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_13",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "home"
+          }
+        ],
+        "escenario": {
+          "id": "apartment",
+          "view": "kitchen"
+        },
+        "ingredients": [
+          "receipts_box"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in a worn beige cardigan over a plain shirt, weary — medium shot from the thighs up, camera at table level, she sets a worn shoebox of receipts on the table, both hands on the lid, modest warm dim light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she lifts the lid off the shoebox slowly, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "I pulled a shoebox down from the closet.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_14",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "apartment",
+          "view": "kitchen"
+        },
+        "ingredients": [
+          "receipts_box"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided shoebox of receipts — close-up insert, no face, two hands lifting a thick stack of old faded receipts and bills out of the worn shoebox on the table, warm dim light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the two hands fan the faded receipts slightly, no face; static camera. Single continuous shot. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Seventeen years of receipts. Every bill he never paid.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "EVERY RECEIPT",
+        "highlight_words": [
+          "receipts"
+        ]
+      }
+    },
+    {
+      "id": "scene_15",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "home"
+          }
+        ],
+        "escenario": {
+          "id": "apartment",
+          "view": "kitchen"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in a worn beige cardigan over a plain shirt, weary — medium shot from the thighs up, low angle, she squares the stack of receipts against the table, jaw set, a hard calm in her face, modest warm dim light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she taps the stack of receipts square against the table, mouth closed, not speaking, no direct eye contact with the camera; slow push-in. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "A mother with nothing still keeps the receipts.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_16",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "office_building",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in a grey office-cleaning uniform — extreme wide establishing shot, she is tiny and far against the architecture, the whole figure uncropped, she walks alone with her cleaning cart between the dark desks, camera far across the empty floor, cold blue-grey light from the city windows. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she pushes the cart one slow steady step, mouth closed, not speaking, no direct eye contact with the camera; slow tilt down. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, resolute] That night I wasn't crying. I was counting.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_17",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "office_building",
+          "view": "reflection"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in a grey office-cleaning uniform — medium shot from the thighs up, reflection framing, she pauses at the dark glass, her reflection steady over the city, cold blue-grey light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she stills, her reflection meeting the glass, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "The school still listed me as his mother.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_18",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "phone"
+          }
+        ],
+        "escenario": {
+          "id": "office_building",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in her grey cleaning uniform, an old phone held to her ear, tense — medium close-up, chest up, camera at eye level, she lifts an old phone to her ear beside her cleaning cart, tense, cold blue-grey light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she raises the phone slowly to her ear, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Then, mid-shift, my phone rang. A voice I didn't know.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_19",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "clerk",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "school_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about fifty, a kind tired administrative face, short sensible dark hair, in a plain cardigan with a phone headset — medium shot from the thighs up, camera at the desk, she sits at her desk with a phone and an open enrollment folder, speaking gently into the phone, soft neutral daylight. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the woman at the desk begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the woman at the desk moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"Is this Taeo's mother?\" a woman asked.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_20",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "clerk",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "school_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about fifty, a kind tired administrative face, short sensible dark hair, in a plain cardigan with a phone headset — medium close-up, chest up, side profile, she speaks gently into the phone, an enrollment folder open before her, soft neutral daylight. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the woman at the desk begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the woman at the desk moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"I need to confirm his home address.\"",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_21",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "phone"
+          }
+        ],
+        "escenario": {
+          "id": "office_building",
+          "view": "reflection"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in her grey cleaning uniform, an old phone held to her ear, tense — medium shot from the thighs up, reflection framing, she holds the phone to her ear at the dark glass, her reflection over the city lights, cold blue-grey light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she shifts the phone slightly against her ear, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "I gave the address I had raised him in.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_22",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "clerk",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "school_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about fifty, a kind tired administrative face, short sensible dark hair, in a plain cardigan with a phone headset — medium close-up, chest up, high angle over the desk, she glances down at the folder as she speaks into the phone, a small frown, soft neutral daylight. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the woman at the desk begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the woman at the desk moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"That's not what he wrote,\" she said.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_23",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "phone"
+          }
+        ],
+        "escenario": {
+          "id": "office_building",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in her grey cleaning uniform, an old phone held to her ear, tense — medium shot from the thighs up, over-the-shoulder from behind her toward the dark city window, the phone to her ear, her shoulder out of focus in the foreground, she goes very still, cold blue-grey light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she stops wiping mid-motion, the cloth going still in her hand, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "He had written another address entirely.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_24",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "clerk",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "school_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about fifty, a kind tired administrative face, short sensible dark hair, in a plain cardigan with a phone headset — medium close-up, chest up, camera at the desk, she reads carefully from the folder into the phone, soft neutral daylight. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the woman at the desk begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the woman at the desk moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"On the new forms, he's Taeo Jang.\"",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "TAEO JANG",
+        "highlight_words": [
+          "Jang"
+        ]
+      }
+    },
+    {
+      "id": "scene_25",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "phone"
+          }
+        ],
+        "escenario": {
+          "id": "office_building",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in her grey cleaning uniform, an old phone held to her ear, tense — medium shot from the thighs up, she stands frozen with the phone to her ear between the dark desks, cold blue-grey light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her hand tightens slowly on the phone, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Not one paper said he was mine.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_26",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "phone"
+          }
+        ],
+        "escenario": {
+          "id": "office_building",
+          "view": "reflection"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in her grey cleaning uniform, an old phone held to her ear, tense — medium close-up, chest up, reflection framing, she grips the phone at the dark glass, jaw clenched, eyes glistening but not spilling, a hard controlled fury, cold blue-grey light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, raw, intense emotional performance, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her jaw clenches once as her grip tightens on the phone, mouth closed, not speaking, no direct eye contact with the camera; slow push-in. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "I signed one page. He erased all of them.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_27",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "clerk",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "school_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about fifty, a kind tired administrative face, short sensible dark hair, in a plain cardigan with a phone headset — medium shot from the thighs up, camera at the desk, she hesitates, her hand pausing on the folder, an uneasy look, soft neutral daylight. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the woman at the desk begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the woman at the desk moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Her voice dropped. \"There's one more thing.\"",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_28",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "phone"
+          }
+        ],
+        "escenario": {
+          "id": "office_building",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in her grey cleaning uniform, an old phone held to her ear, tense — extreme wide shot, the figure tiny against the architecture, the whole figure uncropped, camera far across the dark floor, she stands small and alone by the window with the phone, the mop leaning against her cart, cold blue-grey light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she stands motionless, the far room silent around her, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "I set down the mop and held my breath.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_29",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "clerk",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "school_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about fifty, a kind tired administrative face, short sensible dark hair, in a plain cardigan with a phone headset — medium close-up, chest up, slight Dutch tilt, camera at the desk, she speaks carefully and gently into the phone, sympathy on her face, soft neutral daylight. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, raw, intense emotional performance, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the woman at the desk begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the woman at the desk moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, knowing] \"Ma'am, he listed his mother as deceased.\"",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "DECEASED",
+        "highlight_words": [
+          "deceased"
+        ]
+      }
+    },
+    {
+      "id": "scene_30",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ji_young",
+            "pose": "coat"
+          }
+        ],
+        "escenario": {
+          "id": "street",
+          "view": "skyline"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman about forty-four, a tired kind oval face, black hair tied back in a low bun, in a plain dark winter coat over her cardigan — extreme wide shot, the figure tiny against the architecture, the whole figure uncropped, camera far down the street, she stands alone in her plain coat under the towering glass building at dawn, cold pale light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she lifts her head slowly toward the tallest tower, mouth closed, not speaking, no direct eye contact with the camera; slow pull-back. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "He buried his mother alive. But mothers keep the receipts.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    }
+  ],
+  "capcut_export": {
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18",
+      "scene_19",
+      "scene_20",
+      "scene_21",
+      "scene_22",
+      "scene_23",
+      "scene_24",
+      "scene_25",
+      "scene_26",
+      "scene_27",
+      "scene_28",
+      "scene_29",
+      "scene_30"
+    ],
+    "caption_style": {
+      "font": "bold sans-serif",
+      "position": "lower-third",
+      "color": "white",
+      "stroke": "black"
+    },
+    "title_cards": [
+      "TO BE CONTINUED",
+      "PART 3: THE HEIR"
+    ],
+    "cliffhanger_card": "PART 3?",
+    "music_notes": [
+      "Sparse cold piano",
+      "A low drone under the phone call"
+    ],
+    "sfx_notes": [
+      "Pen on paper",
+      "Fluorescent office hum",
+      "A phone line, a held breath"
+    ]
+  },
+  "audio": {
+    "voice_speed": 1.25,
+    "voice_rate": 1,
+    "music_volume": 0
+  },
+  "tts_export": {
+    "mode": "per_scene",
+    "voice_id": "REEMPLAZAR_voice_id_narradora_ingles",
+    "note": "One single female English voice narrates every scene, including all dialogue. Fish Audio per scene."
+  }
+}

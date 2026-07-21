@@ -181,7 +181,24 @@ export interface ComputedTimeline {
   fps: number;
   hookFrames: number;
   scenes: SceneTiming[];
+  contentFrames: number;
+  outroFrames: number;
   totalFrames: number;
+}
+
+export interface NovelaOutro {
+  src: string; // ruta dentro de public/, copiada por orchestrator/build.mjs
+  duration_s: number; // max(video, voz CTA): nunca corta una frase mas larga que el MP4
+  video_duration_s: number;
+  transition_s: number;
+  post_render_speed: number; // compensacion: finalizeVideo acelera la novela, pero el CTA queda a velocidad original
+  selected_number: number;
+  clip_volume: number;
+  audio_src?: string;
+  audio_duration_s?: number;
+  audio_selected_number?: number;
+  voice_volume?: number;
+  language: "esp" | "eng";
 }
 
 // Opening recurrente (preset novela-coreana): mismas escenas que scenes[], se reproducen PRIMERO,
@@ -207,6 +224,7 @@ export interface ViralProps {
   capcut_export?: CapcutExport;
   render_export?: CapcutExport; // schema nuevo historias: renombrado de capcut_export (mismo shape; el render usa render_export ?? capcut_export)
   _timeline?: ComputedTimeline; // lo inyecta calculateMetadata
+  _novelaOutro?: NovelaOutro; // solo runtime: CTA final ESP/ENG elegido por el orchestrator
   // manhwa (lo inyecta calcViralMetadata tras SONDEAR que los archivos existan; nunca vienen del JSON):
   _manhwaMusic?: string; // cama musical default compartida (public/music/manhwa_ambient.mp3) si existe y el JSON no trae music_file
   _musicFileOk?: boolean; // resultado del sondeo de audio.music_file (false = no existe: se omite para no cancelar el render)

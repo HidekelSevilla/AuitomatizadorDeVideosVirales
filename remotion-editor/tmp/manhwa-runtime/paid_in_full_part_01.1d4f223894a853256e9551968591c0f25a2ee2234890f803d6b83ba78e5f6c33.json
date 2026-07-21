@@ -1,0 +1,1559 @@
+{
+  "project": {
+    "preset": "novelas-coreanas-eng",
+    "title": "Paid in Full - Part 1",
+    "subtitle": "The White Coat",
+    "serie": "paid_in_full",
+    "slug": "paid_in_full_part_01",
+    "series": {
+      "id": "paid_in_full",
+      "part": 1,
+      "is_cliffhanger": true
+    },
+    "language": "en",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "reuse_ingredients": true,
+    "grok_clip_seconds": "6",
+    "scene_target_seconds": 4,
+    "voice_target_seconds": [
+      3,
+      4
+    ],
+    "voice_ceiling_seconds": "5",
+    "hook": "I paid for his whole degree. He got my best friend pregnant."
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "fish"
+    }
+  },
+  "characters": {
+    "ha_na": {
+      "display_name": "Ha-na",
+      "poses": {
+        "dishroom": {
+          "mode": "generate",
+          "asset": "assets/characters/paid_in_full/ha_na_dishroom.png",
+          "prompt": "Character reference, vertical 9:16, single Korean woman, age thirty, tired gentle face, realistic East-Asian features, hair tied back with loose damp strands, plain apron over a worn shirt, empty hands, neutral soft grey studio background. Cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/paid_in_full/ha_na_base.png",
+          "reference_pose": "dishroom",
+          "prompt": "Same woman Ha-na, same face, hair tied back, wearing a plain worn cardigan and shirt, empty hands, gentle weary expression, neutral soft grey studio background. No text, no logo."
+        },
+        "dress": {
+          "mode": "generate",
+          "asset": "assets/characters/paid_in_full/ha_na_dress.png",
+          "reference_pose": "dishroom",
+          "prompt": "Same woman Ha-na, same face, hair neatly down, wearing a simple modest pale dress, her one good outfit, empty hands, hopeful restrained expression, neutral soft grey studio background. No text, no logo."
+        },
+        "devastated": {
+          "mode": "generate",
+          "asset": "assets/characters/paid_in_full/ha_na_devastated.png",
+          "reference_pose": "dishroom",
+          "prompt": "Same woman Ha-na, same face, hair loosening, wearing the simple pale dress, empty hands, face crumpling with silent shock and grief, tears welling, neutral soft grey studio background. No text, no logo."
+        },
+        "steel": {
+          "mode": "generate",
+          "asset": "assets/characters/paid_in_full/ha_na_steel.png",
+          "reference_pose": "dishroom",
+          "prompt": "Same woman Ha-na, same face, hair down, wearing the pale dress under a dark coat, empty hands, jaw set, a cold hard resolve in her eyes, neutral soft grey studio background. No text, no logo."
+        }
+      }
+    },
+    "do_yun": {
+      "display_name": "Do-yun",
+      "poses": {
+        "casual": {
+          "mode": "generate",
+          "asset": "assets/characters/paid_in_full/do_yun_casual.png",
+          "prompt": "Character reference, vertical 9:16, single Korean man, age thirty-two, handsome ambitious face, realistic East-Asian features, short neat black hair, wearing a plain hoodie, empty hands, neutral soft grey studio background. Cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "white_coat": {
+          "mode": "generate",
+          "asset": "assets/characters/paid_in_full/do_yun_white_coat.png",
+          "reference_pose": "casual",
+          "prompt": "Same man Do-yun, same face and hair, wearing a crisp white doctor's coat over a shirt and tie, empty hands, proud polished expression, neutral soft grey studio background. No text, no logo."
+        },
+        "cold": {
+          "mode": "generate",
+          "asset": "assets/characters/paid_in_full/do_yun_cold.png",
+          "reference_pose": "casual",
+          "prompt": "Same man Do-yun, same face and hair, wearing the white doctor's coat, empty hands, cold unbothered expression, faint impatience, neutral soft grey studio background. No text, no logo."
+        }
+      }
+    },
+    "se_ra": {
+      "display_name": "Se-ra",
+      "poses": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/characters/paid_in_full/se_ra_base.png",
+          "prompt": "Character reference, vertical 9:16, single Korean woman, age thirty, pretty warm-looking face, realistic East-Asian features, long wavy hair, wearing a soft blouse, empty hands, friendly expression, neutral soft grey studio background. Cinematic Korean melodrama, natural skin texture, high detail. No text, no logo, no watermark."
+        },
+        "pregnant": {
+          "mode": "generate",
+          "asset": "assets/characters/paid_in_full/se_ra_pregnant.png",
+          "reference_pose": "base",
+          "prompt": "Same woman Se-ra, same face and hair, wearing an elegant fitted dress that shows a clearly pregnant belly, empty hands, composed almost triumphant expression, neutral soft grey studio background. No text, no logo."
+        }
+      }
+    }
+  },
+  "escenarios": {
+    "dishroom": {
+      "display_name": "Restaurant dish room",
+      "views": {
+        "wide": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/dishroom_wide.png",
+          "prompt": "EMPTY cramped steamy restaurant dish-washing room at night, stacks of dirty dishes, a deep steel sink, harsh fluorescent light, humid, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/dishroom_base.png",
+          "reference_view": "wide",
+          "prompt": "New camera position: close over the steel sink and a stack of plates, steam rising in the foreground. Keep the exact same cramped steamy dish room and harsh fluorescent light as the reference. Empty set, no people, no text."
+        }
+      }
+    },
+    "apartment": {
+      "display_name": "Tiny apartment",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/apartment_base.png",
+          "prompt": "EMPTY tiny worn studio apartment, a low table, a thin mattress, stacked textbooks, a small lamp, modest warm dim light, cramped and lived-in, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "desk": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/apartment_desk.png",
+          "reference_view": "base",
+          "prompt": "New camera position: close on a cluttered study corner, an open medical textbook and a desk lamp in the foreground. Keep the exact same tiny apartment and warm dim light as the reference. Empty set, no people, no text."
+        }
+      }
+    },
+    "pawnshop": {
+      "display_name": "Pawnshop",
+      "views": {
+        "counter": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/pawnshop_counter.png",
+          "prompt": "EMPTY dim pawnshop interior, a scratched glass counter, a caged lamp, shelves of old objects, cold indifferent light, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        }
+      }
+    },
+    "ceremony_hall": {
+      "display_name": "Graduation hall",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/ceremony_base.png",
+          "prompt": "EMPTY grand medical-school graduation hall, rows of seats, a bright stage, banners, warm proud lighting, formal and vast, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "stage": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/ceremony_stage.png",
+          "reference_view": "base",
+          "prompt": "New camera position: from the front row looking up at the bright ceremony stage and podium. Keep the exact same grand graduation hall and warm proud lighting as the reference. Empty set, no people, no text."
+        },
+        "balcony": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/ceremony_balcony.png",
+          "reference_view": "base",
+          "prompt": "New camera position: from the high mezzanine balcony looking down at the seats and stage far below, the balcony rail in the foreground. Keep the exact same grand hall and warm lighting as the reference. Empty set, no people, no text."
+        }
+      }
+    },
+    "backstage": {
+      "display_name": "Backstage",
+      "views": {
+        "corridor": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/backstage_corridor.png",
+          "prompt": "EMPTY narrow backstage corridor behind the ceremony hall, a slightly open door spilling light, muted, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "room": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/backstage_room.png",
+          "reference_view": "corridor",
+          "prompt": "New camera position: inside a small quiet green room off the corridor, a mirror and a coat rack, soft side light. Keep the exact same backstage area and muted lighting as the reference. Empty set, no people, no text."
+        }
+      }
+    },
+    "hall_exterior": {
+      "display_name": "Hall exterior",
+      "views": {
+        "far": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/hall_exterior_far.png",
+          "prompt": "EMPTY grand exterior of a university medical hall, wide stone steps and tall columns, cool daylight, imposing, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        }
+      }
+    },
+    "street": {
+      "display_name": "Night street",
+      "views": {
+        "night": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/street_night.png",
+          "prompt": "EMPTY quiet city street at night, wet pavement, a dim streetlight, a closed shopfront, cold blue night light, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        }
+      }
+    },
+    "stairwell": {
+      "display_name": "Stairwell",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/stairwell_base.png",
+          "prompt": "EMPTY bare concrete apartment stairwell, a single cold overhead bulb, worn steps, lonely, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        }
+      }
+    }
+  },
+  "ingredients": [
+    {
+      "id": "mothers_ring",
+      "type": "entity",
+      "output_file": "assets/ingredients/paid_in_full/mothers_ring.png",
+      "generation_prompt": "Insert product shot, a delicate old gold ring with a small worn stone resting on a dark cloth, warm sentimental light, realistic, no text, no logo, no watermark, vertical 9:16."
+    },
+    {
+      "id": "acceptance_letter",
+      "type": "entity",
+      "output_file": "assets/ingredients/paid_in_full/acceptance_letter.png",
+      "generation_prompt": "Insert product shot, a formal university acceptance letter folded on a worn table under a lamp, warm dim light, realistic, no readable text, no logo, no watermark, vertical 9:16."
+    },
+    {
+      "id": "white_coat",
+      "type": "entity",
+      "output_file": "assets/ingredients/paid_in_full/white_coat.png",
+      "generation_prompt": "Insert product shot, a crisp folded white doctor's coat freshly ironed on a worn ironing board, warm dim light, realistic, no text, no logo, no watermark, vertical 9:16."
+    },
+    {
+      "id": "bouquet",
+      "type": "entity",
+      "output_file": "assets/ingredients/paid_in_full/bouquet.png",
+      "generation_prompt": "Insert product shot, a modest bouquet of white flowers wrapped in plain paper, held in two hands, soft light, realistic, no text, no logo, no watermark, vertical 9:16."
+    },
+    {
+      "id": "calendar",
+      "type": "entity",
+      "output_file": "assets/ingredients/paid_in_full/calendar.png",
+      "generation_prompt": "Insert product shot, a small worn wall calendar with weeks marked, a hand counting across it, dim light, realistic, no readable text, no logo, no watermark, vertical 9:16."
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_01",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "dishroom"
+          }
+        ],
+        "escenario": {
+          "id": "dishroom",
+          "view": "wide"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided dish room: extreme wide shot, the figure tiny against the architecture, camera far across the steamy room, Ha-na small alone scrubbing a huge stack of dishes at the steel sink at night, harsh fluorescent light and steam. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na scrubs one plate in a slow tired circle, mouth closed, not speaking, no direct eye contact with the camera; slow crane down. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, tense] I paid for his whole degree. He got my best friend pregnant.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_02",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "dishroom"
+          },
+          {
+            "id": "do_yun",
+            "pose": "casual"
+          }
+        ],
+        "escenario": {
+          "id": "dishroom",
+          "view": "wide"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na and the provided Do-yun in the provided dish room: establishing wide shot, deep focus, camera from the doorway, Ha-na scrubbing at the sink while Do-yun sits studying a textbook on an upturned crate in the corner, harsh fluorescent light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na keeps scrubbing while Do-yun turns a page, not looking up, mouth closed, not speaking, no direct eye contact with the camera; handheld sway. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Three years. Two jobs. One dream I gave up.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_03",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "casual"
+          }
+        ],
+        "escenario": {
+          "id": "apartment",
+          "view": "desk"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Do-yun in the provided apartment desk view: medium close-up, chest up, over-the-shoulder from behind Ha-na toward Do-yun at his study desk, her shoulder out of focus in the foreground, Do-yun looking up warmly as he speaks, warm dim lamp light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Do-yun begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Do-yun moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"You're my whole world,\" he would say.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_04",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "casual"
+          }
+        ],
+        "escenario": {
+          "id": "apartment",
+          "view": "desk"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Do-yun in the provided apartment desk view: medium shot, waist up, camera at the desk, Do-yun leaning back from his textbook, one hand open as he asks, warm dim lamp light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Do-yun begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Do-yun moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"Just one more semester,\" he would say.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_05",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "pawnshop",
+          "view": "counter"
+        },
+        "ingredients": [
+          "mothers_ring"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided pawnshop with the provided ring: medium close-up, chest up, camera at the glass counter, Ha-na sliding a small old gold ring across the scratched counter, her hand tight, a swallowed grief, cold indifferent light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na slides the ring slowly across the glass counter and draws her hand back, mouth closed, not speaking, no direct eye contact with the camera; slow push-in. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "So I sold my mother's ring for his tuition.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "MY MOTHER'S RING",
+        "highlight_words": [
+          "ring"
+        ]
+      }
+    },
+    {
+      "id": "scene_06",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "casual"
+          }
+        ],
+        "escenario": {
+          "id": "apartment",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Do-yun in the provided tiny apartment: medium shot, waist up, camera at eye level, Do-yun holding both her unseen hands as he speaks earnestly, warm dim light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Do-yun begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Do-yun moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"You believe in me, don't you?\" he asked.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_07",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "casual"
+          }
+        ],
+        "escenario": {
+          "id": "apartment",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Do-yun in the provided tiny apartment: medium close-up, chest up, camera at eye level, Do-yun smiling with easy confidence as he makes his promise, warm dim light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Do-yun begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Do-yun moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"Once I'm a doctor, everything is ours.\"",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_08",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "apartment",
+          "view": "base"
+        },
+        "ingredients": [
+          "acceptance_letter"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided tiny apartment with the provided letter: medium shot, waist up, camera at eye level, Ha-na quietly folding away her own university acceptance letter into a drawer, a small private grief, warm dim light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na folds the letter and slides the drawer shut slowly, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "I gave up my own seat in medical school for his.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_09",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "dishroom"
+          },
+          {
+            "id": "se_ra",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "dishroom",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na and the provided Se-ra in the provided dish room: medium close-up, chest up, camera at the sink, Se-ra leaning in warmly beside Ha-na who is still in her apron, the two close like sisters, harsh fluorescent light softened. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Se-ra rests a hand on Ha-na's shoulder while Ha-na keeps working, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "My best friend Se-ra held my hand through it all.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_10",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "se_ra",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "dishroom",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Se-ra in the provided dish room: medium shot, waist up, camera at eye level, Se-ra speaking softly with a warm reassuring smile, steam and fluorescent light behind her. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Se-ra begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Se-ra moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"He'd be nothing without you,\" Se-ra said.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_11",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "base"
+          }
+        ],
+        "escenario": {
+          "id": "apartment",
+          "view": "base"
+        },
+        "ingredients": [
+          "white_coat"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided tiny apartment with the provided white coat: medium close-up, chest up, camera at eye level, Ha-na pressing an iron over a crisp white doctor's coat on a worn board, careful and proud, warm dim light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na presses the iron slowly along the white coat, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "On graduation day, I ironed the coat I had paid for.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_12",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "dress"
+          }
+        ],
+        "escenario": {
+          "id": "apartment",
+          "view": "base"
+        },
+        "ingredients": [
+          "bouquet"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided tiny apartment with the provided bouquet: medium shot, waist up, camera at eye level, Ha-na in her one good pale dress holding a modest bouquet of white flowers, hopeful, warm dim light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na lifts the bouquet gently and takes a steadying breath, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "I brought white flowers to surprise my husband.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "WHITE FLOWERS",
+        "highlight_words": [
+          "flowers"
+        ]
+      }
+    },
+    {
+      "id": "scene_13",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "dress"
+          }
+        ],
+        "escenario": {
+          "id": "hall_exterior",
+          "view": "far"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided hall exterior: extreme wide shot, the figure tiny against the architecture, camera far across the plaza, Ha-na small in her pale dress climbing the grand stone steps toward the tall columns, cool daylight. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na climbs two slow steps toward the grand entrance, mouth closed, not speaking, no direct eye contact with the camera; slow push-in. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "I arrived with my whole heart in my hands.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_14",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "ceremony_hall",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided graduation hall: establishing wide shot, deep focus, camera from the back, rows of blurred proud families and new graduates in white coats facing the bright stage, warm proud lighting, no readable text. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the blurred crowd rises slowly to applaud toward the stage, no one in focus speaks; slow lateral tracking right. Single continuous shot. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "The hall was full of proud families and white coats.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_15",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "white_coat"
+          }
+        ],
+        "escenario": {
+          "id": "ceremony_hall",
+          "view": "stage"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Do-yun in the provided ceremony stage view: medium shot, waist up, camera from the front row looking up, Do-yun on the bright stage in his white coat raising his hand to take the oath, warm proud light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Do-yun raises his right hand slowly to take the oath, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "I watched him take the oath I had funded.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_16",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "white_coat"
+          }
+        ],
+        "escenario": {
+          "id": "ceremony_hall",
+          "view": "stage"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Do-yun in the provided ceremony stage view: medium close-up, chest up, camera from the front row, Do-yun at the podium speaking proudly to the room, warm stage light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Do-yun begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Do-yun moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"I earned this on my own,\" he told the room.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "ON MY OWN",
+        "highlight_words": [
+          "own"
+        ]
+      }
+    },
+    {
+      "id": "scene_17",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "dress"
+          }
+        ],
+        "escenario": {
+          "id": "ceremony_hall",
+          "view": "balcony"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided ceremony balcony view: extreme wide shot, the figure tiny against the architecture, camera from the high mezzanine looking down, Ha-na small and alone at the edge of the far seats watching the stage, the balcony rail in the foreground, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na stands very still far below, watching the stage, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "On his own. I almost laughed out loud.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_18",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "dress"
+          }
+        ],
+        "escenario": {
+          "id": "backstage",
+          "view": "corridor"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided backstage corridor: medium shot, waist up, over-the-shoulder from behind Ha-na down the narrow corridor toward a door spilling light, her shoulder out of focus in the foreground, warm muted light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na walks two slow steps down the corridor toward the lit door, mouth closed, not speaking, no direct eye contact with the camera; slow push-in. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "I slipped backstage to find him first.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_19",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "dress"
+          }
+        ],
+        "escenario": {
+          "id": "backstage",
+          "view": "corridor"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided backstage corridor: medium close-up, chest up, slight Dutch tilt, camera past the edge of the slightly open door, out-of-focus foreground door frame, Ha-na frozen peering through the gap, warm muted light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na goes still at the door gap, her breath catching, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Through the gap in the door, I saw them.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_20",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "se_ra",
+            "pose": "pregnant"
+          },
+          {
+            "id": "do_yun",
+            "pose": "white_coat"
+          }
+        ],
+        "escenario": {
+          "id": "backstage",
+          "view": "room"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Se-ra and the provided Do-yun in the provided backstage room: medium shot, waist up, camera inside the green room, Do-yun in his white coat with his arm around Se-ra whose fitted dress shows a clearly pregnant belly, intimate and easy, soft side light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Do-yun rests his hand on Se-ra's pregnant belly while she leans into him, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Se-ra, in his arms, and the curve of her belly.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_21",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "devastated"
+          }
+        ],
+        "escenario": {
+          "id": "backstage",
+          "view": "room"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided backstage room: medium close-up, chest up, camera at eye level, Ha-na in the doorway frozen, the bouquet slipping in her grip, her face breaking with silent shock, soft side light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, raw, intense emotional performance, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na's grip loosens on the bouquet as her face crumples, breath stopped, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "For one long second, I could not breathe.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_22",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "ceremony_hall",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided graduation hall: establishing wide shot, deep focus, camera over the celebrating blurred crowd and stage, warm oblivious applause, no readable text. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the blurred crowd keeps applauding warmly toward the stage, oblivious, no one in focus speaks; static camera. Single continuous shot. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "My best friend, carrying my husband's child.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_23",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "se_ra",
+            "pose": "pregnant"
+          }
+        ],
+        "escenario": {
+          "id": "backstage",
+          "view": "room"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Se-ra in the provided backstage room: medium close-up, chest up, camera at eye level, Se-ra turning to the doorway with a cool composed almost triumphant look as she speaks, soft side light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Se-ra begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Se-ra moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"He was always going to be mine,\" she said.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_24",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "cold"
+          }
+        ],
+        "escenario": {
+          "id": "backstage",
+          "view": "room"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Do-yun in the provided backstage room: medium shot, waist up, over-the-shoulder from behind Ha-na toward Do-yun, her shoulder out of focus in the foreground, Do-yun in his white coat speaking with cold impatience, soft side light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Do-yun begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Do-yun moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"You shouldn't have come,\" he said.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_25",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "cold"
+          }
+        ],
+        "escenario": {
+          "id": "backstage",
+          "view": "room"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Do-yun in the provided backstage room: medium close-up, chest up, camera at eye level, Do-yun straightening his white coat as he says the words flatly, soft side light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Do-yun begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Do-yun moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"I want a divorce, Ha-na.\"",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_26",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "devastated"
+          }
+        ],
+        "escenario": {
+          "id": "ceremony_hall",
+          "view": "balcony"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided ceremony balcony view: extreme wide shot, the figure tiny against the architecture, camera from the high balcony looking down, Ha-na small and alone against the grand warm hall, the rail in the foreground, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na stands frozen and tiny in the vast bright hall, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "The whole bright hall was clapping for a lie.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_27",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "cold"
+          }
+        ],
+        "escenario": {
+          "id": "backstage",
+          "view": "room"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Do-yun in the provided backstage room: medium shot, waist up, camera at eye level, Do-yun shrugging with cold ease as he speaks, soft side light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Do-yun begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Do-yun moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"I don't need your money anymore.\"",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_28",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "devastated"
+          }
+        ],
+        "escenario": {
+          "id": "backstage",
+          "view": "room"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided backstage room: medium close-up, chest up, camera at eye level, Ha-na speaking through tears with a shaking steadiness, soft side light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Ha-na moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"That money bought your coat,\" I said.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_29",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "se_ra",
+            "pose": "pregnant"
+          }
+        ],
+        "escenario": {
+          "id": "backstage",
+          "view": "room"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Se-ra in the provided backstage room: medium shot, waist up, camera at eye level, Se-ra stepping in with a low warning whisper, a hand on her belly, soft side light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Se-ra begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY Se-ra moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"Don't make a scene,\" Se-ra whispered.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_30",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "devastated"
+          }
+        ],
+        "escenario": {
+          "id": "ceremony_hall",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided graduation hall: establishing wide shot, deep focus, camera from behind the blurred crowd toward Ha-na standing frozen at the aisle as faces turn toward her, warm light, no readable text. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the blurred faces turn slowly toward Ha-na while she stands frozen, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "The whole hall turned to watch me break.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_31",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "devastated"
+          }
+        ],
+        "escenario": {
+          "id": "ceremony_hall",
+          "view": "base"
+        },
+        "ingredients": [
+          "bouquet"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided graduation hall with the provided bouquet: medium shot, waist up, over-the-shoulder from behind Ha-na toward the bright stage, her shoulder out of focus in the foreground, Ha-na setting the white bouquet down on an empty seat, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na sets the bouquet down on the seat and turns away, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "I set the flowers down and walked out.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_32",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "devastated"
+          }
+        ],
+        "escenario": {
+          "id": "hall_exterior",
+          "view": "far"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided hall exterior: extreme wide shot, the figure tiny against the architecture, camera far, Ha-na small descending the grand steps alone, the bright hall glowing behind her, cool daylight. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na walks slowly down the great steps away from the glowing hall, mouth closed, not speaking, no direct eye contact with the camera; slow pull-back. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "His white coat glowed in the lights behind me.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_33",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "devastated"
+          }
+        ],
+        "escenario": {
+          "id": "street",
+          "view": "night"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided night street: medium shot, waist up, camera at eye level, Ha-na standing alone under a dim streetlight on wet pavement, the cold clearing her face, cold blue night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na exhales slowly, the cold air steadying her, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Outside, the cold finally let me think.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_34",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "devastated"
+          }
+        ],
+        "escenario": {
+          "id": "street",
+          "view": "night"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided night street: medium close-up, chest up, reflection framing in a dark closed shopfront window, Ha-na's tired reflection over the cold glass, cold blue night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na's reflection steadies in the dark shop window, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "I still had every contract. Every loan in my name.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_35",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "devastated"
+          }
+        ],
+        "escenario": {
+          "id": "stairwell",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided stairwell: medium shot, waist up, low camera near the steps, Ha-na sitting on a worn concrete step under a single cold bulb, folding inward, a silent devastated grief, cold hard light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, raw, intense emotional performance, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na's shoulders fold inward once as she sits on the cold step, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[soft, trembling, hurt] I gave them everything. They gave me nothing back.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_36",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "devastated"
+          }
+        ],
+        "escenario": {
+          "id": "stairwell",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided stairwell: medium close-up, chest up, camera at eye level, Ha-na lifting her head slowly, a single thought catching in her eyes, cold hard light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na lifts her head slowly, a thought catching, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "But one question would not stop turning.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_37",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "devastated"
+          }
+        ],
+        "escenario": {
+          "id": "stairwell",
+          "view": "base"
+        },
+        "ingredients": [
+          "calendar"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided stairwell with the provided calendar: medium shot, waist up, camera at eye level, Ha-na holding a small worn calendar, counting the weeks back with one finger, cold hard light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na counts back across the calendar with one slow finger, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "How far along was she? Five months, they'd said.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "FIVE MONTHS",
+        "highlight_words": [
+          "months"
+        ]
+      }
+    },
+    {
+      "id": "scene_38",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "devastated"
+          }
+        ],
+        "escenario": {
+          "id": "street",
+          "view": "night"
+        },
+        "ingredients": [
+          "mothers_ring"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided night street with the provided ring: medium close-up, chest up, camera at eye level, Ha-na looking down at her bare ring finger where her mother's ring used to be, the memory landing, cold blue night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na touches her bare ring finger slowly, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Five months ago, I had sold my mother's ring.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_39",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "steel"
+          }
+        ],
+        "escenario": {
+          "id": "stairwell",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided stairwell: medium shot, waist up, low camera, Ha-na rising to her feet under the cold bulb, jaw set, tears gone, a hard cold resolve replacing the grief, cold hard light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, raw, intense emotional performance, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na rises slowly to her feet, her face hardening, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, knowing] I had paid for his coat, his degree, and the bed they lied in.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "PAID FOR IT ALL",
+        "highlight_words": [
+          "paid"
+        ]
+      }
+    },
+    {
+      "id": "scene_40",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "steel"
+          }
+        ],
+        "escenario": {
+          "id": "street",
+          "view": "night"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Ha-na in the provided night street: extreme wide shot, the figure small against the architecture, camera far down the empty street, Ha-na walking away steady and alone under the towers, cold blue light turning toward dawn. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Ha-na walks away steadily down the empty street, mouth closed, not speaking, no direct eye contact with the camera; slow pull-back. Single continuous shot. Keep face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "I paid for every step he took. Now he pays in full.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "IN FULL",
+        "highlight_words": [
+          "full"
+        ]
+      }
+    }
+  ],
+  "capcut_export": {
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18",
+      "scene_19",
+      "scene_20",
+      "scene_21",
+      "scene_22",
+      "scene_23",
+      "scene_24",
+      "scene_25",
+      "scene_26",
+      "scene_27",
+      "scene_28",
+      "scene_29",
+      "scene_30",
+      "scene_31",
+      "scene_32",
+      "scene_33",
+      "scene_34",
+      "scene_35",
+      "scene_36",
+      "scene_37",
+      "scene_38",
+      "scene_39",
+      "scene_40"
+    ],
+    "caption_style": {
+      "font": "bold sans-serif",
+      "position": "lower-third",
+      "color": "white",
+      "stroke": "black"
+    },
+    "title_cards": [
+      "TO BE CONTINUED",
+      "PART 2: NOTHING LEFT"
+    ],
+    "cliffhanger_card": "PART 2?",
+    "music_notes": [
+      "Sparse piano for the sacrifice",
+      "Cold strings rising into the reveal"
+    ],
+    "sfx_notes": [
+      "Running water and clattering dishes",
+      "Ceremony applause",
+      "A single held breath"
+    ]
+  },
+  "audio": {
+    "voice_speed": 1.25,
+    "voice_rate": 1,
+    "music_volume": 0
+  },
+  "tts_export": {
+    "mode": "per_scene",
+    "voice_id": "REEMPLAZAR_voice_id_narradora_ingles",
+    "note": "One single female English voice narrates every scene, including all dialogue. Fish Audio per scene."
+  }
+}

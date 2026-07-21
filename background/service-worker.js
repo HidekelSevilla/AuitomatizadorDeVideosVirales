@@ -24,7 +24,7 @@ import { parseFishTimestampSse } from "../lib/fish-timestamp-sse.js";
 
 // Visible en /remote/state para no ejecutar pruebas destructivas contra una instancia de Chrome que
 // aun conserve un service worker/content script anterior.
-const EXTENSION_BUILD = "0.2.58-2026-07-20-fish-s2.1-pro";
+const EXTENSION_BUILD = "0.2.59-2026-07-20-grok-fast-four-grid";
 
 // Auto-reload de desarrollo: inerte en produccion (Web Store inyecta `update_url`
 // en el manifest en runtime; las extensiones descomprimidas no lo tienen).

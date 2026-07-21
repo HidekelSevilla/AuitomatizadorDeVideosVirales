@@ -15,6 +15,14 @@ import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { slugify } from "../../shared/slug.mjs";   // FUENTE UNICA del slug (debe coincidir con la extension)
 import { getMediaRequirements, projectMediaSignature, minMediaBytes } from "../../shared/media-requirements.mjs";
+import {
+  novelaOutroAudioFolder,
+  novelaOutroFolder,
+  numberedNovelaOutroAudios,
+  numberedNovelaOutros,
+  selectNumberedNovelaOutro,
+  selectNumberedNovelaOutroAudio,
+} from "../../shared/novela-outro.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -23,6 +31,8 @@ const DONE = path.join(ROOT, "done");
 const OUT = path.join(ROOT, "out");
 const PUBLIC = path.join(ROOT, "public");
 const LOGS = path.join(ROOT, "logs");
+const NOVELA_OUTROS = path.join(ROOT, "finals-novela-coreana");
+const NOVELA_OUTRO_TRANSITION_S = 0.35;
 const BUILD_LOCK_STALE_MS = Math.max(5 * 60_000, Number(process.env.BUILD_LOCK_STALE_MS || 2 * 60 * 60_000) || 2 * 60 * 60_000);
 
 const args = process.argv.slice(2);
@@ -44,6 +54,106 @@ function readJson(file) {
 // override por env MIN_STILL_BYTES o project.min_still_bytes (proyecto en scope via fileOkFor).
 function fileOk(p, projectJson = null) {
   try { return fs.statSync(p).size >= minMediaBytes(p, projectJson); } catch { return false; }
+}
+
+function mediaDurationSeconds(file) {
+  const result = spawnSync("ffprobe", [
+    "-v", "error",
+    "-show_entries", "format=duration",
+    "-of", "default=noprint_wrappers=1:nokey=1",
+    file,
+  ], { encoding: "utf8", windowsHide: true });
+  const duration = Number.parseFloat((result.stdout || "").trim());
+  return result.status === 0 && Number.isFinite(duration) && duration > 0 ? duration : null;
+}
+
+function prepareNovelaOutro(project, slug, postRenderSpeed = 1) {
+  const folderName = novelaOutroFolder(project.project?.preset);
+  const audioFolderName = novelaOutroAudioFolder(project.project?.preset);
+  if (!folderName) return null;
+  const sourceDir = path.join(NOVELA_OUTROS, folderName);
+  const names = fs.existsSync(sourceDir)
+    ? fs.readdirSync(sourceDir, { withFileTypes: true }).filter((entry) => entry.isFile()).map((entry) => entry.name)
+    : [];
+  const files = numberedNovelaOutros(names);
+  if (!files.length) {
+    console.log(`  (sin final ${folderName}: agrega 1.mp4, 2.mp4... en ${rel(sourceDir)}; renderizo sin CTA)`);
+    return null;
+  }
+
+  const missing = [];
+  const available = new Set(files.map((file) => file.number));
+  for (let number = 1; number <= files[files.length - 1].number; number++) {
+    if (!available.has(number)) missing.push(number);
+  }
+  if (missing.length) console.log(`  (aviso: faltan finales numerados ${missing.join(", ")} en ${rel(sourceDir)}; uso los existentes)`);
+
+  const selected = selectNumberedNovelaOutro(names, `${slug}|${project.project?.title || ""}`);
+  if (!selected) return null;
+  const source = path.join(sourceDir, selected.name);
+  const duration = mediaDurationSeconds(source);
+  if (!duration) {
+    console.log(`  (final ${folderName}/${selected.name} invalido o ffprobe no pudo leerlo; renderizo sin CTA)`);
+    return null;
+  }
+
+  const targetDir = path.join(PUBLIC, slug, "outro");
+  const target = path.join(targetDir, "final.mp4");
+  fs.mkdirSync(targetDir, { recursive: true });
+  fs.copyFileSync(source, target);
+  console.log(`  final ${folderName}: ${selected.name} (seleccion ${selected.number} de ${selected.count}, ${duration.toFixed(2)}s)`);
+
+  let selectedAudio = null;
+  let audioDuration = null;
+  if (audioFolderName) {
+    const audioDir = path.join(NOVELA_OUTROS, audioFolderName);
+    const audioNames = fs.existsSync(audioDir)
+      ? fs.readdirSync(audioDir, { withFileTypes: true }).filter((entry) => entry.isFile()).map((entry) => entry.name)
+      : [];
+    const audioFiles = numberedNovelaOutroAudios(audioNames);
+    if (!audioFiles.length) {
+      console.log(`  (sin audio ${audioFolderName}: agrega 1.mp3, 2.mp3... en ${rel(audioDir)}; uso solo el audio del clip al 50%)`);
+    } else {
+      const audioMissing = [];
+      const audioAvailable = new Set(audioFiles.map((file) => file.number));
+      for (let number = 1; number <= audioFiles[audioFiles.length - 1].number; number++) {
+        if (!audioAvailable.has(number)) audioMissing.push(number);
+      }
+      if (audioMissing.length) console.log(`  (aviso: faltan audios numerados ${audioMissing.join(", ")} en ${rel(audioDir)}; uso los existentes)`);
+
+      selectedAudio = selectNumberedNovelaOutroAudio(audioNames, `${slug}|${project.project?.title || ""}|audio-cta`);
+      if (selectedAudio) {
+        const audioSource = path.join(audioDir, selectedAudio.name);
+        audioDuration = mediaDurationSeconds(audioSource);
+        if (audioDuration) {
+          fs.copyFileSync(audioSource, path.join(targetDir, "voice.mp3"));
+          console.log(`  audio ${audioFolderName}: ${selectedAudio.name} (seleccion ${selectedAudio.number} de ${selectedAudio.count}, ${audioDuration.toFixed(2)}s)`);
+        } else {
+          console.log(`  (audio ${audioFolderName}/${selectedAudio.name} invalido; uso solo el audio del clip al 50%)`);
+          selectedAudio = null;
+        }
+      }
+    }
+  }
+
+  return {
+    src: `${slug}/outro/final.mp4`,
+    duration_s: Math.max(duration, audioDuration || 0),
+    video_duration_s: duration,
+    transition_s: NOVELA_OUTRO_TRANSITION_S,
+    post_render_speed: Number.isFinite(postRenderSpeed)
+      ? Math.max(0.5, Math.min(3, postRenderSpeed))
+      : 1,
+    selected_number: selected.number,
+    clip_volume: 0.5,
+    ...(selectedAudio && audioDuration ? {
+      audio_src: `${slug}/outro/voice.mp3`,
+      audio_duration_s: audioDuration,
+      audio_selected_number: selectedAudio.number,
+      voice_volume: 1,
+    } : {}),
+    language: project.project?.preset === "novela-coreana" ? "esp" : "eng",
+  };
 }
 
 function ensureDirs() {
@@ -514,15 +624,23 @@ function render(job, slug) {
   // --concurrency limitado para no saturar la PC (especialmente si se genera en paralelo)
   let propsPath = job.jsonPath;
   let runtimeProps = null;
-  if (CLIPS_ONLY) {
-    const p = readJson(job.jsonPath);
-    p.audio = { ...(p.audio || {}), _omit_scene_voice: true };
+  const sourceProps = readJson(job.jsonPath);
+  const isNovelaJob = novelaOutroFolder(sourceProps.project?.preset) !== null;
+  if (CLIPS_ONLY || isNovelaJob) {
+    const p = sourceProps;
+    if (CLIPS_ONLY) p.audio = { ...(p.audio || {}), _omit_scene_voice: true };
+    // Es metadata exclusivamente de runtime: nunca confiamos en una ruta inyectada en el JSON de cola.
+    delete p._novelaOutro;
+    if (isNovelaJob) {
+      const outro = prepareNovelaOutro(p, slug, videoSpeed(job));
+      if (outro) p._novelaOutro = outro;
+    }
     const runtimeDir = path.join(ROOT, "tmp", "build-runtime");
     fs.mkdirSync(runtimeDir, { recursive: true });
-    runtimeProps = path.join(runtimeDir, `${slug}.clips-only.json`);
+    runtimeProps = path.join(runtimeDir, `${slug}.${CLIPS_ONLY ? "clips-only" : "runtime"}.json`);
     fs.writeFileSync(runtimeProps, JSON.stringify(p, null, 2), "utf8");
     propsPath = runtimeProps;
-    console.log("  modo clips-only: omito la voz externa y conservo el audio propio de los clips");
+    if (CLIPS_ONLY) console.log("  modo clips-only: omito la voz externa y conservo el audio propio de los clips");
   }
   const cmd = `npx remotion render ViralVideo "out/${slug}.mp4" --props="${rel(propsPath)}" --concurrency=6`;
   console.log("  > " + cmd);

@@ -17,7 +17,7 @@
 // PENDIENTE DE SHAKEOUT EN VIVO: confirmar 9:16, el patron exacto de URL del VIDEO y los tiempos.
 
 (() => {
-  const GROK_DRIVER_VERSION = "0.2.18-card-scoped-final-actions";
+  const GROK_DRIVER_VERSION = "0.2.19-fast-four-variant-grid";
   if (window.__grokDriverVersion === GROK_DRIVER_VERSION) return;
   // Una recarga solo de la extension invalida el listener viejo pero conserva el `window` de la pagina.
   // El guard booleano anterior impedia inyectar el driver corregido hasta recargar Grok, destruyendo la
@@ -411,6 +411,27 @@
     const minShortEdge = Number(cfg?.grokImageMinShortEdge) || 640;
     return !!img && img.complete !== false
       && Math.min(Number(img.naturalWidth) || 0, Number(img.naturalHeight) || 0) >= minShortEdge;
+  }
+
+  // Sin referencias Grok entrega cuatro variantes dentro de /imagine, pero esa cuadrilla no monta los
+  // botones Guardar + Crear video que existen en una tarjeta individual. Esperar esas acciones hacia
+  // que una imagen ya terminada agotara los 180s y entrara a la recuperacion de 60s. Esta senal solo se
+  // habilita cuando el titulo sigue coincidiendo EXACTAMENTE con el prompt actual, hay cuatro IDs nuevos,
+  // todos alcanzaron resolucion final y ninguno conserva progreso. La variante elegida todavia debe pasar
+  // el quiet period, el detector de pixeles/data URL y la validacion de bytes del service worker.
+  function titledGridVariantsReady(prompt, root, exclude = new Set(), cfg) {
+    const exactRoot = titleResultRootForPrompt(prompt);
+    if (!exactRoot || exactRoot !== root || promptGroupStillGenerating(root)) return false;
+    const unique = new Map();
+    for (const image of resultImageEls(root)) {
+      const src = image.currentSrc || image.src || "";
+      const key = genId(src);
+      if (!src || !key || exclude.has(key) || unique.has(key)) continue;
+      unique.set(key, image);
+    }
+    if (unique.size !== 4) return false;
+    return [...unique.values()].every((image) => imageDimensionsLookFinal(image, cfg)
+      && !resultStillGenerating(image));
   }
 
   function imageNoiseMetrics(data, w, h) {
@@ -866,14 +887,16 @@
         lastSrc = cur; lastPixelFingerprint = pixelFingerprint; lastChange = Date.now();
       }
       const idle = Date.now() - lastChange;
+      const finalUiReady = resultActionsReady(el)
+        || titledGridVariantsReady(prompt, promptGroup, before, cfg);
       if (cur && !resultStillGenerating(el)) {
-        if (isData(cur) && resultActionsReady(el) && idle >= ACTION_READY_QUIET_MS
+        if (isData(cur) && finalUiReady && idle >= ACTION_READY_QUIET_MS
             && await dataImageLooksFinal(cur, cfg)) { settledSrc = cur; break; }
         if (!isData(cur) && imageDimensionsLookFinal(el, cfg)) {
           const pixels = pixelInspection === null ? null : pixelInspection.looksFinal;
           // CORS=null NO equivale a aprobado. Solo devolvemos un candidato en cuarentena para que el
           // SW valide sus bytes descargados; nunca se asigna ni se mueve a canonical en este punto.
-          if (resultActionsReady(el) && (pixels === true || pixels === null) && idle >= ACTION_READY_QUIET_MS) {
+          if (finalUiReady && (pixels === true || pixels === null) && idle >= ACTION_READY_QUIET_MS) {
             settledSrc = cur; settledNeedsByteValidation = pixels !== true; break;
           }
         }
@@ -954,12 +977,14 @@
         lastSrc = cur; lastPixelFingerprint = pixelFingerprint; lastChange = Date.now();
       }
       const idle = Date.now() - lastChange;
+      const finalUiReady = resultActionsReady(el)
+        || titledGridVariantsReady(prompt, resultRoot, exclude, cfg);
       if (cur && !resultStillGenerating(el)) {
-        if (isData(cur) && resultActionsReady(el) && idle >= ACTION_READY_QUIET_MS
+        if (isData(cur) && finalUiReady && idle >= ACTION_READY_QUIET_MS
             && await dataImageLooksFinal(cur, cfg)) { settledSrc = cur; break; }
         if (!isData(cur) && imageDimensionsLookFinal(el, cfg)) {
           const pixels = pixelInspection === null ? null : pixelInspection.looksFinal;
-          if (resultActionsReady(el) && (pixels === true || pixels === null) && idle >= ACTION_READY_QUIET_MS) {
+          if (finalUiReady && (pixels === true || pixels === null) && idle >= ACTION_READY_QUIET_MS) {
             settledSrc = cur; settledNeedsByteValidation = pixels !== true; break;
           }
         }

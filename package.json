@@ -1,12 +1,12 @@
 {
   "private": true,
   "name": "flow-scene-automator",
-  "version": "0.2.58",
+  "version": "0.2.59",
   "type": "module",
   "description": "Dev tooling solo (tests/lint). Chrome ignora este archivo al cargar la extension.",
   "scripts": {
     "dev": "node dev/reload-server.mjs",
     "telegram": "node scripts/telegram-bridge.mjs",
-    "test": "node tests/dryrun.test.mjs && node tests/schema_v2.test.mjs && node tests/scene_transition.test.mjs && node tests/orchestrator.test.mjs && node tests/queue_validator.test.mjs && node tests/manhwa_preset.test.mjs && node tests/manhwa_v6_pages.test.mjs && node tests/manhwa_v7_pages.test.mjs && node tests/narration_visual_timing.test.mjs && node tests/novela_coreana_v2.test.mjs && node tests/fish_audio.test.mjs && node tests/grok_image_quality.test.mjs && node tests/grok_prompt.test.mjs && node tests/grok_driver.test.mjs && node tests/grok_restart_at_most_once.test.mjs && node tests/offscreen_image_inspection.test.mjs && node tests/flow_driver.test.mjs && node tests/provider_tabs.test.mjs && node tests/asset_store.test.mjs && node tests/messaging_send.test.mjs"
+    "test": "node tests/dryrun.test.mjs && node tests/schema_v2.test.mjs && node tests/scene_transition.test.mjs && node tests/orchestrator.test.mjs && node tests/queue_validator.test.mjs && node tests/manhwa_preset.test.mjs && node tests/manhwa_v6_pages.test.mjs && node tests/manhwa_v7_pages.test.mjs && node tests/narration_visual_timing.test.mjs && node tests/novela_coreana_v2.test.mjs && node tests/novela_outro.test.mjs && node tests/fish_audio.test.mjs && node tests/grok_image_quality.test.mjs && node tests/grok_prompt.test.mjs && node tests/grok_driver.test.mjs && node tests/grok_restart_at_most_once.test.mjs && node tests/offscreen_image_inspection.test.mjs && node tests/flow_driver.test.mjs && node tests/provider_tabs.test.mjs && node tests/asset_store.test.mjs && node tests/messaging_send.test.mjs"
   }
 }

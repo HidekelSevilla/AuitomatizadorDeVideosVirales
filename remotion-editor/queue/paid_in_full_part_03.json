@@ -1,0 +1,1495 @@
+{
+  "project": {
+    "preset": "novelas-coreanas-eng",
+    "title": "Paid in Full - Part 3",
+    "subtitle": "The Rise",
+    "serie": "paid_in_full",
+    "slug": "paid_in_full_part_03",
+    "series": {
+      "id": "paid_in_full",
+      "part": 3,
+      "is_cliffhanger": true
+    },
+    "language": "en",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "reuse_ingredients": true,
+    "grok_clip_seconds": "6",
+    "scene_target_seconds": 4,
+    "voice_target_seconds": [
+      3,
+      4
+    ],
+    "voice_ceiling_seconds": "5",
+    "hook": "He divorced a dishwasher. He never checked what she became."
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "fish"
+    }
+  },
+  "characters": {
+    "ha_na": {
+      "display_name": "Ha-na",
+      "poses": {
+        "resolved": {
+          "mode": "existing",
+          "asset": "assets/characters/paid_in_full/ha_na_resolved.png",
+          "reference_pose": "base",
+          "prompt": "Same woman Ha-na, same face, hair pulled back plainly, wearing a plain dark sweater, empty hands, jaw set, a cold clear resolve in her eyes, neutral soft grey studio background. No text, no logo."
+        },
+        "surgeon": {
+          "mode": "generate",
+          "asset": "assets/characters/paid_in_full/ha_na_surgeon.png",
+          "reference_pose": "resolved",
+          "prompt": "Same woman Ha-na, same face, hair under a surgical cap, wearing blue surgical scrubs under a white coat, empty hands, focused confident expression, neutral soft grey studio background. No text, no logo."
+        },
+        "boss": {
+          "mode": "generate",
+          "asset": "assets/characters/paid_in_full/ha_na_boss.png",
+          "reference_pose": "resolved",
+          "prompt": "Same woman Ha-na, same face, hair styled sleek, wearing an elegant dark tailored power suit, empty hands, calm commanding expression, neutral soft grey studio background. No text, no logo."
+        }
+      }
+    },
+    "do_yun": {
+      "display_name": "Do-yun",
+      "poses": {
+        "white_coat": {
+          "mode": "existing",
+          "asset": "assets/characters/paid_in_full/do_yun_white_coat.png",
+          "reference_pose": "casual",
+          "prompt": "Same man Do-yun, same face and hair, wearing a crisp white doctor's coat over a shirt and tie, empty hands, proud polished expression, neutral soft grey studio background. No text, no logo."
+        },
+        "cold": {
+          "mode": "existing",
+          "asset": "assets/characters/paid_in_full/do_yun_cold.png",
+          "reference_pose": "casual",
+          "prompt": "Same man Do-yun, same face and hair, wearing the white doctor's coat, empty hands, cold unbothered expression, neutral soft grey studio background. No text, no logo."
+        },
+        "desperate": {
+          "mode": "generate",
+          "asset": "assets/characters/paid_in_full/do_yun_desperate.png",
+          "reference_pose": "white_coat",
+          "prompt": "Same man Do-yun, same face and hair, in a rumpled shirt with loosened tie, empty hands, haggard desperate expression with dark circles, neutral soft grey studio background. No text, no logo."
+        }
+      }
+    },
+    "se_ra": {
+      "display_name": "Se-ra",
+      "poses": {
+        "elegant": {
+          "mode": "generate",
+          "asset": "assets/characters/paid_in_full/se_ra_elegant.png",
+          "reference_pose": "pregnant",
+          "prompt": "Same woman Se-ra, same face and hair, wearing an elegant designer dress, not pregnant, slim, empty hands, polished but faintly uneasy expression, neutral soft grey studio background. No text, no logo."
+        }
+      }
+    }
+  },
+  "escenarios": {
+    "street": {
+      "display_name": "Night street",
+      "views": {
+        "night": {
+          "mode": "existing",
+          "asset": "assets/escenarios/paid_in_full/street_night.png",
+          "prompt": "EMPTY quiet city street at night, wet pavement, a dim streetlight, a closed shopfront, cold blue night light, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        }
+      }
+    },
+    "university": {
+      "display_name": "Medical school",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/university_base.png",
+          "prompt": "EMPTY modern medical-school lecture hall, tiered seats, a whiteboard, an anatomy model, bright clean daylight, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        }
+      }
+    },
+    "hospital_or": {
+      "display_name": "Operating room",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/hospital_or_base.png",
+          "prompt": "EMPTY sterile hospital operating room, bright surgical lights over a steel table, monitors and a tray of instruments, cold clinical light, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        }
+      }
+    },
+    "hospital_hall": {
+      "display_name": "Hospital corridor",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/hospital_hall_base.png",
+          "prompt": "EMPTY bright modern hospital corridor, gleaming floor, glass walls, cool clean daylight, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        }
+      }
+    },
+    "her_office": {
+      "display_name": "Her tower office",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/her_office_base.png",
+          "prompt": "EMPTY sleek high-rise executive office, a large dark desk, floor-to-ceiling windows over the city, expensive and minimal, warm confident light, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        },
+        "window": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/her_office_window.png",
+          "reference_view": "base",
+          "prompt": "New camera position: beside the floor-to-ceiling window, the city spread far below, the office reflected faintly in the glass, reflection framing. Keep the exact same sleek executive office and warm light as the reference. Empty set, no people, no text."
+        },
+        "desk": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/her_office_desk.png",
+          "reference_view": "base",
+          "prompt": "New camera position: close over the large executive desk, a folder of documents and a pen in the foreground. Keep the exact same sleek office and warm light as the reference. Empty set, no people, no text."
+        }
+      }
+    },
+    "clinic": {
+      "display_name": "His clinic",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/paid_in_full/clinic_base.png",
+          "prompt": "EMPTY shiny new private medical clinic, a bright reception desk, modern waiting chairs, a glossy blank signage wall, warm inviting light, no people, no text, realistic cinematic K-drama, vertical 9:16."
+        }
+      }
+    }
+  },
+  "ingredients": [
+    {
+      "id": "own_coat",
+      "type": "entity",
+      "output_file": "assets/ingredients/paid_in_full/own_coat.png",
+      "generation_prompt": "Insert product shot, a crisp white surgeon's coat with a small stitched name badge, hanging ready, clean bright light, realistic, no readable text, no logo, no watermark, vertical 9:16."
+    },
+    {
+      "id": "clinic_deed",
+      "type": "entity",
+      "output_file": "assets/ingredients/paid_in_full/clinic_deed.png",
+      "generation_prompt": "Insert product shot, a stack of ownership and share-transfer documents on a sleek dark desk beside a pen, warm confident light, realistic, no readable text, no logo, no watermark, vertical 9:16."
+    },
+    {
+      "id": "nameplate",
+      "type": "entity",
+      "output_file": "assets/ingredients/paid_in_full/nameplate.png",
+      "generation_prompt": "Insert product shot, a brushed-metal executive door nameplate beside a frosted-glass office door, warm light, realistic, no readable text, no logo, no watermark, vertical 9:16."
+    },
+    {
+      "id": "mothers_ring",
+      "type": "entity",
+      "output_file": "assets/ingredients/paid_in_full/mothers_ring.png",
+      "generation_prompt": "Insert product shot, a delicate old gold ring with a small worn stone resting on a dark cloth, warm sentimental light, realistic, no text, no logo, no watermark, vertical 9:16."
+    },
+    {
+      "id": "acceptance_letter",
+      "type": "entity",
+      "output_file": "assets/ingredients/paid_in_full/acceptance_letter.png",
+      "generation_prompt": "Insert product shot, a formal university acceptance letter unfolded on a desk under clean light, realistic, no readable text, no logo, no watermark, vertical 9:16."
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_01",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "boss"
+          }
+        ],
+        "escenario": {
+          "id": "her_office",
+          "view": "window"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in an elegant dark tailored power suit, hair sleek, calm and commanding — extreme wide establishing shot, she stands tiny at the glass wall of a high office over the whole city, her reflection faint in the glass, reflection framing, camera set far back, warm confident light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she stands still at the glass, the city far below her, mouth closed, not speaking, no direct eye contact with the camera; slow tilt down. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, tense] He divorced a dishwasher. He never checked what she became.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_02",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "resolved"
+          }
+        ],
+        "escenario": {
+          "id": "university",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in a plain dark sweater, hair pulled back, quietly determined — establishing wide shot, deep focus, she is small taking a seat in the bright tiered lecture hall, rows of empty seats around her, clean daylight. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she lowers herself into a lecture seat and opens a book, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "The morning after, I took the seat I gave up.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_03",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "resolved"
+          }
+        ],
+        "escenario": {
+          "id": "university",
+          "view": "base"
+        },
+        "ingredients": [
+          "acceptance_letter"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in a plain dark sweater, hair pulled back, quietly determined — close-up of an old university acceptance letter smoothed flat under her hand on the desk, her lowered face soft-focus above, clean daylight. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she smooths the acceptance letter flat under her palm, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "The letter I had buried became my first day.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "MY FIRST DAY",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_04",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "resolved"
+          }
+        ],
+        "escenario": {
+          "id": "university",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in a plain dark sweater, hair pulled back, quietly determined — medium shot from the thighs up, high angle looking down, she is bent over stacked textbooks late, focused and tireless, daylight fading. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she turns a page and keeps writing without looking up, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "I studied the way only the betrayed can.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_05",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "surgeon"
+          }
+        ],
+        "escenario": {
+          "id": "hospital_hall",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in blue surgical scrubs under a white coat, hair under a surgical cap, focused — full body shot, she strides down the bright corridor in scrubs and a white coat, the whole figure head to feet, transformed and sure, cool clean light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she strides two steady steps down the bright corridor, mouth closed, not speaking, no direct eye contact with the camera; slow lateral tracking left. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Residency broke stronger people. It sharpened me.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_06",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "surgeon"
+          }
+        ],
+        "escenario": {
+          "id": "hospital_or",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in blue surgical scrubs under a white coat, hair under a surgical cap, focused — medium close-up, chest up, over-the-shoulder from behind her toward a tray of instruments, her shoulder out of focus in the foreground, she reaches for one, cold clinical light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she lifts an instrument from the tray with a steady hand, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "My hands learned a blade instead of a sponge.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_07",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "surgeon"
+          }
+        ],
+        "escenario": {
+          "id": "hospital_or",
+          "view": "base"
+        },
+        "ingredients": [
+          "own_coat"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in blue surgical scrubs under a white coat, hair under a surgical cap, focused — close-up of her hands fastening the last button of her own white surgeon's coat with a small stitched name badge, her lowered face soft above, cold clinical light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she fastens the last button of her own white coat, mouth closed, not speaking, no direct eye contact with the camera; slow push-in. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "The hands that scrubbed his plates now held a scalpel.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_08",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "surgeon"
+          }
+        ],
+        "escenario": {
+          "id": "hospital_or",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in blue surgical scrubs under a white coat, hair under a surgical cap, focused — medium shot from the thighs up, she stands tall at the steel table as colleagues blur past her, cold clinical light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she straightens at the table as blurred colleagues move behind her, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Three years. They started calling me Doctor.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "DOCTOR",
+        "highlight_words": [
+          "Doctor"
+        ]
+      }
+    },
+    {
+      "id": "scene_09",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "resolved"
+          }
+        ],
+        "escenario": {
+          "id": "street",
+          "view": "night"
+        },
+        "ingredients": [
+          "mothers_ring"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in a plain dark sweater, hair pulled back, quietly determined — close-up of her hands sliding an old gold ring back onto her finger under a streetlight, her lowered face soft above, cold blue night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she slides the ring slowly back onto her finger, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "With my first real pay, I bought my mother's ring back.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "HER RING BACK",
+        "highlight_words": [
+          "ring"
+        ]
+      }
+    },
+    {
+      "id": "scene_10",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "boss"
+          }
+        ],
+        "escenario": {
+          "id": "street",
+          "view": "night"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in an elegant dark tailored power suit, hair sleek, calm and commanding — full body shot, low angle, she lifts her chin toward the towers in a sharp coat, a hard bright resolve on her face, cold light turning toward dawn. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, raw, intense emotional performance, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she lifts her chin toward the towers, resolve hardening, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "I slid it on and made myself one promise.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_11",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "white_coat"
+          },
+          {
+            "id": "se_ra",
+            "pose": "elegant"
+          }
+        ],
+        "escenario": {
+          "id": "clinic",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character references only for the same faces and clothes — a Korean man in a crisp white doctor's coat and a Korean woman in an elegant designer dress — establishing wide shot, deep focus, the two of them small cutting a ribbon at the bright new clinic, glossy and proud, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the man and the woman lift the scissors to the ribbon together, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Meanwhile, he cut the ribbon on a shiny clinic.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_12",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "se_ra",
+            "pose": "elegant"
+          }
+        ],
+        "escenario": {
+          "id": "clinic",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman in her early thirties, wavy dark-brown hair, in an elegant designer dress, slim — medium close-up, chest up, she smiles brightly toward unseen cameras as she speaks, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the woman begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the woman moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"We made it,\" Se-ra told the cameras.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_13",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "white_coat"
+          }
+        ],
+        "escenario": {
+          "id": "clinic",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man in his early thirties, short black hair, a clean sharp jaw, in a crisp white doctor's coat over a shirt and tie, polished — medium shot from the thighs up, high angle looking down, he frowns over a stack of red bills at the empty reception desk, warm light gone tense. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): he sets one red bill down on the growing pile, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "But debt does not care about ribbon-cuttings.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_14",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "desperate"
+          }
+        ],
+        "escenario": {
+          "id": "clinic",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man in his early thirties, short black hair, a clean sharp jaw, in a rumpled shirt with loosened tie, haggard with dark circles — extreme wide establishing shot, he is tiny and haggard alone in the vast empty clinic, camera set far back, warm light gone cold. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): he drags a hand down his tired face in the empty clinic, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "The clinic bled money within a year.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_15",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "desperate"
+          }
+        ],
+        "escenario": {
+          "id": "street",
+          "view": "night"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man in his early thirties, short black hair, a clean sharp jaw, in a rumpled shirt with loosened tie, haggard with dark circles — medium shot from the thighs up, side profile, he pleads into a phone on a cold street corner, desperate, cold blue night light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the man begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the man moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"Just bridge me six months,\" he begged them.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_16",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "boss"
+          }
+        ],
+        "escenario": {
+          "id": "her_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in an elegant dark tailored power suit, hair sleek, calm and commanding — medium close-up, chest up, over-the-shoulder from behind her toward a document on the desk, her shoulder out of focus in the foreground, she signs it unhurried and cold, warm confident light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she signs one document with a slow deliberate hand, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Every investor said no. Then one said yes.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_17",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "her_office",
+          "view": "desk"
+        },
+        "ingredients": [
+          "clinic_deed"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided ownership documents — close-up insert, no face, a share-transfer folder and a pen on the sleek dark desk, a hand sliding it forward, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): a hand slides the share-transfer folder forward on the desk, no face, no person visible; static camera. Single continuous shot. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "A quiet firm no one had ever heard of.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_18",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "white_coat"
+          }
+        ],
+        "escenario": {
+          "id": "clinic",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man in his early thirties, short black hair, a clean sharp jaw, in a crisp white doctor's coat over a shirt and tie, polished — medium shot from the thighs up, he exhales in relief over a signed rescue agreement in the clinic, warm light returning. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): he lets out a slow breath over the signed agreement, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "It cleared his debts and saved his clinic.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_19",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "white_coat"
+          }
+        ],
+        "escenario": {
+          "id": "clinic",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man in his early thirties, short black hair, a clean sharp jaw, in a crisp white doctor's coat over a shirt and tie, polished — medium close-up, chest up, low angle, he looks up with relieved gratitude as he speaks, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the man begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the man moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"Thank god for that investor,\" he said.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_20",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "white_coat"
+          }
+        ],
+        "escenario": {
+          "id": "clinic",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man in his early thirties, short black hair, a clean sharp jaw, in a crisp white doctor's coat over a shirt and tie, polished — medium shot from the thighs up, he spreads his arms in the saved clinic as he speaks, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the man begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the man moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"Whoever they are, I owe them everything.\"",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_21",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "boss"
+          }
+        ],
+        "escenario": {
+          "id": "hospital_hall",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in an elegant dark tailored power suit, hair sleek, calm and commanding — full body shot, she walks past deferential blurred staff down the bright corridor in a power suit, the whole figure head to feet, cool clean light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she walks two steady steps as blurred staff step aside, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the faces EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "By then, my name opened doors in medicine.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_22",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "boss"
+          }
+        ],
+        "escenario": {
+          "id": "her_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in an elegant dark tailored power suit, hair sleek, calm and commanding — medium shot from the thighs up, she sits composed and powerful at the head of her desk, warm confident light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she folds her hands calmly on the desk, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "I sat on boards he could only dream of.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_23",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "boss"
+          }
+        ],
+        "escenario": {
+          "id": "her_office",
+          "view": "desk"
+        },
+        "ingredients": [
+          "clinic_deed"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in an elegant dark tailored power suit, hair sleek, calm and commanding — medium close-up, high angle over-the-shoulder from behind her toward a share-transfer document she signs, her shoulder out of focus in the foreground, the clinic papers stacking beside her, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she signs another transfer and adds it to the stack, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "And in the dark, I bought his clinic piece by piece.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_24",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "boss"
+          }
+        ],
+        "escenario": {
+          "id": "her_office",
+          "view": "window"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in an elegant dark tailored power suit, hair sleek, calm and commanding — full body shot, she turns to the floor-to-ceiling window, her reflection framing in the glass over the city, cool and certain, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she turns slowly to the window, her reflection steady, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Every wall he stood in, I already owned.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_25",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "se_ra",
+            "pose": "elegant"
+          }
+        ],
+        "escenario": {
+          "id": "clinic",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman in her early thirties, wavy dark-brown hair, in an elegant designer dress, slim — medium close-up, chest up, she frowns uneasily as she leans toward him and speaks low, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the woman begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the woman moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"Something feels wrong,\" Se-ra told him.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_26",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "white_coat"
+          }
+        ],
+        "escenario": {
+          "id": "clinic",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man in his early thirties, short black hair, a clean sharp jaw, in a crisp white doctor's coat over a shirt and tie, polished — medium shot from the thighs up, he laughs off her worry with easy relief as he speaks, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the man begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the man moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"We're finally safe,\" he laughed.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_27",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "white_coat"
+          }
+        ],
+        "escenario": {
+          "id": "clinic",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man in his early thirties, short black hair, a clean sharp jaw, in a crisp white doctor's coat over a shirt and tie, polished — medium close-up, chest up, he holds up a formal invitation with excitement as he speaks, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the man begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the man moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"The investor wants to meet me at last.\"",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_28",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "white_coat"
+          }
+        ],
+        "escenario": {
+          "id": "clinic",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man in his early thirties, short black hair, a clean sharp jaw, in a crisp white doctor's coat over a shirt and tie, polished — medium shot from the thighs up, he slips on his crisp white coat before the meeting, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): he slides his arms into the white coat and squares his shoulders, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "He put on the white coat I had paid for.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_29",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "white_coat"
+          }
+        ],
+        "escenario": {
+          "id": "street",
+          "view": "night"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man in his early thirties, short black hair, a clean sharp jaw, in a crisp white doctor's coat over a shirt and tie, polished — extreme wide establishing shot, he is small walking up to a towering glass building at dusk, camera set far back, cold light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): he walks toward the towering glass entrance, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "He came to my tower, never knowing it was mine.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_30",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "white_coat"
+          }
+        ],
+        "escenario": {
+          "id": "hospital_hall",
+          "view": "base"
+        },
+        "ingredients": [
+          "nameplate"
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man in his early thirties, short black hair, a clean sharp jaw, in a crisp white doctor's coat over a shirt and tie, polished — medium shot from the thighs up, over-the-shoulder from behind him toward a frosted-glass office door and a brushed-metal nameplate, his shoulder out of focus in the foreground, he waits nervously, cool light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): he straightens his coat as he waits by the door, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "He waited by a door with my name on it.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_31",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "white_coat"
+          }
+        ],
+        "escenario": {
+          "id": "her_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man in his early thirties, short black hair, a clean sharp jaw, in a crisp white doctor's coat over a shirt and tie, polished — establishing wide shot, deep focus, over-the-shoulder from behind him toward the wide desk and window, his shoulder out of focus in the foreground, he steps in as the door opens behind him, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): he starts to turn as the door opens behind him, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "He heard the door open behind him.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_32",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "white_coat"
+          }
+        ],
+        "escenario": {
+          "id": "her_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man in his early thirties, short black hair, a clean sharp jaw, in a crisp white doctor's coat over a shirt and tie, polished — medium close-up, chest up, he rises with a grateful nervous smile as he speaks toward the doorway, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the man begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the man moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"Thank you for saving my life,\" he said, standing.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_33",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "white_coat"
+          }
+        ],
+        "escenario": {
+          "id": "her_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man in his early thirties, short black hair, a clean sharp jaw, in a crisp white doctor's coat over a shirt and tie, polished — medium shot from the thighs up, slight Dutch tilt, his grateful smile freezing as he turns fully toward the desk, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, raw, intense emotional performance, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): he turns fully and his smile freezes on his face, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Then he turned around.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_34",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "cold"
+          }
+        ],
+        "escenario": {
+          "id": "her_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man in his early thirties, short black hair, a clean sharp jaw, in his white doctor's coat — medium close-up, chest up, he is stricken and pale, mouth parting in disbelief as he speaks, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, raw, intense emotional performance, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the man begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the man moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[breathless, urgent] \"...Ha-na?\"",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_35",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "se_ra",
+            "pose": "elegant"
+          }
+        ],
+        "escenario": {
+          "id": "clinic",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean woman in her early thirties, wavy dark-brown hair, in an elegant designer dress, slim — medium shot from the thighs up, she stands alone in the empty clinic with a sudden cold dread, her hand rising slowly to her mouth, warm light gone thin. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her hand rises slowly to her mouth in the empty clinic, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "The dishwasher. The wife. The name on his loans.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_36",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "boss"
+          }
+        ],
+        "escenario": {
+          "id": "her_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in an elegant dark tailored power suit, hair sleek, calm and commanding — medium close-up, chest up, she sits behind the wide desk, calm and absolute, warm confident light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she sets both hands flat on the desk and holds his gaze, mouth closed, not speaking, no direct eye contact with the camera; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Now the woman who owned every brick he stood on.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_37",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "boss"
+          }
+        ],
+        "escenario": {
+          "id": "her_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in an elegant dark tailored power suit, hair sleek, calm and commanding — medium shot from the thighs up, she gestures coolly to the chair across from her as she speaks, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the woman begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the woman moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"Sit down, Doctor,\" I said.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_38",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_yun",
+            "pose": "cold"
+          }
+        ],
+        "escenario": {
+          "id": "her_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a Korean man in his early thirties, short black hair, a clean sharp jaw, in his white doctor's coat — medium close-up, over-the-shoulder from behind her toward him, her shoulder out of focus in the foreground, he stammers as it all lands, warm light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the man begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the man moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "\"You... you own it?\" he breathed.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_39",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "boss"
+          }
+        ],
+        "escenario": {
+          "id": "her_office",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in an elegant dark tailored power suit, hair sleek, calm and commanding — medium close-up, chest up, she leans back with a small cold smile as she speaks, warm confident light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, raw, intense emotional performance, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the woman begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the woman moves their mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, knowing] \"Welcome to my clinic, Doctor.\"",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "MY CLINIC",
+        "highlight_words": [
+          "clinic"
+        ]
+      }
+    },
+    {
+      "id": "scene_40",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "ha_na",
+            "pose": "boss"
+          }
+        ],
+        "escenario": {
+          "id": "street",
+          "view": "night"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided character reference only for the same face and clothes — a slim Korean woman in her early thirties, soft oval face, straight dark hair, in an elegant dark tailored power suit, hair sleek, calm and commanding — extreme wide establishing shot, she walks out of her lit tower into the night, tiny and untouchable, camera set far back, cold light. cinematic Korean family melodrama, realistic East-Asian characters, elegant luxury atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No cropped body, no cut-off limbs, no distorted anatomy, complete natural figure. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she walks out of the glowing tower into the night, mouth closed, not speaking, no direct eye contact with the camera; slow pull-back. Single continuous shot. Keep the face EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "He spent three years becoming a doctor. He never dreamed whose.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    }
+  ],
+  "capcut_export": {
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18",
+      "scene_19",
+      "scene_20",
+      "scene_21",
+      "scene_22",
+      "scene_23",
+      "scene_24",
+      "scene_25",
+      "scene_26",
+      "scene_27",
+      "scene_28",
+      "scene_29",
+      "scene_30",
+      "scene_31",
+      "scene_32",
+      "scene_33",
+      "scene_34",
+      "scene_35",
+      "scene_36",
+      "scene_37",
+      "scene_38",
+      "scene_39",
+      "scene_40"
+    ],
+    "caption_style": {
+      "font": "bold sans-serif",
+      "position": "lower-third",
+      "color": "white",
+      "stroke": "black"
+    },
+    "title_cards": [
+      "TO BE CONTINUED",
+      "PART 4: THE REUNION"
+    ],
+    "cliffhanger_card": "PART 4?",
+    "music_notes": [
+      "Rising strings for the glow-up",
+      "A cold triumphant swell on the reveal"
+    ],
+    "sfx_notes": [
+      "Turning pages",
+      "A heart monitor beep",
+      "A door, and silence"
+    ]
+  },
+  "audio": {
+    "voice_speed": 1.25,
+    "voice_rate": 1,
+    "music_volume": 0
+  },
+  "tts_export": {
+    "mode": "per_scene",
+    "voice_id": "REEMPLAZAR_voice_id_narradora_ingles",
+    "note": "One single female English voice narrates every scene, including all dialogue. Fish Audio per scene."
+  }
+}

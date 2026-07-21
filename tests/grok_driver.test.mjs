@@ -4,7 +4,7 @@ import vm from "node:vm";
 
 const source = fs.readFileSync(new URL("../content/grok-driver.js", import.meta.url), "utf8");
 const serviceWorkerSource = fs.readFileSync(new URL("../background/service-worker.js", import.meta.url), "utf8");
-const instrumentedSource = source.replace(/\}\)\(\);\s*$/, "globalThis.__grokTest = { imageDimensionsLookFinal, imageNoiseMetrics, pixelBufferLooksFinal, resultStillGenerating, resultActionsReady, genId, postUrlFromContentSrc, pickResultImage, promptResultGroups, latestPromptResultGroup, postResultRootForPrompt, titleResultRootForPrompt, submittedPostResultRoot };})();");
+const instrumentedSource = source.replace(/\}\)\(\);\s*$/, "globalThis.__grokTest = { imageDimensionsLookFinal, imageNoiseMetrics, pixelBufferLooksFinal, resultStillGenerating, resultActionsReady, titledGridVariantsReady, genId, postUrlFromContentSrc, pickResultImage, promptResultGroups, latestPromptResultGroup, postResultRootForPrompt, titleResultRootForPrompt, submittedPostResultRoot };})();");
 
 let messageListener = null;
 const editable = { closest: () => form, innerText: "" };
@@ -47,6 +47,7 @@ const document = {
     if (selector === '[contenteditable][role="textbox"][aria-label="Ask Grok anything"]') return editable;
     if (selector === "form") return form;
     if (selector === "main article") return postArticle;
+    if (selector === "main") return postArticle;
     return null;
   },
   querySelectorAll(selector) {
@@ -127,6 +128,36 @@ assert.equal(context.__grokTest.imageDimensionsLookFinal({ complete: true, natur
 assert.equal(context.__grokTest.imageDimensionsLookFinal({ complete: true, naturalWidth: 720, naturalHeight: 1280 }), true,
   "la salida final 720x1280 debe aceptarse");
 
+const exactGridPrompt = "EMPTY sterile office, no people";
+const gridRoot = {
+  innerText: "",
+  querySelector: () => null,
+  querySelectorAll: (selector) => selector === "img" ? images : [],
+};
+const gridImage = (id) => ({
+  complete: true,
+  naturalWidth: 720,
+  naturalHeight: 1280,
+  currentSrc: `data:image/jpeg;base64,FINAL_VARIANT_${id}`,
+  src: `data:image/jpeg;base64,FINAL_VARIANT_${id}`,
+  innerText: "",
+  parentElement: null,
+});
+postArticle = gridRoot;
+document.title = `${exactGridPrompt} - Grok`;
+images = [1, 2, 3, 4].map(gridImage);
+assert.equal(context.__grokTest.titledGridVariantsReady(exactGridPrompt, gridRoot, new Set(), {}), true,
+  "la cuadrilla exacta de cuatro variantes finales debe saltar la espera de botones inexistentes");
+images = [1, 2, 3].map(gridImage);
+assert.equal(context.__grokTest.titledGridVariantsReady(exactGridPrompt, gridRoot, new Set(), {}), false,
+  "tres variantes no prueban que la cuadrilla x4 haya terminado");
+images = [1, 2, 3, 4].map(gridImage);
+assert.equal(context.__grokTest.titledGridVariantsReady("otro prompt", gridRoot, new Set(), {}), false,
+  "la cuadrilla rapida nunca debe adoptar resultados de otro prompt");
+postArticle = null;
+document.title = "Imagine - Grok";
+images = [];
+
 // El boton Guardar aparece tambien sobre frames intermedios: nunca debe puentear el analisis visual.
 const generateSource = source.slice(source.indexOf("async function generateImage"), source.indexOf("async function collectImage"));
 assert.doesNotMatch(generateSource, /resultCardReady\(el\)\s*\|\|\s*await dataImageLooksFinal/,
@@ -161,8 +192,8 @@ assert.match(generateSource, /navegacion tardia a post/,
   "la URL del post debe persistirse aunque aparezca despues del primer ACK del submit");
 assert.match(generateSource, /postUrlFromContentSrc\(settledSrc\)/,
   "el endpoint content debe dar el post exacto sin esperar una navegacion inexistente");
-assert.match(generateSource, /isData\(cur\) && resultActionsReady\(el\)[\s\S]*dataImageLooksFinal/,
-  "un data URL no puede guardarse hasta que su propia tarjeta tenga acciones finales");
+assert.match(generateSource, /finalUiReady = resultActionsReady\(el\)[\s\S]*titledGridVariantsReady\(prompt, promptGroup, before, cfg\)[\s\S]*isData\(cur\) && finalUiReady[\s\S]*dataImageLooksFinal/,
+  "un data URL solo puede usar acciones finales o una cuadrilla x4 exacta y aun debe validar sus pixeles");
 assert.match(source, /hasSave && hasCreateVideo/,
   "la grilla debe exigir Guardar + Crear video dentro de la misma tarjeta");
 assert.match(source, /hasDownload && hasFinalAction/,
@@ -174,8 +205,8 @@ assert.doesNotMatch(collectSource, /Math\.min\(Math\.max\(1000, timeoutMs\), 150
   "recuperacion no debe truncar a 15s el timeout de 180s pedido por el worker");
 assert.match(collectSource, /timeout: Math\.max\(1000, timeoutMs\)/,
   "recuperacion debe respetar la espera larga solicitada");
-assert.match(collectSource, /isData\(cur\) && resultActionsReady\(el\)[\s\S]*dataImageLooksFinal/,
-  "la recuperacion debe aplicar la misma compuerta obligatoria de la tarjeta");
+assert.match(collectSource, /titledGridVariantsReady\(prompt, resultRoot, exclude, cfg\)[\s\S]*isData\(cur\) && finalUiReady[\s\S]*dataImageLooksFinal/,
+  "la recuperacion debe reconocer la cuadrilla x4 exacta sin omitir la validacion visual");
 assert.match(source, /GROK_PROMPT_GROUP_EMPTY:[\s\S]*no tomo una imagen anterior/,
   "un bloque vacio debe fallar explicitamente en vez de adoptar otra escena");
 assert.match(serviceWorkerSource, /images\/grok-candidates\//,

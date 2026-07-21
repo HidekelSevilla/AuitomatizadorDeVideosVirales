@@ -1,0 +1,1830 @@
+{
+  "project": {
+    "preset": "novela-coreana",
+    "title": "Entré a la audiencia sin nada y salí con mi hija - Parte 5 (final)",
+    "subtitle": "La audiencia",
+    "serie": "condena_ajena",
+    "slug": "condena_ajena_parte_05",
+    "series": {
+      "id": "condena_ajena",
+      "part": 5,
+      "is_cliffhanger": true,
+      "is_finale": true
+    },
+    "language": "es",
+    "aspect_ratio": "9:16",
+    "fps": 30,
+    "reuse_ingredients": true,
+    "grok_clip_seconds": "6",
+    "scene_target_seconds": 4,
+    "voice_target_seconds": [
+      3,
+      4
+    ],
+    "voice_ceiling_seconds": "5",
+    "hook": "La noche antes de la audiencia entraron a mi cuarto y se llevaron todo.",
+    "motor": "A_injusticia - falso culpable (secundario: D_abandono / madre)",
+    "world": "B_makjang_familiar_moderno",
+    "allow_supernatural": false,
+    "allow_historical": false
+  },
+  "pipeline": {
+    "image_generation": {
+      "tool": "grok"
+    },
+    "animation": {
+      "tool": "grok"
+    },
+    "tts": {
+      "tool": "fish"
+    }
+  },
+  "characters": {
+    "da_eun": {
+      "display_name": "Da-eun",
+      "poses": {
+        "abrigo_negro": {
+          "mode": "existing",
+          "asset": "assets/characters/condena_ajena/da_eun_abrigo_negro.png"
+        },
+        "traje_prestado": {
+          "mode": "existing",
+          "asset": "assets/characters/condena_ajena/da_eun_traje_prestado.png"
+        },
+        "abrazo_arrodillada": {
+          "mode": "generate",
+          "asset": "assets/characters/condena_ajena/da_eun_abrazo_arrodillada.png",
+          "reference_pose": "traje_prestado",
+          "prompt": "Same character Da-eun, same face and long dark hair tied back at the nape, same borrowed navy suit one size too big, kneeling on both knees on the ground with her back straight, both arms open wide and forward at chest height ready to receive someone, face crumpled with relief, eyes streaming, mouth closed in a trembling smile, neutral studio background."
+        }
+      }
+    },
+    "se_hee": {
+      "display_name": "Se-hee",
+      "poses": {
+        "abrigo_camel": {
+          "mode": "existing",
+          "asset": "assets/characters/condena_ajena/se_hee_abrigo_camel.png"
+        },
+        "quiebre_pie": {
+          "mode": "generate",
+          "asset": "assets/characters/condena_ajena/se_hee_quiebre_pie.png",
+          "reference_pose": "abrigo_camel",
+          "prompt": "Same character Se-hee, same face and short dark bobbed hair now stuck to her wet cheeks, same camel wool coat hanging open, standing but bent forward with both hands gripping the edge of a table in front of her, knuckles white, shoulders shaking, face crumpled and streaming, mouth open mid-sentence, neutral studio background."
+        }
+      }
+    },
+    "su_a": {
+      "display_name": "Su-a",
+      "poses": {
+        "uniforme_escolar": {
+          "mode": "existing",
+          "asset": "assets/characters/condena_ajena/su_a_uniforme_escolar.png"
+        }
+      }
+    },
+    "mujer": {
+      "display_name": "Mujer mayor",
+      "poses": {
+        "abrigo_gris": {
+          "mode": "existing",
+          "asset": "assets/characters/condena_ajena/mujer_abrigo_gris.png"
+        },
+        "silla_ruedas": {
+          "mode": "generate",
+          "asset": "assets/characters/condena_ajena/mujer_silla_ruedas.png",
+          "reference_pose": "abrigo_gris",
+          "prompt": "Same character Mujer mayor, same deeply lined face and short grey permed hair, same plain grey padded coat, now seated in a simple hospital wheelchair with a folded wool blanket across her knees, both hands folded on top of the blanket, back straight and chin lifted, steady unwavering expression, neutral studio background."
+        }
+      }
+    },
+    "chofer": {
+      "display_name": "Chofer",
+      "poses": {
+        "uniforme": {
+          "mode": "existing",
+          "asset": "assets/characters/condena_ajena/chofer_uniforme.png"
+        }
+      }
+    },
+    "abogado": {
+      "display_name": "Abogado",
+      "poses": {
+        "cachemira": {
+          "mode": "existing",
+          "asset": "assets/characters/condena_ajena/abogado_cachemira.png"
+        }
+      }
+    },
+    "man_sik": {
+      "display_name": "Presidente Baek",
+      "poses": {
+        "traje_negro": {
+          "mode": "existing",
+          "asset": "assets/characters/condena_ajena/man_sik_traje_negro.png"
+        }
+      }
+    },
+    "do_hun": {
+      "display_name": "Do-hun",
+      "poses": {
+        "traje_gris": {
+          "mode": "existing",
+          "asset": "assets/characters/condena_ajena/do_hun_traje_gris.png"
+        }
+      }
+    }
+  },
+  "escenarios": {
+    "exterior_juzgado": {
+      "display_name": "Exterior del juzgado",
+      "views": {
+        "base": {
+          "mode": "generate",
+          "asset": "assets/escenarios/condena_ajena/exterior_juzgado_base.png",
+          "prompt": "EMPTY front steps of a Korean district courthouse, a broad flight of grey stone steps, plain columns, a flagpole with no flag, bare trees and a wide empty plaza below, cold bright late morning light, no people, no text, no readable signage, realistic cinematic, vertical 9:16."
+        },
+        "plaza": {
+          "mode": "generate",
+          "asset": "assets/escenarios/condena_ajena/exterior_juzgado_plaza.png",
+          "reference_view": "base",
+          "prompt": "New camera position: from the far side of the empty plaza, the courthouse facade and its steps small across the open paving, the wide flat plaza filling the lower two thirds. Keep the exact same courthouse facade, stone steps and cold bright light as the reference. Empty set, no people, no text."
+        }
+      }
+    },
+    "cuarto_rentado": {
+      "display_name": "Cuarto rentado",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/condena_ajena/cuarto_rentado_base.png"
+        },
+        "close_suelo": {
+          "mode": "existing",
+          "asset": "assets/escenarios/condena_ajena/cuarto_rentado_close_suelo.png"
+        },
+        "ventana_noche": {
+          "mode": "existing",
+          "asset": "assets/escenarios/condena_ajena/cuarto_rentado_ventana_noche.png"
+        }
+      }
+    },
+    "pasillo_goshiwon": {
+      "display_name": "Pasillo del edificio",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/condena_ajena/pasillo_goshiwon_base.png"
+        },
+        "escalera": {
+          "mode": "existing",
+          "asset": "assets/escenarios/condena_ajena/pasillo_goshiwon_escalera.png"
+        }
+      }
+    },
+    "juzgado_pasillo": {
+      "display_name": "Pasillo del juzgado",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/condena_ajena/juzgado_pasillo_base.png"
+        },
+        "banca": {
+          "mode": "existing",
+          "asset": "assets/escenarios/condena_ajena/juzgado_pasillo_banca.png"
+        },
+        "fondo": {
+          "mode": "existing",
+          "asset": "assets/escenarios/condena_ajena/juzgado_pasillo_fondo.png"
+        }
+      }
+    },
+    "sala_audiencia": {
+      "display_name": "Sala de audiencia",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/condena_ajena/sala_audiencia_base.png"
+        },
+        "mesa": {
+          "mode": "existing",
+          "asset": "assets/escenarios/condena_ajena/sala_audiencia_mesa.png"
+        },
+        "lado_b": {
+          "mode": "existing",
+          "asset": "assets/escenarios/condena_ajena/sala_audiencia_lado_b.png"
+        }
+      }
+    },
+    "calle_escuela": {
+      "display_name": "Calle frente a la escuela",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/condena_ajena/calle_escuela_base.png"
+        },
+        "acera": {
+          "mode": "existing",
+          "asset": "assets/escenarios/condena_ajena/calle_escuela_acera.png"
+        }
+      }
+    },
+    "reja_escuela": {
+      "display_name": "Reja de la escuela",
+      "views": {
+        "base": {
+          "mode": "existing",
+          "asset": "assets/escenarios/condena_ajena/reja_escuela_base.png"
+        },
+        "malla": {
+          "mode": "existing",
+          "asset": "assets/escenarios/condena_ajena/reja_escuela_malla.png"
+        },
+        "banqueta": {
+          "mode": "existing",
+          "asset": "assets/escenarios/condena_ajena/reja_escuela_banqueta.png"
+        }
+      }
+    }
+  },
+  "ingredients": [
+    {
+      "id": "mono_rojo",
+      "type": "entity",
+      "generation_prompt": "Single small red grosgrain hair ribbon tied in a simple bow, slightly frayed at the ends, faded from washing, lying on a neutral dark surface, extreme detail, realistic photography, no text, no logo.",
+      "output_file": "assets/ingredients/condena_ajena/mono_rojo.png"
+    },
+    {
+      "id": "estado_cuenta",
+      "type": "entity",
+      "generation_prompt": "Single long continuous bank statement printout on perforated paper, folded in a concertina and partly unfolded, dense faint ruled rows with no readable words, lying across a neutral dark surface, extreme detail, realistic photography, no readable text, no logo.",
+      "output_file": "assets/ingredients/condena_ajena/estado_cuenta.png"
+    },
+    {
+      "id": "sobre_dinero",
+      "type": "entity",
+      "generation_prompt": "Single thick unmarked cream paper envelope, sealed and slightly bulging with banknotes, crisp corners, no writing on it, lying on a neutral dark surface, extreme detail, realistic photography, no text, no logo.",
+      "output_file": "assets/ingredients/condena_ajena/sobre_dinero.png"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_01",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "abrigo_negro"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_rentado",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, worn black coat) in the provided Cuarto rentado: extreme wide shot, the figure tiny against the architecture, head to feet clearly visible, camera from the corner by the door at a high angle looking down, the woman in the black coat tiny and off-centre on the frame-right third with the emptied room filling the left, head to feet clearly visible, both feet on the vinyl floor, the mattress dragged aside and papers gone, the bare bulb swinging, cold dim light. Cinematic Korean family melodrama, realistic East-Asian characters, bleak working-class atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the bare bulb swings and the shadows move across the empty floor, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, cold, tense] La noche antes de la audiencia entraron a mi cuarto y se llevaron todo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "SE LLEVARON TODO",
+        "highlight_words": [
+          "llevaron"
+        ]
+      }
+    },
+    {
+      "id": "scene_02",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "abrigo_negro"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_rentado",
+          "view": "close_suelo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, worn black coat) in the provided Cuarto rentado: medium shot, waist up, camera down at floor level, the worn vinyl and the dragged mattress edge filling the lower frame in sharp detail, the woman in the black coat crouched beyond with the mattress hiding her waist, in strict profile from her left side, both hands flat on the floor, cold dim light. Cinematic Korean family melodrama, realistic East-Asian characters, bleak working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she runs a flat hand across the bare floor where the papers were, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "No rompieron nada. Sabían exactamente qué había debajo del colchón.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_03",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "cuarto_rentado",
+          "view": "close_suelo"
+        },
+        "ingredients": [
+          {
+            "id": "sobre_dinero"
+          }
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Insert shot in the provided Cuarto rentado: extreme close-up, Insert shot, no face in frame: extreme close-up down at floor level of the provided sealed cream envelope still sitting untouched on the worn vinyl where the mattress was dragged from, dust marks around it, cold dim light. Cinematic Korean family melodrama, realistic East-Asian characters, bleak working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): nothing moves; a shadow passes over the envelope; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Dejaron el sobre del dinero. Se llevaron los tres papeles.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "DEJARON EL DINERO",
+        "highlight_words": [
+          "dinero"
+        ]
+      }
+    },
+    {
+      "id": "scene_04",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "abrigo_negro"
+          }
+        ],
+        "escenario": {
+          "id": "cuarto_rentado",
+          "view": "ventana_noche"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, worn black coat) in the provided Cuarto rentado: close-up, camera facing the barred window from inside at a low angle, close-up of the woman in the black coat against the cold blue window light, framed hard off-centre to the left with the bars out of focus filling the right, eyes dry and moving fast, jaw set, cold dim light. Cinematic Korean family melodrama, realistic East-Asian characters, bleak working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her eyes move fast across the empty room, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Eso me dijo quién había entrado. Y para quién.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_05",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "abrigo_negro"
+          }
+        ],
+        "escenario": {
+          "id": "pasillo_goshiwon",
+          "view": "escalera"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, worn black coat) in the provided Pasillo del edificio: establishing wide shot, floor to ceiling visible, full body small in the lower third of the frame, camera from the bottom of the stairwell at a low angle looking up the flights, floor to ceiling visible, the underside of the stairs cutting across the foreground, the woman in the black coat full body small in the upper third at the wall telephone with both feet on the concrete, the bulb glowing above, dim yellow light. Cinematic Korean family melodrama, realistic East-Asian characters, bleak working-class atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she presses the receiver harder against her ear, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Bajé al teléfono del pasillo a las cinco de la mañana.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_06",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "chofer",
+            "pose": "uniforme"
+          }
+        ],
+        "escenario": {
+          "id": "pasillo_goshiwon",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Chofer (an elderly Korean man in his sixties, grey crew cut, navy driver's jacket and cap) in the provided Pasillo del edificio: medium close-up, chest up, camera from the far end of a corridor at eye level, medium close-up of the old man in the navy driver's jacket with the cap pushed back on his head, mouth clearly visible, framed off-centre to the right, one hand on a payphone receiver, dim yellow light. Cinematic Korean family melodrama, realistic East-Asian characters, bleak working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Chofer, the old man in the navy driver's jacket, begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the old man in the navy driver's jacket moves his mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "«La encontré, señora. Un geriátrico en la costa.»",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "LA ENCONTRÉ",
+        "highlight_words": [
+          "encontré"
+        ]
+      }
+    },
+    {
+      "id": "scene_07",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "abrigo_negro"
+          }
+        ],
+        "escenario": {
+          "id": "pasillo_goshiwon",
+          "view": "escalera"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, worn black coat) in the provided Pasillo del edificio: cowboy shot, from the knees up, hands and face both readable, camera from the stair landing at a slight high angle, from the knees up of the woman in the black coat seen from behind with the receiver still at her ear, hands and face both readable in three-quarter turn, the stairwell falling away below her, dim yellow light. Cinematic Korean family melodrama, realistic East-Asian characters, bleak working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she lowers the receiver slowly without hanging it up, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Un hombre de sesenta y ocho años llevaba dos días manejando.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_08",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "traje_prestado"
+          }
+        ],
+        "escenario": {
+          "id": "juzgado_pasillo",
+          "view": "fondo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Pasillo del juzgado: extreme wide shot, the figure tiny against the architecture, head to feet clearly visible, camera from the far end of the corridor, the woman in the oversized navy suit tiny and alone walking up the polished stone, head to feet clearly visible, both feet on the floor, the row of numbered doors converging away on both sides, both her hands empty, cold neutral daylight from the high windows. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she walks up the empty corridor with nothing in her hands, mouth closed, not speaking; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Entré al juzgado con las manos vacías y el traje prestado.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_09",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "do_hun",
+            "pose": "traje_gris"
+          },
+          {
+            "id": "se_hee",
+            "pose": "abrigo_camel"
+          }
+        ],
+        "escenario": {
+          "id": "juzgado_pasillo",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Do-hun (a Korean man in his late thirties, neat short hair, charcoal grey suit) and the provided Se-hee (a Korean woman in her late twenties, short bobbed hair, camel wool coat) in the provided Pasillo del juzgado: full body shot, head to feet in frame, both feet on the ground, camera at eye level from the middle of the corridor, head to feet in frame, the man in the charcoal suit and the woman in the camel coat walking together with all four feet on the polished stone, two more blurred anonymous figures in dark coats a step behind them, the corridor windows behind, cold neutral daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the four of them come up the corridor together, mouths closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Ellos llegaron cuatro. Abogado, suegro, esposo y prima.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_10",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "se_hee",
+            "pose": "abrigo_camel"
+          }
+        ],
+        "escenario": {
+          "id": "juzgado_pasillo",
+          "view": "banca"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Se-hee (a Korean woman in her late twenties, short bobbed hair, camel wool coat) in the provided Pasillo del juzgado: medium shot, waist up, camera down at bench level, the wooden armrest large in the foreground out of focus and hiding her waist, the woman in the camel coat walking past beyond it in strict profile from her right side, eyes fixed straight ahead, both hands on the handbag strap, cold neutral daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she walks past without turning her head, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Se-hee no me miró ni una vez en todo el pasillo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_11",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "traje_prestado"
+          }
+        ],
+        "escenario": {
+          "id": "juzgado_pasillo",
+          "view": "fondo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Pasillo del juzgado: close-up, camera from the far end of the corridor at eye level, close-up of the woman in the oversized navy suit framed off-centre to the left with the empty corridor out of focus filling the right, eyes following something across the frame, mouth shut, cold neutral daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her eyes track them across the frame, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Los que no miran son los que ya saben.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_12",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "traje_prestado"
+          }
+        ],
+        "escenario": {
+          "id": "sala_audiencia",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Sala de audiencia: extreme wide shot, the figure tiny against the architecture, head to feet clearly visible, camera from the back corner at floor level, the woman in the oversized navy suit tiny alone at one of the two plain tables, head to feet clearly visible, both feet on the floor, the raised bench and the eight wooden chairs filling the frame around her, flat cold ceiling light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she sits down alone at the empty table, mouth closed, not speaking; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "La sala era la misma. Las ocho sillas, también.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_13",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "abogado",
+            "pose": "cachemira"
+          }
+        ],
+        "escenario": {
+          "id": "sala_audiencia",
+          "view": "mesa"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Abogado (a Korean man in his fifties, charcoal cashmere overcoat) in the provided Sala de audiencia: medium close-up, chest up, camera close across the plain table, a water glass large in the foreground out of focus, medium close-up of the man in the cashmere overcoat seated behind it, mouth clearly visible, framed off-centre to the right, both hands flat on the tabletop, flat cold ceiling light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Abogado, the man in the cashmere overcoat, begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the man in the cashmere overcoat moves his mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "«La señora perdió la custodia por sentencia firme.»",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_14",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "abogado",
+            "pose": "cachemira"
+          }
+        ],
+        "escenario": {
+          "id": "sala_audiencia",
+          "view": "lado_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Abogado (a Korean man in his fifties, charcoal cashmere overcoat) in the provided Sala de audiencia: close-up, camera from beside the raised bench looking down at the tables, the bench edge cutting across the foreground, close-up of the man in the cashmere overcoat tilted up toward camera, mouth clearly visible, framed off-centre to the left, flat cold ceiling light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Abogado, the man in the cashmere overcoat, begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the man in the cashmere overcoat moves his mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "«Y anoche denunció un robo que nadie más vio.»",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_15",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "traje_prestado"
+          }
+        ],
+        "escenario": {
+          "id": "sala_audiencia",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Sala de audiencia: medium shot, waist up, camera from the visitor side at eye level, the woman in the oversized navy suit standing behind her table with the tabletop crossing the foreground and hiding her waist, mouth clearly visible, both hands flat on the wood, chin level, flat cold ceiling light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Da-eun, the woman in the oversized navy suit, begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the woman in the oversized navy suit moves her mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "«Jung Da-eun. Denuncié un robo porque hubo un robo.»",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_16",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "traje_prestado"
+          }
+        ],
+        "escenario": {
+          "id": "juzgado_pasillo",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Pasillo del juzgado: full body shot, head to feet in frame, both feet on the ground, camera at eye level from the middle of the corridor, head to feet in frame, the woman in the oversized navy suit seen from behind standing alone against the long wall with both feet on the polished stone, off-centre on the frame-left third with the empty corridor filling the right, cold neutral daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she leans her head back against the wall, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El juez pidió veinte minutos. Yo no tenía veinte minutos.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_17",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "abogado",
+            "pose": "cachemira"
+          }
+        ],
+        "escenario": {
+          "id": "juzgado_pasillo",
+          "view": "banca"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Abogado (a Korean man in his fifties, charcoal cashmere overcoat) in the provided Pasillo del juzgado: medium close-up, chest up, camera down at bench level, the wooden armrest out of focus in the foreground, medium close-up of the man in the cashmere overcoat seated on the bench, mouth clearly visible, framed off-centre to the right, the gloves folded on one knee, cold neutral daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Abogado, the man in the cashmere overcoat, begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the man in the cashmere overcoat moves his mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "«Retírela ahora y su hija no la ve llorar.»",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_18",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "traje_prestado"
+          }
+        ],
+        "escenario": {
+          "id": "juzgado_pasillo",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Pasillo del juzgado: close-up, camera behind his shoulder (over-the-shoulder from the left), close-up of the woman in the oversized navy suit facing camera, the cashmere shoulder dark and out of focus in the foreground, mouth clearly visible, eyes steady and dry, cold neutral daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Da-eun, the woman in the oversized navy suit, begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the woman in the oversized navy suit moves her mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "«Ya me vio arrodillada. Llorar no le va a sorprender.»",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "YA ME VIO ARRODILLADA",
+        "highlight_words": [
+          "arrodillada"
+        ]
+      }
+    },
+    {
+      "id": "scene_19",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "traje_prestado"
+          }
+        ],
+        "escenario": {
+          "id": "sala_audiencia",
+          "view": "lado_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Sala de audiencia: extreme wide shot, the figure tiny against the architecture, head to feet clearly visible, camera from beside the raised bench at a high angle looking down over the whole room, the woman in the oversized navy suit seen from behind and tiny standing alone at her table, the bench edge cutting across the foreground, head to feet clearly visible, both feet on the floor, the empty chairs and pale panelling filling the frame, flat cold ceiling light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she stands up alone at her table, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Volvimos a entrar. El juez me preguntó qué prueba traía.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_20",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "traje_prestado"
+          }
+        ],
+        "escenario": {
+          "id": "sala_audiencia",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Sala de audiencia: medium shot, waist up, camera from the visitor side at eye level, the woman in the oversized navy suit standing behind her table with the tabletop crossing the foreground and hiding her waist, mouth clearly visible, both hands open and empty on the wood, flat cold ceiling light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Da-eun, the woman in the oversized navy suit, begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the woman in the oversized navy suit moves her mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "«Me la quitaron anoche. Entraron a mi cuarto.»",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_21",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "abogado",
+            "pose": "cachemira"
+          }
+        ],
+        "escenario": {
+          "id": "sala_audiencia",
+          "view": "mesa"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Abogado (a Korean man in his fifties, charcoal cashmere overcoat) in the provided Sala de audiencia: close-up, camera close across the plain table, the water glass large in the foreground out of focus, close-up of the man in the cashmere overcoat seated in three-quarter profile, framed off-centre to the right, the corner of his mouth lifting very slightly, mouth closed, flat cold ceiling light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the corner of his mouth lifts a fraction and settles, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El abogado sonrió sin abrir la boca.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_22",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "traje_prestado"
+          }
+        ],
+        "escenario": {
+          "id": "sala_audiencia",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Sala de audiencia: full body shot, head to feet in frame, both feet on the ground, camera from the back corner at floor level, head to feet in frame, the woman in the oversized navy suit standing alone at her table with both feet on the floor, off-centre on the frame-left third with the empty room filling the right, both arms hanging dead at her sides, shoulders dropped, chin down, face crumpled, tears standing without falling, flat cold ceiling light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, raw, intense emotional performance, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her shoulders drop and her hands open empty at her sides, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Ahí supe lo que es perder de pie.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "PERDER DE PIE",
+        "highlight_words": [
+          "perder"
+        ]
+      }
+    },
+    {
+      "id": "scene_23",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "juzgado_pasillo",
+          "view": "fondo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Insert shot in the provided Pasillo del juzgado: establishing wide shot, floor to ceiling visible, full body small in the lower third of the frame, no people in frame: floor to ceiling visible, the far end of the courthouse corridor with one heavy door standing half open onto darkness, the polished stone reflecting the ceiling lights, the row of doors converging away, cold neutral daylight, deep focus. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the half open door swings a little wider on its own; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Y entonces la puerta del fondo se abrió sola.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_24",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "chofer",
+            "pose": "uniforme"
+          },
+          {
+            "id": "mujer",
+            "pose": "silla_ruedas"
+          }
+        ],
+        "escenario": {
+          "id": "juzgado_pasillo",
+          "view": "fondo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Chofer (an elderly Korean man in his sixties, grey crew cut, navy driver's jacket and cap) and the provided Mujer mayor (a Korean woman in her sixties, grey permed hair, plain grey padded coat) in the provided Pasillo del juzgado: extreme wide shot, the figure tiny against the architecture, head to feet clearly visible, camera from the far end of the corridor, both figures tiny at the other end of the polished stone, head to feet clearly visible, the old man in the navy driver's jacket pushing a hospital wheelchair with the older woman in the grey padded coat seated in it under a folded blanket, the row of numbered doors converging away between camera and them, cold neutral daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the wheelchair comes slowly up the corridor toward camera, mouths closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El chofer empujaba una silla de ruedas por el pasillo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "UNA SILLA DE RUEDAS",
+        "highlight_words": [
+          "silla"
+        ]
+      }
+    },
+    {
+      "id": "scene_25",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "mujer",
+            "pose": "silla_ruedas"
+          }
+        ],
+        "escenario": {
+          "id": "juzgado_pasillo",
+          "view": "banca"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Mujer mayor (a Korean woman in her sixties, grey permed hair, plain grey padded coat) in the provided Pasillo del juzgado: close-up, camera down at bench level at a low angle, the wooden armrest out of focus in the foreground, close-up of the older woman in the grey padded coat seated in the wheelchair, framed off-centre to the right, chin lifted, eyes fixed straight ahead, both hands folded on the blanket, cold neutral daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her chin lifts a fraction as she is wheeled past, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "En la silla iba la mujer que enterró a su hijo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_26",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "mujer",
+            "pose": "silla_ruedas"
+          }
+        ],
+        "escenario": {
+          "id": "sala_audiencia",
+          "view": "lado_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Mujer mayor (a Korean woman in her sixties, grey permed hair, plain grey padded coat) in the provided Sala de audiencia: full body shot, head to feet in frame, both feet on the ground, camera from beside the raised bench looking down at the tables, the bench edge cutting across the foreground, head to feet in frame, the older woman in the grey padded coat seen from behind in the wheelchair placed facing the bench with the blanket still across her knees and both feet on the footrests, off-centre on the frame-right third, flat cold ceiling light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the wheelchair brake is set and she settles back, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "La sentaron frente al juez sin quitarle la manta.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_27",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "mujer",
+            "pose": "silla_ruedas"
+          }
+        ],
+        "escenario": {
+          "id": "sala_audiencia",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Mujer mayor (a Korean woman in her sixties, grey permed hair, plain grey padded coat) in the provided Sala de audiencia: medium close-up, chest up, camera fixed at eye level, medium close-up of the older woman in the grey padded coat seated in the wheelchair, mouth clearly visible, framed off-centre to the left, both hands folded on the blanket, flat cold ceiling light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Mujer mayor, the older woman in the grey padded coat, begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the older woman in the grey padded coat moves her mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "«Yo vi a la mujer que bajó de ese coche.»",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_28",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "mujer",
+            "pose": "silla_ruedas"
+          }
+        ],
+        "escenario": {
+          "id": "sala_audiencia",
+          "view": "mesa"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Mujer mayor (a Korean woman in her sixties, grey permed hair, plain grey padded coat) in the provided Sala de audiencia: close-up, camera close across the plain table, the water glass large in the foreground out of focus, close-up of the older woman in the grey padded coat in three-quarter profile beyond it, mouth clearly visible, framed off-centre to the right, flat cold ceiling light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Mujer mayor, the older woman in the grey padded coat, begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the older woman in the grey padded coat moves her mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "«Tenía el pelo corto y llevaba un abrigo claro.»",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "PELO CORTO",
+        "highlight_words": [
+          "corto"
+        ]
+      }
+    },
+    {
+      "id": "scene_29",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "mujer",
+            "pose": "silla_ruedas"
+          }
+        ],
+        "escenario": {
+          "id": "sala_audiencia",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Mujer mayor (a Korean woman in her sixties, grey permed hair, plain grey padded coat) in the provided Sala de audiencia: medium shot, waist up, camera from the visitor side at eye level, the older woman in the grey padded coat in the wheelchair with the blanket across her knees hiding her waist, mouth clearly visible, one hand lifting off the blanket and pointing across the frame, flat cold ceiling light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Mujer mayor, the older woman in the grey padded coat, begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the older woman in the grey padded coat moves her mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "«Y esa mujer está sentada en esta sala.»",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "ESTÁ EN ESTA SALA",
+        "highlight_words": [
+          "sala"
+        ]
+      }
+    },
+    {
+      "id": "scene_30",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "juzgado_pasillo",
+          "view": "base"
+        },
+        "ingredients": [
+          {
+            "id": "estado_cuenta"
+          }
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Insert shot in the provided Pasillo del juzgado: extreme wide shot, the figure tiny against the architecture, head to feet clearly visible, no people in frame: the long empty courthouse corridor seen from one end with the provided concertina bank statement lying spread open across a wooden bench in the middle distance, tiny against the architecture, the polished stone and high windows filling the frame, cold neutral daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): a draught lifts one panel of the statement on the bench; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Un ujier entró con un sobre que yo había pedido en el banco.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_31",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "juzgado_pasillo",
+          "view": "banca"
+        },
+        "ingredients": [
+          {
+            "id": "estado_cuenta"
+          }
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Insert shot in the provided Pasillo del juzgado: extreme close-up, Insert shot, no face in frame: extreme close-up down at bench level of the provided bank statement printout unfolded across the wooden bench, the dense faint ruled rows filling the frame in sharp detail, cold neutral daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): a hand smooths the statement flat across the bench; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El historial completo. Enviado al juzgado, no a mi cuarto.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "AL JUZGADO",
+        "highlight_words": [
+          "historial"
+        ]
+      }
+    },
+    {
+      "id": "scene_32",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "traje_prestado"
+          }
+        ],
+        "escenario": {
+          "id": "juzgado_pasillo",
+          "view": "fondo"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Pasillo del juzgado: full body shot, head to feet in frame, both feet on the ground, camera from the far end of the corridor, head to feet in frame, the woman in the oversized navy suit seen from behind standing alone facing the open hearing room door with both feet on the polished stone, off-centre on the frame-left third with the empty corridor filling the right, cold neutral daylight. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she turns her head toward the open door, mouth closed, not speaking; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Por eso entraron a robar donde ya no había nada.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_33",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "se_hee",
+            "pose": "abrigo_camel"
+          }
+        ],
+        "escenario": {
+          "id": "sala_audiencia",
+          "view": "mesa"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Se-hee (a Korean woman in her late twenties, short bobbed hair, camel wool coat) in the provided Sala de audiencia: medium shot, waist up, camera close across the plain table, the water glass large in the foreground out of focus and hiding her waist, the woman in the camel coat seated behind it in strict profile from her left side, eyes dropping toward the tabletop, both hands sliding off the wood into her lap, flat cold ceiling light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her hands slide off the tabletop into her lap, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "El juez leyó quién autorizó cada transferencia.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_34",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "se_hee",
+            "pose": "quiebre_pie"
+          }
+        ],
+        "escenario": {
+          "id": "sala_audiencia",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Se-hee (a Korean woman in her late twenties, short bobbed hair, camel wool coat) in the provided Sala de audiencia: medium close-up, chest up, camera fixed at eye level, medium close-up of the woman in the camel coat standing bent forward over the table with both hands gripping its edge and the knuckles white, mouth clearly visible, shoulders shaking, face crumpled and streaming, hair stuck to her wet cheeks, framed off-centre to the right, flat cold ceiling light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, raw, intense emotional performance, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Se-hee, the woman in the camel coat, begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the woman in the camel coat moves her mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[soft, trembling, hurt] «Fui yo. Yo manejaba. Él me llamó y yo fui.»",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "FUI YO",
+        "highlight_words": [
+          "fui"
+        ]
+      }
+    },
+    {
+      "id": "scene_35",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "se_hee",
+            "pose": "quiebre_pie"
+          }
+        ],
+        "escenario": {
+          "id": "sala_audiencia",
+          "view": "lado_b"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Se-hee (a Korean woman in her late twenties, short bobbed hair, camel wool coat) in the provided Sala de audiencia: close-up, camera from beside the raised bench looking down, the bench edge cutting across the foreground, close-up of the woman in the camel coat tilted up toward camera, mouth clearly visible, framed off-centre to the left, tears running openly, flat cold ceiling light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Se-hee, the woman in the camel coat, begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the woman in the camel coat moves her mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "«Y Do-hun me dijo que ella salía en un año.»",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_36",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "traje_prestado"
+          }
+        ],
+        "escenario": {
+          "id": "sala_audiencia",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Sala de audiencia: medium shot, waist up, camera from the visitor side at eye level, the woman in the oversized navy suit standing behind her table with the tabletop crossing the foreground and hiding her waist, mouth clearly visible, both hands flat and still on the wood, eyes dry, flat cold ceiling light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Da-eun, the woman in the oversized navy suit, begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the woman in the oversized navy suit moves her mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "«Cuatro. Fueron cuatro años.»",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "FUERON CUATRO",
+        "highlight_words": [
+          "cuatro"
+        ]
+      }
+    },
+    {
+      "id": "scene_37",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "traje_prestado"
+          }
+        ],
+        "escenario": {
+          "id": "exterior_juzgado",
+          "view": "plaza"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Exterior del juzgado: extreme wide shot, the figure tiny against the architecture, head to feet clearly visible, camera from the far side of the empty plaza, the woman in the oversized navy suit tiny coming down the broad grey stone steps, head to feet clearly visible, both feet on the stone, the courthouse facade and columns rising above her, the wide flat plaza filling the lower two thirds, cold bright late morning light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she comes down the last of the steps into the open plaza, mouth closed, not speaking; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Salí a la calle a las once y veinte de la mañana.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_38",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "man_sik",
+            "pose": "traje_negro"
+          }
+        ],
+        "escenario": {
+          "id": "exterior_juzgado",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Presidente Baek (a Korean man in his late sixties, thick white hair combed back, black three-piece suit) in the provided Exterior del juzgado: medium close-up, chest up, camera at a slight low angle on the courthouse steps, medium close-up of the old man in the black three-piece suit standing between the plain columns, mouth clearly visible, framed off-centre to the right, both hands folded in front of him, cold bright light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Presidente Baek, the old man in the black three-piece suit, begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the old man in the black three-piece suit moves his mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "«Usted ganó un papel. No ganó una familia.»",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_39",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "traje_prestado"
+          }
+        ],
+        "escenario": {
+          "id": "exterior_juzgado",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Exterior del juzgado: close-up, camera at a slight high angle from further up the steps, close-up of the woman in the oversized navy suit seen in strict profile from her right side, framed off-centre to the left with the bright empty plaza out of focus filling the right, eyes forward, mouth closed, cold bright light. Cinematic Korean family melodrama, realistic East-Asian characters, elegant restrained atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she keeps walking down without turning her head, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "No le contesté. Ya no le trabajaba ni mi silencio.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_40",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "traje_prestado"
+          }
+        ],
+        "escenario": {
+          "id": "calle_escuela",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Calle frente a la escuela: extreme wide shot, the figure tiny against the architecture, head to feet clearly visible, camera from the opposite kerb, the woman in the oversized navy suit seen from behind and tiny at the edge of the frame stepping off the kerb, head to feet clearly visible, both feet on the asphalt, the low painted wall and the green mesh school fence running the full width of the frame across the road, flat afternoon light. Cinematic Korean family melodrama, realistic East-Asian characters, bleak working-class atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she steps off the kerb and crosses into the road, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Fui a la escuela sin contar los metros por primera vez.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_41",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "traje_prestado"
+          }
+        ],
+        "escenario": {
+          "id": "calle_escuela",
+          "view": "acera"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Calle frente a la escuela: full body shot, head to feet in frame, both feet on the ground, camera at ground level from the opposite kerb, a parked scooter wheel large in the foreground out of focus, head to feet in frame, the woman in the oversized navy suit crossing the middle of the empty road with both feet on the asphalt, off-centre on the frame-right third, flat afternoon light. Cinematic Korean family melodrama, realistic East-Asian characters, bleak working-class atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she crosses the whole road without stopping, mouth closed, not speaking; slow dolly in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Crucé la calle entera. Nadie me detuvo.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "CRUCÉ LA CALLE",
+        "highlight_words": [
+          "crucé"
+        ]
+      }
+    },
+    {
+      "id": "scene_42",
+      "render_mode": "animated",
+      "references": {
+        "characters": [],
+        "escenario": {
+          "id": "calle_escuela",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Insert shot in the provided Calle frente a la escuela: close-up, Insert shot, no face in frame: close-up of the open green pedestrian gate of the school seen from the road, the mesh and the painted yellow crossing lines sharp in the foreground, the empty yard beyond out of focus, flat afternoon light. Cinematic Korean family melodrama, realistic East-Asian characters, bleak working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the open gate stands still as the bell stops; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "La reja estaba abierta y la campana ya había sonado.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_43",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "su_a",
+            "pose": "uniforme_escolar"
+          }
+        ],
+        "escenario": {
+          "id": "reja_escuela",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Su-a (a six-year-old Korean girl, hair in a braid, navy school uniform and yellow backpack) in the provided Reja de la escuela: establishing wide shot, floor to ceiling visible, full body small in the lower third of the frame, camera at the open pedestrian gate at a high angle looking down, floor to ceiling of the fence visible, the little girl in the navy school uniform full body small in the lower third among a crowd of blurred identical uniformed schoolchildren crossing the yellow lines, both feet on the asphalt, the green mesh and school building behind, flat afternoon light. Cinematic Korean family melodrama, realistic East-Asian characters, bleak working-class atmosphere, emotionally restrained acting, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): the blurred children flow out around her and she stops, mouths closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Su-a salió con las mismas cincuenta niñas de siempre.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_44",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "su_a",
+            "pose": "uniforme_escolar"
+          }
+        ],
+        "escenario": {
+          "id": "reja_escuela",
+          "view": "banqueta"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Su-a (a six-year-old Korean girl, hair in a braid, navy school uniform and yellow backpack) in the provided Reja de la escuela: medium close-up, chest up, camera down at pavement level at child height, the kerb and painted yellow lines filling the lower frame in sharp detail, medium close-up of the little girl in the navy school uniform stopped and looking toward camera, mouth clearly visible, framed off-centre to the left, both hands on the backpack straps, flat afternoon light. Cinematic Korean family melodrama, realistic East-Asian characters, bleak working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Su-a, the little girl in the navy school uniform, begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the little girl in the navy school uniform moves her mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "«¿Ya te dejaron?»",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "¿YA TE DEJARON?",
+        "highlight_words": [
+          "dejaron"
+        ]
+      }
+    },
+    {
+      "id": "scene_45",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "abrazo_arrodillada"
+          }
+        ],
+        "escenario": {
+          "id": "reja_escuela",
+          "view": "malla"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Reja de la escuela: full body shot, head to feet in frame, both feet on the ground, camera pressed against the green mesh but on the open side of the gate, the wire diamonds out of focus only at the left edge, head to feet in frame, the woman in the oversized navy suit kneeling on both knees on the pavement with her back straight and both arms open wide and forward, off-centre on the frame-right third, face crumpled with relief, eyes streaming, mouth closed in a trembling smile, flat afternoon light. Cinematic Korean family melodrama, realistic East-Asian characters, bleak working-class atmosphere, raw, intense emotional performance, natural skin texture, deep focus, the full room in sharp detail, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): she opens her arms wider and waits without moving, mouth closed, not speaking; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Me arrodillé otra vez. Esta vez sin reja.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "SIN REJA",
+        "highlight_words": [
+          "reja"
+        ]
+      }
+    },
+    {
+      "id": "scene_46",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "su_a",
+            "pose": "uniforme_escolar"
+          }
+        ],
+        "escenario": {
+          "id": "reja_escuela",
+          "view": "banqueta"
+        },
+        "ingredients": [
+          {
+            "id": "mono_rojo"
+          }
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Su-a (a six-year-old Korean girl, hair in a braid, navy school uniform and yellow backpack) in the provided Reja de la escuela: close-up, camera down at pavement level at child height, the kerb filling the lower frame, close-up of the little girl in the navy school uniform leaning in toward camera, mouth clearly visible, framed off-centre to the right, one small hand held out flat with the provided red hair ribbon lying on the open palm, flat afternoon light. Cinematic Korean family melodrama, realistic East-Asian characters, bleak working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): Su-a, the little girl in the navy school uniform, begins speaking immediately, lips clearly moving through a short deliberate sentence; IMPORTANT: ONLY the little girl in the navy school uniform moves her mouth; everyone else keeps their mouths closed and still; static camera. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "«Toma. Yo te lo guardé a ti.»",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "YO TE LO GUARDÉ",
+        "highlight_words": [
+          "guardé"
+        ]
+      }
+    },
+    {
+      "id": "scene_47",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "abrazo_arrodillada"
+          }
+        ],
+        "escenario": {
+          "id": "calle_escuela",
+          "view": "acera"
+        },
+        "ingredients": [
+          {
+            "id": "mono_rojo"
+          }
+        ],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Calle frente a la escuela: medium shot, waist up, camera at ground level from the opposite kerb, a parked scooter wheel out of focus in the foreground and hiding her waist, the woman in the oversized navy suit kneeling on the far pavement in strict profile from her left side, both hands closed around the provided red hair ribbon held against her chest, flat afternoon light. Cinematic Korean family melodrama, realistic East-Asian characters, bleak working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her fingers close fully around the ribbon against her chest, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "Me puso el moño rojo en la mano y cerró mis dedos.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "",
+        "highlight_words": []
+      }
+    },
+    {
+      "id": "scene_48",
+      "render_mode": "animated",
+      "references": {
+        "characters": [
+          {
+            "id": "da_eun",
+            "pose": "abrazo_arrodillada"
+          }
+        ],
+        "escenario": {
+          "id": "calle_escuela",
+          "view": "base"
+        },
+        "ingredients": [],
+        "scenes": []
+      },
+      "visual": {
+        "image_prompt": "Using the provided Da-eun (a Korean woman in her mid thirties, long dark hair tied back, borrowed navy suit one size too big) in the provided Calle frente a la escuela: close-up, camera at a slight low angle from the pavement, close-up of the woman in the oversized navy suit kneeling, framed hard off-centre on the frame-left third with the bright empty street filling the right, eyes wide and very still, brows drawn together, mouth closed, flat afternoon light. Cinematic Korean family melodrama, realistic East-Asian characters, bleak working-class atmosphere, emotionally restrained acting, natural skin texture, shallow depth of field, high production value, consistent facial identity, consistent wardrobe. No text, no subtitles, no watermark, no logo, no deformed hands, no extra hands, no duplicated faces, no cloned characters, no Western appearance, no anime, no fantasy, no superpowers, no historical clothing. No direct eye contact with the camera. Vertical 9:16.",
+        "animation_prompt": "ACTION (within 4 seconds): her eyes widen and stay open, mouth closed, not speaking; slow push-in. Single continuous shot. Keep face(s) EXACTLY as provided. Vertical 9:16."
+      },
+      "voiceover": {
+        "text": "[low, resolute] Y preguntó por qué la tía lloraba cada vez que yo cumplía años.",
+        "speaker": "narrador"
+      },
+      "captions": {
+        "text": "CADA CUMPLEAÑOS",
+        "highlight_words": [
+          "cumplía"
+        ]
+      }
+    }
+  ],
+  "capcut_export": {
+    "clip_order": [
+      "scene_01",
+      "scene_02",
+      "scene_03",
+      "scene_04",
+      "scene_05",
+      "scene_06",
+      "scene_07",
+      "scene_08",
+      "scene_09",
+      "scene_10",
+      "scene_11",
+      "scene_12",
+      "scene_13",
+      "scene_14",
+      "scene_15",
+      "scene_16",
+      "scene_17",
+      "scene_18",
+      "scene_19",
+      "scene_20",
+      "scene_21",
+      "scene_22",
+      "scene_23",
+      "scene_24",
+      "scene_25",
+      "scene_26",
+      "scene_27",
+      "scene_28",
+      "scene_29",
+      "scene_30",
+      "scene_31",
+      "scene_32",
+      "scene_33",
+      "scene_34",
+      "scene_35",
+      "scene_36",
+      "scene_37",
+      "scene_38",
+      "scene_39",
+      "scene_40",
+      "scene_41",
+      "scene_42",
+      "scene_43",
+      "scene_44",
+      "scene_45",
+      "scene_46",
+      "scene_47",
+      "scene_48"
+    ],
+    "caption_style": {
+      "font": "bold sans-serif",
+      "position": "lower-third",
+      "color": "white",
+      "stroke": "black"
+    },
+    "title_cards": [
+      "FIN DE LA TEMPORADA UNO",
+      "¿POR QUÉ LLORABA CADA CUMPLEAÑOS?"
+    ],
+    "cliffhanger_card": "¿TEMPORADA DOS?",
+    "music_notes": [
+      "Nada durante el testimonio de la silla de ruedas",
+      "Piano solo desde el cruce de la calle"
+    ],
+    "sfx_notes": [
+      "Puerta pesada de sala",
+      "Ruedas de silla en piedra pulida",
+      "Campana de escuela",
+      "Viento en la plaza"
+    ]
+  },
+  "audio": {
+    "voice_speed": 1.25,
+    "voice_rate": 1,
+    "music_volume": 0
+  },
+  "tts_export": {
+    "mode": "per_scene",
+    "voice_id": "bfed5c0810a347dbb62e8ccce7f59c48",
+    "note": "Una sola voz femenina narra todas las escenas, incluidos los dialogos. Fish Audio por escena."
+  }
+}

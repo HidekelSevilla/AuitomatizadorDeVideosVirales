@@ -2,6 +2,7 @@ import { Fragment, useMemo } from "react";
 import {
   AbsoluteFill,
   Audio,
+  Freeze,
   Img,
   OffthreadVideo,
   Sequence,
@@ -351,7 +352,7 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
     return {
       durationInFrames: totalFrames,
       fps, width, height,
-      props: { ...props, ...manhwaExtras, _timeline: { fps, hookFrames: 0, scenes: cont, totalFrames } },
+      props: { ...props, ...manhwaExtras, _timeline: { fps, hookFrames: 0, scenes: cont, contentFrames: totalFrames, outroFrames: 0, totalFrames } },
     };
   }
 
@@ -410,14 +411,21 @@ export const calcViralMetadata: CalculateMetadataFunction<ViralProps> = async ({
       if (hookVoiceSec > 0) hookFrames = Math.round((hookVoiceSec / voiceRate + 0.3) * fps);
     } catch { /* sin voz de hook: usa duration_s */ }
   }
-  const totalFrames = hookFrames + scenes.reduce((a, s) => a + s.sceneFrames, 0);
+  const contentFrames = hookFrames + scenes.reduce((a, s) => a + s.sceneFrames, 0);
+  const outroPostSpeed = props._novelaOutro && Number.isFinite(props._novelaOutro.post_render_speed)
+    ? Math.max(0.5, Math.min(3, props._novelaOutro.post_render_speed))
+    : 1;
+  const outroFrames = isNovela(props) && props._novelaOutro && Number.isFinite(props._novelaOutro.duration_s)
+    ? Math.max(1, Math.round(props._novelaOutro.duration_s * outroPostSpeed * fps))
+    : 0;
+  const totalFrames = contentFrames + outroFrames;
 
   return {
     durationInFrames: totalFrames,
     fps,
     width,
     height,
-    props: { ...props, ...manhwaExtras, _timeline: { fps, hookFrames, scenes, totalFrames } },
+    props: { ...props, ...manhwaExtras, _timeline: { fps, hookFrames, scenes, contentFrames, outroFrames, totalFrames } },
   };
 };
 
@@ -777,6 +785,69 @@ const WakeIntroOverlay: React.FC = () => {
   });
   if (op <= 0) return null;
   return <AbsoluteFill style={{ backgroundColor: "black", opacity: op }} />;
+};
+
+// Final CTA de novelas: la historia cae a negro y el clip ESP/ENG entra desde negro con el audio en rampa.
+// No hay solape con la ultima narracion, por lo que el cambio se siente intencional y no mezcla dos voces.
+const OutroFadeToBlack: React.FC<{ frames: number }> = ({ frames }) => {
+  const frame = useCurrentFrame();
+  const opacity = interpolate(frame, [0, Math.max(1, frames - 1)], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.ease),
+  });
+  return <AbsoluteFill style={{ backgroundColor: "black", opacity }} />;
+};
+
+const NovelaOutroClip: React.FC<{ props: ViralProps; frames: number }> = ({ props, frames }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const outro = props._novelaOutro!;
+  const postSpeed = Number.isFinite(outro.post_render_speed) ? Math.max(0.5, Math.min(3, outro.post_render_speed)) : 1;
+  const fadeFrames = Math.min(Math.max(1, Math.round(outro.transition_s * postSpeed * fps)), Math.max(1, frames - 1));
+  const clipVolume = typeof outro.clip_volume === "number" ? Math.max(0, Math.min(1, outro.clip_volume)) : 0.5;
+  const holdLastFrame = (outro.audio_duration_s ?? 0) > outro.video_duration_s + (1 / fps);
+  const videoFrames = Math.max(1, Math.round(outro.video_duration_s * postSpeed * fps));
+  const opacity = interpolate(frame, [0, fadeFrames], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.ease),
+  });
+  const video = (
+    <OffthreadVideo
+      src={staticFile(outro.src)}
+      playbackRate={1 / postSpeed}
+      volume={clipVolume * opacity}
+      style={{ width: "100%", height: "100%", objectFit: "cover", opacity }}
+    />
+  );
+  const frozenVideo = (
+    <OffthreadVideo
+      src={staticFile(outro.src)}
+      playbackRate={1 / postSpeed}
+      muted
+      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+    />
+  );
+  return (
+    <AbsoluteFill style={{ backgroundColor: "black" }}>
+      <Sequence from={0} durationInFrames={Math.min(frames, videoFrames)}>
+        {video}
+      </Sequence>
+      {holdLastFrame && frames > videoFrames && (
+        <Sequence from={videoFrames} durationInFrames={frames - videoFrames}>
+          <Freeze frame={Math.max(0, videoFrames - 1)}>{frozenVideo}</Freeze>
+        </Sequence>
+      )}
+      {outro.audio_src && (
+        <Audio
+          src={staticFile(outro.audio_src)}
+          playbackRate={1 / postSpeed}
+          volume={typeof outro.voice_volume === "number" ? outro.voice_volume : 1}
+        />
+      )}
+    </AbsoluteFill>
+  );
 };
 
 // ---------- Ken Burns: MOVIMIENTO DE CAMARA sobre un still (preset historias) ----------
@@ -1216,6 +1287,12 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
   const t = props._timeline!;
   const slug = getSlug(props);
   const preset = getPreset(props.project.preset);
+  const contentEndFrame = t.contentFrames ?? (t.totalFrames - (t.outroFrames ?? 0));
+  const outroTransitionFrames = props._novelaOutro
+    ? Math.min(contentEndFrame, Math.max(1, Math.round(
+      props._novelaOutro.transition_s * (props._novelaOutro.post_render_speed || 1) * t.fps
+    )))
+    : 0;
   // Opening compartido: sus escenas leen medios de public/<assets_slug>/ (fallback: slug del proyecto).
   const openingSlug = props.opening?.assets_slug ?? slug;
   const openingIds = useMemo(
@@ -1381,7 +1458,19 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
           // ducking quedaria desfasado contra la voz desde la 2a vuelta (verificado en remotion 4.0.477).
           return <Audio src={src} volume={(f) => volAt(f)} loop loopVolumeCurveBehavior="extend" />;
         }
-        return <Audio src={src} volume={baseVol} loop />;
+        const musicVolume = props._novelaOutro
+          ? (f: number) => baseVol * interpolate(
+            f,
+            [Math.max(0, contentEndFrame - outroTransitionFrames), contentEndFrame],
+            [1, 0],
+            { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+          )
+          : baseVol;
+        return (
+          <Sequence from={0} durationInFrames={contentEndFrame}>
+            <Audio src={src} volume={musicVolume} loop />
+          </Sequence>
+        );
       })()}
 
       {/* historias voz-continua: UNA pista maestra de voz (full.mp3) para TODO el video -> sin costuras
@@ -1491,6 +1580,23 @@ export const ViralVideo: React.FC<ViralProps> = (props) => {
           </Fragment>
         );
       })}
+
+      {props._novelaOutro && t.outroFrames > 0 && (
+        <>
+          {outroTransitionFrames > 0 && (
+            <Sequence
+              from={Math.max(0, contentEndFrame - outroTransitionFrames)}
+              durationInFrames={outroTransitionFrames}
+              name="novela-outro-dip"
+            >
+              <OutroFadeToBlack frames={outroTransitionFrames} />
+            </Sequence>
+          )}
+          <Sequence from={contentEndFrame} durationInFrames={t.outroFrames} name="novela-outro">
+            <NovelaOutroClip props={props} frames={t.outroFrames} />
+          </Sequence>
+        </>
+      )}
 
       {/* pov-historias: fundido de negro -> imagen al arranque ("despertar"). Encima de todo (ultimo hijo).
           Gateado por preset.wakeIntro -> otros presets no lo montan. */}
