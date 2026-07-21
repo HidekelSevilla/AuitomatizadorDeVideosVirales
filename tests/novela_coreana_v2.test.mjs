@@ -117,7 +117,12 @@ assert.equal(parsed.ok, true, parsed.errors?.join("\n"));
 assert.equal(parsed.project.preset, "novela-coreana");
 assert.equal(parsed.project.imageOnly, false);
 assert.equal(parsed.project.perSceneRender, false);
+assert.equal(parsed.project.voiceSpeed, 1.25);
 assert.equal(parsed.project.ttsExport.voice_id, FISH_NOVELA_VOICE);
+assert.deepEqual(FISH_PRESETS["novela-coreana"], {
+  voiceId: FISH_NOVELA_VOICE,
+  model: "s2.1-pro",
+});
 
 const generatedAssets = parsed.project.ingredients
   .filter((g) => g.type === "manhwa_asset")
@@ -151,8 +156,7 @@ const buildSource = fs.readFileSync(new URL("../remotion-editor/orchestrator/bui
 assert.match(buildSource, /if \(typeof p\.project\?\.speed === "number"\) return p\.project\.speed;[\s\S]*const finalSpeed = p\.project\?\.speed_final;[\s\S]*\["novela-coreana", "novelas-coreanas-eng"\]\.includes\(p\.project\?\.preset\)\) return 1\.10;/);
 assert.equal(mediaPaths.some((p) => p.includes("/images/")), false);
 
-// Variante inglesa: mismo pipeline/voz/ritmo/medios que novela-coreana; solo cambia el preset visual
-// (Remotion agrupa sus captions en bloques de 3..4 palabras).
+// Ambos presets agrupan captions en bloques de 3..4 palabras y usan 60% del tamano historico.
 const englishRaw = structuredClone(raw);
 englishRaw.project.preset = "novelas-coreanas-eng";
 englishRaw.project.language = "en";
@@ -174,7 +178,8 @@ assert.equal(resolveFishVoice("novelas-coreanas-eng", "otra_voz_de_config").voic
 const englishMediaPaths = getMediaRequirements(englishRaw).requirements.map((r) => r.path);
 assert.deepEqual(englishMediaPaths, mediaPaths);
 const presetsSource = fs.readFileSync(new URL("../remotion-editor/src/viral/presets.ts", import.meta.url), "utf8");
-assert.match(presetsSource, /"novelas-coreanas-eng"[\s\S]*?captionMinWords:\s*3,[\s\S]*?captionMaxWords:\s*4,/);
+assert.match(presetsSource, /"novela-coreana"[\s\S]*?captionMinWords:\s*3,[\s\S]*?captionMaxWords:\s*4,[\s\S]*?captionScale:\s*0\.6,/);
+assert.match(presetsSource, /"novelas-coreanas-eng"[\s\S]*?captionMinWords:\s*3,[\s\S]*?captionMaxWords:\s*4,[\s\S]*?captionScale:\s*0\.6,/);
 const fishToolSource = fs.readFileSync(new URL("../remotion-editor/tools/fish-voice.mjs", import.meta.url), "utf8");
 assert.match(fishToolSource, /const voiceId = presetCfg\?\.forceVoice \? _presetVoice : \(_voiceArg \|\| _presetVoice \|\| DEFAULT_VOICE_ID\);/);
 

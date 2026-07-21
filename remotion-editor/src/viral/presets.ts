@@ -12,6 +12,7 @@ export interface Preset {
   captions?: boolean; // dibujar el karaoke desde Remotion AUNQUE sea stills. Si falta/false, no hay subtitulos.
   captionMinWords?: number; // minimo de palabras por bloque karaoke (salvo remanente inevitable)
   captionMaxWords?: number; // maximo de palabras por bloque karaoke
+  captionScale?: number; // escala tipografica del karaoke para este preset (1 = tamano historico)
   wakeIntro?: boolean; // pov-historias: fundido de negro a la primera imagen al ARRANQUE del video (efecto "despertar").
                        // Ausente/false en todos los demas presets -> sin efecto (cero impacto).
   narrativeCardFont?: string;
@@ -44,9 +45,11 @@ export const PRESETS: Record<string, Preset> = {
     showLabelCard: false, // sin carteles negros en este preset
     labelCardBg: "#0A0A0A",
     labelCardColor: "#FFFFFF",
+    captionMinWords: 3,
+    captionMaxWords: 4,
+    captionScale: 0.6, // 40% mas pequeno: conserva frases legibles sin cubrir la composicion
   },
-  // Mismo formato de novela coreana, para guiones/voz en ingles. La unica diferencia editorial
-  // es que los subtitulos se muestran como frases estables de 3 a 4 palabras.
+  // Mismo formato de novela coreana, para guiones/voz en ingles.
   "novelas-coreanas-eng": {
     captionBase: "#FFFFFF",
     captionHotBg: "#F4C26B",
@@ -56,6 +59,7 @@ export const PRESETS: Record<string, Preset> = {
     labelCardColor: "#FFFFFF",
     captionMinWords: 3,
     captionMaxWords: 4,
+    captionScale: 0.6, // 40% mas pequeno: conserva frases legibles sin cubrir la composicion
   },
   // Historias (documental HORIZONTAL 16:9, arte de codice): stills + Ken Burns en el editor, SIN subtitulos.
   historias: {

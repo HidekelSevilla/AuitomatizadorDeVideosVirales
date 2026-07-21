@@ -1008,7 +1008,9 @@ const Hook: React.FC<{ props: ViralProps; preset: Preset }> = ({ props, preset }
   const { height: vh } = useVideoConfig();
   // historias (16:9): subtitulo lower-third mas chico, respeta caption_style.size. Otros presets: VALORES
   // EXACTOS de antes (no leemos caption_style para no cambiar el look de esqueletos/novela ya en produccion).
-  const capSize = preset.stills ? (captionStyle(props)?.size ?? HIST_CAPTION_SIZE) : 120;
+  const capSize = preset.stills
+    ? (captionStyle(props)?.size ?? HIST_CAPTION_SIZE)
+    : Math.round(120 * (preset.captionScale ?? 1));
   const capBottom = preset.stills ? Math.round(vh * 0.08) : 360;
 
   return (
@@ -1094,7 +1096,9 @@ const Scene: React.FC<{
     (!!scene.text_overlay || (xport(props)?.static_punch_scenes ?? []).includes(sceneId(scene)));
   // historias (16:9): subtitulo lower-third mas chico, respeta caption_style.size. Otros presets: VALORES
   // EXACTOS de antes (no leemos caption_style para no cambiar el look de esqueletos/novela ya en produccion).
-  const capSize = preset.stills ? (captionStyle(props)?.size ?? HIST_CAPTION_SIZE) : 128;
+  const capSize = preset.stills
+    ? (captionStyle(props)?.size ?? HIST_CAPTION_SIZE)
+    : Math.round(128 * (preset.captionScale ?? 1));
   const capBottom = preset.stills ? Math.round(vh * 0.08) : 380;
   const { cardFrames, sceneFrames, clipWindow, playbackRate, introFrames } = timing;
   const contentFrames = sceneFrames - introFrames;
